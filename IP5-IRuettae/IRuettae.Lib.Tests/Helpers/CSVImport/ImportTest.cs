@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using IRuettae.Lib.Helpers.CSVImport;
@@ -35,10 +36,6 @@ namespace IRuettae.Lib.Tests.Helpers.CSVImport
         [TestMethod]
         public void TestStart()
         {
-            var import = new Import(TestCSV);
-
-            Assert.AreEqual(2, import.Start());
-
             var expected = new List<ImportModel>
             {
                 new ImportModel(
@@ -67,7 +64,7 @@ namespace IRuettae.Lib.Tests.Helpers.CSVImport
                 ),
             };
 
-            CollectionAssert.AreEqual(expected, import.Result);
+            CollectionAssert.AreEqual(expected, Import.Start(TestCSV).ToList());
         }
 
     }

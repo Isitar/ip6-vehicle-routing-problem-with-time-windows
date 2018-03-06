@@ -15,25 +15,20 @@ namespace IRuettae.Lib.Helpers.CSVImport
         private const int NumberCols = 8;
 
         /// <summary>
-        /// Path to the CSV-File which should be imported
-        /// </summary>
-        /// <param name="path"></param>
-        public Import(string path)
-        {
-            this.Path = path ?? throw new ArgumentNullException(nameof(path));
-        }
-
-        public string Path { get; set; }
-        public List<ImportModel> Result { get; } = new List<ImportModel>();
-
-        /// <summary>
         /// Starts the Import
         /// The Result is in the property with the same name
         /// </summary>
+        /// <param name="path">Path to the CSV-file which should be imported</param>
         /// <returns>Number records imported</returns>
-        public int Start()
+        public static IEnumerable<ImportModel> Start(string path)
         {
-            var csvData = File.ReadAllLines(Path);
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+
+            var Result = new List<ImportModel>();
+            var csvData = File.ReadAllLines(path);
             foreach (string row in csvData.Skip(1).Where(s => !string.IsNullOrEmpty(s)))
             {
                 var cells = row.Split(';');
@@ -54,7 +49,7 @@ namespace IRuettae.Lib.Helpers.CSVImport
             // Remove empty records
             Result.RemoveAll(x => string.IsNullOrEmpty(x.ID));
 
-            return Result.Count;
+            return Result;
         }
 
         private static ImportModel FromCells(string[] cells)
