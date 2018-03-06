@@ -57,7 +57,7 @@ namespace IRuettae.Lib.Helpers.CSVImport
             return Result.Count;
         }
 
-        public static ImportModel FromCells(string[] cells)
+        private static ImportModel FromCells(string[] cells)
         {
             if (cells != null && cells.Length == NumberCols)
             {
@@ -75,13 +75,13 @@ namespace IRuettae.Lib.Helpers.CSVImport
             return new ImportModel();
         }
 
-        public static int TryParseInt(string s)
+        private static int TryParseInt(string s)
         {
             int.TryParse(s, out int temp);
             return temp;
         }
 
-        public static Period TryParsePeriod(string s1, string s2)
+        private static Period TryParsePeriod(string s1, string s2)
         {
             // TODO what if one time is empty? set default
             DateTime.TryParse(s1, out DateTime from);
