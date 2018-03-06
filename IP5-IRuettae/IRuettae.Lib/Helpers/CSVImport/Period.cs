@@ -19,8 +19,7 @@ namespace IRuettae.Lib.Helpers.CSVImport
 
         public static bool IsValid(Period p)
         {
-            return p.From != null && p.To != null
-                && p.From != DateTime.MinValue && p.To != DateTime.MinValue;
+            return p.From < p.To && (p.From != DateTime.MinValue || p.To != DateTime.MinValue);
         }
     }
 }

@@ -38,7 +38,8 @@ namespace IRuettae.Lib.Helpers.CSVImport
             {
                 var cells = row.Split(';');
                 var model = FromCells(cells);
-                if (string.IsNullOrEmpty(cells[0]) && Result.Count > 0)
+                model.DeleteEmptyPeriods();
+                if (string.IsNullOrEmpty(model.ID) && Result.Count > 0)
                 {
                     // Additional periods (desired/unvailable)
                     Result.Last().Merge(model);
@@ -48,8 +49,6 @@ namespace IRuettae.Lib.Helpers.CSVImport
                     // New record
                     Result.Add(model);
                 }
-
-                Result.Last().DeleteEmptyPeriods();
             }
 
             // Remove empty records
@@ -60,36 +59,33 @@ namespace IRuettae.Lib.Helpers.CSVImport
 
         public static ImportModel FromCells(string[] cells)
         {
-            ImportModel model = new ImportModel();
-
-            if (cells != null || cells.Length == NumberCols)
+            if (cells != null && cells.Length == NumberCols)
             {
-                model.ID = cells[0];
-                model.Street = cells[1];
-
-                model.PLZ = TryParseInt(cells[2]);
-                model.Childrean = TryParseInt(cells[3]);
-                model.Desired = new List<Period> { TryParsePeriod(cells[4], cells[5]) };
-                model.Unavailable = new List<Period> { TryParsePeriod(cells[6], cells[7]) };
+                return new ImportModel
+                {
+                    ID = cells[0],
+                    Street = cells[1],
+                    PLZ = TryParseInt(cells[2]),
+                    Childrean = TryParseInt(cells[3]),
+                    Desired = new List<Period> { TryParsePeriod(cells[4], cells[5]) },
+                    Unavailable = new List<Period> { TryParsePeriod(cells[6], cells[7]) }
+                };
             }
 
-            return model;
+            return new ImportModel();
         }
 
         public static int TryParseInt(string s)
         {
-            int temp;
-            int.TryParse(s, out temp);
+            int.TryParse(s, out int temp);
             return temp;
         }
 
         public static Period TryParsePeriod(string s1, string s2)
         {
             // TODO what if one time is empty? set default
-            DateTime from;
-            DateTime.TryParse(s1, out from);
-            DateTime to;
-            DateTime.TryParse(s2, out to);
+            DateTime.TryParse(s1, out DateTime from);
+            DateTime.TryParse(s2, out DateTime to);
             return new Period(from, to);
         }
     }

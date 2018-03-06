@@ -36,14 +36,29 @@ namespace IRuettae.Lib.Helpers.CSVImport
         /// <param name="consumable"></param>
         public void Merge(ImportModel consumable)
         {
-            Desired.AddRange(consumable.Desired);
-            Unavailable.AddRange(consumable.Unavailable);
+            if (Desired == null)
+            {
+                Desired = consumable.Desired;
+            }
+            if (Unavailable == null)
+            {
+                Unavailable = consumable.Unavailable;
+            }
+
+            if (consumable.Desired != null)
+            {
+                Desired.AddRange(consumable.Desired);
+            }
+            if (consumable.Unavailable != null)
+            {
+                Unavailable.AddRange(consumable.Unavailable);
+            }
         }
 
         public void DeleteEmptyPeriods()
         {
-            Desired.RemoveAll(x => !Period.IsValid(x));
-            Unavailable.RemoveAll(x => !Period.IsValid(x));
+            Desired?.RemoveAll(x => !Period.IsValid(x));
+            Unavailable?.RemoveAll(x => !Period.IsValid(x));
         }
 
         public override bool Equals(object obj)
