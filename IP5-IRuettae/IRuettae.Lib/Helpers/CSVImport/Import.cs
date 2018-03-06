@@ -34,15 +34,9 @@ namespace IRuettae.Lib.Helpers.CSVImport
         public int Start()
         {
             var csvData = File.ReadAllLines(Path);
-
-            foreach (string row in csvData.Skip(1))
+            foreach (string row in csvData.Skip(1).Where(s => !string.IsNullOrEmpty(s)))
             {
                 var cells = row.Split(';');
-                if (cells.Length == 0)
-                {
-                    continue;
-                }
-
                 var model = FromCells(cells);
                 if (string.IsNullOrEmpty(cells[0]) && Result.Count > 0)
                 {
@@ -91,6 +85,7 @@ namespace IRuettae.Lib.Helpers.CSVImport
 
         public static Period TryParsePeriod(string s1, string s2)
         {
+            // TODO what if one time is empty? set default
             DateTime from;
             DateTime.TryParse(s1, out from);
             DateTime to;

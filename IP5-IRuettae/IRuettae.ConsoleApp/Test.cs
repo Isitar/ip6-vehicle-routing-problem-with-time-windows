@@ -8,7 +8,7 @@ namespace IRuettae.ConsoleApp
 {
     class Test
     {
-        internal static void run(string[] args)
+        internal static void Run(string[] args)
         {
             throw new NotImplementedException();
         }

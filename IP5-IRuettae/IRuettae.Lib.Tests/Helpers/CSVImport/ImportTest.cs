@@ -10,7 +10,7 @@ namespace IRuettae.Lib.Tests.Helpers.CSVImport
     public class ImportTest
     {
         public static string TestCSV { get; set; }
-        public static string TestCSVContent { get; } =
+        public const string TestCSVContent =
 @"ID;Street;PLZ;Children;DesiredFrom;DesiredTo;UnavailableFrom;UnavailableTo
 ;;;;;;;
 2017001;Isenbühlweg 16;5524;5;09.12.2017 18:00;09.12.2017 19:30;08.12.2017 17:00;08.12.2017 20:00

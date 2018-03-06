@@ -9,7 +9,7 @@ namespace IRuettae.ConsoleApp
 {
     class ImportCSV
     {
-        internal static void run(string[] args)
+        internal static void Run(string[] args)
         {
             // Change path here
             Import import = new Import(@"C:\Users\Janik\Desktop\Vorlage Datenerfassung.csv");

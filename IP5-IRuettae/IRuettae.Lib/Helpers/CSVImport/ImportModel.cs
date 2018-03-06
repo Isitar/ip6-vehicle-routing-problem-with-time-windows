@@ -57,21 +57,5 @@ namespace IRuettae.Lib.Helpers.CSVImport
                    Desired.SequenceEqual(model.Desired) &&
                    Unavailable.SequenceEqual(model.Unavailable);
         }
-
-        /// <summary>
-        /// Auto-generated
-        /// </summary>
-        /// <returns></returns>
-        public override int GetHashCode()
-        {
-            var hashCode = -1389572892;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ID);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Street);
-            hashCode = hashCode * -1521134295 + PLZ.GetHashCode();
-            hashCode = hashCode * -1521134295 + Childrean.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<List<Period>>.Default.GetHashCode(Desired);
-            hashCode = hashCode * -1521134295 + EqualityComparer<List<Period>>.Default.GetHashCode(Unavailable);
-            return hashCode;
-        }
     }
 }

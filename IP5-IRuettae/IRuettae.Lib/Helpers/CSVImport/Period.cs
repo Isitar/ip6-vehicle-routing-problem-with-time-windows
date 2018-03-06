@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IRuettae.Lib.Helpers.CSVImport
 {
-    public class Period
+    public struct Period
     {
         public Period(DateTime from, DateTime to)
         {
@@ -14,33 +14,13 @@ namespace IRuettae.Lib.Helpers.CSVImport
             To = to;
         }
 
-        public DateTime From { get; }
-        public DateTime To { get; }
+        public readonly DateTime From;
+        public readonly DateTime To;
 
         public static bool IsValid(Period p)
         {
-            return p != null && p.From != null && p.To != null
+            return p.From != null && p.To != null
                 && p.From != DateTime.MinValue && p.To != DateTime.MinValue;
-        }
-
-        public override bool Equals(object obj)
-        {
-            var period = obj as Period;
-            return period != null &&
-                   From == period.From &&
-                   To == period.To;
-        }
-
-        /// <summary>
-        /// Auto-generated
-        /// </summary>
-        /// <returns></returns>
-        public override int GetHashCode()
-        {
-            var hashCode = -1781160927;
-            hashCode = hashCode * -1521134295 + From.GetHashCode();
-            hashCode = hashCode * -1521134295 + To.GetHashCode();
-            return hashCode;
         }
     }
 }

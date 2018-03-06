@@ -10,7 +10,7 @@ namespace IRuettae.ConsoleApp
     {
         static void Main(string[] args)
         {
-            Test.run(args);
+            Test.Run(args);
         }
     }
 }
