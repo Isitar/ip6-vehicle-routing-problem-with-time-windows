@@ -12,20 +12,20 @@ namespace IRuettae.Lib.Helpers.CSVImport
         {
         }
 
-        public ImportModel(string iD, string street, int pLZ, int childrean, List<Period> desired, List<Period> unavailable)
+        public ImportModel(string iD, string street, int zip, int numberOfChildren, List<Period> desired, List<Period> unavailable)
         {
             ID = iD;
             Street = street;
-            PLZ = pLZ;
-            Childrean = childrean;
+            Zip = zip;
+            NumberOfChildren = numberOfChildren;
             Desired = desired;
             Unavailable = unavailable;
         }
 
         public string ID { get; set; }
         public string Street { get; set; }
-        public int PLZ { get; set; }
-        public int Childrean { get; set; }
+        public int Zip { get; set; }
+        public int NumberOfChildren { get; set; }
         public List<Period> Desired { get; set; }
         public List<Period> Unavailable { get; set; }
 
@@ -63,12 +63,11 @@ namespace IRuettae.Lib.Helpers.CSVImport
 
         public override bool Equals(object obj)
         {
-            var model = obj as ImportModel;
-            return model != null &&
+            return obj is ImportModel model &&
                    ID == model.ID &&
                    Street == model.Street &&
-                   PLZ == model.PLZ &&
-                   Childrean == model.Childrean &&
+                   Zip == model.Zip &&
+                   NumberOfChildren == model.NumberOfChildren &&
                    Desired.SequenceEqual(model.Desired) &&
                    Unavailable.SequenceEqual(model.Unavailable);
         }

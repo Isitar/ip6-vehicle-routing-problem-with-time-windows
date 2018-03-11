@@ -20,7 +20,7 @@ namespace IRuettae.Lib.Helpers.CSVImport
         /// </summary>
         /// <param name="path">Path to the CSV-file which should be imported</param>
         /// <returns>Number records imported</returns>
-        public static IEnumerable<ImportModel> Start(string path)
+        public static IEnumerable<ImportModel> StartImport(string path)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -60,8 +60,8 @@ namespace IRuettae.Lib.Helpers.CSVImport
                 {
                     ID = cells[0],
                     Street = cells[1],
-                    PLZ = TryParseInt(cells[2]),
-                    Childrean = TryParseInt(cells[3]),
+                    Zip = TryParseInt(cells[2]),
+                    NumberOfChildren = TryParseInt(cells[3]),
                     Desired = new List<Period> { TryParsePeriod(cells[4], cells[5]) },
                     Unavailable = new List<Period> { TryParsePeriod(cells[6], cells[7]) }
                 };
@@ -72,15 +72,16 @@ namespace IRuettae.Lib.Helpers.CSVImport
 
         private static int TryParseInt(string s)
         {
-            int.TryParse(s, out int temp);
+            int.TryParse(s, out var temp);
             return temp;
         }
 
         private static Period TryParsePeriod(string s1, string s2)
         {
             // TODO what if one time is empty? set default
-            DateTime.TryParse(s1, out DateTime from);
-            DateTime.TryParse(s2, out DateTime to);
+            DateTime.TryParse(s1, out var from);
+            DateTime.TryParse(s2, out var to);
+            
             return new Period(from, to);
         }
     }

@@ -12,7 +12,7 @@ namespace IRuettae.ConsoleApp
         internal static void Run(string[] args)
         {
             // Change path here
-            var result = Import.Start(@"C:\Users\Janik\Desktop\Vorlage Datenerfassung.csv");
+            var result = Import.StartImport(@"C:\Users\Janik\Desktop\Vorlage Datenerfassung.csv");
         }
     }
 }
