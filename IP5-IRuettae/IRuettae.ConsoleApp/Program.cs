@@ -11,6 +11,7 @@ namespace IRuettae.ConsoleApp
         static void Main(string[] args)
         {
             Test.Run(args);
+            Console.ReadLine();
         }
     }
 }
