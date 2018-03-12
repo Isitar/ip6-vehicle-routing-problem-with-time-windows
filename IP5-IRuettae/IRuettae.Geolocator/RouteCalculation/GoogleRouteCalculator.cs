@@ -24,9 +24,9 @@ namespace IRuettae.GeoCalculations.RouteCalculation
             return CalculateDistance(from, to, "walking");
         }
 
-        public (double distance, double duration) CalculateWalkingDistance(double fromLat, double fromLng, double toLat, double toLng)
+        public (double distance, double duration) CalculateWalkingDistance(double fromLat, double fromLong, double toLat, double toLong)
         {
-            return CalculateWalkingDistance($"{fromLat},{fromLng}", $"{toLat},{toLng}");
+            return CalculateWalkingDistance($"{fromLat},{fromLong}", $"{toLat},{toLong}");
         }
 
         private (double distance, double duration) CalculateDistance(string from, string to, string mode)
@@ -34,7 +34,7 @@ namespace IRuettae.GeoCalculations.RouteCalculation
             var units = "metric";
             var callUrl = $"{BaseUrl}origin={from}&destination={to}&mode={mode}&units={units}&key={apiKey}";
             var retJson = new WebClient().DownloadString(callUrl);
-            
+
             dynamic retData = JObject.Parse(retJson);
 
             try
