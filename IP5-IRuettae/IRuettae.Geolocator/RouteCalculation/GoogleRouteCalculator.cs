@@ -40,7 +40,7 @@ namespace IRuettae.GeoCalculations.RouteCalculation
             try
             {
                 double distance = retData.routes[0].legs[0].distance.value;
-                double duration = retData.routes[0].legs[0].duration.adafadfvalue;
+                double duration = retData.routes[0].legs[0].duration.value;
 
                 return (distance, duration);
             }

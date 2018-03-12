@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace IRuettae.Lib.Helpers.CSVImport
 {
+#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     public class ImportModel
+#pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     {
         public ImportModel()
         {
@@ -70,18 +72,6 @@ namespace IRuettae.Lib.Helpers.CSVImport
                    NumberOfChildren == model.NumberOfChildren &&
                    Desired.SequenceEqual(model.Desired) &&
                    Unavailable.SequenceEqual(model.Unavailable);
-        }
-
-        public override int GetHashCode()
-        {
-            var hashCode = 960336614;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ID);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Street);
-            hashCode = hashCode * -1521134295 + Zip.GetHashCode();
-            hashCode = hashCode * -1521134295 + NumberOfChildren.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<List<Period>>.Default.GetHashCode(Desired);
-            hashCode = hashCode * -1521134295 + EqualityComparer<List<Period>>.Default.GetHashCode(Unavailable);
-            return hashCode;
         }
     }
 }
