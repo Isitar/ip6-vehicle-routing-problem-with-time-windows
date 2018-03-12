@@ -71,5 +71,17 @@ namespace IRuettae.Lib.Helpers.CSVImport
                    Desired.SequenceEqual(model.Desired) &&
                    Unavailable.SequenceEqual(model.Unavailable);
         }
+
+        public override int GetHashCode()
+        {
+            var hashCode = 960336614;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ID);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Street);
+            hashCode = hashCode * -1521134295 + Zip.GetHashCode();
+            hashCode = hashCode * -1521134295 + NumberOfChildren.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<List<Period>>.Default.GetHashCode(Desired);
+            hashCode = hashCode * -1521134295 + EqualityComparer<List<Period>>.Default.GetHashCode(Unavailable);
+            return hashCode;
+        }
     }
 }
