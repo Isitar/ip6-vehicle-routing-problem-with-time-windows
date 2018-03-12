@@ -41,9 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\CSVImport\Import.cs" />
-    <Compile Include="Helpers\CSVImport\ImportModel.cs" />
-    <Compile Include="Helpers\CSVImport\Period.cs" />
+    <Compile Include="CSVImport\Import.cs" />
+    <Compile Include="CSVImport\ImportModel.cs" />
+    <Compile Include="CSVImport\Period.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

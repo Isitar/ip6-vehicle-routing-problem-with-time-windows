@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using IRuettae.Preprocessing.Helpers.CSVImport;
+using IRuettae.Preprocessing.CSVImport;
 
 namespace IRuettae.ConsoleApp
 {

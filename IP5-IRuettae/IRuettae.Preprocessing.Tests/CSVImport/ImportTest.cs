@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.IO;
-using IRuettae.Preprocessing.Helpers.CSVImport;
+using System.Linq;
+using IRuettae.Preprocessing.CSVImport;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace IRuettae.Preprocessing.Tests.Helpers.CSVImport
+namespace IRuettae.Preprocessing.Tests.CSVImport
 {
     [TestClass]
     public class ImportTest
