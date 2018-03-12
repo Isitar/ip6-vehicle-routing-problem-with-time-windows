@@ -7,8 +7,8 @@
     <ProjectGuid>{8967F419-E3C4-4305-B8B9-0C1465960FB5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>IRuettae.Lib.Tests</RootNamespace>
-    <AssemblyName>IRuettae.Lib.Tests</AssemblyName>
+    <RootNamespace>IRuettae.Preprocessing.Tests</RootNamespace>
+    <AssemblyName>IRuettae.Preprocessing.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -57,9 +57,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IRuettae.Lib\IRuettae.Lib.csproj">
+    <ProjectReference Include="..\IRuettae.Preprocessing\IRuettae.Preprocessing.csproj">
       <Project>{b84cadd1-5f00-4b62-a363-9a047e39fbbd}</Project>
-      <Name>IRuettae.Lib</Name>
+      <Name>IRuettae.Preprocessing</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

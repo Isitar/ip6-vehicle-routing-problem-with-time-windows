@@ -77,11 +77,5 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\IRuettae.Lib\IRuettae.Lib.csproj">
-      <Project>{b84cadd1-5f00-4b62-a363-9a047e39fbbd}</Project>
-      <Name>IRuettae.Lib</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

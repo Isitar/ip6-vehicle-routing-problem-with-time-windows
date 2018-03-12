@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IRuettae.Lib.Helpers.CSVImport
+namespace IRuettae.Preprocessing.Helpers.CSVImport
 {
     public struct Period
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace IRuettae.Lib.Tests
+namespace IRuettae.Preprocessing.Tests
 {
     [TestClass]
     public class UnitTest1

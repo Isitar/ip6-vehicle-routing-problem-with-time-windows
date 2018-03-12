@@ -7,8 +7,8 @@
     <ProjectGuid>{B84CADD1-5F00-4B62-A363-9A047E39FBBD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>IRuettae.Lib</RootNamespace>
-    <AssemblyName>IRuettae.Lib</AssemblyName>
+    <RootNamespace>IRuettae.Preprocessing</RootNamespace>
+    <AssemblyName>IRuettae.Preprocessing</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -46,8 +46,6 @@
     <Compile Include="Helpers\CSVImport\Period.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

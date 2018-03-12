@@ -56,9 +56,9 @@
       <Project>{6cafe95b-09b0-470d-83f3-b49c17b38334}</Project>
       <Name>IRuettae.GeoCalculations</Name>
     </ProjectReference>
-    <ProjectReference Include="..\IRuettae.Lib\IRuettae.Lib.csproj">
+    <ProjectReference Include="..\IRuettae.Preprocessing\IRuettae.Preprocessing.csproj">
       <Project>{b84cadd1-5f00-4b62-a363-9a047e39fbbd}</Project>
-      <Name>IRuettae.Lib</Name>
+      <Name>IRuettae.Preprocessing</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

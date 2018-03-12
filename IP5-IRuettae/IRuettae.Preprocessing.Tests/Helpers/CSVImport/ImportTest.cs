@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
-using IRuettae.Lib.Helpers.CSVImport;
+using IRuettae.Preprocessing.Helpers.CSVImport;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace IRuettae.Lib.Tests.Helpers.CSVImport
+namespace IRuettae.Preprocessing.Tests.Helpers.CSVImport
 {
     [TestClass]
     public class ImportTest
@@ -34,7 +34,7 @@ namespace IRuettae.Lib.Tests.Helpers.CSVImport
         }
 
         [TestMethod]
-        public void TestStart()
+        public void TestStartImport()
         {
             var expected = new List<ImportModel>
             {

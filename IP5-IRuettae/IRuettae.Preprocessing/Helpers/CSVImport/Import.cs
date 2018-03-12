@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IRuettae.Lib.Helpers.CSVImport
+namespace IRuettae.Preprocessing.Helpers.CSVImport
 {
     public class Import
     {
@@ -81,7 +81,7 @@ namespace IRuettae.Lib.Helpers.CSVImport
             // TODO what if one time is empty? set default
             DateTime.TryParse(s1, out var from);
             DateTime.TryParse(s2, out var to);
-            
+
             return new Period(from, to);
         }
     }
