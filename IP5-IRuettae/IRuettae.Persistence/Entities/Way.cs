@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace IRuettae.Persistence.Entities
 {
+    /// <summary>
+    /// Directional way between two visits
+    /// </summary>
     public class Way : BaseEntity
     {
         public virtual Visit From { get; set; }
