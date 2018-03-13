@@ -11,9 +11,9 @@ namespace IRuettae.Preprocessing.CSVImport
         {
         }
 
-        public ImportModel(string iD, string street, int zip, int numberOfChildren, List<Period> desired, List<Period> unavailable)
+        public ImportModel(string id, string street, int zip, int numberOfChildren, List<Period> desired, List<Period> unavailable)
         {
-            ID = iD;
+            Id = id;
             Street = street;
             Zip = zip;
             NumberOfChildren = numberOfChildren;
@@ -21,7 +21,7 @@ namespace IRuettae.Preprocessing.CSVImport
             Unavailable = unavailable;
         }
 
-        public string ID { get; set; }
+        public string Id { get; set; }
         public string Street { get; set; }
         public int Zip { get; set; }
         public int NumberOfChildren { get; set; }
@@ -63,7 +63,7 @@ namespace IRuettae.Preprocessing.CSVImport
         public override bool Equals(object obj)
         {
             return obj is ImportModel model &&
-                   ID == model.ID &&
+                   Id == model.Id &&
                    Street == model.Street &&
                    Zip == model.Zip &&
                    NumberOfChildren == model.NumberOfChildren &&

@@ -34,7 +34,7 @@ namespace IRuettae.Preprocessing.CSVImport
                 var cells = row.Split(';');
                 var model = FromCells(cells);
                 model.DeleteEmptyPeriods();
-                if (string.IsNullOrEmpty(model.ID) && Result.Count > 0)
+                if (string.IsNullOrEmpty(model.Id) && Result.Count > 0)
                 {
                     // Additional periods (desired/unvailable)
                     Result.Last().Merge(model);
@@ -47,7 +47,7 @@ namespace IRuettae.Preprocessing.CSVImport
             }
 
             // Remove empty records
-            Result.RemoveAll(x => string.IsNullOrEmpty(x.ID));
+            Result.RemoveAll(x => string.IsNullOrEmpty(x.Id));
 
             return Result;
         }
@@ -58,7 +58,7 @@ namespace IRuettae.Preprocessing.CSVImport
             {
                 return new ImportModel
                 {
-                    ID = cells[0],
+                    Id = cells[0],
                     Street = cells[1],
                     Zip = TryParseInt(cells[2]),
                     NumberOfChildren = TryParseInt(cells[3]),
