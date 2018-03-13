@@ -8,6 +8,11 @@ namespace IRuettae.Persistence.Entities
 {
     public class Visit : BaseEntity
     {
+        /// <summary>
+        /// Key to connect this visit with other data saved in another system
+        /// (eg. names of the childrean, notes, favorite meal etc.)
+        /// </summary>
+        public virtual string Key { get; set; }
         public virtual int Year { get; set; }
         public virtual string Street { get; set; }
         public virtual int Zip { get; set; }
