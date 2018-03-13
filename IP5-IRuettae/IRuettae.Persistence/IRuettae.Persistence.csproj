@@ -42,9 +42,10 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Entities\" />
-    <Folder Include="Mappings\" />
+    <None Include="Entities\remove.me" />
+    <None Include="Mappings\remove.me" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
