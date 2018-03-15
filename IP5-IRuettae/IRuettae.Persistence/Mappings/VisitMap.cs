@@ -13,8 +13,10 @@ namespace IRuettae.Persistence.Mappings
             Map(x => x.Street);
             Map(x => x.Year);
             Map(x => x.Zip);
-            HasMany(x => x.Desired).Cascade.AllDeleteOrphan();
-            HasMany(x => x.Unavailable).Cascade.AllDeleteOrphan();
+            // there should not be to many data
+            HasMany(x => x.Desired).KeyColumn("desired_visit_id").Not.LazyLoad().Cascade.AllDeleteOrphan();
+            // there should not be to many data
+            HasMany(x => x.Unavailable).KeyColumn("unavailable_visit_id").Not.LazyLoad().Cascade.AllDeleteOrphan();
         }
     }
 }

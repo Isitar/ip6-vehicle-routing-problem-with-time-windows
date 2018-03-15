@@ -19,8 +19,8 @@ namespace IRuettae.ConsoleApp
         {
             var key = "AIzaSyAdTPEkyVKvA0ZvVNAAZK5Ot3fl8zyBsks";
             var routeCalculator = new GoogleRouteCalculator(key);
-            var result = routeCalculator.CalculateWalkingDistance("Othmarsingerstrasse 18 5600 Lenzburg", "Migros Lenzburg");
-            Console.WriteLine($"Distance [m]: {result.distance}, Duration [s]: {result.duration}");
+            var (distance, duration) = routeCalculator.CalculateWalkingDistance("Othmarsingerstrasse 18 5600 Lenzburg", "Migros Lenzburg");
+            Console.WriteLine($"Distance [m]: {distance}, Duration [s]: {duration}");
         }
     }
 }

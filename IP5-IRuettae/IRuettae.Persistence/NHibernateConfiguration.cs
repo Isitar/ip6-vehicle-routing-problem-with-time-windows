@@ -18,13 +18,6 @@ namespace IRuettae.Persistence
     {
         public static ISessionFactory CreateSessionFactory(IPersistenceConfigurer persistenceConfigurer = null, bool recreateDataBase = false)
         {
-            // hack to test
-            if (persistenceConfigurer == null)
-            {
-                persistenceConfigurer =
-                    MySQLConfiguration.Standard.ConnectionString(
-                        "Server=localhost;Database=iRuettae;Uid=root;Pwd=root;");
-            }
 
             return Fluently.Configure()
                 .Database(persistenceConfigurer)

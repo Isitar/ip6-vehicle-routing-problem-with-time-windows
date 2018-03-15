@@ -1,39 +1,76 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
+using IRuettae.Persistence.Entities;
+using IRuettae.WebApi.Persistence;
+using NHibernate.Linq;
 
 namespace IRuettae.WebApi.Controllers
 {
     public class VisitController : ApiController
     {
-        // GET: api/dependingVisit
-        public IEnumerable<string> Get()
+        
+        public IEnumerable<Visit> Get()
         {
-            return new string[] { "value1", "value2" };
+            using (var dbSession = SessionFactory.Instance.OpenSession())
+            {
+                var result = dbSession.Query<Visit>().ToList();
+                return result;
+            }
+
         }
 
-        // GET: api/dependingVisit/5
-        public string Get(int id)
+        public Visit Get(long id)
         {
-            return "value";
+            using (var dbSession = SessionFactory.Instance.OpenSession())
+            {
+                return dbSession.Get<Visit>(id);
+            }
         }
 
-        // POST: api/dependingVisit
-        public void Post([FromBody]string value)
+        
+        public void Post([FromBody]Visit visit)
         {
+            using (var dbSession = SessionFactory.Instance.OpenSession())
+            {
+                using (var transaction = dbSession.BeginTransaction())
+                {
+                    dbSession.Merge(visit);
+                    transaction.Commit();
+                }
+            }
         }
 
-        // PUT: api/dependingVisit/5
-        public void Put(int id, [FromBody]string value)
+        
+        public void Put(long id, [FromBody]Visit visit)
         {
+            using (var dbSession = SessionFactory.Instance.OpenSession())
+            {
+                using (var transaction = dbSession.BeginTransaction())
+                {
+                    var origVisit = dbSession.Get<Visit>(id);
+                    origVisit.NumberOfChildrean = visit.NumberOfChildrean;
+                    origVisit.Street = visit.Street;
+                    origVisit.Year = visit.Year;
+                    origVisit.Zip = visit.Zip;
+                    origVisit.ExternalReference = visit.ExternalReference;
+                    // ignore times
+                    transaction.Commit();
+                }
+            }
         }
 
-        // DELETE: api/dependingVisit/5
-        public void Delete(int id)
+        
+        public void Delete(long id)
         {
+            using (var dbSession = SessionFactory.Instance.OpenSession())
+            {
+                using (var transaction = dbSession.BeginTransaction())
+                {
+                    var origVisit = dbSession.Get<Visit>(id);
+                    dbSession.Delete(origVisit);
+                }
+            }
         }
     }
 }

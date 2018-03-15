@@ -20,5 +20,11 @@ namespace IRuettae.Persistence.Entities
         public virtual IList<Period> Desired { get; set; }
         public virtual IList<Period> Unavailable { get; set; }
 
+        public Visit()
+        {
+            Desired = new List<Period>();
+            Unavailable = new List<Period>();
+        }
+
     }
 }
