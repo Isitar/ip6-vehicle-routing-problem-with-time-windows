@@ -3,13 +3,13 @@ using System.Linq;
 using System.Web.Http;
 using IRuettae.Persistence.Entities;
 using IRuettae.WebApi.Persistence;
+using NHibernate;
 using NHibernate.Linq;
 
 namespace IRuettae.WebApi.Controllers
 {
     public class VisitController : ApiController
     {
-        
         public IEnumerable<Visit> Get()
         {
             using (var dbSession = SessionFactory.Instance.OpenSession())
@@ -69,6 +69,7 @@ namespace IRuettae.WebApi.Controllers
                 {
                     var origVisit = dbSession.Get<Visit>(id);
                     dbSession.Delete(origVisit);
+                    transaction.Commit();
                 }
             }
         }
