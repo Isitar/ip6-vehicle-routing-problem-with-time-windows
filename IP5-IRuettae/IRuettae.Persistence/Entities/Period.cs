@@ -10,6 +10,5 @@ namespace IRuettae.Persistence.Entities
     {
         public virtual DateTime? Start { get; set; }
         public virtual DateTime? End { get; set; }
-        public virtual Visit Visit { get; set; }
     }
 }

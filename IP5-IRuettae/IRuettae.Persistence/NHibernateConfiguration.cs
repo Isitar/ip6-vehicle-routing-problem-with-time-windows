@@ -16,13 +16,35 @@ namespace IRuettae.Persistence
 {
     public class NHibernateConfiguration
     {
-        public static ISessionFactory CreateSessionFactory()
+        public static ISessionFactory CreateSessionFactory(IPersistenceConfigurer persistenceConfigurer = null, bool recreateDataBase = false)
         {
+            // hack to test
+            if (persistenceConfigurer == null)
+            {
+                persistenceConfigurer =
+                    MySQLConfiguration.Standard.ConnectionString(
+                        "Server=localhost;Database=iRuettae;Uid=root;Pwd=root;");
+            }
+
             return Fluently.Configure()
-                .Database(MySQLConfiguration.Standard.ConnectionString("Server=localhost;Database=iRuettae;Uid=root;Pwd=root;"))
+                .Database(persistenceConfigurer)
                 .Mappings(m => m.FluentMappings.AddFromAssemblyOf<VisitMap>())
-                .ExposeConfiguration(cfg => new SchemaUpdate(cfg).Execute(false, true))
+                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<WayMap>())
+                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<PeriodMap>())
+                .ExposeConfiguration(cfg =>
+                {
+                    if (recreateDataBase)
+                    {
+                        var export = new SchemaExport(cfg);
+                        export.Drop(false, true);
+                        export.Create(false, true);
+                    }
+                    else
+                    {
+                        new SchemaUpdate(cfg).Execute(false, true);
+                    }
+                })
                 .BuildSessionFactory();
         }
-        }
+    }
 }
