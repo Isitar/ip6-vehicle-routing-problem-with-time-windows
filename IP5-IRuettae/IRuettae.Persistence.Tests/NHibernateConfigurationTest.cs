@@ -13,16 +13,17 @@ namespace IRuettae.Persistence.Tests
     public class NHibernateConfigurationTest
     {
         [TestMethod]
-        public void TestDBAccess()
+        public void TestMappings()
         {
+            // test db connection
             var sessionFactory = NHibernateConfiguration.CreateSessionFactory(MySQLConfiguration.Standard.ConnectionString("Server=localhost;Database=iRuettae_UnitTests;Uid=root;Pwd=root;"), true);
-            
             Assert.IsNotNull(sessionFactory);
             var session = sessionFactory.OpenSession();
             Assert.IsNotNull(session);
             Assert.IsTrue(session.IsConnected);
             Assert.IsTrue(session.IsOpen);
 
+            // test insert and updates
             using (var transaction = session.BeginTransaction())
             {
                 var visit = new Visit
@@ -32,11 +33,15 @@ namespace IRuettae.Persistence.Tests
                     Street = "somestreet",
                     Year = 2018,
                     Zip = 5600,
-                    Desired = new List<Period> {new Period {Start = DateTime.Now }},
-                    Unavailable = new List<Period> {new Period {End = DateTime.Today}}
+                    Desired = new List<Period> { new Period { Start = DateTime.Now } },
+                    Unavailable = new List<Period> { new Period { End = DateTime.Today } }
                 };
 
                 visit = session.Merge(visit);
+                Assert.AreEqual(10, visit.NumberOfChildrean);
+                visit.NumberOfChildrean = 5;
+                var updatedVisit = session.Get<Visit>(visit.Id);
+                Assert.AreEqual(visit.NumberOfChildrean, updatedVisit.NumberOfChildrean);
 
                 var visit2 = new Visit
                 {
@@ -70,9 +75,10 @@ namespace IRuettae.Persistence.Tests
                 transaction.Commit();
             }
 
+            // check relations
             using (var transaction = session.BeginTransaction())
             {
-                
+
                 var managedVisits = session.Query<Visit>().ToList();
                 var managedWays = session.Query<Way>().ToList();
                 var managedPeriods = session.Query<Period>().ToList();
@@ -87,7 +93,31 @@ namespace IRuettae.Persistence.Tests
                 transaction.Commit();
             }
 
+            // check delete cascading
+            using (var transaction = session.BeginTransaction())
+            {
+                var managedVisits = session.Query<Visit>().ToList();
+                foreach (var managedVisit in managedVisits)
+                {
+                    session.Delete(managedVisit);
+                }
 
+                var allPeriods = session.Query<Period>().ToList();
+                var allWays = session.Query<Way>().ToList();
+                Assert.AreEqual(0, allPeriods.Count);
+                Assert.AreEqual(0, allWays.Count);
+                transaction.Commit();
+            }
+            // also check if db is updated
+            session.Clear();
+            using (var transaction = session.BeginTransaction())
+            {
+                var allPeriods = session.Query<Period>().ToList();
+                var allWays = session.Query<Way>().ToList();
+                Assert.AreEqual(0, allPeriods.Count);
+                Assert.AreEqual(0, allWays.Count);
+                transaction.Commit();
+            }
         }
     }
 }

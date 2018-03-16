@@ -10,8 +10,8 @@ namespace IRuettae.Persistence.Mappings
             Id(x => x.Id);
             Map(x => x.Distance);
             Map(x => x.Duration);
-            References(x => x.From).Cascade.All();
-            References(x => x.To).Cascade.All();
+            References(x => x.From).Cascade.None();
+            References(x => x.To).Cascade.None();
         }
     }
 }
