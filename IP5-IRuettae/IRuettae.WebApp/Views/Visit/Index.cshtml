@@ -1,0 +1,33 @@
+﻿@model IRuettae.Persistence.Entities.Visit
+
+@{
+    ViewBag.Title = "Index";
+
+}
+
+<h2>Besuch</h2>
+
+@using (Html.BeginForm("AddVisit", "Visit", FormMethod.Post))
+{
+    @Html.ValidationSummary()
+    <div class="form-group row">
+
+        <label for="Street" class="col-md-2 col-form-label">Strasse</label>
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Street, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="Street" class="col-md-2 col-form-label">Plz</label>
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Zip, new { type = "number", min = "1000", max = "9999", step = "1", @class = "form-control" })
+        </div>
+    </div>
+
+}
+
+
+
+
+
+
