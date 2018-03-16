@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web.Http;
 using IRuettae.GeoCalculations.RouteCalculation;
 using IRuettae.Persistence.Entities;
+using IRuettae.WebApi.Models;
 using IRuettae.WebApi.Persistence;
 using NHibernate;
 using NHibernate.Criterion;
@@ -15,21 +16,19 @@ namespace IRuettae.WebApi.Controllers
 {
     public class VisitController : ApiController
     {
-        public IEnumerable<Visit> Get()
+        public IEnumerable<VisitDTO> Get()
         {
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
-                var result = dbSession.Query<Visit>().ToList();
-                return result;
+                return dbSession.Query<Visit>().ToList().Select(v => (VisitDTO)v);
             }
-
         }
 
-        public Visit Get(long id)
+        public VisitDTO Get(long id)
         {
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
-                return dbSession.Get<Visit>(id);
+                return (VisitDTO)dbSession.Get<Visit>(id);
             }
         }
 
@@ -78,11 +77,21 @@ namespace IRuettae.WebApi.Controllers
 
         private void UpdateWayDistanceDuration(Way way)
         {
+            // if from == to return
+            if (RouteCalcAddress(way.From).Equals(RouteCalcAddress(way.To)))
+            {
+                way.Duration = 0;
+                way.Distance = 0;
+                return;
+            }
+
             // Todo: add dependency injection and add key to config file
             IRouteCalculator routeCalculator =
                 new GeoCalculations.RouteCalculation.GoogleRouteCalculator(
                     "AIzaSyAdTPEkyVKvA0ZvVNAAZK5Ot3fl8zyBsks");
             var (distance, duration) = routeCalculator.CalculateWalkingDistance(RouteCalcAddress(way.From), RouteCalcAddress(way.To));
+            way.Distance = Convert.ToInt32(distance);
+            way.Duration = Convert.ToInt32(duration);
         }
 
         public void Put(long id, [FromBody]Visit visit)
