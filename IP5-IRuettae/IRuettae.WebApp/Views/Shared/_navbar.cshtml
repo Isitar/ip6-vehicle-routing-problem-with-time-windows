@@ -15,10 +15,16 @@
           <div class="collapse navbar-collapse" id="navbarCollapse">
               <ul class="navbar-nav mr-auto">
                   <li class="nav-item">
-                      @Html.ActionLink("Home", "Index", "Home", null, new {@class = "nav-link"})
+                      @Html.ActionLink("Home", "Index", "Home", null, new { @class = "nav-link" })
                   </li>
                   <li class="nav-item">
-                      @Html.ActionLink("Besuch erfassen", "Index", "Visit", null, new {@class = "nav-link"})
+                      @Html.ActionLink("Besuch erfassen", "Index", "Visit", null, new { @class = "nav-link" })
+                  </li>
+                  <li class="nav-item">
+                      <a href="#" class="nav-link disabled">CSV Import</a>
+                  </li>
+                  <li class="nav-item">
+                      <a href="#" class="nav-link disabled">Admin Interface</a>
                   </li>
               </ul>
           </div>
