@@ -1,0 +1,67 @@
+﻿@model IRuettae.Persistence.Entities.Visit
+
+@{
+    ViewBag.Title = "Danke";
+}
+
+<h2>Vielen Dank</h2>
+<p>Ihr Antrag wurde abgesendet.</p>
+<hr />
+<h3>Besuchsantrag</h3>
+<dl class="dl-horizontal">
+    <dt>Strasse</dt>
+    <dd>@Model.Street</dd>
+
+    <dt>Plz</dt>
+    <dd>@Model.Zip</dd>
+
+    <dt>Anzahl Kinder</dt>
+    <dd>@Model.NumberOfChildrean</dd>
+    @if (Model.Desired != null)
+    {
+        <dt>Verfügbar</dt>
+        <dd>
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Von</th>
+                        <th scope="col">Bis</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var desired in Model.Desired)
+                    {
+                        <tr>
+                            <td>@desired.Start</td>
+                            <td>@desired.End</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </dd>
+    }
+
+    @if (Model.Desired != null)
+    {
+        <dt>Nicht Verfügbar</dt>
+        <dd>
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Von</th>
+                        <th scope="col">Bis</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var unavailable in Model.Unavailable)
+                    {
+                        <tr>
+                            <td>@unavailable.Start</td>
+                            <td>@unavailable.End</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </dd>
+    }
+</dl>

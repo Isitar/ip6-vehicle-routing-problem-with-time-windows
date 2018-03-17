@@ -17,13 +17,21 @@ namespace IRuettae.WebApp.Controllers
         }
 
         [HttpPost]
-        public string AddVisit(Visit v)
-        {
+        public ActionResult AddVisit(Visit v)
+        { 
+            v.Year = DateTime.Now.Year;
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("http://localhost:19259");
                 var response = client.PostAsJsonAsync("api/visit", v).Result;
-                return response.IsSuccessStatusCode ? "gegangen" : "nope";
+                if (response.IsSuccessStatusCode)
+                {
+                    return View("Thanks",v);
+                }
+                else
+                {
+                    return Redirect(Request.UrlReferrer.ToString());
+                }
             }
         }
     }
