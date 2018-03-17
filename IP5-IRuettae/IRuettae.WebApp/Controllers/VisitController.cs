@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Web;
 using System.Web.Mvc;
 using IRuettae.Persistence.Entities;
+using IRuettae.WebApp.Properties;
 
 namespace IRuettae.WebApp.Controllers
 {
@@ -22,7 +23,7 @@ namespace IRuettae.WebApp.Controllers
             v.Year = DateTime.Now.Year;
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("http://localhost:19259");
+                client.BaseAddress = new Uri(Settings.Default.WebAPIBaseUrl);
                 var response = client.PostAsJsonAsync("api/visit", v).Result;
                 if (response.IsSuccessStatusCode)
                 {
