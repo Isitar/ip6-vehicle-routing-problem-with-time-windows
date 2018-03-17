@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Web;
 using System.Web.Mvc;
 using IRuettae.Persistence.Entities;
@@ -18,7 +19,12 @@ namespace IRuettae.WebApp.Controllers
         [HttpPost]
         public string AddVisit(Visit v)
         {
-            return "hallo vater";
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:19259");
+                var response = client.PostAsJsonAsync("api/visit", v).Result;
+                return response.IsSuccessStatusCode ? "gegangen" : "nope";
+            }
         }
     }
 }

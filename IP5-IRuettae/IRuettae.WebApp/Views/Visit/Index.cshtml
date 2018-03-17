@@ -10,6 +10,7 @@
 @using (Html.BeginForm("AddVisit", "Visit", FormMethod.Post))
 {
     @Html.ValidationSummary()
+
     <div class="form-group row">
 
         <label for="Street" class="col-md-2 col-form-label">Strasse</label>
@@ -18,12 +19,63 @@
         </div>
     </div>
     <div class="form-group row">
-        <label for="Street" class="col-md-2 col-form-label">Plz</label>
+        <label for="Zip" class="col-md-2 col-form-label">Plz</label>
         <div class="col-md-10">
             @Html.TextBoxFor(m => m.Zip, new { type = "number", min = "1000", max = "9999", step = "1", @class = "form-control" })
         </div>
     </div>
+    <div class="form-group row">
+        <label for="NumberOfChildrean" class="col-md-2 col-form-label">Anzahl Kinder</label>
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.NumberOfChildrean, new { type = "number", min = "0", max = "100", step = "1", @class = "form-control" })
+        </div>
+    </div>
+    <div>
+        <label class="col-form-label">
+            Verfügbar
+            <button type="button" id="AddDesired" class="btn btn-sm btn-success"><i class="fa fa-plus"></i></button>
+        </label>
+        <div class="desired">
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Von</label>
+                <div class="col-md-10">
+                    <input type="datetime" name="Desired[0].Start" id="Desired_0__Start" class="form-control datepicker" />
+                </div>
+            </div>
 
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Bis</label>
+                <div class="col-md-10">
+                    <input type="datetime" name="Desired[0].End" id="Desired_0__End form-control" class="form-control datepicker" />
+                </div>
+            </div>
+            <div class="p-1"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-form-label">
+            Nicht verfügbar
+            <button type="button" id="AddUnavailable" class="btn btn-sm btn-success"><i class="fa fa-plus"></i></button>
+        </label>
+        <div class="unavailable">
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Von</label>
+                <div class="col-md-10">
+                    <input type="datetime" name="Unavailable[0].Start" id="Unavailable_0__Start" class="form-control col-md-10 datepicker" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Bis</label>
+                <div class="col-md-10">
+                    <input type="datetime" name="Unavailable[0].End" id="Unavailable_0__End form-control" class="form-control col-md-10 datepicker" />
+                </div>
+            </div>
+            <div class="p-1"></div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <button type="submit" class="btn btn-lg btn-block btn-dark">Anmelden</button>
+    </div>
 }
 
 
@@ -31,3 +83,28 @@
 
 
 
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+
+            $('#AddDesired').click(function () {
+                var desired = $('.desired');
+                var count = desired.length;
+                var clone = desired.first().clone();
+                clone.html($(clone).html().replace(/\[0\]/g, '[' + count + ']'));
+                clone.html($(clone).html().replace(/"_0__"/g, '_' + count + '__'));
+                desired.last().after(clone);
+            });
+
+            $('#AddUnavailable').click(function () {
+                var unavailable = $('.unavailable');
+                var count = unavailable.length;
+                var clone = unavailable.first().clone();
+                clone.html($(clone).html().replace(/\[0\]/g, '[' + count + ']'));
+                clone.html($(clone).html().replace(/"_0__"/g, '_' + count + '__'));
+                unavailable.last().after(clone);
+            });
+        });
+    </script>
+}
