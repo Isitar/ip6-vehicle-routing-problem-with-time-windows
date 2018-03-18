@@ -7,6 +7,7 @@ using IRuettae.GeoCalculations.RouteCalculation;
 using IRuettae.Persistence.Entities;
 using IRuettae.WebApi.Models;
 using IRuettae.WebApi.Persistence;
+using IRuettae.WebApi.Properties;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
@@ -85,10 +86,9 @@ namespace IRuettae.WebApi.Controllers
                 return;
             }
 
-            // Todo: add dependency injection and add key to config file
+            // Todo: add dependency injection
             IRouteCalculator routeCalculator =
-                new GeoCalculations.RouteCalculation.GoogleRouteCalculator(
-                    "AIzaSyAdTPEkyVKvA0ZvVNAAZK5Ot3fl8zyBsks");
+                new GeoCalculations.RouteCalculation.GoogleRouteCalculator(Settings.Default.GoogleAPIKey);
             var (distance, duration) = routeCalculator.CalculateWalkingDistance(RouteCalcAddress(way.From), RouteCalcAddress(way.To));
             way.Distance = Convert.ToInt32(distance);
             way.Duration = Convert.ToInt32(duration);
@@ -101,7 +101,7 @@ namespace IRuettae.WebApi.Controllers
                 using (var transaction = dbSession.BeginTransaction())
                 {
                     var origVisit = dbSession.Get<Visit>(id);
-                    origVisit.NumberOfChildrean = visit.NumberOfChildrean;
+                    origVisit.NumberOfChildren = visit.NumberOfChildren;
                     origVisit.Street = visit.Street;
                     origVisit.Year = visit.Year;
                     origVisit.Zip = visit.Zip;

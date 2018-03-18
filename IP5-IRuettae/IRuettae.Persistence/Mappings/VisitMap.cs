@@ -9,7 +9,7 @@ namespace IRuettae.Persistence.Mappings
         {
             Id(x => x.Id);
             Map(x => x.ExternalReference);
-            Map(x => x.NumberOfChildrean);
+            Map(x => x.NumberOfChildren);
             Map(x => x.Street);
             Map(x => x.Year);
             Map(x => x.Zip);
