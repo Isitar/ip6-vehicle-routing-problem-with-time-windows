@@ -8,29 +8,20 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace IRuettae.Preprocessing.Tests.CSVImport
 {
     [TestClass]
+    [DeploymentItem("testData/import_test.csv")]
     public class ImportTest
     {
-        public static string TestCSV { get; set; }
-        public const string TestCSVContent =
-@"ID;Street;Zip;Children;DesiredFrom;DesiredTo;UnavailableFrom;UnavailableTo
-;;;;;;;
-2017001;Isenbühlweg 16;5524;5;09.12.2017 18:00;09.12.2017 19:30;08.12.2017 17:00;08.12.2017 20:00
-;;;;09.12.2017 20:00;09.12.2017 21:30;;
-2017002;Teststrasse 1;1235;1;08.12.2017 17:00;08.12.2017 20:00;09.12.2017 18:00;09.12.2017 19:30
-;;;;;;09.12.2017 20:00;09.12.2017 21:30
-;;;;;;;";
+        private const string testfile = "import_test.csv";
+
 
         [ClassInitialize()]
         public static void ClassInit(TestContext context)
         {
-            TestCSV = context.TestDir + "test.csv";
-            File.WriteAllText(TestCSV, TestCSVContent);
         }
 
         [ClassCleanup()]
         public static void ClassCleanup()
         {
-            File.Delete(TestCSV);
         }
 
         [TestMethod]
@@ -63,7 +54,7 @@ namespace IRuettae.Preprocessing.Tests.CSVImport
                     }
                 ),
             };
-            var imported = Import.StartImport(TestCSV).OrderBy(m => m.Id).ToList();
+            var imported = Import.StartImport(testfile).OrderBy(m => m.Id).ToList();
             Assert.IsNotNull(imported.FirstOrDefault(i => i.Equals(expected[0])));
             Assert.IsNotNull(imported.FirstOrDefault(i => i.Equals(expected[1])));
             Assert.AreEqual(2, imported.Count);
