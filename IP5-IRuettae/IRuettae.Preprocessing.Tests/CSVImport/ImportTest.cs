@@ -11,7 +11,7 @@ namespace IRuettae.Preprocessing.Tests.CSVImport
     [DeploymentItem("CSVImport/testData/import_test.csv")]
     public class ImportTest
     {
-        private const string testfile = "CSVImport/testData/import_test.csv";
+        private const string testfile = "import_test.csv";
 
 
         [ClassInitialize()]
