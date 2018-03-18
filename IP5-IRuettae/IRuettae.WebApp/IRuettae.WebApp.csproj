@@ -291,7 +291,6 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Shared\_navbar.cshtml" />
     <Content Include="Views\Visit\Thanks.cshtml" />
-    <Content Include="Views\Visit\yadi.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
