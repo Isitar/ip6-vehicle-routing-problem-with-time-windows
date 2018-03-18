@@ -63,8 +63,9 @@ namespace IRuettae.Preprocessing.Tests.CSVImport
                     }
                 ),
             };
-
-            CollectionAssert.AreEqual(expected, Import.StartImport(TestCSV).ToList());
+            var imported = Import.StartImport(TestCSV).OrderBy(m => m.Id).ToList();
+            CollectionAssert.AreEqual(expected, imported);
+            
         }
 
     }
