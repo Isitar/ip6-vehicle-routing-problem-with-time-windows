@@ -18,12 +18,16 @@ namespace IRuettae.WebApp.Controllers
         [HttpPost]
         public ActionResult AddVisit(VisitVM v)
         {
+            v.Desired.RemoveAll(periodVM => periodVM.Start == null && periodVM.End == null);
+            v.Unavailable.RemoveAll(periodVM => periodVM.Start == null && periodVM.End == null);
+
             if (!ModelState.IsValid)
             {
                 var errors = ModelState.Select(x => x.Value.Errors).Where(x => x.Count > 0).ToList();
                 return View("Index", v);
             }
 
+            
             //  v.Year = DateTime.Now.Year;
             using (var client = new HttpClient())
             {
@@ -35,6 +39,7 @@ namespace IRuettae.WebApp.Controllers
                 }
                 else
                 {
+                    ModelState.AddModelError("Request","mit dem Request ist etwas schief gelaufen " + response.StatusCode));
                     return Redirect(Request.UrlReferrer?.ToString());
                 }
             }
