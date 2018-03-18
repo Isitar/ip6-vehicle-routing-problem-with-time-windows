@@ -299,12 +299,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IRuettae.Persistence\IRuettae.Persistence.csproj">
-      <Project>{48d4bedb-21dd-4ba9-8b15-7327f2a87ea3}</Project>
-      <Name>IRuettae.Persistence</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
