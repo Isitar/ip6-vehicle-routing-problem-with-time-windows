@@ -101,7 +101,7 @@ namespace IRuettae.WebApi.Controllers
                 using (var transaction = dbSession.BeginTransaction())
                 {
                     var origVisit = dbSession.Get<Visit>(id);
-                    origVisit.NumberOfChildrean = visit.NumberOfChildrean;
+                    origVisit.NumberOfChildren = visit.NumberOfChildren;
                     origVisit.Street = visit.Street;
                     origVisit.Year = visit.Year;
                     origVisit.Zip = visit.Zip;

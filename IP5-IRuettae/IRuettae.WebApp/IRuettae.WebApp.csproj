@@ -145,12 +145,15 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\PeriodVM.cs" />
+    <Compile Include="Models\VisitVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-grid.css" />
@@ -229,6 +232,7 @@
     <Content Include="Scripts\esm\popper-utils.min.js.map" />
     <Content Include="Scripts\esm\popper-utils.js.map" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\ServerPublish.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -265,6 +269,7 @@
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -286,10 +291,10 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Shared\_navbar.cshtml" />
     <Content Include="Views\Visit\Thanks.cshtml" />
+    <Content Include="Views\Visit\yadi.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -298,10 +303,6 @@
     <ProjectReference Include="..\IRuettae.Persistence\IRuettae.Persistence.csproj">
       <Project>{48d4bedb-21dd-4ba9-8b15-7327f2a87ea3}</Project>
       <Name>IRuettae.Persistence</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\IRuettae.WebAPI\IRuettae.WebAPI.csproj">
-      <Project>{bc05ec32-133d-4af2-9248-6187537d20b8}</Project>
-      <Name>IRuettae.WebAPI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

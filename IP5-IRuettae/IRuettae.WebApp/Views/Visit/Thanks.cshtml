@@ -1,4 +1,4 @@
-﻿@model IRuettae.Persistence.Entities.Visit
+﻿@model IRuettae.WebApp.Models.VisitVM
 
 @{
     ViewBag.Title = "Danke";
@@ -16,7 +16,7 @@
     <dd>@Model.Zip</dd>
 
     <dt>Anzahl Kinder</dt>
-    <dd>@Model.NumberOfChildrean</dd>
+    <dd>@Model.NumberOfChildren</dd>
     @if (Model.Desired != null)
     {
         <dt>Wunschzeit</dt>

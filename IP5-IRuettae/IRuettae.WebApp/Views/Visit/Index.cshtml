@@ -1,4 +1,4 @@
-﻿@model IRuettae.Persistence.Entities.Visit
+﻿@model IRuettae.WebApp.Models.VisitVM
 
 @{
     ViewBag.Title = "Index";
@@ -14,41 +14,44 @@
 
 @using (Html.BeginForm("AddVisit", "Visit", FormMethod.Post))
 {
-    @Html.ValidationSummary()
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
 
     <div class="form-group row">
-
-        <label for="Street" class="col-md-2 col-form-label">Strasse</label>
+        @Html.LabelFor(m => m.Street, new { @class = "col-md-2 col-form-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Street, new { @class = "form-control" })
+            @Html.EditorFor(model => model.Street, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Street, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group row">
-        <label for="Zip" class="col-md-2 col-form-label">Plz</label>
+        @Html.LabelFor(m => m.Zip, new { @class = "col-md-2 col-form-label" })
         <div class="col-md-10">
             @Html.TextBoxFor(m => m.Zip, new { type = "number", min = "1000", max = "9999", step = "1", @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Zip, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group row">
-        <label for="NumberOfChildrean" class="col-md-2 col-form-label">Anzahl Kinder</label>
+
+        @Html.LabelFor(m => m.NumberOfChildren, new { @class = "col-md-2 col-form-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.NumberOfChildrean, new { type = "number", min = "0", max = "100", step = "1", @class = "form-control" })
+            @Html.TextBoxFor(m => m.NumberOfChildren, new { type = "number", min = "0", max = "100", step = "1", @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.NumberOfChildren, "", new { @class = "text-danger" })
         </div>
     </div>
     <div>
-        <label class="col-form-label">
-            Wunschzeit
-            <button type="button" id="AddDesired" class="btn btn-sm btn-success"><i class="fa fa-plus"></i></button>
-        </label>
+        @Html.LabelFor(m => m.Desired, new { @class = "col-form-label" })
+        <button type="button" id="AddDesired" class="btn btn-sm btn-success"><i class="fa fa-plus"></i></button>
+
         <div class="desired">
             <div class="form-group row">
                 <label class="col-md-2 col-form-label">Von</label>
                 <div class="col-md-10 input-group">
                     <input type="datetime" name="Desired[0].Start" id="Desired_0__Start" class="form-control" placeholder="DD.MM.YYYY HH:mm" />
                     @*<div class="input-group-append">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                        
-                    </div>*@
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+
+                        </div>*@
                 </div>
             </div>
 
@@ -62,23 +65,22 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="col-form-label">
-            Nicht verfügbar
-            <button type="button" id="AddUnavailable" class="btn btn-sm btn-success"><i class="fa fa-plus"></i></button>
-        </label>
+        @Html.LabelFor(m => m.Unavailable, new { @class = "col-form-label" })
+        <button type="button" id="AddUnavailable" class="btn btn-sm btn-success"><i class="fa fa-plus"></i></button>
+
         <div class="unavailable">
             <div class="form-group row">
                 <label class="col-md-2 col-form-label">Von</label>
                 <div class="col-md-10">
                     <div class="input-group date">
-                        <input type="datetime" name="Unavailable[0].Start" id="Unavailable_0__Start" class="form-control" placeholder="DD.MM.YYYY HH:mm"/>
+                        <input type="datetime" name="Unavailable[0].Start" id="Unavailable_0__Start" class="form-control" placeholder="DD.MM.YYYY HH:mm" />
                     </div>
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-md-2 col-form-label">Bis</label>
                 <div class="col-md-10">
-                    <input type="datetime" name="Unavailable[0].End" id="Unavailable_0__End form-control" class="form-control" placeholder="DD.MM.YYYY HH:mm"/>
+                    <input type="datetime" name="Unavailable[0].End" id="Unavailable_0__End form-control" class="form-control" placeholder="DD.MM.YYYY HH:mm" />
                 </div>
             </div>
             <div class="p-1"></div>
@@ -95,7 +97,7 @@
 
 
 @section scripts {
-    
+    @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/jqueryui")
 
     <script type="text/javascript">
@@ -119,11 +121,6 @@
                 clone.html($(clone).html().replace(/"_0__"/g, '_' + count + '__'));
                 unavailable.last().after(clone);
             });
-
-
-            
-            $('.datetimepicker').datetimepicker();
-
         });
     </script>
 }

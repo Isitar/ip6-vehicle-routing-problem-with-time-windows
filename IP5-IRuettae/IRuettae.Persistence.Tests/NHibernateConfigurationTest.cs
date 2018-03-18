@@ -29,7 +29,7 @@ namespace IRuettae.Persistence.Tests
                 var visit = new Visit
                 {
                     ExternalReference = "someKey",
-                    NumberOfChildrean = 10,
+                    NumberOfChildren = 10,
                     Street = "somestreet",
                     Year = 2018,
                     Zip = 5600,
@@ -38,15 +38,15 @@ namespace IRuettae.Persistence.Tests
                 };
 
                 visit = session.Merge(visit);
-                Assert.AreEqual(10, visit.NumberOfChildrean);
-                visit.NumberOfChildrean = 5;
+                Assert.AreEqual(10, visit.NumberOfChildren);
+                visit.NumberOfChildren = 5;
                 var updatedVisit = session.Get<Visit>(visit.Id);
-                Assert.AreEqual(visit.NumberOfChildrean, updatedVisit.NumberOfChildrean);
+                Assert.AreEqual(visit.NumberOfChildren, updatedVisit.NumberOfChildren);
 
                 var visit2 = new Visit
                 {
                     ExternalReference = "someKey2",
-                    NumberOfChildrean = 3,
+                    NumberOfChildren = 3,
                     Street = "some other street",
                     Year = 2018,
                     Zip = 5000,

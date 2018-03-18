@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Web;
 using System.Web.Mvc;
 using IRuettae.Persistence.Entities;
+using IRuettae.WebApp.Models;
 using IRuettae.WebApp.Properties;
 
 namespace IRuettae.WebApp.Controllers
@@ -12,15 +13,21 @@ namespace IRuettae.WebApp.Controllers
     public class VisitController : Controller
     {
         // GET: Visit
-        public ActionResult Index()
+        public ActionResult Index(VisitVM visitVM = null)
         {
-            return View();
+            return visitVM == null ? View() : View(visitVM);
         }
 
         [HttpPost]
-        public ActionResult AddVisit(Visit v)
-        { 
-            v.Year = DateTime.Now.Year;
+        public ActionResult AddVisit(VisitVM v)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Select(x => x.Value.Errors).Where(x => x.Count > 0).ToList();
+                return View("Index", v);
+            }
+
+            //  v.Year = DateTime.Now.Year;
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(Settings.Default.WebAPIBaseUrl);
@@ -31,7 +38,7 @@ namespace IRuettae.WebApp.Controllers
                 }
                 else
                 {
-                    return Redirect(Request.UrlReferrer.ToString());
+                    return Redirect(Request.UrlReferrer?.ToString());
                 }
             }
         }
