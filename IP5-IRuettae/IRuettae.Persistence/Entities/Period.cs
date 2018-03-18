@@ -8,7 +8,6 @@ namespace IRuettae.Persistence.Entities
 {
     public class Period : BaseEntity
     {
-        public virtual long VisitId { get; set; }
         public virtual DateTime? Start { get; set; }
         public virtual DateTime? End { get; set; }
     }

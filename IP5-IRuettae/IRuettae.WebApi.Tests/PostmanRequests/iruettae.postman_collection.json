@@ -1,0 +1,120 @@
+{
+	"info": {
+		"name": "iruettae",
+		"_postman_id": "e404211c-7f50-555a-5dd8-7cbefa47d0f7",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetVisit",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "localhost:19259/api/visit",
+					"host": [
+						"localhost"
+					],
+					"port": "19259",
+					"path": [
+						"api",
+						"visit"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Add new Visit",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\n    \t\"Id\": 1,\n    \t\"Id\": 1,\n        \"ExternalReference\": \"some external ref\",\n        \"Year\": 2018,\n        \"Street\": \"street 1\",\n        \"Zip\": 5600,\n        \"NumberOfChildrean\": 10,\n        \"Desired\": [\n            {\n                \"Start\": \"2018-03-17T21:44:22\",\n                \"End\": \"2018-03-17T22:54:18\",\n            },\n            {\n                \"Start\": \"2018-03-17T17:52:35\",\n                \"End\": \"2018-03-17T23:52:42\",\n            }\n        ],\n        \"Unavailable\": [\n            {\n                \"Start\": \"2018-03-17T22:59:50\",\n                \"End\": \"2018-03-17T23:52:56\",\n            }\n        ],\n    },"
+				},
+				"url": {
+					"raw": "localhost:19259/api/visit",
+					"host": [
+						"localhost"
+					],
+					"port": "19259",
+					"path": [
+						"api",
+						"visit"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "modify visit",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\n        \"ExternalReference\": \"some external reffffffff\",\n        \"Year\": 2019,\n        \"Street\": \"s street 1\",\n        \"Zip\": 4600,\n        \"NumberOfChildrean\": 5,\n        \"Desired\": [\n            {\n                \"Start\": \"2018-03-15T21:44:22\",\n                \"End\": \"2018-03-15T22:54:18\",\n                \"Id\": 1\n            },\n            {\n                \"Start\": \"2018-03-16T17:52:35\",\n                \"End\": \"2018-03-15T23:52:42\",\n                \"Id\": 2\n            }\n        ],\n        \"Unavailable\": [\n            {\n                \"Start\": \"2018-03-15T22:59:50\",\n                \"End\": \"2018-03-15T23:52:56\",\n                \"Id\": 3\n            }\n        ],\n        \"Id\": 1\n    }"
+				},
+				"url": {
+					"raw": "localhost:19259/api/visit/1",
+					"host": [
+						"localhost"
+					],
+					"port": "19259",
+					"path": [
+						"api",
+						"visit",
+						"1"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "delete visit",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\n        \"ExternalReference\": \"some external reffffffff\",\n        \"Year\": 2019,\n        \"Street\": \"s street 1\",\n        \"Zip\": 4600,\n        \"NumberOfChildrean\": 5,\n        \"Desired\": [\n            {\n                \"Start\": \"2018-03-15T21:44:22\",\n                \"End\": \"2018-03-15T22:54:18\",\n                \"Id\": 1\n            },\n            {\n                \"Start\": \"2018-03-16T17:52:35\",\n                \"End\": \"2018-03-15T23:52:42\",\n                \"Id\": 2\n            }\n        ],\n        \"Unavailable\": [\n            {\n                \"Start\": \"2018-03-15T22:59:50\",\n                \"End\": \"2018-03-15T23:52:56\",\n                \"Id\": 3\n            }\n        ],\n        \"Id\": 1\n    }"
+				},
+				"url": {
+					"raw": "localhost:19259/api/visit/1",
+					"host": [
+						"localhost"
+					],
+					"port": "19259",
+					"path": [
+						"api",
+						"visit",
+						"1"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
