@@ -16,6 +16,8 @@ namespace IRuettae.Persistence
 {
     public class NHibernateConfiguration
     {
+        public static Configuration Config { get; private set; }
+
         public static ISessionFactory CreateSessionFactory(IPersistenceConfigurer persistenceConfigurer = null, bool recreateDataBase = false)
         {
 
@@ -24,8 +26,10 @@ namespace IRuettae.Persistence
                 .Mappings(m => m.FluentMappings.AddFromAssemblyOf<VisitMap>())
                 .Mappings(m => m.FluentMappings.AddFromAssemblyOf<WayMap>())
                 .Mappings(m => m.FluentMappings.AddFromAssemblyOf<PeriodMap>())
+                
                 .ExposeConfiguration(cfg =>
                 {
+                    Config = cfg;
                     if (recreateDataBase)
                     {
                         var export = new SchemaExport(cfg);
