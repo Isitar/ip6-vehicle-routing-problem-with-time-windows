@@ -16,7 +16,7 @@ namespace IRuettae.Persistence.Tests
         public void TestMappings()
         {
             // test db connection
-            var sessionFactory = NHibernateConfiguration.CreateSessionFactory(SQLiteConfiguration.Standard.UsingFile("database.sqlite") ,true);
+            var sessionFactory = NHibernateConfiguration.CreateSessionFactory(SQLiteConfiguration.Standard.UsingFile("database.sqlite"), true);
             Assert.IsNotNull(sessionFactory);
             var session = sessionFactory.OpenSession();
             Assert.IsNotNull(session);

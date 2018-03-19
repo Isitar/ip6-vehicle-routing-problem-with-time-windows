@@ -10,9 +10,9 @@ namespace IRuettae.WebApp.Controllers
     public class VisitController : Controller
     {
         // GET: Visit
-        public ActionResult Index(VisitVM visitVM = null)
+        public ActionResult Index()
         {
-            return visitVM == null ? View() : View(visitVM);
+            return View();
         }
 
         [HttpPost]
