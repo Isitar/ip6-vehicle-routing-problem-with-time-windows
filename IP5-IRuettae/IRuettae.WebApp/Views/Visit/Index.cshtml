@@ -1,0 +1,126 @@
+﻿@model IRuettae.WebApp.Models.VisitVM
+
+@{
+    ViewBag.Title = "Index";
+
+}
+
+@section styles
+{
+    @Styles.Render("~/Content/themes/base")
+}
+
+<h2>Besuch</h2>
+
+@using (Html.BeginForm("AddVisit", "Visit", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+    <div class="form-group row">
+        @Html.LabelFor(m => m.Street, new { @class = "col-md-2 col-form-label" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Street, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Street, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group row">
+        @Html.LabelFor(m => m.Zip, new { @class = "col-md-2 col-form-label" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Zip, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Zip, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group row">
+
+        @Html.LabelFor(m => m.NumberOfChildren, new { @class = "col-md-2 col-form-label" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.NumberOfChildren, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.NumberOfChildren, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div>
+        @Html.LabelFor(m => m.Desired, new { @class = "col-form-label" })
+        <button type="button" id="AddDesired" class="btn btn-sm btn-success"><i class="fa fa-plus"></i></button>
+
+        <div class="desired">
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Von</label>
+                <div class="col-md-10 input-group">
+                    <input type="datetime" name="Desired[0].Start" id="Desired_0__Start" class="form-control" placeholder="DD.MM.YYYY HH:mm" />
+                    @*<div class="input-group-append">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+
+                        </div>*@
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Bis</label>
+                <div class="col-md-10">
+                    <input type="datetime" name="Desired[0].End" id="Desired_0__End form-control" class="form-control" placeholder="DD.MM.YYYY HH:mm" />
+                </div>
+            </div>
+            <div class="p-1"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Unavailable, new { @class = "col-form-label" })
+        <button type="button" id="AddUnavailable" class="btn btn-sm btn-success"><i class="fa fa-plus"></i></button>
+
+        <div class="unavailable">
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Von</label>
+                <div class="col-md-10">
+                    <div class="input-group date">
+                        <input type="datetime" name="Unavailable[0].Start" id="Unavailable_0__Start" class="form-control" placeholder="DD.MM.YYYY HH:mm" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Bis</label>
+                <div class="col-md-10">
+                    <input type="datetime" name="Unavailable[0].End" id="Unavailable_0__End form-control" class="form-control" placeholder="DD.MM.YYYY HH:mm" />
+                </div>
+            </div>
+            <div class="p-1"></div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <button type="submit" class="btn btn-lg btn-block btn-dark">Anmelden</button>
+    </div>
+}
+
+
+
+
+
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+
+            $('#AddDesired').click(function () {
+                var desired = $('.desired');
+                var count = desired.length;
+                var clone = desired.first().clone();
+                clone.html($(clone).html().replace(/\[0\]/g, '[' + count + ']'));
+                clone.html($(clone).html().replace(/"_0__"/g, '_' + count + '__'));
+                desired.last().after(clone);
+            });
+
+            $('#AddUnavailable').click(function () {
+                var unavailable = $('.unavailable');
+                var count = unavailable.length;
+                var clone = unavailable.first().clone();
+                clone.html($(clone).html().replace(/\[0\]/g, '[' + count + ']'));
+                clone.html($(clone).html().replace(/"_0__"/g, '_' + count + '__'));
+                unavailable.last().after(clone);
+            });
+        });
+    </script>
+}

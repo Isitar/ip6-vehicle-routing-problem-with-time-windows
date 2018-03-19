@@ -1,0 +1,68 @@
+﻿@using IRuettae.WebApp.Models
+@model IRuettae.WebApp.Models.VisitVM
+
+@{
+    ViewBag.Title = "Danke";
+}
+
+<h2>Vielen Dank</h2>
+<p>Ihr Antrag wurde abgesendet.</p>
+<hr />
+<h3>Besuchsantrag @Model.Year</h3>
+<dl class="dl-horizontal">
+    <dt>@Html.DisplayNameFor(m => m.Street)</dt>
+    <dd>@Model.Street</dd>
+
+    <dt>@Html.DisplayNameFor(m => m.Zip)</dt>
+    <dd>@Model.Zip</dd>
+
+    <dt>@Html.DisplayNameFor(m => m.NumberOfChildren)</dt>
+    <dd>@Model.NumberOfChildren</dd>
+    @if (Model.Desired != null)
+    {
+    <dt>@Html.DisplayNameFor(m => m.Desired)</dt>
+        <dd>
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">@Html.DisplayNameFor(m => new PeriodVM().Start)</th>
+                        <th scope="col">@Html.DisplayNameFor(m => new PeriodVM().End)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var desired in Model.Desired)
+                    {
+                        <tr>
+                            <td>@desired.Start</td>
+                            <td>@desired.End</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </dd>
+    }
+
+    @if (Model.Desired != null)
+    {
+        <dt>@Html.DisplayNameFor(m => m.Unavailable)</dt>
+        <dd>
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">@Html.DisplayNameFor(m => new PeriodVM().Start)</th>
+                        <th scope="col">@Html.DisplayNameFor(m => new PeriodVM().End)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var unavailable in Model.Unavailable)
+                    {
+                        <tr>
+                            <td>@unavailable.Start</td>
+                            <td>@unavailable.End</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </dd>
+    }
+</dl>

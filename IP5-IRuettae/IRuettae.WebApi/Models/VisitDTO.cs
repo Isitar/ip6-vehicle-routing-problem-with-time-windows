@@ -29,7 +29,7 @@ namespace IRuettae.WebApi.Models
                 Street = v.Street,
                 ExternalReference = v.ExternalReference,
                 Year = v.Year,
-                NumberOfChildrean = v.NumberOfChildrean,
+                NumberOfChildrean = v.NumberOfChildren,
                 Zip = v.Zip,
                 Unavailable = v.Unavailable.ToList()
             };

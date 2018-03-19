@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using IRuettae.GeoCalculations.RouteCalculation;
 using IRuettae.Persistence.Entities;
 using IRuettae.WebApi.Models;
 using IRuettae.WebApi.Persistence;
+using IRuettae.WebApi.Properties;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
@@ -35,41 +40,52 @@ namespace IRuettae.WebApi.Controllers
 
         public void Post([FromBody]Visit visit)
         {
-            using (var dbSession = SessionFactory.Instance.OpenSession())
+            try
             {
-                using (var transaction = dbSession.BeginTransaction())
+                using (var dbSession = SessionFactory.Instance.OpenSession())
                 {
-                    visit = dbSession.Merge(visit);
-                    transaction.Commit();
-                }
+                    using (var transaction = dbSession.BeginTransaction())
+                    {
+                        visit = dbSession.Merge(visit);
+                        transaction.Commit();
+                    }
 
-                using (var transaction = dbSession.BeginTransaction())
-                {
-
-                    var otherAddresses = dbSession.Query<Visit>().Where(v => v.Year == visit.Year);
-                    foreach (var otherAddress in otherAddresses)
+                    using (var transaction = dbSession.BeginTransaction())
                     {
 
-                        var way = new Way
+                        var otherAddresses = dbSession.Query<Visit>().Where(v => v.Year == visit.Year);
+                        foreach (var otherAddress in otherAddresses)
                         {
-                            From = visit,
-                            To = otherAddress,
-                        };
-                        UpdateWayDistanceDuration(way);
-                        way = dbSession.Merge(way);
 
-                        var wayBack = new Way
-                        {
-                            From = otherAddress,
-                            To = visit,
-                        };
-                        UpdateWayDistanceDuration(wayBack);
-                        wayBack = dbSession.Merge(wayBack);
+                            var way = new Way
+                            {
+                                From = visit,
+                                To = otherAddress,
+                            };
+                            UpdateWayDistanceDuration(way);
+                            way = dbSession.Merge(way);
+
+                            var wayBack = new Way
+                            {
+                                From = otherAddress,
+                                To = visit,
+                            };
+                            UpdateWayDistanceDuration(wayBack);
+                            wayBack = dbSession.Merge(wayBack);
+                        }
+
+                        transaction.Commit();
                     }
-                    transaction.Commit();
+
                 }
 
+            }
+            catch (Exception e)
+            {
+                File.AppendAllLines("C:\\temp\\webapp_error.txt", contents: new[] {
+                    "Something went wrong: " + e.Message, e.StackTrace});
 
+                throw new HttpException("Something went wrong: " +e.Message+"<br />" + e.StackTrace);
             }
         }
 
@@ -85,10 +101,9 @@ namespace IRuettae.WebApi.Controllers
                 return;
             }
 
-            // Todo: add dependency injection and add key to config file
+            // Todo: add dependency injection
             IRouteCalculator routeCalculator =
-                new GeoCalculations.RouteCalculation.GoogleRouteCalculator(
-                    "AIzaSyAdTPEkyVKvA0ZvVNAAZK5Ot3fl8zyBsks");
+                new GeoCalculations.RouteCalculation.GoogleRouteCalculator(Settings.Default.GoogleAPIKey);
             var (distance, duration) = routeCalculator.CalculateWalkingDistance(RouteCalcAddress(way.From), RouteCalcAddress(way.To));
             way.Distance = Convert.ToInt32(distance);
             way.Duration = Convert.ToInt32(duration);
@@ -101,7 +116,7 @@ namespace IRuettae.WebApi.Controllers
                 using (var transaction = dbSession.BeginTransaction())
                 {
                     var origVisit = dbSession.Get<Visit>(id);
-                    origVisit.NumberOfChildrean = visit.NumberOfChildrean;
+                    origVisit.NumberOfChildren = visit.NumberOfChildren;
                     origVisit.Street = visit.Street;
                     origVisit.Year = visit.Year;
                     origVisit.Zip = visit.Zip;

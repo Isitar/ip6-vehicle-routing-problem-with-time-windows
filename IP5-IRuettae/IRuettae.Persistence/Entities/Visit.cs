@@ -16,7 +16,7 @@ namespace IRuettae.Persistence.Entities
         public virtual int Year { get; set; }
         public virtual string Street { get; set; }
         public virtual int Zip { get; set; }
-        public virtual int NumberOfChildrean { get; set; }
+        public virtual int NumberOfChildren { get; set; }
         public virtual IList<Period> Desired { get; set; }
         public virtual IList<Period> Unavailable { get; set; }
         public virtual IList<Way> FromWays { get; set; }
