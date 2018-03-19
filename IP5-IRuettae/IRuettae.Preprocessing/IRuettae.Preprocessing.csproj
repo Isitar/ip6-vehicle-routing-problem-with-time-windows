@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CSVImport\DatabaseConnector.cs" />
     <Compile Include="CSVImport\Import.cs" />
     <Compile Include="CSVImport\ImportModel.cs" />
     <Compile Include="CSVImport\Period.cs" />
