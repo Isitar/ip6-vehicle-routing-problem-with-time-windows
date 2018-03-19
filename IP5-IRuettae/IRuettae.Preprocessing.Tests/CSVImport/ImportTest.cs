@@ -13,17 +13,6 @@ namespace IRuettae.Preprocessing.Tests.CSVImport
     {
         private const string testfile = "import_test.csv";
 
-
-        [ClassInitialize()]
-        public static void ClassInit(TestContext context)
-        {
-        }
-
-        [ClassCleanup()]
-        public static void ClassCleanup()
-        {
-        }
-
         [TestMethod]
         public void TestStartImport()
         {
@@ -58,8 +47,6 @@ namespace IRuettae.Preprocessing.Tests.CSVImport
             Assert.IsNotNull(imported.FirstOrDefault(i => i.Equals(expected[0])));
             Assert.IsNotNull(imported.FirstOrDefault(i => i.Equals(expected[1])));
             Assert.AreEqual(2, imported.Count);
-            
         }
-
     }
 }
