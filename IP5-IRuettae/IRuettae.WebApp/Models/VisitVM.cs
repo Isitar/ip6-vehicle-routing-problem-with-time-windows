@@ -12,10 +12,12 @@ namespace IRuettae.WebApp.Models
         public string Street { get; set; }
 
         [Required]
+        [Range(1000,9999)]
         [DisplayName("Postleizahl")]
         public int Zip { get; set; }
 
         [Required]
+        [Range(1,Int32.MaxValue)]
         [DisplayName("Anzahl Kinder")]
         public int NumberOfChildren { get; set; }
 
