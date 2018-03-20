@@ -31,8 +31,8 @@ namespace IRuettae.Persistence
             return Fluently.Configure()
                 .Database(persistenceConfigurer)
                 .Mappings(m => m.FluentMappings.AddFromAssemblyOf<VisitMap>())
-                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<WayMap>())
-                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<PeriodMap>())
+                //.Mappings(m => m.FluentMappings.AddFromAssemblyOf<WayMap>())
+                //.Mappings(m => m.FluentMappings.AddFromAssemblyOf<PeriodMap>())
 
                 .ExposeConfiguration(cfg =>
                 {
