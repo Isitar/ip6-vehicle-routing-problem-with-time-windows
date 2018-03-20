@@ -50,9 +50,10 @@ namespace IRuettae.Preprocessing.Tests.CSVImport
                 ),
             };
             var imported = Import.StartImport(testfile).OrderBy(m => m.Id).ToList();
+
             //CollectionAssert.AreEqual(expected,imported);
-            //Assert.IsNotNull(imported.FirstOrDefault(i => i.Equals(expected[0])));
-            //Assert.IsNotNull(imported.FirstOrDefault(i => i.Equals(expected[1])));
+            Assert.IsNotNull(imported.FirstOrDefault(i => i.Equals(expected[0])));
+            Assert.IsNotNull(imported.FirstOrDefault(i => i.Equals(expected[1])));
             Assert.AreEqual(2, imported.Count);
         }
     }

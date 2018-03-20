@@ -103,7 +103,7 @@ namespace IRuettae.Preprocessing.CSVImport
         {
             // TODO what if one time is empty? set default
 
-            var culture = CultureInfo.InvariantCulture;
+            var culture = CultureInfo.CreateSpecificCulture("DE-ch");
             const DateTimeStyles styles = DateTimeStyles.None;
 
             DateTime.TryParse(s1, culture, styles, out var from);
