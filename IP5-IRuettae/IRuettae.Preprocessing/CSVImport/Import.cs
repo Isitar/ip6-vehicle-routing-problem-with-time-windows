@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace IRuettae.Preprocessing.CSVImport
@@ -20,7 +21,7 @@ namespace IRuettae.Preprocessing.CSVImport
         /// </summary>
         /// <param name="path">Path to the CSV-file which should be imported</param>
         /// <returns>Number records imported</returns>
-        public static IEnumerable<ImportModel> StartImport(string path)
+        public static IEnumerable<ImportModel> StartImportFile(string path)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -28,7 +29,27 @@ namespace IRuettae.Preprocessing.CSVImport
             }
 
             var Result = new List<ImportModel>();
-            var csvData = File.ReadAllLines(path);
+
+            return StartImport(File.ReadAllText(path));
+        }
+
+        /// <summary>
+        /// Starts the Import
+        /// The Result is in the property with the same name
+        /// </summary>
+        /// <param name="path">Path to the CSV-file which should be imported</param>
+        /// <returns>Number records imported</returns>
+        public static IEnumerable<ImportModel> StartImport(string content)
+        {
+            if (string.IsNullOrEmpty(content))
+            {
+                throw new ArgumentNullException(nameof(content));
+            }
+
+            var Result = new List<ImportModel>();
+
+            var csvData = Regex.Split(content, "\r\n|\r|\n");
+
             foreach (string row in csvData.Skip(1).Where(s => !string.IsNullOrEmpty(s)))
             {
                 var cells = row.Split(';');

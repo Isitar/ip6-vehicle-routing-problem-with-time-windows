@@ -8,10 +8,16 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace IRuettae.Preprocessing.Tests.CSVImport
 {
     [TestClass]
-    [DeploymentItem("CSVImport/testData/import_test.csv")]
     public class ImportTest
     {
-        private const string testfile = "import_test.csv";
+        private const string testfile =
+@"ID;Street;Zip;Children;DesiredFrom;DesiredTo;UnavailableFrom;UnavailableTo
+;;;;;;;
+2017001;Isenbühlweg 16;5524;5;09.12.2017 18:00;09.12.2017 19:30;08.12.2017 17:00;08.12.2017 20:00
+;;;;09.12.2017 20:00;09.12.2017 21:30;;
+2017002;Teststrasse 1;1235;1;08.12.2017 17:00;08.12.2017 20:00;09.12.2017 18:00;09.12.2017 19:30
+;;;;;;09.12.2017 20:00;09.12.2017 21:30
+;;;;;;;";
 
         [TestMethod]
         public void TestStartImport()
