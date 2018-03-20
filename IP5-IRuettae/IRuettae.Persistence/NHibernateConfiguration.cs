@@ -14,11 +14,18 @@ using NHibernate.Tool.hbm2ddl;
 
 namespace IRuettae.Persistence
 {
+    public enum NHibernateConfigurationConfigurationOptions
+    {
+        None,
+        RecreateDB,
+        UpdateDB
+    }
+
     public class NHibernateConfiguration
     {
         public static Configuration Config { get; private set; }
 
-        public static ISessionFactory CreateSessionFactory(IPersistenceConfigurer persistenceConfigurer = null, bool recreateDataBase = false)
+        public static ISessionFactory CreateSessionFactory(IPersistenceConfigurer persistenceConfigurer = null, NHibernateConfigurationConfigurationOptions configurationOptions = NHibernateConfigurationConfigurationOptions.UpdateDB)
         {
 
             return Fluently.Configure()
@@ -26,19 +33,23 @@ namespace IRuettae.Persistence
                 .Mappings(m => m.FluentMappings.AddFromAssemblyOf<VisitMap>())
                 .Mappings(m => m.FluentMappings.AddFromAssemblyOf<WayMap>())
                 .Mappings(m => m.FluentMappings.AddFromAssemblyOf<PeriodMap>())
-                
+
                 .ExposeConfiguration(cfg =>
                 {
                     Config = cfg;
-                    if (recreateDataBase)
+                    switch (configurationOptions)
                     {
-                        var export = new SchemaExport(cfg);
-                        export.Drop(false, true);
-                        export.Create(false, true);
-                    }
-                    else
-                    {
-                        new SchemaUpdate(cfg).Execute(false, true);
+                        case NHibernateConfigurationConfigurationOptions.RecreateDB:
+                            var export = new SchemaExport(cfg);
+                            export.Drop(false, true);
+                            export.Create(false, true);
+                            break;
+
+                        case NHibernateConfigurationConfigurationOptions.UpdateDB:
+                            new SchemaUpdate(cfg).Execute(false, true);
+                            break;
+                        case NHibernateConfigurationConfigurationOptions.None:
+                            break;
                     }
                 })
                 .BuildSessionFactory();

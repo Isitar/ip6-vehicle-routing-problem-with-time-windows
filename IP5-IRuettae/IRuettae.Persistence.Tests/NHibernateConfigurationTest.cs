@@ -24,7 +24,7 @@ namespace IRuettae.Persistence.Tests
             {
                 sessionFactory =
                     NHibernateConfiguration.CreateSessionFactory(SQLiteConfiguration.Standard.InMemory().ShowSql(),
-                        true);
+                        NHibernateConfigurationConfigurationOptions.None);
             }
             catch (FluentConfigurationException e)
             {
