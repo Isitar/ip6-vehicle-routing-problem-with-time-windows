@@ -50,6 +50,8 @@ namespace IRuettae.Persistence
                             break;
                         case NHibernateConfigurationConfigurationOptions.None:
                             break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(configurationOptions), configurationOptions, null);
                     }
                 })
                 .BuildSessionFactory();
