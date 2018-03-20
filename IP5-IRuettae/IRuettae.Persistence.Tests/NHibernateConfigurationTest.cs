@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using IRuettae.Persistence.Entities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,9 +26,12 @@ namespace IRuettae.Persistence.Tests
                     NHibernateConfiguration.CreateSessionFactory(SQLiteConfiguration.Standard.InMemory().ShowSql(),
                         true);
             }
-            catch (Exception e)
+            catch (FluentConfigurationException e)
             {
-                Assert.Fail(e.Message + Environment.NewLine + "inner" + e.InnerException?.Message + e.InnerException?.ToString() + Environment.NewLine + e.StackTrace);
+                Assert.Fail(e.Message + Environment.NewLine + 
+                            "inner: " + e.InnerException?.Message + e.InnerException?.ToString() + Environment.NewLine + 
+                            "potential reasons: " + string.Join(";", e.PotentialReasons) + Environment.NewLine +
+                            "e stacktrace: " + e.StackTrace);
             }
 
             var config = NHibernateConfiguration.Config;
