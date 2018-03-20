@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace IRuettae.Preprocessing.CSVImport
@@ -100,8 +102,12 @@ namespace IRuettae.Preprocessing.CSVImport
         private static Period TryParsePeriod(string s1, string s2)
         {
             // TODO what if one time is empty? set default
-            DateTime.TryParse(s1, out var from);
-            DateTime.TryParse(s2, out var to);
+
+            var culture = CultureInfo.InvariantCulture;
+            const DateTimeStyles styles = DateTimeStyles.None;
+
+            DateTime.TryParse(s1, culture,styles, out var from);
+            DateTime.TryParse(s2, culture, styles, out var to);
 
             return new Period(from, to);
         }
