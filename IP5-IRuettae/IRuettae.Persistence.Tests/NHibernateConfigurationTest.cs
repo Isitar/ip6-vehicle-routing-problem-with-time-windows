@@ -5,6 +5,7 @@ using System.Linq;
 using FluentNHibernate.Cfg.Db;
 using IRuettae.Persistence.Entities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NHibernate;
 using NHibernate.Linq;
 using NHibernate.Tool.hbm2ddl;
 
@@ -17,13 +18,24 @@ namespace IRuettae.Persistence.Tests
         public void TestMappings()
         {
             // test db connection
-            var sessionFactory = NHibernateConfiguration.CreateSessionFactory(SQLiteConfiguration.Standard.InMemory().ShowSql(), true);
+            ISessionFactory sessionFactory = null;
+            try
+            {
+                sessionFactory =
+                    NHibernateConfiguration.CreateSessionFactory(SQLiteConfiguration.Standard.InMemory().ShowSql(),
+                        true);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail(e.Message + Environment.NewLine + "inner" + e.InnerException?.Message + e.InnerException?.ToString() + Environment.NewLine + e.StackTrace);
+            }
+
             var config = NHibernateConfiguration.Config;
             Assert.IsNotNull(sessionFactory);
             using (var session = sessionFactory.OpenSession())
             {
                 new SchemaExport(config).Execute(false, true, false, session.Connection, null);
-                
+
                 Assert.AreEqual(0, session.Query<Visit>().ToList().Count);
                 Assert.IsNotNull(session);
                 Assert.IsTrue(session.IsConnected);
@@ -39,8 +51,8 @@ namespace IRuettae.Persistence.Tests
                         Street = "somestreet",
                         Year = 2018,
                         Zip = 5600,
-                        Desired = new List<Period> {new Period {Start = DateTime.Now}},
-                        Unavailable = new List<Period> {new Period {End = DateTime.Today}}
+                        Desired = new List<Period> { new Period { Start = DateTime.Now } },
+                        Unavailable = new List<Period> { new Period { End = DateTime.Today } }
                     };
 
                     visit = session.Merge(visit);
