@@ -106,7 +106,7 @@ namespace IRuettae.Preprocessing.CSVImport
             var culture = CultureInfo.InvariantCulture;
             const DateTimeStyles styles = DateTimeStyles.None;
 
-            DateTime.TryParse(s1, culture,styles, out var from);
+            DateTime.TryParse(s1, culture, styles, out var from);
             DateTime.TryParse(s2, culture, styles, out var to);
 
             return new Period(from, to);
