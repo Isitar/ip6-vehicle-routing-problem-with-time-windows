@@ -146,15 +146,19 @@
     <Content Include="docs\MySqlParameterCollection.xml" />
     <Content Include="docs\MySqlTransaction.xml" />
     <Content Include="Global.asax" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\CSVImportController.cs" />
     <Compile Include="Controllers\VisitController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\VisitWayCreator.cs" />
     <Compile Include="Models\VisitDTO.cs" />
     <Compile Include="Persistence\SessionFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -182,6 +186,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\CSVImport\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IRuettae.Core\IRuettae.Core.csproj">

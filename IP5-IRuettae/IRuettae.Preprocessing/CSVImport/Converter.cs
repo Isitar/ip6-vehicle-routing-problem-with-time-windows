@@ -8,38 +8,37 @@ using IRuettae.Persistence.Entities;
 
 namespace IRuettae.Preprocessing.CSVImport
 {
-    class DatabaseConnector
+    public class Converter
     {
-        public static void SaveToDatabase(IEnumerable<ImportModel> models, int year)
+        public static IEnumerable<Visit> ToDatabase(IEnumerable<ImportModel> models)
         {
-            var visits = models.Select(x => ImportModelToVisit(x, year));
-
-            // TODO MEYERJ insert here
+            return models.Select(x => ImportModelToVisit(x));
         }
 
-        private static Visit ImportModelToVisit(ImportModel model, int year)
+        private static Visit ImportModelToVisit(ImportModel model)
         {
-            Func<DateTime, DateTime?> toNullable = x => (DateTime.MinValue == x) ? (DateTime?)null : x;
-            Func<Period, Persistence.Entities.Period> p2p = x =>
+            DateTime? toNullable(DateTime x) => (DateTime.MinValue == x) ? (DateTime?)null : x;
+            Persistence.Entities.Period p2p(Period x)
             {
                 return new Persistence.Entities.Period() { Start = toNullable(x.From), End = toNullable(x.To) };
-            };
+            }
 
             return new Visit()
             {
                 ExternalReference = model.Id,
-                Year = year,
                 Street = model.Street,
                 Zip = model.Zip,
-                NumberOfChildrean = model.NumberOfChildren,
+                NumberOfChildren = model.NumberOfChildren,
                 Desired = model.Desired.Select(p2p).ToList(),
                 Unavailable = model.Unavailable.Select(p2p).ToList(),
             };
         }
 
+        // TODO MEYERJ
+        /*
         public static void GenerateWays(Visit fromVisit)
         {
-            var calculator = new GoogleRouteCalculator();
+            var calculator = new GoogleRouteCalculator("");
             Func<Visit, string> getAdress = x => x.Zip + " " + x.Street;
             var fromAdress = getAdress(fromVisit);
 
@@ -48,7 +47,7 @@ namespace IRuettae.Preprocessing.CSVImport
             visits.ForEach(x =>
             {
                 var resFrom = calculator.CalculateWalkingDistance(fromAdress, getAdress(x));
-                fromVisit.FromWays.Add(new Way() { From = fromVisit, To = x, Distance = resFrom.distance, Duration = resFrom.duration });
+                fromVisit.FromWays.Add(new Way() { From = fromVisit, To = x, Distance = Convert.ToInt32(resFrom.distance), Duration = Convert.ToInt32(resFrom.duration) });
                 fromVisit.ToWays.Add(FromApiResult(fromVisit, x, resFrom));
                 var resTo = calculator.CalculateWalkingDistance(getAdress(x), fromAdress);
                 fromVisit.ToWays.Add(FromApiResult(x, fromVisit, resTo));
@@ -57,8 +56,9 @@ namespace IRuettae.Preprocessing.CSVImport
 
         private static Way FromApiResult(Visit from, Visit to, (double distance, double duration) res)
         {
-            return new Way() { From = from, To = to, Distance = res.distance, Duration = res.duration };
+            return new Way() { From = from, To = to, Distance = Convert.ToInt32(res.distance), Duration = Convert.ToInt32(res.duration) };
         }
+        */
     }
 
 
