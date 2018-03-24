@@ -1,21 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Web;
+using System.Web.Http;
 using System.Web.Mvc;
 using IRuettae.Persistence.Entities;
 using IRuettae.Preprocessing.CSVImport;
+using IRuettae.WebApi.Helpers;
 using IRuettae.WebApi.Persistence;
 
 namespace IRuettae.WebApi.Controllers
 {
-    public class CSVImportApiController : Controller
+    public class CSVImportController : ApiController
     {
-        public void Post(String content)
+        public void Post([FromBody]String content)
         {
-            var csvVisits = Preprocessing.CSVImport.Import.StartImport(content);
+            var csvVisits = Preprocessing.CSVImport.Import.StartImport((string)content);
             var visits = Converter.ToDatabase(csvVisits);
             var managedVisits = new List<Visit>();
+
+            // Todo: Meyerj, remove
+            int counter = 0;
 
             try
             {
@@ -26,13 +32,15 @@ namespace IRuettae.WebApi.Controllers
                         foreach (var visit in visits)
                         {
                             managedVisits.Add(dbSession.Merge(visit));
-
-
                         }
                         transaction.Commit();
-
                     }
+                }
 
+                foreach (var visit in managedVisits)
+                {
+                    VisitWayCreator.CreateWays(visit);
+                    counter++;
                 }
             }
             catch (Exception e)

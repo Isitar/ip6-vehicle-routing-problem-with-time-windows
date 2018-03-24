@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using Microsoft.CSharp.RuntimeBinder;
 using Newtonsoft.Json.Linq;
 
@@ -21,7 +22,8 @@ namespace IRuettae.GeoCalculations.RouteCalculation
 
         public (double distance, double duration) CalculateWalkingDistance(string from, string to)
         {
-            return CalculateDistance(from, to, "walking");
+            // Todo: Meyer make pretty
+            return CalculateDistance(from + " schweiz", to + " schweiz", "walking");
         }
 
         public (double distance, double duration) CalculateWalkingDistance(double fromLat, double fromLong, double toLat, double toLong)
@@ -47,6 +49,11 @@ namespace IRuettae.GeoCalculations.RouteCalculation
             catch (RuntimeBinderException)
             {
                 // if binding failed for dynamic data (double => null)
+                throw new RouteNotFoundException();
+            }
+            catch (Exception)
+            {
+                // if accessing the route failed (generaly)
                 throw new RouteNotFoundException();
             }
         }

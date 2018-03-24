@@ -22,10 +22,21 @@ namespace IRuettae.Preprocessing.CSVImport
             {
                 return new Persistence.Entities.Period() { Start = toNullable(x.From), End = toNullable(x.To) };
             }
+            int tryGetYear(String id)
+            {
+                const int lengthYear = 4;
+                int year = DateTime.Now.Year;
+                if (id.Length >= lengthYear)
+                {
+                    Int32.TryParse(id.Substring(0, 4), out year);
+                }
+                return year;
+            }
 
             return new Visit()
             {
                 ExternalReference = model.Id,
+                Year = tryGetYear(model.Id),
                 Street = model.Street,
                 Zip = model.Zip,
                 NumberOfChildren = model.NumberOfChildren,

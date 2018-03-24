@@ -318,6 +318,10 @@
       <Project>{b84cadd1-5f00-4b62-a363-9a047e39fbbd}</Project>
       <Name>IRuettae.Preprocessing</Name>
     </ProjectReference>
+    <ProjectReference Include="..\IRuettae.WebAPI\IRuettae.WebAPI.csproj">
+      <Project>{bf1a0257-88b9-4e46-83eb-5c8836b3486a}</Project>
+      <Name>IRuettae.WebAPI</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -21,24 +21,37 @@ namespace IRuettae.WebApi.Helpers
                 {
 
                     var otherAddresses = dbSession.Query<Visit>().Where(v => v.Year == visit.Year);
+
+                    // Todo: Meyerj, remove
+                    int counter = 0;
+                    int count = otherAddresses.Count();
+
                     foreach (var otherAddress in otherAddresses)
                     {
-
-                        var way = new Way
+                        try
                         {
-                            From = visit,
-                            To = otherAddress,
-                        };
-                        UpdateWayDistanceDuration(way);
-                        way = dbSession.Merge(way);
+                            var way = new Way
+                            {
+                                From = visit,
+                                To = otherAddress,
+                            };
+                            UpdateWayDistanceDuration(way);
+                            way = dbSession.Merge(way);
 
-                        var wayBack = new Way
+                            var wayBack = new Way
+                            {
+                                From = otherAddress,
+                                To = visit,
+                            };
+                            UpdateWayDistanceDuration(wayBack);
+                            wayBack = dbSession.Merge(wayBack);
+
+                            counter++;
+                        }
+                        catch (Exception ex)
                         {
-                            From = otherAddress,
-                            To = visit,
-                        };
-                        UpdateWayDistanceDuration(wayBack);
-                        wayBack = dbSession.Merge(wayBack);
+                            Console.Out.Write(ex.Message);
+                        }
                     }
 
                     transaction.Commit();
