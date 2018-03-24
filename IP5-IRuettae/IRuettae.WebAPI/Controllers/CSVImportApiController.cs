@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using IRuettae.WebApi.Persistence;
-using IRuettae.Preprocessing.CSVImport;
 using IRuettae.Persistence.Entities;
+using IRuettae.Preprocessing.CSVImport;
+using IRuettae.WebApi.Persistence;
 
 namespace IRuettae.WebApi.Controllers
 {
-    public class CSVImportController : Controller
+    public class CSVImportApiController : Controller
     {
         public void Post(String content)
         {
             var csvVisits = Preprocessing.CSVImport.Import.StartImport(content);
-            var visits = Converter.ToDatabase(csvVisits, );
+            var visits = Converter.ToDatabase(csvVisits);
             var managedVisits = new List<Visit>();
 
             try
@@ -34,6 +34,7 @@ namespace IRuettae.WebApi.Controllers
                     }
 
                 }
+            }
             catch (Exception e)
             {
                 System.IO.File.AppendAllLines("C:\\temp\\webapp_error.txt", contents: new[] {
