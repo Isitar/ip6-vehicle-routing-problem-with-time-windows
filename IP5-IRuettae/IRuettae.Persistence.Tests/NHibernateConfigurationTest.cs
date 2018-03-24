@@ -2,23 +2,56 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using IRuettae.Persistence.Entities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NHibernate;
 using NHibernate.Linq;
+using NHibernate.Tool.hbm2ddl;
 
 namespace IRuettae.Persistence.Tests
 {
     [TestClass]
     public class NHibernateConfigurationTest
     {
+        private ISession session;
+
+        [TestInitialize]
+        public void Setup()
+        {
+            try
+            {
+                var sessionFactory =
+                    NHibernateConfiguration.CreateSessionFactory(SQLiteConfiguration.Standard.InMemory().ShowSql(),
+                        NHibernateConfigurationConfigurationOptions.None);
+                Assert.IsNotNull(sessionFactory);
+                session = sessionFactory.OpenSession();
+                var config = NHibernateConfiguration.Config;
+                new SchemaExport(config).Execute(false, true, false, session.Connection, null);
+            }
+            catch (FluentConfigurationException e)
+            {
+                Assert.Fail(e.Message + Environment.NewLine +
+                            "inner: " + e.InnerException?.Message + e.InnerException?.ToString() + Environment.NewLine +
+                            "potential reasons: " + string.Join(";", e.PotentialReasons) + Environment.NewLine +
+                            "e stacktrace: " + e.StackTrace);
+            }
+        }
+
+        [TestCleanup]
+        public void TearDown()
+        {
+            session.Close();
+            session.Dispose();
+        }
+
         [TestMethod]
         public void TestMappings()
         {
-            // test db connection
-            var sessionFactory = NHibernateConfiguration.CreateSessionFactory(SQLiteConfiguration.Standard.UsingFile("database.sqlite"), true);
-            Assert.IsNotNull(sessionFactory);
-            var session = sessionFactory.OpenSession();
+
+
+            Assert.AreEqual(0, session.Query<Visit>().ToList().Count);
             Assert.IsNotNull(session);
             Assert.IsTrue(session.IsConnected);
             Assert.IsTrue(session.IsOpen);
@@ -87,7 +120,8 @@ namespace IRuettae.Persistence.Tests
                 Assert.AreEqual(2, managedWays.Count);
                 var visit = managedVisits.First();
                 Assert.AreEqual(visit.Desired.First().Id, managedPeriods.FirstOrDefault(p => p.Start != null)?.Id);
-                Assert.AreEqual(visit.Unavailable.First().Id, managedPeriods.FirstOrDefault(p => p.Start == null)?.Id);
+                Assert.AreEqual(visit.Unavailable.First().Id,
+                    managedPeriods.FirstOrDefault(p => p.Start == null)?.Id);
                 Assert.AreEqual(1, managedWays.Count(w => w.From.Id == visit.Id));
                 Assert.AreEqual(1, managedWays.Count(w => w.To.Id == visit.Id));
                 transaction.Commit();
@@ -108,6 +142,7 @@ namespace IRuettae.Persistence.Tests
                 Assert.AreEqual(0, allWays.Count);
                 transaction.Commit();
             }
+
             // also check if db is updated
             session.Clear();
             using (var transaction = session.BeginTransaction())
