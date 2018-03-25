@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "Admin Interface";
+}
+<div id="alert-clean-db-success" class="alert alert-success fade show"  role="alert">
+    Datenbank erfolgreich geleert
+</div>
+<h2>Admin Interface</h2>
+
+<button type="button" onclick="cleanDB()" class="btn btn-lg btn-danger" id="btn-clearDB">Datenbank leeren</button>
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        
+        $('#alert-clean-db-success').hide();
+        function cleanDB(event) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("CleanDatabase","Admin")",
+                success: function () {
+                    $('#alert-clean-db-success').show();
+                }
+            });
+        }
+    </script>
+}

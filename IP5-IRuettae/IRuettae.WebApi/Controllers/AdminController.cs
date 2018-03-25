@@ -13,9 +13,12 @@ namespace IRuettae.WebApi.Controllers
         public void CleanDatabase()
         {
             using (var dbSession = SessionFactory.Instance.OpenSession())
-            {
-                dbSession.Delete("from Object o");
-                dbSession.Flush();
+            using (var transaction = dbSession.BeginTransaction())
+            { 
+                dbSession.Delete("from Period p");
+                dbSession.Delete("from Way w");
+                dbSession.Delete("from Visit v");
+                transaction.Commit();
             }
 
         }
