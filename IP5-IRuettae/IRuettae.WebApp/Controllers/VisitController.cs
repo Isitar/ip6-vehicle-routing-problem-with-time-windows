@@ -27,19 +27,17 @@ namespace IRuettae.WebApp.Controllers
                 return View("Index", v);
             }
 
-            
-            //  v.Year = DateTime.Now.Year;
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(Settings.Default.WebAPIBaseUrl);
                 var response = client.PostAsJsonAsync("api/visit", v).Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    return View("Thanks",v);
+                    return View("Thanks", v);
                 }
                 else
                 {
-                    ModelState.AddModelError("Request","mit dem Request ist etwas schief gelaufen " + response.StatusCode);
+                    ModelState.AddModelError("Request", "mit dem Request ist etwas schief gelaufen " + response.StatusCode);
                     return View("Index", v);
                 }
             }
