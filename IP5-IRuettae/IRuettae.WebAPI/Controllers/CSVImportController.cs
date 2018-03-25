@@ -20,9 +20,6 @@ namespace IRuettae.WebApi.Controllers
             var visits = Converter.ToDatabase(csvVisits);
             var managedVisits = new List<Visit>();
 
-            // Todo: Meyerj, remove
-            int counter = 0;
-
             try
             {
                 using (var dbSession = SessionFactory.Instance.OpenSession())
@@ -40,7 +37,6 @@ namespace IRuettae.WebApi.Controllers
                 foreach (var visit in managedVisits)
                 {
                     VisitWayCreator.CreateWays(visit);
-                    counter++;
                 }
             }
             catch (Exception e)

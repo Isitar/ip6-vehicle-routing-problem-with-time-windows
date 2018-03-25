@@ -19,12 +19,7 @@ namespace IRuettae.WebApi.Helpers
 
                 using (var transaction = dbSession.BeginTransaction())
                 {
-
                     var otherAddresses = dbSession.Query<Visit>().Where(v => v.Year == visit.Year);
-
-                    // Todo: Meyerj, remove
-                    int counter = 0;
-                    int count = otherAddresses.Count();
 
                     foreach (var otherAddress in otherAddresses)
                     {
@@ -45,12 +40,10 @@ namespace IRuettae.WebApi.Helpers
                             };
                             UpdateWayDistanceDuration(wayBack);
                             wayBack = dbSession.Merge(wayBack);
-
-                            counter++;
                         }
-                        catch (Exception ex)
+                        catch (RouteNotFoundException)
                         {
-                            Console.Out.Write(ex.Message);
+                            // unable to create Ways
                         }
                     }
 

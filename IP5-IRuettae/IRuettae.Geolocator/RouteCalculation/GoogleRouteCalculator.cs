@@ -53,7 +53,7 @@ namespace IRuettae.GeoCalculations.RouteCalculation
             }
             catch (Exception)
             {
-                // if accessing the route failed (generaly)
+                // if accessing the route failed (generally)
                 throw new RouteNotFoundException();
             }
         }
