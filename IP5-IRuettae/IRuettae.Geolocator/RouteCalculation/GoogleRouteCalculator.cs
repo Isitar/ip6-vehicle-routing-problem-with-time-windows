@@ -22,7 +22,6 @@ namespace IRuettae.GeoCalculations.RouteCalculation
 
         public (double distance, double duration) CalculateWalkingDistance(string from, string to)
         {
-            // Todo: Meyer make pretty
             return CalculateDistance(from, to, "walking");
         }
 
