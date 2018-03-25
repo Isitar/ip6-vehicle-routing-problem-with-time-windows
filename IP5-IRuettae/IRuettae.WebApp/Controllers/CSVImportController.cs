@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Web;
 using System.Web.Mvc;
+using IRuettae.WebApp.Models;
 using IRuettae.WebApp.Properties;
 
 namespace IRuettae.WebApp.Controllers
@@ -18,9 +19,18 @@ namespace IRuettae.WebApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult UploadCSV(HttpPostedFileBase file)
+        public ActionResult UploadCSV(UploadCSVVM csvvm)
         {
-            string csvText = string.Empty;
+            if (!ModelState.IsValid)
+            {
+                return View("Index", csvvm);
+            }
+            var file = csvvm.CSVFile;
+            if (null == file)
+            {
+                throw new NullReferenceException("file was empty");
+            }
+            var csvText = string.Empty;
             using (BinaryReader b = new BinaryReader(file.InputStream))
             {
                 byte[] binData = b.ReadBytes(file.ContentLength);

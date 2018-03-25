@@ -36,7 +36,7 @@ namespace IRuettae.WebApi.Controllers
 
                 foreach (var visit in managedVisits)
                 {
-                    VisitWayCreator.CreateWays(visit);
+                   // VisitWayCreator.CreateWays(visit);
                 }
             }
             catch (Exception e)

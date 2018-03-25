@@ -10,9 +10,14 @@ namespace IRuettae.WebApi.Controllers
 {
     public class AdminController : ApiController
     {
-        public bool CleanDatabase()
+        public void CleanDatabase()
         {
-            
+            using (var dbSession = SessionFactory.Instance.OpenSession())
+            {
+                dbSession.Delete("from Object o");
+                dbSession.Flush();
+            }
+
         }
     }
 }
