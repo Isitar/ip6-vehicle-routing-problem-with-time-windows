@@ -101,8 +101,6 @@ namespace IRuettae.Preprocessing.CSVImport
 
         private static Period TryParsePeriod(string s1, string s2)
         {
-            // TODO what if one time is empty? set default
-
             var culture = CultureInfo.CreateSpecificCulture("DE-ch");
             const DateTimeStyles styles = DateTimeStyles.None;
 

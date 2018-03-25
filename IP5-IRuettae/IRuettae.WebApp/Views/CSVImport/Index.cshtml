@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>CSV Import</h2>
+@using (Html.BeginForm("UploadCSV",
+                        "CSVImport",
+                        FormMethod.Post,
+                        new { enctype = "multipart/form-data" }))
+{
+    <label for="file">CSV Datei:</label>
+    <input type="file" name="file" id="file" accept=".csv" /><br><br>
+    <input type="submit" value="Absenden" />
+    <br><br>
+    @ViewBag.Message
+}

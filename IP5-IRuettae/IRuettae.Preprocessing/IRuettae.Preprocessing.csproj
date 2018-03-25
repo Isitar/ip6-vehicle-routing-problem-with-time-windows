@@ -41,11 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CSVImport\Converter.cs" />
     <Compile Include="CSVImport\Import.cs" />
     <Compile Include="CSVImport\ImportModel.cs" />
     <Compile Include="CSVImport\Period.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\IRuettae.Persistence\IRuettae.Persistence.csproj">
+      <Project>{48d4bedb-21dd-4ba9-8b15-7327f2a87ea3}</Project>
+      <Name>IRuettae.Persistence</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

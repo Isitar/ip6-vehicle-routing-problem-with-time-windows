@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using Microsoft.CSharp.RuntimeBinder;
 using Newtonsoft.Json.Linq;
 
@@ -47,6 +48,11 @@ namespace IRuettae.GeoCalculations.RouteCalculation
             catch (RuntimeBinderException)
             {
                 // if binding failed for dynamic data (double => null)
+                throw new RouteNotFoundException();
+            }
+            catch (Exception)
+            {
+                // if accessing the route failed (generally)
                 throw new RouteNotFoundException();
             }
         }
