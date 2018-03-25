@@ -34,6 +34,7 @@ namespace IRuettae.WebApp.Controllers
 
             using (var client = new HttpClient())
             {
+                client.Timeout = System.Threading.Timeout.InfiniteTimeSpan;
                 client.BaseAddress = new Uri(Settings.Default.WebAPIBaseUrl);
                 var response = client.PostAsync("api/CSVImport", encodedContent).Result;
                 if (response.IsSuccessStatusCode)

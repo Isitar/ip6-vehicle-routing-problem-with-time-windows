@@ -23,7 +23,7 @@ namespace IRuettae.GeoCalculations.RouteCalculation
         public (double distance, double duration) CalculateWalkingDistance(string from, string to)
         {
             // Todo: Meyer make pretty
-            return CalculateDistance(from + " schweiz", to + " schweiz", "walking");
+            return CalculateDistance(from, to, "walking");
         }
 
         public (double distance, double duration) CalculateWalkingDistance(double fromLat, double fromLong, double toLat, double toLong)

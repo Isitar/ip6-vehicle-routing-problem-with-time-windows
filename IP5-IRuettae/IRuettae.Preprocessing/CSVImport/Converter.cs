@@ -10,12 +10,12 @@ namespace IRuettae.Preprocessing.CSVImport
 {
     public class Converter
     {
-        public static IEnumerable<Visit> ToDatabase(IEnumerable<ImportModel> models)
+        public static IEnumerable<Visit> ToDatabase(IEnumerable<ImportModel> models, int? year = null)
         {
-            return models.Select(x => ImportModelToVisit(x));
+            return models.Select(x => ImportModelToVisit(x, year));
         }
 
-        private static Visit ImportModelToVisit(ImportModel model)
+        private static Visit ImportModelToVisit(ImportModel model, int? year)
         {
             DateTime? toNullable(DateTime x) => (DateTime.MinValue == x) ? (DateTime?)null : x;
             Persistence.Entities.Period p2p(Period x)
@@ -25,12 +25,12 @@ namespace IRuettae.Preprocessing.CSVImport
             int tryGetYear(String id)
             {
                 const int lengthYear = 4;
-                int year = DateTime.Now.Year;
+                int y = year ?? DateTime.Now.Year;
                 if (id.Length >= lengthYear)
                 {
-                    Int32.TryParse(id.Substring(0, 4), out year);
+                    Int32.TryParse(id.Substring(0, 4), out y);
                 }
-                return year;
+                return y;
             }
 
             return new Visit()
@@ -44,32 +44,6 @@ namespace IRuettae.Preprocessing.CSVImport
                 Unavailable = model.Unavailable.Select(p2p).ToList(),
             };
         }
-
-        // TODO MEYERJ
-        /*
-        public static void GenerateWays(Visit fromVisit)
-        {
-            var calculator = new GoogleRouteCalculator("");
-            Func<Visit, string> getAdress = x => x.Zip + " " + x.Street;
-            var fromAdress = getAdress(fromVisit);
-
-            // TODO MEYERJ query here
-            var visits = new List<Visit>();
-            visits.ForEach(x =>
-            {
-                var resFrom = calculator.CalculateWalkingDistance(fromAdress, getAdress(x));
-                fromVisit.FromWays.Add(new Way() { From = fromVisit, To = x, Distance = Convert.ToInt32(resFrom.distance), Duration = Convert.ToInt32(resFrom.duration) });
-                fromVisit.ToWays.Add(FromApiResult(fromVisit, x, resFrom));
-                var resTo = calculator.CalculateWalkingDistance(getAdress(x), fromAdress);
-                fromVisit.ToWays.Add(FromApiResult(x, fromVisit, resTo));
-            });
-        }
-
-        private static Way FromApiResult(Visit from, Visit to, (double distance, double duration) res)
-        {
-            return new Way() { From = from, To = to, Distance = Convert.ToInt32(res.distance), Duration = Convert.ToInt32(res.duration) };
-        }
-        */
     }
 
 
