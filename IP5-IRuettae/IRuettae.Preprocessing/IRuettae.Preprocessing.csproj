@@ -48,12 +48,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IRuettae.Geolocator\IRuettae.GeoCalculations.csproj">
-      <Project>{6CAFE95B-09B0-470D-83F3-B49C17B38334}</Project>
-      <Name>IRuettae.GeoCalculations</Name>
-    </ProjectReference>
     <ProjectReference Include="..\IRuettae.Persistence\IRuettae.Persistence.csproj">
-      <Project>{48D4BEDB-21DD-4BA9-8B15-7327F2A87EA3}</Project>
+      <Project>{48d4bedb-21dd-4ba9-8b15-7327f2a87ea3}</Project>
       <Name>IRuettae.Persistence</Name>
     </ProjectReference>
   </ItemGroup>
