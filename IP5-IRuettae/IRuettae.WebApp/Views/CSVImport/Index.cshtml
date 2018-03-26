@@ -1,4 +1,4 @@
-﻿
+﻿@model IRuettae.WebApp.Models.UploadCSVVM
 @{
     ViewBag.Title = "Index";
 }
@@ -9,9 +9,17 @@
                         FormMethod.Post,
                         new { enctype = "multipart/form-data" }))
 {
-    <label for="file">CSV Datei:</label>
-    <input type="file" name="file" id="file" accept=".csv" /><br><br>
-    <input type="submit" value="Absenden" />
-    <br><br>
-    @ViewBag.Message
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group row">
+        @Html.LabelFor(m => m.CSVFile)
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.CSVFile, new { type = "file", accept = ".csv" })
+            @Html.ValidationMessageFor(m => m.CSVFile, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <button type="submit" class="btn btn-lg btn-block btn-dark">Absenden</button>
+    </div>
 }
