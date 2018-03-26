@@ -52,7 +52,7 @@ namespace IRuettae.WebApi.Controllers
                     }
                 }
 
-                // VisitWayCreator.CreateWays(visit);
+                VisitWayCreator.CreateWays(visit);
 
             }
             catch (Exception e)
