@@ -16,7 +16,6 @@ namespace IRuettae.WebApi.Helpers
             // Todo: add dependency injection
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
-
                 using (var transaction = dbSession.BeginTransaction())
                 {
                     var otherAddresses = dbSession.Query<Visit>().Where(v => v.Year == visit.Year);
@@ -62,6 +61,12 @@ namespace IRuettae.WebApi.Helpers
                 return;
             }
 
+#if DEBUG
+            var r = new Random();
+            way.Distance = r.Next(50, 300);
+            way.Duration = (int)Math.Round(1.1 * way.Distance, 0);
+            return;
+#endif
             // Todo: add dependency injection
             IRouteCalculator routeCalculator =
                 new GeoCalculations.RouteCalculation.GoogleRouteCalculator(Settings.Default.GoogleAPIKey);
