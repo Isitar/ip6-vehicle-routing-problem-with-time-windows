@@ -21,10 +21,10 @@
                       @Html.ActionLink("Besuch erfassen", "Index", "Visit", null, new { @class = "nav-link" })
                   </li>
                   <li class="nav-item">
-                      <a href="#" class="nav-link disabled">CSV Import</a>
+                      @Html.ActionLink("CSV Import", "Index", "CSVImport", null, new { @class = "nav-link" })
                   </li>
                   <li class="nav-item">
-                      <a href="#" class="nav-link disabled">Admin Interface</a>
+                      @Html.ActionLink("Admin interface", "Index", "Admin", null, new { @class = "nav-link" })
                   </li>
               </ul>
           </div>

@@ -49,6 +49,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CSVImport\ConverterTest.cs" />
     <Compile Include="CSVImport\ImportTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -56,6 +57,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\IRuettae.Persistence\IRuettae.Persistence.csproj">
+      <Project>{48D4BEDB-21DD-4BA9-8B15-7327F2A87EA3}</Project>
+      <Name>IRuettae.Persistence</Name>
+    </ProjectReference>
     <ProjectReference Include="..\IRuettae.Preprocessing\IRuettae.Preprocessing.csproj">
       <Project>{b84cadd1-5f00-4b62-a363-9a047e39fbbd}</Project>
       <Name>IRuettae.Preprocessing</Name>
