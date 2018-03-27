@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
+using IRuettae.WebApi.Infrastructure;
 
 namespace IRuettae.WebApi
 {
@@ -17,6 +18,7 @@ namespace IRuettae.WebApi
 
             //RouteConfig.RegisterRoutes(RouteTable.Routes);
 
+            DependencyResolver.SetResolver(new NinjectDependencyResolver());
         }
     }
 }

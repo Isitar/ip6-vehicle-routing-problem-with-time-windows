@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RouteCalculation\DebugRouteCalculator.cs" />
     <Compile Include="RouteCalculation\GoogleRouteCalculator.cs" />
     <Compile Include="RouteCalculation\IRouteCalculator.cs" />
     <Compile Include="RouteCalculation\RouteNotFoundException.cs" />

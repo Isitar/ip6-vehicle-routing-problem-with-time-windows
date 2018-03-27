@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using IRuettae.GeoCalculations.RouteCalculation;
 using IRuettae.Persistence.Entities;
 using IRuettae.WebApi.Persistence;
@@ -11,6 +12,8 @@ namespace IRuettae.WebApi.Helpers
 {
     public class VisitWayCreator
     {
+
+
         public static void CreateWays(Visit visit)
         {
             // Todo: add dependency injection
@@ -61,15 +64,7 @@ namespace IRuettae.WebApi.Helpers
                 return;
             }
 
-#if DEBUG
-            var r = new Random();
-            way.Distance = r.Next(50, 300);
-            way.Duration = (int)Math.Round(1.1 * way.Distance, 0);
-            return;
-#endif
-            // Todo: add dependency injection
-            IRouteCalculator routeCalculator =
-                new GeoCalculations.RouteCalculation.GoogleRouteCalculator(Settings.Default.GoogleAPIKey);
+            var routeCalculator = DependencyResolver.Current.GetService<IRouteCalculator>();
             var (distance, duration) = routeCalculator.CalculateWalkingDistance(RouteCalcAddress(way.From), RouteCalcAddress(way.To));
             way.Distance = Convert.ToInt32(distance);
             way.Duration = Convert.ToInt32(duration);
