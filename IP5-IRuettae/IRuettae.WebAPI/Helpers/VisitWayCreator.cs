@@ -7,12 +7,12 @@ using IRuettae.GeoCalculations.RouteCalculation;
 using IRuettae.Persistence.Entities;
 using IRuettae.WebApi.Persistence;
 using IRuettae.WebApi.Properties;
+using NHibernate;
 
 namespace IRuettae.WebApi.Helpers
 {
     public class VisitWayCreator
     {
-
 
         public static void CreateWays(Visit visit)
         {
@@ -27,21 +27,8 @@ namespace IRuettae.WebApi.Helpers
                     {
                         try
                         {
-                            var way = new Way
-                            {
-                                From = visit,
-                                To = otherAddress,
-                            };
-                            UpdateWayDistanceDuration(way);
-                            way = dbSession.Merge(way);
-
-                            var wayBack = new Way
-                            {
-                                From = otherAddress,
-                                To = visit,
-                            };
-                            UpdateWayDistanceDuration(wayBack);
-                            wayBack = dbSession.Merge(wayBack);
+                            CreateWay(dbSession, visit, otherAddress);
+                            CreateWay(dbSession, otherAddress, visit);
                         }
                         catch (RouteNotFoundException)
                         {
@@ -52,6 +39,23 @@ namespace IRuettae.WebApi.Helpers
                     transaction.Commit();
                 }
             }
+        }
+
+        private static void CreateWay(ISession dbSession, Visit from, Visit to)
+        {
+            if (dbSession.Query<Way>().Any(w => w.From.Id == from.Id && w.To.Id == to.Id))
+            {
+                // Way already exists
+                return;
+            }
+
+            var way = new Way
+            {
+                From = from,
+                To = to,
+            };
+            way = dbSession.Merge(way);
+            UpdateWayDistanceDuration(way);
         }
 
         private static void UpdateWayDistanceDuration(Way way)
