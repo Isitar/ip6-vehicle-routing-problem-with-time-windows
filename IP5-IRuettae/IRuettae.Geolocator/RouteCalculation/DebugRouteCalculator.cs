@@ -11,12 +11,12 @@ namespace IRuettae.GeoCalculations.RouteCalculation
         /// <summary>
         /// Maximal distance between from and to in meters
         /// </summary>
-        private readonly double maxDistance = 2000;
+        private const double maxDistance = 2000;
 
         /// <summary>
         /// Walking speed of a pedestrian in meter per second
         /// </summary>
-        private readonly double walkingSpeed = 1.1;
+        private const double walkingSpeed = 1.1;
 
         /// <summary>
         /// Always the same seed for reproducability

@@ -54,8 +54,8 @@ namespace IRuettae.WebApi.Helpers
                 From = from,
                 To = to,
             };
-            way = dbSession.Merge(way);
             UpdateWayDistanceDuration(way);
+            way = dbSession.Merge(way);
         }
 
         private static void UpdateWayDistanceDuration(Way way)
