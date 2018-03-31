@@ -71,8 +71,8 @@ namespace IRuettae.WebApi.Helpers
 
             var routeCalculator = DependencyResolver.Current.GetService<IRouteCalculator>();
             var (distance, duration) = routeCalculator.CalculateWalkingDistance(way.From.RouteCalcAddress(), way.To.RouteCalcAddress());
-            way.Distance = Convert.ToInt32(distance);
-            way.Duration = Convert.ToInt32(duration);
+            way.Distance = Convert.ToInt32(distance) + way.From.DeltaWayDistance + way.To.DeltaWayDistance;
+            way.Duration = Convert.ToInt32(duration) + way.From.DeltaWayDuration + way.To.DeltaWayDuration;
         }
 
     }
