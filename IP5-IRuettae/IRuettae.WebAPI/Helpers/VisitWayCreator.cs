@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using IRuettae.GeoCalculations.RouteCalculation;
 using IRuettae.Persistence.Entities;
+using IRuettae.WebApi.ExtensionMethods;
 using IRuettae.WebApi.Persistence;
 using IRuettae.WebApi.Properties;
 using NHibernate;
@@ -61,7 +62,7 @@ namespace IRuettae.WebApi.Helpers
         private static void UpdateWayDistanceDuration(Way way)
         {
             // if from == to return
-            if (RouteCalcAddress(way.From).Equals(RouteCalcAddress(way.To)))
+            if (way.From.RouteCalcAddress().Equals(way.To.RouteCalcAddress()))
             {
                 way.Duration = 0;
                 way.Distance = 0;
@@ -69,11 +70,10 @@ namespace IRuettae.WebApi.Helpers
             }
 
             var routeCalculator = DependencyResolver.Current.GetService<IRouteCalculator>();
-            var (distance, duration) = routeCalculator.CalculateWalkingDistance(RouteCalcAddress(way.From), RouteCalcAddress(way.To));
+            var (distance, duration) = routeCalculator.CalculateWalkingDistance(way.From.RouteCalcAddress(), way.To.RouteCalcAddress());
             way.Distance = Convert.ToInt32(distance);
             way.Duration = Convert.ToInt32(duration);
         }
 
-        private static string RouteCalcAddress(Visit v) => $"{v.Street} {v.Zip}";
     }
 }

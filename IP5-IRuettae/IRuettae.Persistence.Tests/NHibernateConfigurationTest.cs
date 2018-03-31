@@ -66,6 +66,7 @@ namespace IRuettae.Persistence.Tests
                     Street = "somestreet",
                     Year = 2018,
                     Zip = 5600,
+                    City = "Lenzburg",
                     Desired = new List<Period> { new Period { Start = DateTime.Now } },
                     Unavailable = new List<Period> { new Period { End = DateTime.Today } }
                 };
@@ -83,6 +84,7 @@ namespace IRuettae.Persistence.Tests
                     Street = "some other street",
                     Year = 2018,
                     Zip = 5000,
+                    City = "Aarau",
                     Desired = new List<Period>(),
                     Unavailable = new List<Period>()
                 };

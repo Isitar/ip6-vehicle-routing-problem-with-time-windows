@@ -1,4 +1,5 @@
-﻿@model IRuettae.WebApp.Models.VisitVM
+﻿@using System.Data.SqlClient
+@model IRuettae.WebApp.Models.VisitVM
 
 @{
     ViewBag.Title = "Index";
@@ -25,10 +26,16 @@
         </div>
     </div>
     <div class="form-group row">
-        @Html.LabelFor(m => m.Zip, new { @class = "col-md-2 col-form-label" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Zip, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.LabelFor(m => m.Zip, new { @class = "col-md-1 col-form-label" })
+        @Html.LabelFor(m => m.City, new { @class = "col-md-1 col-form-label" })
+
+        <div class="col-md-3">
+            @Html.EditorFor(model => model.Zip, new { htmlAttributes = new { @class = "form-control", @id = "Zip-Input" } })
             @Html.ValidationMessageFor(model => model.Zip, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-7">
+            @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control autocomplete", @id = "City-Input" } })
+            @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group row">
@@ -101,10 +108,10 @@
     @Scripts.Render("~/bundles/jqueryui")
 
     <script type="text/javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
 
 
-            $('#AddDesired').click(function () {
+            $('#AddDesired').click(function() {
                 var desired = $('.desired');
                 var count = desired.length;
                 var clone = desired.first().clone();
@@ -113,7 +120,7 @@
                 desired.last().after(clone);
             });
 
-            $('#AddUnavailable').click(function () {
+            $('#AddUnavailable').click(function() {
                 var unavailable = $('.unavailable');
                 var count = unavailable.length;
                 var clone = unavailable.first().clone();
@@ -121,6 +128,29 @@
                 clone.html($(clone).html().replace(/"_0__"/g, '_' + count + '__'));
                 unavailable.last().after(clone);
             });
+
+            document.getElementById('Zip-Input').oninput = function () {
+                if ( $('#Zip-Input').val().length !== 4) return;
+                var url = '@Url.Action("CityFromZip", "Visit")?zip=' + $('#Zip-Input').val();
+                console.log('requesting ' + url);
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    success: function(data) {
+                        if (data.length === 1) {
+                            $('#City-Input').val(data[0]);
+                        } else {
+                            $('#City-Input').autocomplete({
+                                source: data
+                                }
+                            );
+                        }
+                    }
+                });
+            };
+
         });
     </script>
 }

@@ -18,6 +18,10 @@ namespace IRuettae.WebApp.Models
         public int Zip { get; set; }
 
         [Required]
+        [DisplayName("Ort")]
+        public string City { get; set; }
+
+        [Required]
         [Range(1, int.MaxValue)]
         [DisplayName("Anzahl Kinder")]
         public int NumberOfChildren { get; set; }
