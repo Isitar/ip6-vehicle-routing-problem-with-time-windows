@@ -35,6 +35,15 @@ namespace IRuettae.WebApp.Models
         [DisplayName("Jahr")]
         [Range(2017, int.MaxValue)]
         public int Year { get; set; }
+
+        [DisplayName("Abweichungsdistanz [m]")]
+        public int DeltaWayDistance { get; set; }
+        [DisplayName("Abweichungsdauer [s]")]
+        public int DeltaWayDuration { get; set; }
+
+        [DisplayName("Alternative Adresse benötigt")]
+        public bool AlternativeAddressNeeded { get; set; }
+
         public VisitVM()
         {
             Desired = new List<PeriodVM>();

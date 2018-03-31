@@ -1,9 +1,7 @@
-﻿@using System.Data.SqlClient
-@model IRuettae.WebApp.Models.VisitVM
+﻿@model IRuettae.WebApp.Models.VisitVM
 
 @{
     ViewBag.Title = "Index";
-
 }
 
 @section styles
@@ -19,12 +17,37 @@
     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
 
     <div class="form-group row">
+        @Html.LabelFor(m => m.Year, new { @class = "col-md-2 col-form-label" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Year, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Year, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group row">
         @Html.LabelFor(m => m.Street, new { @class = "col-md-2 col-form-label" })
         <div class="col-md-10">
             @Html.EditorFor(model => model.Street, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.Street, "", new { @class = "text-danger" })
         </div>
     </div>
+    if (Model != null && Model.AlternativeAddressNeeded)
+    { 
+         <div class="form-group row small">
+             @Html.LabelFor(m => m.DeltaWayDuration, new {@class = "col-md-2 col-form-label"})
+             <div class="col-md-4">
+                 @Html.EditorFor(model => model.DeltaWayDuration, new {htmlAttributes = new {@class = "form-control form-control-sm"}})
+                 @Html.ValidationMessageFor(model => model.DeltaWayDuration, "", new {@class = "text-danger"})
+             </div>
+
+             @Html.LabelFor(m => m.DeltaWayDistance, new {@class = "col-md-2 col-form-label"})
+             <div class="col-md-4">
+                 @Html.EditorFor(model => model.DeltaWayDistance, new {htmlAttributes = new {@class = "form-control form-control-sm"}})
+                 @Html.ValidationMessageFor(model => model.DeltaWayDistance, "", new {@class = "text-danger"})
+             </div>
+         </div>
+     }
+
     <div class="form-group row">
         @Html.LabelFor(m => m.Zip, new { @class = "col-md-1 col-form-label" })
         @Html.LabelFor(m => m.City, new { @class = "col-md-1 col-form-label" })

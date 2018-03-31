@@ -14,6 +14,10 @@ namespace IRuettae.Persistence.Mappings
             Map(x => x.City);
             Map(x => x.Year);
             Map(x => x.Zip);
+
+            Map(x => x.DeltaWayDistance);
+            Map(x => x.DeltaWayDuration);
+
             // there should not be to many data
             HasMany(x => x.Desired).KeyColumn("desired_visit_id").Not.LazyLoad().Cascade.AllDeleteOrphan();
             // there should not be to many data

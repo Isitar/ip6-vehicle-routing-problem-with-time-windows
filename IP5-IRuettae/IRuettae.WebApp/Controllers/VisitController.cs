@@ -30,7 +30,8 @@ namespace IRuettae.WebApp.Controllers
                 var respCode = response.StatusCode;
                 if (!response.IsSuccessStatusCode)
                 {
-                    ModelState.AddModelError(nameof(v.Street), "Der Ort konnte nicht von Google gefunden werden.");
+                    ModelState.AddModelError(nameof(v.Street), "Der Ort konnte nicht von Google gefunden werden, bitte alternative Adresse oder Koordinaten angeben.");
+                    v.AlternativeAddressNeeded = true;
                 }
             }
 
