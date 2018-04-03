@@ -16,6 +16,9 @@ namespace IRuettae.WebApi.Controllers
 {
     public class VisitController : ApiController
     {
+        private readonly string visitControllerErrorFile = System.Web.Hosting.HostingEnvironment.MapPath(@"~/App_Data/logs/VisitController.error.log");
+
+
         public IEnumerable<VisitDTO> Get()
         {
             using (var dbSession = SessionFactory.Instance.OpenSession())
@@ -50,9 +53,9 @@ namespace IRuettae.WebApi.Controllers
             }
             catch (Exception e)
             {
-                File.AppendAllLines("C:\\temp\\webapp_error.txt", contents: new[] {
-                    "Something went wrong: " + e.Message, e.StackTrace});
-
+                System.IO.File.AppendAllLines(visitControllerErrorFile, contents: new[] {
+                    "Something went wrong in " +nameof(Post) +": " + e.Message, e.StackTrace
+                });
                 throw new HttpException("Something went wrong: " + e.Message + "<br />" + e.StackTrace);
             }
         }
