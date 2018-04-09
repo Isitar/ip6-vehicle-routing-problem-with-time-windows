@@ -14,6 +14,7 @@ namespace IRuettae.WebApi.Controllers
 {
     public class CSVImportController : ApiController
     {
+        private readonly string csvImportControllerErrorFile = System.Web.Hosting.HostingEnvironment.MapPath(@"~/App_Data/logs/CSVImportController.error.log");
         public void Post([FromBody]string content)
         {
             var csvVisits = Import.StartImport(content);
@@ -41,8 +42,10 @@ namespace IRuettae.WebApi.Controllers
             }
             catch (Exception e)
             {
-                System.IO.File.AppendAllLines("C:\\temp\\webapp_error.txt", contents: new[] {
-                    "Something went wrong: " + e.Message, e.StackTrace});
+
+                System.IO.File.AppendAllLines(csvImportControllerErrorFile, contents: new[] {
+                    "Something went wrong in " +nameof(Post) +": " + e.Message, e.StackTrace
+                });
 
                 throw new HttpException("Something went wrong: " + e.Message + "<br />" + e.StackTrace);
             }

@@ -303,7 +303,7 @@
     <Content Include="Views\Admin\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
+    <Folder Include="App_Data\logs\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
