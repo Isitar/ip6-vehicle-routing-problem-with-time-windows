@@ -162,7 +162,7 @@ namespace IRuettae.Persistence.Tests
             using (var trans = session.BeginTransaction())
             {
                 var santa = new Santa() { Name = "Santa 1" };
-                var santaBreak = new Visit() { City = "Rothrist", Duration = 60 * 60, VisitType = VisitTypes.Break };
+                var santaBreak = new Visit() { City = "Rothrist", Duration = 60 * 60, VisitType = VisitType.Break };
                 santa.Breaks.Add(santaBreak);
 
                 Santa mgtSanta = session.Merge(santa);
@@ -177,7 +177,7 @@ namespace IRuettae.Persistence.Tests
 
                 session.Clear();
 
-                var allBreaks = session.Query<Visit>().Where(v => v.VisitType == VisitTypes.Break).ToList();
+                var allBreaks = session.Query<Visit>().Where(v => v.VisitType == VisitType.Break).ToList();
                 Assert.IsNotNull(allBreaks);
                 var loadedSantaBreak = allBreaks[0];
                 Assert.AreEqual("Rothrist", loadedSantaBreak.City);

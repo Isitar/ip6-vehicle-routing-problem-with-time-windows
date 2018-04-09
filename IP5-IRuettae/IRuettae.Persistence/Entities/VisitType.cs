@@ -9,7 +9,7 @@ namespace IRuettae.Persistence.Entities
     /// <summary>
     /// Represents the different visit types for visit
     /// </summary>
-    public enum VisitTypes
+    public enum VisitType
     {
         // !!! ATTENTION !!!
         // If you rename these entities, you need to update the db since enum values are saved as string.

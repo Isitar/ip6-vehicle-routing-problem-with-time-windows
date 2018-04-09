@@ -24,7 +24,7 @@ namespace IRuettae.Persistence.Entities
         public virtual IList<Way> ToWays { get; set; }
         public virtual int DeltaWayDistance { get; set; }
         public virtual int DeltaWayDuration { get; set; }
-        public virtual VisitTypes VisitType { get; set; }
+        public virtual VisitType VisitType { get; set; }
 
         public virtual Santa Santa { get; set; }
         public virtual double Duration { get; set; }
@@ -33,7 +33,7 @@ namespace IRuettae.Persistence.Entities
         {
             Desired = new List<Period>();
             Unavailable = new List<Period>();
-            VisitType = VisitTypes.Visit;
+            VisitType = VisitType.Visit;
         }
 
     }
