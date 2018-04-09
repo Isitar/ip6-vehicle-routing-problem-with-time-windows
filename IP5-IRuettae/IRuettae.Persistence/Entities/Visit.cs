@@ -16,12 +16,14 @@ namespace IRuettae.Persistence.Entities
         public virtual int Year { get; set; }
         public virtual string Street { get; set; }
         public virtual int Zip { get; set; }
+        public virtual string City { get; set; }
         public virtual int NumberOfChildren { get; set; }
         public virtual IList<Period> Desired { get; set; }
         public virtual IList<Period> Unavailable { get; set; }
         public virtual IList<Way> FromWays { get; set; }
         public virtual IList<Way> ToWays { get; set; }
-
+        public virtual int DeltaWayDistance { get; set; }
+        public virtual int DeltaWayDuration { get; set; }
         public Visit()
         {
             Desired = new List<Period>();

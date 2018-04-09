@@ -20,7 +20,7 @@ namespace IRuettae.WebApi
             config.Routes.MapHttpRoute(
                 name: "Default",
                 routeTemplate: "api/{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "Home", action = "Index", id = RouteParameter.Optional }
             );
         }
     }

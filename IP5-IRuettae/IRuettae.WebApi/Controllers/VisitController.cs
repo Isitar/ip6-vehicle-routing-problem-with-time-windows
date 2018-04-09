@@ -1,22 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web;
 using System.Web.Http;
-using IRuettae.GeoCalculations.RouteCalculation;
+using System.Web.Mvc;
+using IRuettae.GeoCalculations.Geocoding;
 using IRuettae.Persistence.Entities;
+using IRuettae.WebApi.ExtensionMethods;
 using IRuettae.WebApi.Helpers;
 using IRuettae.WebApi.Models;
 using IRuettae.WebApi.Persistence;
-using IRuettae.WebApi.Properties;
-using NHibernate;
-using NHibernate.Criterion;
-using NHibernate.Linq;
-using NHibernate.SqlCommand;
 
 namespace IRuettae.WebApi.Controllers
 {
@@ -37,7 +31,6 @@ namespace IRuettae.WebApi.Controllers
                 return (VisitDTO)dbSession.Get<Visit>(id);
             }
         }
-
 
         public void Post([FromBody]Visit visit)
         {
@@ -82,7 +75,6 @@ namespace IRuettae.WebApi.Controllers
             }
         }
 
-
         public void Delete(long id)
         {
             using (var dbSession = SessionFactory.Instance.OpenSession())
@@ -95,5 +87,6 @@ namespace IRuettae.WebApi.Controllers
                 }
             }
         }
+
     }
 }
