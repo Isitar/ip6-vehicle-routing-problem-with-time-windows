@@ -24,7 +24,7 @@ namespace IRuettae.WebApi.Controllers
         }
 
         // GET: api/Santa/5
-        public SantaDTO Get(int id)
+        public SantaDTO Get(long id)
         {
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {

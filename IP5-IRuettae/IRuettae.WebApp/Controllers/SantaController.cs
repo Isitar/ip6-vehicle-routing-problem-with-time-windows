@@ -29,7 +29,15 @@ namespace IRuettae.WebApp.Controllers
         // GET: Santa/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Settings.Default.WebAPIBaseUrl);
+                var response = client.GetAsync("api/santa/" + id).Result;
+                var retVal = JObject.Parse(response.Content.ReadAsStringAsync().Result).ToObject<SantaVM>();
+
+
+                return View(retVal);
+            }
         }
 
         // GET: Santa/Create
@@ -57,7 +65,15 @@ namespace IRuettae.WebApp.Controllers
         // GET: Santa/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Settings.Default.WebAPIBaseUrl);
+                var response = client.GetAsync("api/santa/" + id).Result;
+                var retVal = JObject.Parse(response.Content.ReadAsStringAsync().Result).ToObject<SantaVM>();
+
+
+                return View(retVal);
+            }
         }
 
         // POST: Santa/Edit/5

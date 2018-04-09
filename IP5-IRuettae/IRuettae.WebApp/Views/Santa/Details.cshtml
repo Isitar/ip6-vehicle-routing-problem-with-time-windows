@@ -1,0 +1,38 @@
+﻿@model IRuettae.WebApp.Models.SantaVM
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<div>
+    <div class="row">
+        <div class="col-md-8 col-sm-12">
+            <h2>Samichlaus @Model.Name</h2>
+        </div>
+        <div class="col-md-4 col-sm-12 text-right-md">
+            <a class="btn btn-dark" href="@Url.Action("Edit", new {id = Model.Id})">
+                <i class="fa fa-edit"></i>
+                Bearbeiten
+            </a>
+        </div>
+    </div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+    </dl>
+</div>
+<p>
+
+
+    <a href="@Url.Action("Index")">
+        <i class="fa fa-list"></i>
+        Zurück zur Liste
+    </a>
+</p>
