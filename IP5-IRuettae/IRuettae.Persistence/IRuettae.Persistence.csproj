@@ -72,15 +72,20 @@
   <ItemGroup>
     <Compile Include="Entities\BaseEntity.cs" />
     <Compile Include="Entities\Period.cs" />
+    <Compile Include="Entities\Santa.cs" />
     <Compile Include="Entities\Visit.cs" />
+    <Compile Include="Entities\VisitTypes.cs" />
     <Compile Include="Entities\Way.cs" />
     <Compile Include="Mappings\PeriodMap.cs" />
+    <Compile Include="Mappings\SantaMap.cs" />
     <Compile Include="Mappings\VisitMap.cs" />
     <Compile Include="Mappings\WayMap.cs" />
     <Compile Include="NHibernateConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="CreateSchema.sql" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />

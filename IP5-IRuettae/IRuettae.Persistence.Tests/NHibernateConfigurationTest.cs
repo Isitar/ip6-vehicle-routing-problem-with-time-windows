@@ -49,8 +49,6 @@ namespace IRuettae.Persistence.Tests
         [TestMethod]
         public void TestMappings()
         {
-
-
             Assert.AreEqual(0, session.Query<Visit>().ToList().Count);
             Assert.IsNotNull(session);
             Assert.IsTrue(session.IsConnected);
@@ -154,6 +152,38 @@ namespace IRuettae.Persistence.Tests
                 Assert.AreEqual(0, allPeriods.Count);
                 Assert.AreEqual(0, allWays.Count);
                 transaction.Commit();
+            }
+        }
+
+
+        [TestMethod]
+        public void TestSantaMapping()
+        {
+            using (var trans = session.BeginTransaction())
+            {
+                var santa = new Santa() { Name = "Santa 1" };
+                var santaBreak = new Visit() { City = "Rothrist", Duration = 60 * 60, VisitType = VisitType.Break };
+                santa.Breaks.Add(santaBreak);
+
+                Santa mgtSanta = session.Merge(santa);
+
+                session.Clear();
+
+                var loadedSanta = session.Get<Santa>(mgtSanta.Id);
+                Assert.IsNotNull(loadedSanta);
+                Assert.AreEqual(santa.Name, loadedSanta.Name);
+                Assert.AreEqual(1, santa.Breaks.Count);
+                Assert.AreEqual(santaBreak.City, santa.Breaks[0].City);
+
+                session.Clear();
+
+                var allBreaks = session.Query<Visit>().Where(v => v.VisitType == VisitType.Break).ToList();
+                Assert.IsNotNull(allBreaks);
+                var loadedSantaBreak = allBreaks[0];
+                Assert.AreEqual("Rothrist", loadedSantaBreak.City);
+                Assert.IsNotNull(loadedSantaBreak.Santa);
+                Assert.AreEqual(santa.Name, loadedSantaBreak.Santa.Name);
+                trans.Commit();
             }
         }
     }

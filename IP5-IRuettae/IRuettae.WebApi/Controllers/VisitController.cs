@@ -72,6 +72,7 @@ namespace IRuettae.WebApi.Controllers
                     origVisit.Year = visit.Year;
                     origVisit.Zip = visit.Zip;
                     origVisit.ExternalReference = visit.ExternalReference;
+                    origVisit.VisitType = visit.VisitType;
                     // ignore times
                     transaction.Commit();
                 }
