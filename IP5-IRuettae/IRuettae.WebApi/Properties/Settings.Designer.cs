@@ -31,5 +31,14 @@ namespace IRuettae.WebApi.Properties {
                 return ((string)(this["GoogleAPIKey"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("CH")]
+        public string GoogleSearchRegion {
+            get {
+                return ((string)(this["GoogleSearchRegion"]));
+            }
+        }
     }
 }

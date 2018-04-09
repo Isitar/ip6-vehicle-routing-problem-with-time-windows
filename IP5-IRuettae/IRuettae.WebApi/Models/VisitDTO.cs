@@ -16,9 +16,12 @@ namespace IRuettae.WebApi.Models
         public virtual int Year { get; set; }
         public virtual string Street { get; set; }
         public virtual int Zip { get; set; }
+        public virtual string City { get; set; }
         public virtual int NumberOfChildrean { get; set; }
         public virtual IList<Period> Desired { get; set; }
         public virtual IList<Period> Unavailable { get; set; }
+
+        public virtual VisitType VisitType { get; set; }
 
         public static explicit operator VisitDTO(Visit v)
         {
@@ -27,11 +30,13 @@ namespace IRuettae.WebApi.Models
                 Id = v.Id,
                 Desired = v.Desired.ToList(),
                 Street = v.Street,
+                Zip = v.Zip,
+                City = v.City,
                 ExternalReference = v.ExternalReference,
                 Year = v.Year,
                 NumberOfChildrean = v.NumberOfChildren,
-                Zip = v.Zip,
-                Unavailable = v.Unavailable.ToList()
+                Unavailable = v.Unavailable.ToList(),
+                VisitType = v.VisitType
             };
         }
     }

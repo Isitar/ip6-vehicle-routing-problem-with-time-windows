@@ -10,14 +10,18 @@ namespace IRuettae.GeoCalculations.RouteCalculation
         private const string BaseUrl = @"https://maps.googleapis.com/maps/api/directions/json?";
 
         private readonly string apiKey;
+        private readonly string region;
+        private const string Units = "metric";
 
         /// <summary>
         /// Implementation of RouteCalculator Interface using the Google API
         /// </summary>
         /// <param name="apiKey">Your Google API Key to use Directions API</param>
-        public GoogleRouteCalculator(string apiKey)
+        /// <param name="region"></param>
+        public GoogleRouteCalculator(string apiKey, string region = null)
         {
             this.apiKey = apiKey;
+            this.region = region;
         }
 
         public (double distance, double duration) CalculateWalkingDistance(string from, string to)
@@ -32,11 +36,22 @@ namespace IRuettae.GeoCalculations.RouteCalculation
 
         private (double distance, double duration) CalculateDistance(string from, string to, string mode)
         {
-            var units = "metric";
-            var callUrl = $"{BaseUrl}origin={from}&destination={to}&mode={mode}&units={units}&key={apiKey}";
+            
+            var callUrl = $"{BaseUrl}origin={from}&destination={to}&mode={mode}&units={Units}&key={apiKey}";
+
+            if (!string.IsNullOrEmpty(region))
+            {
+                callUrl += $"&region={region}";
+            }
+
             var retJson = new WebClient().DownloadString(callUrl);
 
             dynamic retData = JObject.Parse(retJson);
+
+            if (retData.status != "OK")
+            {
+                throw new RouteNotFoundException();
+            }
 
             try
             {

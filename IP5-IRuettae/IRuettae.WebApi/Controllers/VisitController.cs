@@ -1,27 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web;
 using System.Web.Http;
-using IRuettae.GeoCalculations.RouteCalculation;
+using System.Web.Mvc;
+using IRuettae.GeoCalculations.Geocoding;
 using IRuettae.Persistence.Entities;
+using IRuettae.WebApi.ExtensionMethods;
 using IRuettae.WebApi.Helpers;
 using IRuettae.WebApi.Models;
 using IRuettae.WebApi.Persistence;
-using IRuettae.WebApi.Properties;
-using NHibernate;
-using NHibernate.Criterion;
-using NHibernate.Linq;
-using NHibernate.SqlCommand;
 
 namespace IRuettae.WebApi.Controllers
 {
     public class VisitController : ApiController
     {
+        private readonly string visitControllerErrorFile = System.Web.Hosting.HostingEnvironment.MapPath(@"~/App_Data/logs/VisitController.error.log");
+
+
         public IEnumerable<VisitDTO> Get()
         {
             using (var dbSession = SessionFactory.Instance.OpenSession())
@@ -37,7 +34,6 @@ namespace IRuettae.WebApi.Controllers
                 return (VisitDTO)dbSession.Get<Visit>(id);
             }
         }
-
 
         public void Post([FromBody]Visit visit)
         {
@@ -57,9 +53,9 @@ namespace IRuettae.WebApi.Controllers
             }
             catch (Exception e)
             {
-                File.AppendAllLines("C:\\temp\\webapp_error.txt", contents: new[] {
-                    "Something went wrong: " + e.Message, e.StackTrace});
-
+                System.IO.File.AppendAllLines(visitControllerErrorFile, contents: new[] {
+                    "Something went wrong in " +nameof(Post) +": " + e.Message, e.StackTrace
+                });
                 throw new HttpException("Something went wrong: " + e.Message + "<br />" + e.StackTrace);
             }
         }
@@ -76,12 +72,12 @@ namespace IRuettae.WebApi.Controllers
                     origVisit.Year = visit.Year;
                     origVisit.Zip = visit.Zip;
                     origVisit.ExternalReference = visit.ExternalReference;
+                    origVisit.VisitType = visit.VisitType;
                     // ignore times
                     transaction.Commit();
                 }
             }
         }
-
 
         public void Delete(long id)
         {
@@ -95,5 +91,6 @@ namespace IRuettae.WebApi.Controllers
                 }
             }
         }
+
     }
 }
