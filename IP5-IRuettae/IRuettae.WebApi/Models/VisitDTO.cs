@@ -21,6 +21,8 @@ namespace IRuettae.WebApi.Models
         public virtual IList<Period> Desired { get; set; }
         public virtual IList<Period> Unavailable { get; set; }
 
+        public virtual VisitTypes VisitType { get; set; }
+
         public static explicit operator VisitDTO(Visit v)
         {
             return new VisitDTO
@@ -33,7 +35,8 @@ namespace IRuettae.WebApi.Models
                 ExternalReference = v.ExternalReference,
                 Year = v.Year,
                 NumberOfChildrean = v.NumberOfChildren,
-                Unavailable = v.Unavailable.ToList()
+                Unavailable = v.Unavailable.ToList(),
+                VisitType = v.VisitType
             };
         }
     }
