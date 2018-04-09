@@ -15,6 +15,7 @@ namespace IRuettae.WebApi.Models
         public virtual string ExternalReference { get; set; }
         public virtual int Year { get; set; }
         public virtual string Street { get; set; }
+        public virtual string OriginalStreet { get; set; }
         public virtual int Zip { get; set; }
         public virtual string City { get; set; }
         public virtual int NumberOfChildrean { get; set; }
@@ -30,6 +31,7 @@ namespace IRuettae.WebApi.Models
                 Id = v.Id,
                 Desired = v.Desired.ToList(),
                 Street = v.Street,
+                OriginalStreet = v.OriginalStreet,
                 Zip = v.Zip,
                 City = v.City,
                 ExternalReference = v.ExternalReference,

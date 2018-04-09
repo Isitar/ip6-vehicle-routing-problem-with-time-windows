@@ -37,6 +37,11 @@ namespace IRuettae.WebApi.Controllers
 
         public void Post([FromBody]Visit visit)
         {
+            if (string.IsNullOrEmpty(visit.OriginalStreet))
+            {
+                visit.OriginalStreet = visit.Street;
+            }
+
             try
             {
                 using (var dbSession = SessionFactory.Instance.OpenSession())
@@ -69,6 +74,7 @@ namespace IRuettae.WebApi.Controllers
                     var origVisit = dbSession.Get<Visit>(id);
                     origVisit.NumberOfChildren = visit.NumberOfChildren;
                     origVisit.Street = visit.Street;
+                    origVisit.OriginalStreet = visit.OriginalStreet;
                     origVisit.Year = visit.Year;
                     origVisit.Zip = visit.Zip;
                     origVisit.ExternalReference = visit.ExternalReference;

@@ -12,6 +12,11 @@ namespace IRuettae.WebApp.Models
         [DisplayName("Strasse")]
         public string Street { get; set; }
 
+
+        
+        [DisplayName("Echte Strasse")]
+        public string OriginalStreet { get; set; }
+
         [Required]
         [Range(1000, 9999)]
         [DisplayName("Postleizahl")]
