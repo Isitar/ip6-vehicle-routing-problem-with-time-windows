@@ -12,15 +12,16 @@
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     <div class="form-group row">
-        <div class="col-md-10">
-            @Html.LabelFor(m => m.CSVFile)
-            &nbsp;
+        <div class="col-md-12">
+            @Html.LabelFor(m => m.CSVFile, new { @class = "col-form-label mr-2" })
             @Html.TextBoxFor(m => m.CSVFile, new { type = "file", accept = ".csv" })
             @Html.ValidationMessageFor(m => m.CSVFile, "", new { @class = "text-danger" })
         </div>
     </div>
 
-    <div class="form-group">
-        <button type="submit" class="btn btn-lg btn-block btn-dark">Absenden</button>
+    <div class="form-group row">
+        <div class="col-md-12">
+            <button type="submit" class="btn btn-lg btn-block btn-dark">Absenden</button>
+        </div>
     </div>
 }
