@@ -25,6 +25,16 @@ namespace IRuettae.GeoCalculations.Tests
             var cities2 = geocoder.CityFromZip(4852);
             Assert.AreEqual(1, cities2.Length);
             Assert.AreEqual("Rothrist", cities2[0]);
+
+
+        }
+
+        [TestMethod]
+        public void TestCityFromZipSpecialChars()
+        {
+            var geocoder = new GoogleGeocoder(apiKey, region);
+            var cities3 = geocoder.CityFromZip(5627);
+            Assert.AreEqual("Besenbüren", cities3[0]);
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
+using System.Text;
 using Newtonsoft.Json.Linq;
 
 namespace IRuettae.GeoCalculations.Geocoding
@@ -69,20 +71,27 @@ namespace IRuettae.GeoCalculations.Geocoding
                 throw new LocationNotFoundException();
             }
 
+            string[] retVal;
             try
             {
-
-                return ((JArray) retData.results[0].postcode_localities).ToObject<string[]>();
+                retVal = ((JArray) retData.results[0].postcode_localities).ToObject<string[]>();
             }
             catch (NullReferenceException)
             {
                 // did not find postcode_localities
-                return new string[] {retData.results[0].address_components[1].long_name};
+                retVal = new string[] {retData.results[0].address_components[1].long_name};
             }
             catch
             {
                 throw new LocationNotFoundException();
             }
+
+            // handle special characters
+            return retVal.Select(r =>
+            {
+                byte[] data = Encoding.Default.GetBytes(r);
+                return Encoding.UTF8.GetString(data);
+            }).ToArray();
         }
     }
 }
