@@ -12,32 +12,28 @@ namespace IRuettae.WebApp.Controllers
 {
     public class SantaController : Controller
     {
+        private static readonly HttpClient Client = new HttpClient() { BaseAddress = new Uri(Settings.Default.WebAPIBaseUrl) };
+
         // GET: Santa
         public ActionResult Index()
         {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(Settings.Default.WebAPIBaseUrl);
-                var response = client.GetAsync("api/santa").Result;
-                var retVal = JArray.Parse(response.Content.ReadAsStringAsync().Result).ToObject<SantaVM[]>();
+            var response = Client.GetAsync("api/santa").Result;
+            var retVal = JArray.Parse(response.Content.ReadAsStringAsync().Result).ToObject<SantaVM[]>();
 
 
-                return View(retVal);
-            }
+            return View(retVal);
+
         }
 
         // GET: Santa/Details/5
         public ActionResult Details(int id)
         {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(Settings.Default.WebAPIBaseUrl);
-                var response = client.GetAsync("api/santa/" + id).Result;
-                var retVal = JObject.Parse(response.Content.ReadAsStringAsync().Result).ToObject<SantaVM>();
+            var response = Client.GetAsync("api/santa/" + id).Result;
+            var retVal = JObject.Parse(response.Content.ReadAsStringAsync().Result).ToObject<SantaVM>();
 
 
-                return View(retVal);
-            }
+            return View(retVal);
+
         }
 
         // GET: Santa/Create
@@ -65,20 +61,19 @@ namespace IRuettae.WebApp.Controllers
         // GET: Santa/Edit/5
         public ActionResult Edit(int id)
         {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(Settings.Default.WebAPIBaseUrl);
-                var response = client.GetAsync("api/santa/" + id).Result;
-                var retVal = JObject.Parse(response.Content.ReadAsStringAsync().Result).ToObject<SantaVM>();
 
 
-                return View(retVal);
-            }
+            var response = Client.GetAsync("api/santa/" + id).Result;
+            var retVal = JObject.Parse(response.Content.ReadAsStringAsync().Result).ToObject<SantaVM>();
+
+
+            return View(retVal);
+
         }
 
         // POST: Santa/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(int id, SantaVM santa)
         {
             try
             {
