@@ -64,6 +64,7 @@ namespace IRuettae.WebApp.Controllers
 
 
             var response = Client.GetAsync("api/santa/" + id).Result;
+            response.EnsureSuccessStatusCode();
             var retVal = JObject.Parse(response.Content.ReadAsStringAsync().Result).ToObject<SantaVM>();
 
 
@@ -77,8 +78,8 @@ namespace IRuettae.WebApp.Controllers
         {
             try
             {
-                // TODO: Add update logic here
-
+                var response = Client.PutAsJsonAsync("api/santa/" + id, santa).Result;
+                response.EnsureSuccessStatusCode();
                 return RedirectToAction("Index");
             }
             catch

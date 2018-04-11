@@ -35,16 +35,35 @@ namespace IRuettae.WebApi.Controllers
         // POST: api/Santa
         public void Post([FromBody]Santa value)
         {
+            using (var dbSession = SessionFactory.Instance.OpenSession())
+            {
+                dbSession.Merge(value);
+            }
         }
 
         // PUT: api/Santa/5
-        public void Put(int id, [FromBody]Santa value)
+        public void Put(long id, [FromBody]Santa putSanta)
         {
+            using (var dbSession = SessionFactory.Instance.OpenSession())
+            using (var transaction = dbSession.BeginTransaction())
+            {
+                var mgtSanta = dbSession.Get<Santa>(id);
+                mgtSanta.Name = putSanta.Name;
+                transaction.Commit();
+            }
         }
 
         // DELETE: api/Santa/5
-        public void Delete(int id)
+        public void Delete(long id)
         {
+            using (var dbSession = SessionFactory.Instance.OpenSession())
+            using (var transaction = dbSession.BeginTransaction())
+            {
+                var mgtSanta = dbSession.Get<Santa>(id);
+                dbSession.Delete(mgtSanta);
+                transaction.Commit();
+
+            }
         }
     }
 }
