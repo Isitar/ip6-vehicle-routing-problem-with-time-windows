@@ -36,8 +36,10 @@ namespace IRuettae.WebApi.Controllers
         public void Post([FromBody]Santa value)
         {
             using (var dbSession = SessionFactory.Instance.OpenSession())
+            using (var transaction = dbSession.BeginTransaction())
             {
                 dbSession.Merge(value);
+                transaction.Commit();
             }
         }
 
