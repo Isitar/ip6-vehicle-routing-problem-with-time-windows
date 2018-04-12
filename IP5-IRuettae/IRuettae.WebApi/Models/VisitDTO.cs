@@ -24,6 +24,8 @@ namespace IRuettae.WebApi.Models
 
         public virtual VisitType VisitType { get; set; }
 
+        public virtual double Duration { get; set; }
+
         public static explicit operator VisitDTO(Visit v)
         {
             return new VisitDTO
@@ -38,6 +40,7 @@ namespace IRuettae.WebApi.Models
                 Year = v.Year,
                 NumberOfChildrean = v.NumberOfChildren,
                 Unavailable = v.Unavailable.ToList(),
+                Duration = v.Duration,
                 VisitType = v.VisitType
             };
         }

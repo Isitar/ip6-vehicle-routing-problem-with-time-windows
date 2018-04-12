@@ -14,6 +14,13 @@ namespace IRuettae.WebApp.Controllers
     {
         private static readonly HttpClient Client = new HttpClient() { BaseAddress = new Uri(Settings.Default.WebAPIBaseUrl) };
 
+        private SantaVM FindSantaVM(long id)
+        {
+            var response = Client.GetAsync("api/santa/" + id).Result;
+            response.EnsureSuccessStatusCode();
+            return JObject.Parse(response.Content.ReadAsStringAsync().Result).ToObject<SantaVM>();
+        }
+
         // GET: Santa
         public ActionResult Index()
         {
@@ -26,13 +33,12 @@ namespace IRuettae.WebApp.Controllers
         }
 
         // GET: Santa/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(long id)
         {
-            var response = Client.GetAsync("api/santa/" + id).Result;
-            var retVal = JObject.Parse(response.Content.ReadAsStringAsync().Result).ToObject<SantaVM>();
 
 
-            return View(retVal);
+
+            return View(FindSantaVM(id));
 
         }
 
@@ -44,69 +50,102 @@ namespace IRuettae.WebApp.Controllers
 
         // POST: Santa/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(SantaVM santa)
         {
             try
             {
-                // TODO: Add insert logic here
+                if (!ModelState.IsValid)
+                {
+                    return View(santa);
+                }
+
+                var response = Client.PostAsJsonAsync("api/santa", santa).Result;
+                response.EnsureSuccessStatusCode();
 
                 return RedirectToAction("Index");
             }
             catch
             {
-                return View();
+                return View(santa);
             }
         }
 
         // GET: Santa/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(long id)
         {
-
-
-            var response = Client.GetAsync("api/santa/" + id).Result;
-            response.EnsureSuccessStatusCode();
-            var retVal = JObject.Parse(response.Content.ReadAsStringAsync().Result).ToObject<SantaVM>();
-
-
-            return View(retVal);
-
+            return View(FindSantaVM(id));
         }
 
         // POST: Santa/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, SantaVM santa)
+        public ActionResult Edit(long id, SantaVM santa)
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return View(santa);
+                }
+
                 var response = Client.PutAsJsonAsync("api/santa/" + id, santa).Result;
                 response.EnsureSuccessStatusCode();
                 return RedirectToAction("Index");
             }
             catch
             {
-                return View();
+                return View(santa);
             }
         }
 
         // GET: Santa/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(long id)
         {
-            return View();
+            return View(FindSantaVM(id));
         }
 
         // POST: Santa/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Delete(long id, SantaVM santa)
         {
             try
             {
-                // TODO: Add delete logic here
+                var response = Client.DeleteAsync("api/santa/" + id).Result;
+                response.EnsureSuccessStatusCode();
 
                 return RedirectToAction("Index");
             }
             catch
             {
-                return View();
+                return View(santa);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult CreateBreak(long id)
+        {
+            return View(new BreakVM() { SantaId = id });
+        }
+
+        [HttpPost]
+        public ActionResult CreateBreak(long id, BreakVM breakVM)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(breakVM);
+                }
+
+                var santa = FindSantaVM(id);
+                santa.Breaks.Add(breakVM);
+                var response = Client.PostAsJsonAsync("api/santa", santa).Result;
+                response.EnsureSuccessStatusCode();
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View(breakVM);
             }
         }
     }

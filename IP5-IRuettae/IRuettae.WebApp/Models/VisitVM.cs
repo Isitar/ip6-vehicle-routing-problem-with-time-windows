@@ -12,8 +12,6 @@ namespace IRuettae.WebApp.Models
         [DisplayName("Strasse")]
         public string Street { get; set; }
 
-
-        
         [DisplayName("Echte Strasse")]
         public string OriginalStreet { get; set; }
 
@@ -48,6 +46,10 @@ namespace IRuettae.WebApp.Models
 
         [DisplayName("Alternative Adresse benötigt")]
         public bool AlternativeAddressNeeded { get; set; }
+
+        [Required]
+        [DisplayName("Dauer")]
+        public double Duration { get; set; }
 
         public VisitVM()
         {

@@ -28,11 +28,16 @@
 
     </dl>
 </div>
-<p>
 
+<h3>Pausen</h3>
+
+<div>
+    @Html.Partial("DetailsBreakList",Model.Breaks)
+</div>
+<hr />
 
     <a href="@Url.Action("Index")">
         <i class="fa fa-list"></i>
         Zurück zur Liste
     </a>
-</p>
+

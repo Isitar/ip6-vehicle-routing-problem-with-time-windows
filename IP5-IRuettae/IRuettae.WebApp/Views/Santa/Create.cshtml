@@ -1,15 +1,13 @@
 ﻿@model IRuettae.WebApp.Models.SantaVM
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Create";
 }
 
-<h2>Samichlaus bearbeiten</h2>
+<h2>Samichlaus erstellen</h2>
 
 @using (Html.BeginForm())
 {
-    @Html.AntiForgeryToken()
-
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
@@ -21,10 +19,9 @@
         </div>
     </div>
 
-
     <div class="form-group row">
         <div class="col-md-12">
-            <button type="submit" class="btn btn-lg btn-block btn-dark">Speichern</button>
+            <button type="submit" class="btn btn-lg btn-block btn-dark">Erstellen</button>
         </div>
     </div>
 }
