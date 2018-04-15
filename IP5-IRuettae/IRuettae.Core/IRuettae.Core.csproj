@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -39,6 +40,12 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Google.OrTools, Version=6.7.4973.32602, Culture=neutral, PublicKeyToken=8976cf6a4a76bd5f, processorArchitecture=AMD64">
+      <HintPath>..\packages\Google.OrTools.6.7.4973\lib\net40\Google.OrTools.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Protobuf, Version=3.5.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Protobuf.3.5.1\lib\net45\Google.Protobuf.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -49,7 +56,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithm\GoogleORTools\TargetFunctionBuilders\AbstractTargetFunctionBuilder.cs" />
+    <Compile Include="Algorithm\GoogleORTools\Detail\ConstraintBuilder.cs" />
+    <Compile Include="Algorithm\GoogleORTools\TargetFunctionBuilders\DefaultTargetFunctionBuilder.cs" />
+    <Compile Include="Algorithm\GoogleORTools\Detail\TargetFunctionFactory.cs" />
+    <Compile Include="Algorithm\GoogleORTools\Detail\VariableBuilder.cs" />
+    <Compile Include="Algorithm\GoogleORTools\Detail\ResultBuilder.cs" />
+    <Compile Include="Algorithm\GoogleORTools\Solver.cs" />
+    <Compile Include="Algorithm\ISolver.cs" />
+    <Compile Include="Algorithm\ResultState.cs" />
+    <Compile Include="Algorithm\Route.cs" />
+    <Compile Include="Algorithm\Starter.cs" />
+    <Compile Include="Algorithm\TargetType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
