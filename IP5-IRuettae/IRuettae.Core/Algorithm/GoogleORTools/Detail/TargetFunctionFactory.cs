@@ -22,7 +22,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         /// <param name="target"></param>
         /// <param name="weight"></param>
         /// <returns>LinearExpr which should be maximised</returns>
-        public LinearExpr CreateTargetFunction(TargetType target, double weight = 1.0)
+        public LinearExpr CreateTargetFunction(TargetType target, double? weight = 1.0)
         {
             switch (target)
             {
@@ -33,21 +33,27 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             }
         }
 
-        private LinearExpr AddTargetFunctionShortestRoute(double weight)
+        private LinearExpr AddTargetFunctionShortestRoute(double? weight)
         {
-            double totalDistance = 0;
-            foreach (var distance in variables.Distances)
+            // TODO MEYERJ may lead to incorrect results if factor is around 0
+            // -> investigate further
+            double factor = -1.0;
+            if (weight.HasValue)
             {
-                totalDistance += distance;
+                double totalDistance = 0;
+                foreach (var distance in variables.Distances)
+                {
+                    totalDistance += distance;
+                }
+                factor *= weight.Value / totalDistance;
             }
-            double factor = weight / totalDistance;
 
             LinearExpr expr = new LinearExpr();
             for (int row = 0; row < variables.NumberLocations; row++)
             {
                 for (int col = 0; col < variables.NumberLocations; col++)
                 {
-                    expr -= factor * variables.Distances[row, col] * variables.UsesWay[row, col];
+                    expr += (factor * variables.Distances[row, col]) * variables.UsesWay[row, col];
                 }
             }
             return expr;

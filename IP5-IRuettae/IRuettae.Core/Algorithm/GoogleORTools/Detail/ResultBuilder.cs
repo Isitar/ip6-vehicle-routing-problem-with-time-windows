@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using IRuettae.Core.Algorithm.GoogleORTools.Detail;
 
@@ -15,14 +16,17 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 
         public Route CreateResult()
         {
-            Route route = new Route();
+            Debug.WriteLine($"{variables.Solver.Objective().Value()} is the value of the target function.");
 
-            int? nextLocation = 0;
-            do
+            Route route = new Route();
             {
-                route.Waypoints.Add(nextLocation.Value);
-                nextLocation = GetNextLocation(nextLocation.Value);
-            } while (nextLocation.HasValue && nextLocation.Value != route.Waypoints.First());
+                int? nextLocation = 0;
+                do
+                {
+                    route.Waypoints.Add(nextLocation.Value);
+                    nextLocation = GetNextLocation(nextLocation.Value);
+                } while (nextLocation.HasValue && nextLocation.Value != route.Waypoints.First());
+            }
 
             return route;
         }
