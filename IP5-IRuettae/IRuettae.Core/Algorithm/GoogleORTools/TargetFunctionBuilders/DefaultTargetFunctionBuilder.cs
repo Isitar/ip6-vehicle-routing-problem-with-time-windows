@@ -25,6 +25,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.TargetFunctionBuilders
 
             var factory = new TargetFunctionFactory(variables);
 
+            targetFunction += factory.CreateTargetFunction(TargetType.ShortestRoute);
 
             variables.Solver.Maximize(targetFunction);
         }

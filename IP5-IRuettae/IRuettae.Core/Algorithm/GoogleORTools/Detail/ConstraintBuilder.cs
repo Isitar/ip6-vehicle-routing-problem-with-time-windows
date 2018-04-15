@@ -38,6 +38,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             var expr = new LinearExpr();
             for (int i = 0; i < variables.NumberLocations; i++)
             {
+                if (i != location)
                 {
                     expr += variables.UsesWay[i, location];
                 }
@@ -50,6 +51,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             var expr = new LinearExpr();
             for (int i = 0; i < variables.NumberLocations; i++)
             {
+                if (i != location)
                 {
                     expr += variables.UsesWay[location, i];
                 }

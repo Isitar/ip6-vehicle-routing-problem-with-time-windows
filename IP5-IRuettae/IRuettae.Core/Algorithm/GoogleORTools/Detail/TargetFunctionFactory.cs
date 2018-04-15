@@ -16,9 +16,14 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             this.variables = variables;
         }
 
-        public LinearExpr CreateTargetFunction(TargetType target, double weight)
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="weight"></param>
+        /// <returns>LinearExpr which should be maximised</returns>
+        public LinearExpr CreateTargetFunction(TargetType target, double weight = 1.0)
         {
-
             switch (target)
             {
                 case TargetType.ShortestRoute:
@@ -42,7 +47,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             {
                 for (int col = 0; col < variables.NumberLocations; col++)
                 {
-                    expr += factor * variables.Distances[row, col] * variables.UsesWay[row, col];
+                    expr -= factor * variables.Distances[row, col] * variables.UsesWay[row, col];
                 }
             }
             return expr;
