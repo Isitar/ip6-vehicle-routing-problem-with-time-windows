@@ -24,10 +24,7 @@ namespace IRuettae.WebApp.Controllers
         {
             var response = Client.GetAsync("api/santa").Result;
             var retVal = JArray.Parse(response.Content.ReadAsStringAsync().Result).ToObject<SantaVM[]>();
-
-
             return View(retVal);
-
         }
 
         // GET: Santa/Details/5
@@ -83,6 +80,7 @@ namespace IRuettae.WebApp.Controllers
 
                 var response = Client.PutAsJsonAsync("api/santa/" + id, santa).Result;
                 response.EnsureSuccessStatusCode();
+
                 return RedirectToAction("Index");
             }
             catch
@@ -158,6 +156,7 @@ namespace IRuettae.WebApp.Controllers
             var santa = FindSantaVM(id);
             var santaBreak = santa.Breaks.FirstOrDefault(b => b.Id == breakId);
             santaBreak.SantaId = id;
+
             return View("BreakForm", santaBreak);
         }
 
