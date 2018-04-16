@@ -24,6 +24,17 @@
         </div>
     </div>
 
+    if (Model != null && Model.AlternativeAddressNeeded)
+    {
+        <div class="form-group row">
+            @Html.LabelFor(m => m.OriginalStreet, new {@class = "col-md-2 col-form-label"})
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.OriginalStreet, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.OriginalStreet, "", new {@class = "text-danger"})
+            </div>
+        </div>
+    }
+
     <div class="form-group row">
         @Html.LabelFor(m => m.Street, new { @class = "col-md-2 col-form-label" })
         <div class="col-md-10">
@@ -31,8 +42,11 @@
             @Html.ValidationMessageFor(model => model.Street, "", new { @class = "text-danger" })
         </div>
     </div>
+
     if (Model != null && Model.AlternativeAddressNeeded)
     { 
+
+
          <div class="form-group row small">
              @Html.LabelFor(m => m.DeltaWayDuration, new {@class = "col-md-2 col-form-label"})
              <div class="col-md-4">
@@ -122,8 +136,6 @@
         </div>
     </div>
 }
-
-
 
 
 

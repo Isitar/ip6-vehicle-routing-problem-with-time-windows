@@ -70,3 +70,28 @@
     -moz-border-radius: 0px;
     background-image: none;
 }
+
+
+
+@media (min-width: 576px) {
+    .text-right-sm {
+        text-align: right;
+    }
+}
+
+@media (min-width: 768px) {
+    .text-right-md {
+        text-align: right;
+    }
+}
+@media (min-width: 992px) {
+    .text-right-lg {
+        text-align: right;
+    }
+}
+
+@media (min-width: 1200px) {
+    .text-right-xl {
+        text-align: right;
+    }
+}
