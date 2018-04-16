@@ -1,0 +1,37 @@
+﻿@model IRuettae.WebApp.Models.SantaVM
+
+@{
+    ViewBag.Title = "Samichlaus löschen";
+}
+
+<h2>Samichlaus löschen</h2>
+
+<h3>Sind Sie sicher, dass Sie den Samichlaus @Model.Name löschen wollen?</h3>
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+
+        <button type="submit" class="btn btn-danger"><i class="fa fa-trash-alt"></i> Löschen</button>
+
+
+        <div>
+            <a href="@Url.Action("Index")">
+                <i class="fa fa-list"></i>
+                Zurück zur Liste
+            </a>
+        </div>
+    }
+</div>

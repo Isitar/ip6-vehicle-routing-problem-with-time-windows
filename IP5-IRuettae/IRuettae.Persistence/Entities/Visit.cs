@@ -15,6 +15,7 @@ namespace IRuettae.Persistence.Entities
         public virtual string ExternalReference { get; set; }
         public virtual int Year { get; set; }
         public virtual string Street { get; set; }
+        public virtual string OriginalStreet { get; set; }
         public virtual int Zip { get; set; }
         public virtual string City { get; set; }
         public virtual int NumberOfChildren { get; set; }

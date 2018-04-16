@@ -159,6 +159,7 @@
     <Compile Include="Controllers\AddressController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\CSVImportController.cs" />
+    <Compile Include="Controllers\SantaController.cs" />
     <Compile Include="Controllers\VisitController.cs" />
     <Compile Include="ExtensionMethods\VisitExtensions.cs" />
     <Compile Include="Global.asax.cs">
@@ -166,6 +167,7 @@
     </Compile>
     <Compile Include="Helpers\VisitWayCreator.cs" />
     <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
+    <Compile Include="Models\SantaDTO.cs" />
     <Compile Include="Models\VisitDTO.cs" />
     <Compile Include="Persistence\SessionFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
