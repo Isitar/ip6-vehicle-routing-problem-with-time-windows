@@ -51,7 +51,7 @@ namespace IRuettae.WebApp.Models
         public virtual bool AlternativeAddressNeeded { get; set; }
 
         
-        [DisplayName("Dauer")]
+        [DisplayName("Dauer [s]")]
         public virtual double Duration { get; set; }
 
         public VisitVM()
