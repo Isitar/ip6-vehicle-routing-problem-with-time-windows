@@ -1,0 +1,47 @@
+﻿@model IEnumerable<IRuettae.WebApp.Models.SantaVM>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>&#127877; Samichläuse</h2>
+
+
+
+<p>
+    @Html.ActionLink("Neuen Samichlaus anlegen", "Create", null, new { @class = "btn btn-success" })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                <a href="@Url.Action("Details",new {id=item.Id})">
+                    <i class="fa fa-eye"></i>
+                    @*Details*@
+                </a>
+                |
+                <a href="@Url.Action("Edit",new {id=item.Id})">
+                    <i class="fa fa-edit"></i>
+                    @*Bearbeiten*@
+                </a>
+                |
+                <a class="text-danger" href="@Url.Action("Delete",new {id=item.Id})">
+                    <i class="fa fa-trash-alt"></i>
+                    @*Löschen*@
+                </a>
+            </td>
+        </tr>
+    }
+
+</table>

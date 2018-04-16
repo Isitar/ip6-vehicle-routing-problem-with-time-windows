@@ -8,41 +8,51 @@ namespace IRuettae.WebApp.Models
 {
     public class VisitVM
     {
+        [DisplayName("Id")]
+        public virtual long Id { get; set; }
+
         [Required]
         [DisplayName("Strasse")]
-        public string Street { get; set; }
+        public virtual string Street { get; set; }
+
+        [DisplayName("Echte Strasse")]
+        public virtual string OriginalStreet { get; set; }
 
         [Required]
         [Range(1000, 9999)]
         [DisplayName("Postleizahl")]
-        public int Zip { get; set; }
+        public virtual int Zip { get; set; }
 
         [Required]
         [DisplayName("Ort")]
-        public string City { get; set; }
+        public virtual string City { get; set; }
 
         [Required]
         [Range(1, int.MaxValue)]
         [DisplayName("Anzahl Kinder")]
-        public int NumberOfChildren { get; set; }
+        public virtual int NumberOfChildren { get; set; }
 
         [DisplayName("Wunschzeit")]
-        public List<PeriodVM> Desired { get; set; }
+        public virtual List<PeriodVM> Desired { get; set; }
 
         [DisplayName("Nicht verfügbar")]
-        public List<PeriodVM> Unavailable { get; set; }
+        public virtual List<PeriodVM> Unavailable { get; set; }
 
         [DisplayName("Jahr")]
         [Range(2017, int.MaxValue)]
-        public int Year { get; set; }
+        public virtual int Year { get; set; }
 
         [DisplayName("Abweichungsdistanz [m]")]
-        public int DeltaWayDistance { get; set; }
+        public virtual int DeltaWayDistance { get; set; }
         [DisplayName("Abweichungsdauer [s]")]
-        public int DeltaWayDuration { get; set; }
+        public virtual int DeltaWayDuration { get; set; }
 
         [DisplayName("Alternative Adresse benötigt")]
-        public bool AlternativeAddressNeeded { get; set; }
+        public virtual bool AlternativeAddressNeeded { get; set; }
+
+        
+        [DisplayName("Dauer")]
+        public virtual double Duration { get; set; }
 
         public VisitVM()
         {

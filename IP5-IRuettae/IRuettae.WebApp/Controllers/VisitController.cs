@@ -11,6 +11,7 @@ namespace IRuettae.WebApp.Controllers
 {
     public class VisitController : Controller
     {
+        private static readonly HttpClient Client = new HttpClient() { BaseAddress = new Uri(Settings.Default.WebAPIBaseUrl) };
         // GET: Visit
         public ActionResult Index()
         {
@@ -23,37 +24,29 @@ namespace IRuettae.WebApp.Controllers
             v.Desired.RemoveAll(periodVM => periodVM.Start == null && periodVM.End == null);
             v.Unavailable.RemoveAll(periodVM => periodVM.Start == null && periodVM.End == null);
 
-            using (var client = new HttpClient())
+
+            var response = Client.PostAsJsonAsync("api/address/CheckAddress", v).Result;
+            if (!response.IsSuccessStatusCode)
             {
-                client.BaseAddress = new Uri(Settings.Default.WebAPIBaseUrl);
-                var response = client.PostAsJsonAsync("api/address/CheckAddress", v).Result;
-                var respCode = response.StatusCode;
-                if (!response.IsSuccessStatusCode)
-                {
-                    ModelState.AddModelError(nameof(v.Street), "Der Ort konnte nicht von Google gefunden werden, bitte alternative Adresse oder Koordinaten angeben.");
-                    v.AlternativeAddressNeeded = true;
-                }
+                ModelState.AddModelError(nameof(v.Street), "Der Ort konnte nicht von Google gefunden werden, bitte alternative Adresse oder Koordinaten angeben.");
+                v.AlternativeAddressNeeded = true;
             }
+
 
             if (!ModelState.IsValid)
             {
                 return View("Index", v);
             }
 
-            using (var client = new HttpClient())
+
+            response = Client.PostAsJsonAsync("api/visit", v).Result;
+            if (!response.IsSuccessStatusCode)
             {
-                client.BaseAddress = new Uri(Settings.Default.WebAPIBaseUrl);
-                var response = client.PostAsJsonAsync("api/visit", v).Result;
-                if (response.IsSuccessStatusCode)
-                {
-                    return View("Thanks", v);
-                }
-                else
-                {
-                    ModelState.AddModelError("Request", "mit dem Request ist etwas schief gelaufen " + response.StatusCode);
-                    return View("Index", v);
-                }
+                ModelState.AddModelError("Request", "mit dem Request ist etwas schief gelaufen " + response.StatusCode);
+                return View("Index", v);
             }
+
+            return View("Thanks", v);
         }
 
         /// <summary>
@@ -64,14 +57,11 @@ namespace IRuettae.WebApp.Controllers
         [HttpPost]
         public string CityFromZip(int zip)
         {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(Settings.Default.WebAPIBaseUrl);
-                var response = client.PostAsync($"api/address/CityFromZip/{zip}", null).Result;
-                var retVal = JArray.Parse(response.Content.ReadAsStringAsync().Result).ToObject<string[]>();
-               
-               return System.Web.Helpers.Json.Encode(retVal);
-            }
+            var response = Client.PostAsync($"api/address/CityFromZip/{zip}", null).Result;
+            var retVal = JArray.Parse(response.Content.ReadAsStringAsync().Result).ToObject<string[]>();
+
+            return System.Web.Helpers.Json.Encode(retVal);
+
         }
     }
 }

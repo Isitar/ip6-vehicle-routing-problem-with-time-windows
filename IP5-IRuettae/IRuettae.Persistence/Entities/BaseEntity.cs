@@ -8,6 +8,6 @@ namespace IRuettae.Persistence.Entities
 {
     public class BaseEntity
     {
-        public virtual long Id { get; protected set; }
+        public virtual long Id { get; set; }
     }
 }

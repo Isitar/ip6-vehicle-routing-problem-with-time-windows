@@ -1,0 +1,60 @@
+﻿@model IEnumerable<IRuettae.WebApp.Models.VisitVM>
+
+<p>
+    @Html.ActionLink("Neuen Pause anlegen", "CreateBreak", new { id = ViewBag.SantaId }, new { @class = "btn btn-success" })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Year)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Street)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Zip)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.City)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Duration)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Year)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Street)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Zip)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Duration)
+            </td>
+
+            <td>
+
+                <a href="@Url.Action("EditBreak",new {id=ViewBag.SantaId, breakId=item.Id})">
+                    <i class="fa fa-edit"></i>
+                    @*Bearbeiten*@
+                </a>
+                |
+                <a class="text-danger" href="@Url.Action("DeleteBreak",new {id=ViewBag.SantaId, breakId=item.Id})">
+                    <i class="fa fa-trash-alt"></i>
+                    @*Löschen*@
+                </a>
+            </td>
+        </tr>
+    }
+
+</table>
