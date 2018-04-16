@@ -7,6 +7,7 @@ using System.Web;
 
 namespace IRuettae.WebApp.Models
 {
+    [DisplayName("Samichlaus")]
     public class SantaVM
     {
 
@@ -19,6 +20,6 @@ namespace IRuettae.WebApp.Models
 
         
         [DisplayName("Pausen")]
-        public virtual IList<VisitVM> Breaks { get; set; }
+        public virtual IList<BreakVM> Breaks { get; set; }
     }
 }

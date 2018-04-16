@@ -51,6 +51,33 @@ namespace IRuettae.WebApi.Controllers
             {
                 var mgtSanta = dbSession.Get<Santa>(id);
                 mgtSanta.Name = putSanta.Name;
+                var deletedBreaks = mgtSanta.Breaks.Where(b => !putSanta.Breaks.Select(pb => pb.Id).Contains(b.Id)).ToList();
+                foreach (var deletedBreak in deletedBreaks)
+                {
+                    mgtSanta.Breaks.Remove(deletedBreak);
+                }
+
+                foreach (var existingBreak in putSanta.Breaks.Where(b => mgtSanta.Breaks.Select(mb => mb.Id).Contains(b.Id)))
+                {
+                    var mgtBreak = mgtSanta.Breaks.FirstOrDefault(b => b.Id == existingBreak.Id);
+
+                    mgtBreak.City = existingBreak.City;
+                    mgtBreak.DeltaWayDistance = existingBreak.DeltaWayDistance;
+                    mgtBreak.DeltaWayDuration = existingBreak.DeltaWayDuration;
+                    mgtBreak.Duration = existingBreak.Duration;
+                    mgtBreak.OriginalStreet = existingBreak.OriginalStreet;
+                    mgtBreak.Street = existingBreak.Street;
+                    mgtBreak.Year = existingBreak.Year;
+                    mgtBreak.Zip = existingBreak.Zip;
+                }
+
+                foreach (var newBreak in putSanta.Breaks.Where(b => !mgtSanta.Breaks.Select(mb => mb.Id).Contains(b.Id)))
+                {
+                    newBreak.Santa = mgtSanta;
+                    newBreak.VisitType = VisitType.Break;
+                    mgtSanta.Breaks.Add(newBreak);
+                }
+
                 transaction.Commit();
             }
         }
@@ -64,7 +91,6 @@ namespace IRuettae.WebApi.Controllers
                 var mgtSanta = dbSession.Get<Santa>(id);
                 dbSession.Delete(mgtSanta);
                 transaction.Commit();
-
             }
         }
     }

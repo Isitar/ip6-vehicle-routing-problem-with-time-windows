@@ -15,6 +15,7 @@ namespace IRuettae.Persistence.Mappings
             Map(x => x.City);
             Map(x => x.Year);
             Map(x => x.Zip);
+            Map(x => x.Duration);
             Map(x => x.VisitType);
 
             Map(x => x.DeltaWayDistance);

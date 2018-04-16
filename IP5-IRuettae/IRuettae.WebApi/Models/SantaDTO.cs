@@ -19,7 +19,7 @@ namespace IRuettae.WebApi.Models
             {
                 Id = s.Id,
                 Name = s.Name,
-                Breaks = s.Breaks.Select(b => (VisitDTO)b).ToList()
+                Breaks = s.Breaks?.Select(b => (VisitDTO)b).ToList()
             };
         }
     }

@@ -152,6 +152,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\BreakVM.cs" />
+    <Compile Include="Models\ViewState.cs" />
     <Compile Include="Models\PeriodVM.cs" />
     <Compile Include="Models\SantaVM.cs" />
     <Compile Include="Models\UploadCSVVM.cs" />
@@ -309,7 +310,7 @@
     <Content Include="Views\Santa\Edit.cshtml" />
     <Content Include="Views\Santa\Create.cshtml" />
     <Content Include="Views\Santa\Delete.cshtml" />
-    <Content Include="Views\Santa\CreateBreak.cshtml" />
+    <Content Include="Views\Santa\BreakForm.cshtml" />
     <Content Include="Views\Santa\DetailsBreakList.cshtml" />
   </ItemGroup>
   <ItemGroup>

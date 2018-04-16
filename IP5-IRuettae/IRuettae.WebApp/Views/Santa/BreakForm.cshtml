@@ -1,15 +1,13 @@
 ﻿@model IRuettae.WebApp.Models.BreakVM
 
-@using (Html.BeginForm())
+@using (Html.BeginForm(ViewBag.CurrState == IRuettae.WebApp.Models.ViewState.Create ? "CreateBreak" : "EditBreak", "Santa", new { santaId = Model.SantaId }, FormMethod.Post))
 {
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4>VisitVM</h4>
-        <hr />
 
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
+        <input type="hidden" value="@Model.Id" name="Id" />
 
         <div class="form-group">
             @Html.LabelFor(model => model.Year, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -55,12 +53,15 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Speichern" class="btn btn-block btn-dark" />
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    <a href="@Url.Action("Details",new { id = ViewBag.SantaId })">
+        <i class="fa fa-eye"></i>
+        Zurück zum Samichlaus
+    </a>
 </div>
