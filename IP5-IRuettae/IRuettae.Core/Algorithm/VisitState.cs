@@ -8,8 +8,8 @@ namespace IRuettae.Core.Algorithm
 {
     public enum VisitState
     {
-        Default,
-        Available,
+        Default, // no preference, should be available
         NotAvailable,
+        Prefered,
     }
 }

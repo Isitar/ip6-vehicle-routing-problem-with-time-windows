@@ -55,9 +55,6 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 
             for (int i = 0; i < solverData.NumberOfDays; i++)
             {
-                solverData.Variables.Visits[i] = new GLS.Variable[solverData.NumberOfSantas][,];
-
-                var day = solverData.Input.Visits[i];
                 var rows = solverData.NumberOfSantas;
                 var cols = solverData.SlicesPerDay[i];
                 solverData.Variables.Santas[i] = solverData.Solver.MakeBoolVarMatrix(rows, cols);
