@@ -63,15 +63,5 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         {
             throw new NotImplementedException();
         }
-
-        /// <summary>
-        /// Returns the maximal potential
-        /// Must be bigger or equal than the number of locations
-        /// </summary>
-        /// <returns></returns>
-        private int GetMaxPotential()
-        {
-            return variables.NumberLocations;
-        }
     }
 }

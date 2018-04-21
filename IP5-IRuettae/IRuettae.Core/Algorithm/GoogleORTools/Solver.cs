@@ -91,13 +91,18 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
             return ResultState.Unknown;
         }
 
-        public string GenerateMPS()
+        public string ExportMPS()
         {
             if (!hasModel)
             {
                 CreateModel();
             }
             return solver.ExportModelAsMpsFormat(true, false);
+        }
+
+        public string ImportMPS()
+        {
+            throw new NotImplementedException();
         }
 
         public Route GetResult()

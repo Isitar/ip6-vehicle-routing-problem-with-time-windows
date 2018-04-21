@@ -9,7 +9,8 @@ namespace IRuettae.Core.Algorithm
     public interface ISolver
     {
         ResultState Solve();
-        string GenerateMPS();
+        string ExportMPS();
+        string ImportMPS();
         Route GetResult();
     }
 }
