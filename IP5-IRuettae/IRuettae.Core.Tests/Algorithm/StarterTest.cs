@@ -34,7 +34,7 @@ namespace IRuettae.Core.Test.Algorithm
             };
 
             VisitState d = VisitState.Default;
-            VisitState n = VisitState.NotAvailable;
+            //VisitState n = VisitState.NotAvailable;
             VisitState[][,] visits = {
                 new VisitState[,] {
                     { d, d },
@@ -67,7 +67,7 @@ namespace IRuettae.Core.Test.Algorithm
 
             int[] visitLength =
             {
-                1, 2, 3, 1, 2, 3,
+                0, 2, 3, 1, 2, 3,
             };
 
             return new SolverInputData(santas, visitLength, visits, 5, distances);

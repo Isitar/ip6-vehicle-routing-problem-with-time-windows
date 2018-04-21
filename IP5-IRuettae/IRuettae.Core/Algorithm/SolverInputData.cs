@@ -9,22 +9,22 @@ namespace IRuettae.Core.Algorithm
     public class SolverInputData
     {
         /// <summary>
-        /// day * santa * timeslice (5min), is available
+        /// day * santa * timeslice, is available
         /// </summary>
         public bool[][,] Santas { get; }
 
         /// <summary>
-        /// [min]
+        /// in timeslices
         /// </summary>
         public int[] VisitsLength { get; }
 
         /// <summary>
-        /// day * visit * timeslice (5min), is available
+        /// day * visit * timeslice, is available
         /// </summary>
         public VisitState[][,] Visits { get; }
 
         /// <summary>
-        /// [min]
+        /// in min
         /// </summary>
         public int TimesliceLength { get; }
 
