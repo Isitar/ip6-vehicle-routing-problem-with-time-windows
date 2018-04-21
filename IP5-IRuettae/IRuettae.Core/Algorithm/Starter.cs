@@ -13,6 +13,11 @@ namespace IRuettae.Core.Algorithm
     {
         public static Route Optimise(SolverInputData solverInputData)
         {
+            if (!solverInputData.IsValid())
+            {
+                throw new ArgumentException();
+            }
+
             var solver = new Solver(solverInputData, new DefaultTargetFunctionBuilder());
             var resultState = solver.Solve();
             switch (resultState)

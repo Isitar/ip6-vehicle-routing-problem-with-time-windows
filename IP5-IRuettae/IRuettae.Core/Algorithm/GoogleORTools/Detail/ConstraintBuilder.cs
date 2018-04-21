@@ -19,12 +19,31 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 
         public void CreateConstraints()
         {
-            //CreateSingeVisitConstaint();
+            CreateVisitOverallLengthConstraint();
+            //CreateSingleVisitConstaint();
             //CreateAllConnectedConstaint();
         }
 
+        private void CreateVisitOverallLengthConstraint()
+        {
+            for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+            {
+                var expr = new LinearExpr();
+                for (int day = 0; day < solverData.NumberOfDays; day++)
+                {
+                    for (int santa = 0; santa < solverData.NumberOfDays; santa++)
+                    {
+                        for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
+                        {
+                            expr += solverData.Variables.Visits[day][santa][visit, timeslice];
+                        }
+                    }
+                }
+                solverData.Solver.Add(expr == solverData.Input.VisitsLength[visit]);
+            }
+        }
 
-        private void CreateSingeVisitConstaint()
+        private void CreateSingleVisitConstaint()
         {
             //for (int location = 0; location < solverData.NumberLocations; location++)
             //{
