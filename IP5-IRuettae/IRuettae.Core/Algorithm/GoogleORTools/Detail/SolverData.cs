@@ -7,19 +7,19 @@ using GLS = Google.OrTools.LinearSolver;
 
 namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 {
-    public class SolverData
+    class SolverData
     {
-        public SolverInputData SolverInputData { get; }
+        public SolverInputData Input { get; }
         public GLS.Solver Solver { get; }
         public int NumberLocations { get; }
-        public GLS.Variable[] Potential { get; set; }
-        public GLS.Variable[,] UsesWay { get; set; }
+        public SolverVariables Variables { get; }
 
         public SolverData(SolverInputData solverInputData, GLS.Solver solver)
         {
-            SolverInputData = solverInputData;
+            Input = solverInputData;
             Solver = solver;
             NumberLocations = solverInputData.VisitsLength.Length;
+            Variables = new SolverVariables();
         }
     }
 }

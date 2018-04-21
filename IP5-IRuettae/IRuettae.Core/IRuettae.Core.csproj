@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithm\GoogleORTools\Detail\SolverData.cs" />
+    <Compile Include="Algorithm\GoogleORTools\Detail\SolverVariables.cs" />
     <Compile Include="Algorithm\GoogleORTools\TargetFunctionBuilders\AbstractTargetFunctionBuilder.cs" />
     <Compile Include="Algorithm\GoogleORTools\Detail\ConstraintBuilder.cs" />
     <Compile Include="Algorithm\GoogleORTools\TargetFunctionBuilders\DefaultTargetFunctionBuilder.cs" />
