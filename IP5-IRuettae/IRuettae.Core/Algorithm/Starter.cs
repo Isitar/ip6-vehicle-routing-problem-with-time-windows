@@ -11,9 +11,9 @@ namespace IRuettae.Core.Algorithm
 {
     public class Starter
     {
-        public static Route Optimise(int[,] distances)
+        public static Route Optimise(SolverInputData solverInputData)
         {
-            var solver = new Solver(distances, new DefaultTargetFunctionBuilder());
+            var solver = new Solver(solverInputData, new DefaultTargetFunctionBuilder());
             var resultState = solver.Solve();
             switch (resultState)
             {

@@ -10,6 +10,6 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.TargetFunctionBuilders
 {
     abstract class AbstractTargetFunctionBuilder
     {
-        public abstract void CreateTargetFunction(VariableBuilder variables);
+        public abstract void CreateTargetFunction(SolverData solverData);
     }
 }

@@ -9,11 +9,11 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 {
     class TargetFunctionFactory
     {
-        private readonly VariableBuilder variables;
+        private readonly SolverData solverData;
 
-        public TargetFunctionFactory(VariableBuilder variables)
+        public TargetFunctionFactory(SolverData solverData)
         {
-            this.variables = variables;
+            this.solverData = solverData;
         }
 
         /// <summary>
@@ -37,25 +37,25 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         {
             // TODO MEYERJ may lead to incorrect results if factor is around 0
             // -> investigate further
-            double factor = -1.0;
-            if (weight.HasValue)
-            {
-                double totalDistance = 0;
-                foreach (var distance in variables.Distances)
-                {
-                    totalDistance += distance;
-                }
-                factor *= weight.Value / totalDistance;
-            }
+            //double factor = -1.0;
+            //if (weight.HasValue)
+            //{
+            //    double totalDistance = 0;
+            //    foreach (var distance in variables.Distances)
+            //    {
+            //        totalDistance += distance;
+            //    }
+            //    factor *= weight.Value / totalDistance;
+            //}
 
             LinearExpr expr = new LinearExpr();
-            for (int row = 0; row < variables.NumberLocations; row++)
-            {
-                for (int col = 0; col < variables.NumberLocations; col++)
-                {
-                    expr += (factor * variables.Distances[row, col]) * variables.UsesWay[row, col];
-                }
-            }
+            //for (int row = 0; row < variables.NumberLocations; row++)
+            //{
+            //    for (int col = 0; col < variables.NumberLocations; col++)
+            //    {
+            //        expr += (factor * variables.Distances[row, col]) * variables.UsesWay[row, col];
+            //    }
+            //}
             return expr;
         }
     }

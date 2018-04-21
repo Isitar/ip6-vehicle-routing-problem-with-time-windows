@@ -7,37 +7,29 @@ using GLS = Google.OrTools.LinearSolver;
 
 namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 {
-    // TODO MEYERJ split in multiple classes
     class VariableBuilder
     {
-        public GLS.Solver Solver { get; private set; }
-        public int NumberLocations { get; private set; }
-        public GLS.Variable[] Potential { get; private set; }
-        public GLS.Variable[,] UsesWay { get; private set; }
-        public int[,] Distances { get; private set; }
+        private SolverData solverData;
 
-        public VariableBuilder(GLS.Solver solver)
+        public VariableBuilder(SolverData solverData)
         {
-            Solver = solver;
+            this.solverData = solverData;
         }
 
-        public void CreateVariables(int[,] distances)
+        public void CreateVariables()
         {
-            Distances = distances;
-            NumberLocations = distances.GetLength(0);
-
             CreateLocations();
             CreateWays();
         }
 
         private void CreateLocations()
         {
-            Potential = Solver.MakeIntVarArray(NumberLocations, 0, double.MaxValue);
+            //Potential = Solver.MakeIntVarArray(NumberLocations, 0, double.MaxValue);
         }
 
         private void CreateWays()
         {
-            UsesWay = Solver.MakeBoolVarMatrix(NumberLocations, NumberLocations);
+            //UsesWay = Solver.MakeBoolVarMatrix(NumberLocations, NumberLocations);
         }
     }
 }

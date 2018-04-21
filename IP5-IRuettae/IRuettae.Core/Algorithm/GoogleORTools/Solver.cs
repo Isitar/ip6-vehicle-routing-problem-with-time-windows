@@ -8,29 +8,22 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
 {
     class Solver : ISolver
     {
-        private readonly int[,] distances;
+        private readonly SolverData solverData;
 
         private bool hasModel = false;
         private ResultState resultState = ResultState.NotSolved;
-        private Route result = null;
+        //private Route result = null;
 
         private readonly GLS.Solver solver = new GLS.Solver("SantaProblem", GLS.Solver.CBC_MIXED_INTEGER_PROGRAMMING);
-        private readonly VariableBuilder variables;
-        private readonly ConstraintBuilder constraints;
         private readonly AbstractTargetFunctionBuilder targetFunctionBuilder;
-        private readonly ResultBuilder resultBuilder;
 
         /// <summary>
         ///
         /// </summary>
-        /// <param name="distances">2d Array of all distances from - to, first element is starting point</param>
-        public Solver(int[,] distances, AbstractTargetFunctionBuilder targetFunctionBuilder)
+        public Solver(SolverInputData solverInputData, AbstractTargetFunctionBuilder targetFunctionBuilder)
         {
-            this.distances = distances;
-            variables = new VariableBuilder(solver);
-            constraints = new ConstraintBuilder(variables);
+            this.solverData = new SolverData(solverInputData, solver);
             this.targetFunctionBuilder = targetFunctionBuilder;
-            resultBuilder = new ResultBuilder(variables);
         }
 
         public ResultState Solve()
@@ -43,7 +36,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
         {
             InitGoogleSolver();
             AddVariables();
-            AddContraints();
+            AddConstraints();
             AddTargetFunction();
 
             hasModel = true;
@@ -57,16 +50,19 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
 
         private void AddVariables()
         {
-            variables.CreateVariables(distances);
+            var vb = new VariableBuilder(solverData);
+            vb.CreateVariables();
         }
 
-        private void AddContraints()
+        private void AddConstraints()
         {
-            constraints.CreateConstraints();
+            var cb = new ConstraintBuilder(solverData);
+            cb.CreateConstraints();
         }
+
         private void AddTargetFunction()
         {
-            targetFunctionBuilder.CreateTargetFunction(variables);
+            targetFunctionBuilder.CreateTargetFunction(solverData);
         }
 
         private ResultState SolveInternal()
@@ -107,7 +103,8 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
 
         public Route GetResult()
         {
-            return resultBuilder.CreateResult();
+            var rb = new ResultBuilder(solverData);
+            return rb.CreateResult();
         }
     }
 }

@@ -56,6 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithm\GoogleORTools\Detail\SolverData.cs" />
     <Compile Include="Algorithm\GoogleORTools\TargetFunctionBuilders\AbstractTargetFunctionBuilder.cs" />
     <Compile Include="Algorithm\GoogleORTools\Detail\ConstraintBuilder.cs" />
     <Compile Include="Algorithm\GoogleORTools\TargetFunctionBuilders\DefaultTargetFunctionBuilder.cs" />
@@ -66,8 +67,10 @@
     <Compile Include="Algorithm\ISolver.cs" />
     <Compile Include="Algorithm\ResultState.cs" />
     <Compile Include="Algorithm\Route.cs" />
+    <Compile Include="Algorithm\SolverInputData.cs" />
     <Compile Include="Algorithm\Starter.cs" />
     <Compile Include="Algorithm\TargetType.cs" />
+    <Compile Include="Algorithm\VisitState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

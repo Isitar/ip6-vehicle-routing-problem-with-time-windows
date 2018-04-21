@@ -14,9 +14,32 @@ namespace IRuettae.Core.Test.Algorithm
         [TestMethod]
         public void TestSolve()
         {
+            int numberOfSantas = 3;
+
+            VisitState d = VisitState.Default;
+            VisitState n = VisitState.NotAvailable;
+            VisitState[][,] visits = {
+                new VisitState[6, 2] {
+                    { d, d },
+                    { d, d },
+                    { d, d },
+                    { d, d },
+                    { d, d },
+                    { d, d },
+                },
+                new VisitState[6, 2] {
+                    { d, d },
+                    { d, d },
+                    { d, d },
+                    { d, d },
+                    { d, d },
+                    { d, d },
+                },
+            };
+
             // example from: http://www.or.deis.unibo.it/algottm/files/8_ATSP.pdf
             var inf = int.MaxValue;
-            int[,] distances = new int[6, 6] {
+            int[,] distances = {
                 { 0, inf, inf, 2, 1, inf },
                 { 7, 0, 1, inf, inf, inf },
                 { 6, 5, 0, 3, 6, inf },
@@ -25,12 +48,27 @@ namespace IRuettae.Core.Test.Algorithm
                 { 3, inf, inf, 7, 9, 0 },
             };
 
-            var actual = Starter.Optimise(distances);
-            var expected = new Route()
+            int[] visitLength =
             {
-                Waypoints = new List<int>()
+                1,
+                2,
+                3,
+                1,
+                2,
+                3,
+            };
+
+            var actual = Starter.Optimise(new SolverInputData(numberOfSantas, visitLength, visits, 5, distances));
+            var expected = new Route(numberOfSantas)
+            {
+                Waypoints = new List<int>[2] {
+                    new List<int>()
                 {
                     0, 3, 1, 2, 4, 5,
+                },new List<int>()
+                {
+                    0, 3, 1, 2, 4, 5,
+                }
                 }
             };
 

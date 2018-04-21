@@ -14,12 +14,16 @@ namespace IRuettae.Core.Tests.Algorithm
         [TestMethod]
         public void TestEquals()
         {
-            var r1 = new Route();
-            r1.Waypoints.Add(1);
-            r1.Waypoints.Add(2);
-            var r2 = new Route();
-            r2.Waypoints.Add(1);
-            r2.Waypoints.Add(2);
+            var r1 = new Route(2);
+            r1.Waypoints[0].Add(1);
+            r1.Waypoints[0].Add(2);
+            r1.Waypoints[1].Add(3);
+            r1.Waypoints[1].Add(4);
+            var r2 = new Route(2);
+            r2.Waypoints[0].Add(1);
+            r2.Waypoints[0].Add(2);
+            r2.Waypoints[1].Add(3);
+            r2.Waypoints[1].Add(4);
 
             Assert.IsTrue(r1.Equals(r2));
         }

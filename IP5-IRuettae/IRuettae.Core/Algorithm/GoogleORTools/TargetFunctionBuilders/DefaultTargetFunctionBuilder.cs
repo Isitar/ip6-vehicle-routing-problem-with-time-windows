@@ -10,22 +10,19 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.TargetFunctionBuilders
 {
     class DefaultTargetFunctionBuilder : AbstractTargetFunctionBuilder
     {
-        private VariableBuilder variables;
         private GLS.LinearExpr targetFunction = new GLS.LinearExpr();
 
         public DefaultTargetFunctionBuilder()
         {
         }
 
-        public override void CreateTargetFunction(VariableBuilder variables)
+        public override void CreateTargetFunction(SolverData solverData)
         {
-            this.variables = variables;
-
-            var factory = new TargetFunctionFactory(variables);
+            var factory = new TargetFunctionFactory(solverData);
 
             targetFunction += factory.CreateTargetFunction(TargetType.ShortestRoute, null);
 
-            variables.Solver.Maximize(targetFunction);
+            solverData.Solver.Maximize(targetFunction);
         }
     }
 }
