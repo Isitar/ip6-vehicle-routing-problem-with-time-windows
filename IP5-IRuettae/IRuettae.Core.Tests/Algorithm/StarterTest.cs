@@ -12,14 +12,31 @@ namespace IRuettae.Core.Test.Algorithm
     public class StarterTest
     {
         [TestMethod]
-        public void TestSolve()
+        public SolverInputData GetModel()
         {
-            int numberOfSantas = 3;
+            bool[][,] santas = {
+                new bool[,] {
+                    { true, true },
+                    { true, true },
+                    { true, true },
+                    { true, true },
+                    { true, true },
+                    { true, true },
+                },
+                new bool[,] {
+                    { true, true, true },
+                    { true, true, true },
+                    { true, true, true },
+                    { true, true, true },
+                    { true, true, true },
+                    { true, true, true },
+                },
+            };
 
             VisitState d = VisitState.Default;
             VisitState n = VisitState.NotAvailable;
             VisitState[][,] visits = {
-                new VisitState[6, 2] {
+                new VisitState[,] {
                     { d, d },
                     { d, d },
                     { d, d },
@@ -27,13 +44,13 @@ namespace IRuettae.Core.Test.Algorithm
                     { d, d },
                     { d, d },
                 },
-                new VisitState[6, 2] {
-                    { d, d },
-                    { d, d },
-                    { d, d },
-                    { d, d },
-                    { d, d },
-                    { d, d },
+                new VisitState[,] {
+                    { d, d, d },
+                    { d, d, d },
+                    { d, d, d },
+                    { d, d, d },
+                    { d, d, d },
+                    { d, d, d },
                 },
             };
 
@@ -50,29 +67,39 @@ namespace IRuettae.Core.Test.Algorithm
 
             int[] visitLength =
             {
-                1,
-                2,
-                3,
-                1,
-                2,
-                3,
+                1, 2, 3, 1, 2, 3,
             };
 
-            var actual = Starter.Optimise(new SolverInputData(numberOfSantas, visitLength, visits, 5, distances));
-            var expected = new Route(numberOfSantas)
+            return new SolverInputData(santas, visitLength, visits, 5, distances);
+        }
+
+        [TestMethod]
+        public void TestSolve()
+        {
+            var model = GetModel();
+            var actual = Starter.Optimise(model);
+            var expected = new Route(model.Santas[0].GetLength(0))
             {
-                Waypoints = new List<int>[2] {
+                Waypoints = new List<int>[] {
                     new List<int>()
-                {
-                    0, 3, 1, 2, 4, 5,
-                },new List<int>()
-                {
-                    0, 3, 1, 2, 4, 5,
-                }
+                    {
+                        0, 4, 5,
+                    },
+                    new List<int>()
+                    {
+                        0, 3, 1, 2,
+                    },
                 }
             };
 
             Assert.AreEqual(expected, actual);
         }
+
+        [TestMethod]
+        public void TestModel()
+        {
+            Assert.IsTrue(GetModel().IsValid());
+        }
+
     }
 }

@@ -10,8 +10,18 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
     class SolverVariables
     {
         /// <summary>
-        /// [day][santa,visit,timeslice] is visiting
+        /// [day][santa][visit,timeslice] is visiting
         /// </summary>
-        public GLS.Variable[][,,] Visits { get; set; }
+        public GLS.Variable[][][,] Visits { get; set; }
+
+        /// <summary>
+        /// [day][santa,timeslice] is available
+        /// </summary>
+        public GLS.Variable[][,] Santas { get; set; }
+
+        /// <summary>
+        /// [santa][from,to] is using way
+        /// </summary>
+        public GLS.Variable[][,] UsesWay { get; set; }
     }
 }

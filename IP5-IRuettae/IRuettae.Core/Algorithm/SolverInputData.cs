@@ -8,7 +8,10 @@ namespace IRuettae.Core.Algorithm
 {
     public class SolverInputData
     {
-        public int NumberOfSantas { get; }
+        /// <summary>
+        /// day * santa * timeslice (5min), is available
+        /// </summary>
+        public bool[][,] Santas { get; }
 
         /// <summary>
         /// [min]
@@ -30,13 +33,30 @@ namespace IRuettae.Core.Algorithm
         /// </summary>
         public int[,] Distances { get; }
 
-        public SolverInputData(int numberOfSantas, int[] visitsLength, VisitState[][,] visits, int timesliceLength, int[,] distances)
+        public SolverInputData(bool[][,] santas, int[] visitsLength, VisitState[][,] visits, int timesliceLength, int[,] distances)
         {
-            NumberOfSantas = numberOfSantas;
+            Santas = santas;
             VisitsLength = visitsLength;
             Visits = visits;
             TimesliceLength = timesliceLength;
             Distances = distances;
+        }
+
+        public bool IsValid()
+        {
+            int numberOfSantas = Santas[0].GetLength(0);
+            int numberOfDays = Santas.Length;
+            int numberOfVisits = VisitsLength.Length;
+
+            return true
+                && Santas.All(day => day.GetLength(0) == numberOfSantas)
+                && Santas.Zip(Visits, (a, b) => Tuple.Create(a, b)).All(e => e.Item1.GetLength(1) == e.Item2.GetLength(1))
+                && Santas.Length == numberOfDays
+                && VisitsLength.Length == numberOfVisits
+                && Visits.All(v => v.GetLength(0) == numberOfVisits)
+                && Distances.GetLength(0) == numberOfVisits
+                && Distances.GetLength(1) == numberOfVisits
+                ;
         }
     }
 }
