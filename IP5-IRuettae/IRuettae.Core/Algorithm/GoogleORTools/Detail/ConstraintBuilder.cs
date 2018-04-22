@@ -19,6 +19,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 
         public void CreateConstraints()
         {
+            CreateVisitsConstraint();
             CreateVisitAvailableConstraint();
             CreateVisitOverallLengthConstraint();
             CreateSantaVisitsConstraint();
@@ -27,7 +28,52 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             CreateSantaOnlyOnePlaceConstraint();
             CreateSantaNeedTimeToFirstVisitConstraint();
             CreateSantaNeedsTimeToGetHomeConstraint();
-            //CreateSantaNeedTimeBetweenVisitsConstraint();
+            CreateSantaNeedTimeBetweenVisitsConstraint();
+            CreateSingleVisitContraint();
+        }
+
+        /// <summary>
+        /// Visit is beeing visited if it is visited by a santa
+        /// </summary>
+        private void CreateVisitsConstraint()
+        {
+            for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+            {
+                for (int day = 0; day < solverData.NumberOfDays; day++)
+                {
+                    for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
+                    {
+                        // Z3 = Z1 + Z2 + ...
+                        var expr = new LinearExpr();
+                        for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+                        {
+                            expr += solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
+                        }
+                        solverData.Solver.Add(solverData.Variables.Visits[day][visit, timeslice] == expr);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// A visit has to be in one piece
+        /// </summary>
+        private void CreateSingleVisitContraint()
+        {
+            const int startingPoint = 0;
+            for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+            {
+                var distance = solverData.Input.Distances[startingPoint, visit];
+                for (int day = 0; day < solverData.NumberOfDays; day++)
+                {
+                    for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+                    {
+                        for (int timeslice = 0; timeslice < Math.Min(distance, solverData.SlicesPerDay[day]); timeslice++)
+                        {
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -41,14 +87,11 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                 var distance = solverData.Input.Distances[startingPoint, visit];
                 for (int day = 0; day < solverData.NumberOfDays; day++)
                 {
-                    for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+                    for (int timeslice = 0; timeslice < Math.Min(distance, solverData.SlicesPerDay[day]); timeslice++)
                     {
-                        for (int timeslice = 0; timeslice < Math.Min(distance, solverData.SlicesPerDay[day]); timeslice++)
-                        {
-                            // Z1 == 0
-                            var expr = solverData.Variables.Visits[day][santa][visit, timeslice];
-                            solverData.Solver.Add(expr == 0);
-                        }
+                        // Z1 == 0
+                        var expr = solverData.Variables.Visits[day][visit, timeslice];
+                        solverData.Solver.Add(expr == 0);
                     }
                 }
             }
@@ -65,15 +108,12 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                 var distance = solverData.Input.Distances[visit, homePoint];
                 for (int day = 0; day < solverData.NumberOfDays; day++)
                 {
-                    for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+                    var lastTimeslice = solverData.SlicesPerDay[day] - 1;
+                    for (int timeslice = 0; timeslice < Math.Min(distance, lastTimeslice); timeslice++)
                     {
-                        var lastTimeslice = solverData.SlicesPerDay[day] - 1;
-                        for (int timeslice = 0; timeslice < Math.Min(distance, lastTimeslice); timeslice++)
-                        {
-                            // Z1 == 0
-                            var expr = solverData.Variables.Visits[day][santa][visit, lastTimeslice - timeslice];
-                            solverData.Solver.Add(expr == 0);
-                        }
+                        // Z1 == 0
+                        var expr = solverData.Variables.Visits[day][visit, lastTimeslice - timeslice];
+                        solverData.Solver.Add(expr == 0);
                     }
                 }
             }
@@ -85,8 +125,8 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         /// </summary>
         private void CreateSantaNeedTimeBetweenVisitsConstraint()
         {
-
             // Warning, potential performance problem
+            // TODO
         }
 
         /// <summary>
@@ -105,7 +145,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                         var sum = new LinearExpr();
                         for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
                         {
-                            sum += solverData.Variables.Visits[day][santa][visit, timeslice];
+                            sum += solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
                         }
                         solverData.Solver.Add(available >= sum);
                     }
@@ -147,7 +187,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                         var sum = new LinearExpr();
                         for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
                         {
-                            sum += solverData.Variables.Visits[day][santa][visit, timeslice];
+                            sum += solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
                         }
                         solverData.Solver.Add(solverData.Variables.Santas[day][santa, timeslice] >= sum);
                     }
@@ -188,7 +228,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                     {
                         for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                         {
-                            var slice = solverData.Variables.Visits[day][santa][visit, timeslice];
+                            var slice = solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
                             sumOfSlices += slice;
 
                             // Z3 >= Z1
@@ -215,7 +255,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                     {
                         for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                         {
-                            sum += solverData.Variables.Visits[day][santa][visit, timeslice];
+                            sum += solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
                         }
                     }
                 }

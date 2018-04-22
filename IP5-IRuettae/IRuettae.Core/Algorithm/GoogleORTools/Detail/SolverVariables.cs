@@ -12,7 +12,12 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         /// <summary>
         /// [day][santa][visit,timeslice] is visiting
         /// </summary>
-        public GLS.Variable[][][,] Visits { get; set; }
+        public GLS.Variable[][][,] VisitsPerSanta { get; set; }
+
+        /// <summary>
+        /// [day][visit,timeslice] is beeing visited by any santa
+        /// </summary>
+        public GLS.Variable[][,] Visits { get; set; }
 
         /// <summary>
         /// [santa,visit] is santa visiting visit

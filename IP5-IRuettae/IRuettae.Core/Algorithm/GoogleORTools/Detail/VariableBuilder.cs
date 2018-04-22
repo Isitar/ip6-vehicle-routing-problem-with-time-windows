@@ -18,10 +18,23 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 
         public void CreateVariables()
         {
+            CreateVisitsPerSanta();
             CreateVisits();
             CreateSantaVisits();
             CreateWays();
             CreateSantas();
+        }
+
+        private void CreateVisits()
+        {
+            solverData.Variables.Visits = new GLS.Variable[solverData.NumberOfDays][,];
+
+            for (int i = 0; i < solverData.NumberOfDays; i++)
+            {
+                var rows = solverData.NumberOfVisits;
+                var cols = solverData.SlicesPerDay[i];
+                solverData.Variables.Visits[i] = solverData.Solver.MakeBoolVarMatrix(rows, cols);
+            }
         }
 
         private void CreateSantaVisits()
@@ -29,19 +42,19 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             solverData.Variables.SantaVisits = solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfSantas, solverData.NumberOfVisits);
         }
 
-        private void CreateVisits()
+        private void CreateVisitsPerSanta()
         {
-            solverData.Variables.Visits = new GLS.Variable[solverData.NumberOfDays][][,];
+            solverData.Variables.VisitsPerSanta = new GLS.Variable[solverData.NumberOfDays][][,];
 
             for (int i = 0; i < solverData.NumberOfDays; i++)
             {
-                solverData.Variables.Visits[i] = new GLS.Variable[solverData.NumberOfSantas][,];
+                solverData.Variables.VisitsPerSanta[i] = new GLS.Variable[solverData.NumberOfSantas][,];
 
                 var rows = solverData.NumberOfVisits;
                 var cols = solverData.SlicesPerDay[i];
                 for (int j = 0; j < solverData.NumberOfSantas; j++)
                 {
-                    solverData.Variables.Visits[i][j] = solverData.Solver.MakeBoolVarMatrix(rows, cols);
+                    solverData.Variables.VisitsPerSanta[i][j] = solverData.Solver.MakeBoolVarMatrix(rows, cols);
                 }
             }
         }
