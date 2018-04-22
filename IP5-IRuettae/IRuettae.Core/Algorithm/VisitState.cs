@@ -10,6 +10,19 @@ namespace IRuettae.Core.Algorithm
     {
         Default, // no preference, should be available
         NotAvailable,
-        Prefered,
+    }
+
+    static class Extensions
+    {
+
+        public static bool IsAvailable(this VisitState s)
+        {
+            switch (s)
+            {
+                case VisitState.Default:
+                    return true;
+            }
+            return false;
+        }
     }
 }

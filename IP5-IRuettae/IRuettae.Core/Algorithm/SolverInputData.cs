@@ -16,7 +16,7 @@ namespace IRuettae.Core.Algorithm
         /// <summary>
         /// in timeslices
         /// </summary>
-        public int[] VisitsLength { get; }
+        public int[] VisitsDuration { get; }
 
         /// <summary>
         /// day * visit * timeslice, is available
@@ -26,19 +26,19 @@ namespace IRuettae.Core.Algorithm
         /// <summary>
         /// in min
         /// </summary>
-        public int TimesliceLength { get; }
+        public int TimesliceDuration { get; }
 
         /// <summary>
         /// 2d Array of all distances from - to, first element is the starting point [min]
         /// </summary>
         public int[,] Distances { get; }
 
-        public SolverInputData(bool[][,] santas, int[] visitsLength, VisitState[][,] visits, int timesliceLength, int[,] distances)
+        public SolverInputData(bool[][,] santas, int[] visitsDuration, VisitState[][,] visits, int timesliceDuration, int[,] distances)
         {
             Santas = santas;
-            VisitsLength = visitsLength;
+            VisitsDuration = visitsDuration;
             Visits = visits;
-            TimesliceLength = timesliceLength;
+            TimesliceDuration = timesliceDuration;
             Distances = distances;
         }
 
@@ -46,13 +46,13 @@ namespace IRuettae.Core.Algorithm
         {
             int numberOfSantas = Santas[0].GetLength(0);
             int numberOfDays = Santas.Length;
-            int numberOfVisits = VisitsLength.Length;
+            int numberOfVisits = VisitsDuration.Length;
 
             return true
                 && Santas.All(day => day.GetLength(0) == numberOfSantas)
                 && Santas.Zip(Visits, (a, b) => Tuple.Create(a, b)).All(e => e.Item1.GetLength(1) == e.Item2.GetLength(1))
                 && Santas.Length == numberOfDays
-                && VisitsLength.Length == numberOfVisits
+                && VisitsDuration.Length == numberOfVisits
                 && Visits.All(v => v.GetLength(0) == numberOfVisits)
                 && Distances.GetLength(0) == numberOfVisits
                 && Distances.GetLength(1) == numberOfVisits

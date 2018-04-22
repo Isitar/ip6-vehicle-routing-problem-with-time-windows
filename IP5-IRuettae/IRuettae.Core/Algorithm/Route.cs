@@ -5,14 +5,20 @@ namespace IRuettae.Core.Algorithm
 {
     public class Route
     {
-        public List<int>[] Waypoints { get; set; }
+        /// <summary>
+        /// [santa,day] list of visits
+        /// </summary>
+        public List<int>[,] Waypoints { get; set; }
 
-        public Route(int numberOfSantas)
+        public Route(int numberOfSantas, int numberOfDays)
         {
-            Waypoints = new List<int>[numberOfSantas];
-            for (int i = 0; i < numberOfSantas; i++)
+            Waypoints = new List<int>[numberOfSantas, numberOfDays];
+            for (int santa = 0; santa < numberOfSantas; santa++)
             {
-                Waypoints[i] = new List<int>();
+                for (int day = 0; day < numberOfDays; day++)
+                {
+                    Waypoints[santa, day] = new List<int>();
+                }
             }
         }
 
@@ -25,16 +31,19 @@ namespace IRuettae.Core.Algorithm
 
             var other = (Route)obj;
 
-            if (Waypoints.Length != other.Waypoints.Length)
+            if (Waypoints.Length != other.Waypoints.Length || Waypoints.GetLength(0) != other.Waypoints.GetLength(0))
             {
                 return false;
             }
 
-            for (int i = 0; i < Waypoints.Length; i++)
+            for (int santa = 0; santa < Waypoints.GetLength(0); santa++)
             {
-                if (!Enumerable.SequenceEqual(Waypoints[i], other.Waypoints[i]))
+                for (int day = 0; day < Waypoints.GetLength(1); day++)
                 {
-                    return false;
+                    if (!Enumerable.SequenceEqual(Waypoints[santa, day], other.Waypoints[santa, day]))
+                    {
+                        return false;
+                    }
                 }
             }
             return true;
