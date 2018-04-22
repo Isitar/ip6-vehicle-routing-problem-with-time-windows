@@ -26,7 +26,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 
         private void CreateSantaVisits()
         {
-            solverData.Variables.SantaVisits = solverData.Solver.MakeIntVarMatrix(solverData.NumberOfSantas, solverData.NumberOfVisits, 0, solverData.Input.VisitsLength.Max());
+            solverData.Variables.SantaVisits = solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfSantas, solverData.NumberOfVisits);
         }
 
         private void CreateVisits()
