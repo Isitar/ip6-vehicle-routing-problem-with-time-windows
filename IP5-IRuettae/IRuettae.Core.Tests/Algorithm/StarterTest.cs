@@ -45,13 +45,13 @@ namespace IRuettae.Core.Test.Algorithm
                 },
             };
 
-            var inf = int.MaxValue;
+            var X = int.MaxValue;
             int[,] distances = {
-                { inf, 1, inf, 1, inf},
-                { inf, inf, 1, inf, inf},
-                { 1, inf, inf, inf, inf},
-                { inf, inf, inf, 1, inf},
-                { 1, inf, inf, inf, inf},
+                { 1, 1, 1, 1, 1},
+                { 1, X, 1, X, X},
+                { 1, X, X, X, X},
+                { 1, X, X, 1, X},
+                { 1, X, X, X, X},
             };
 
             int[] visitLength =

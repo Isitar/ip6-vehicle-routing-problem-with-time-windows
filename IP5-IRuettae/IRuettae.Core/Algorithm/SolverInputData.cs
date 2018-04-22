@@ -9,17 +9,17 @@ namespace IRuettae.Core.Algorithm
     public class SolverInputData
     {
         /// <summary>
-        /// day * santa * timeslice, is available
+        /// [day][santa,timeslice] is available
         /// </summary>
         public bool[][,] Santas { get; }
 
         /// <summary>
-        /// in timeslices
+        /// [visit] duration in timeslices
         /// </summary>
         public int[] VisitsDuration { get; }
 
         /// <summary>
-        /// day * visit * timeslice, is available
+        /// [day][visit,timeslice] is available
         /// </summary>
         public VisitState[][,] Visits { get; }
 
@@ -29,7 +29,7 @@ namespace IRuettae.Core.Algorithm
         public int TimesliceDuration { get; }
 
         /// <summary>
-        /// 2d Array of all distances from - to, first element is the starting point [min]
+        /// [from,to] distance in timeslices
         /// </summary>
         public int[,] Distances { get; }
 

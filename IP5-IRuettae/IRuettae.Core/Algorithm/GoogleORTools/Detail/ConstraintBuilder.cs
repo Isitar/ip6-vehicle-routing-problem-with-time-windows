@@ -25,6 +25,68 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             CreateOnlyOneSantaPerVisitConstraint();
             CreateSantaAvailableConstraint();
             CreateSantaOnlyOnePlaceConstraint();
+            CreateSantaNeedTimeToFirstVisitConstraint();
+            CreateSantaNeedsTimeToGetHomeConstraint();
+            //CreateSantaNeedTimeBetweenVisitsConstraint();
+        }
+
+        /// <summary>
+        /// Santas need time to go to the first Visit
+        /// </summary>
+        private void CreateSantaNeedTimeToFirstVisitConstraint()
+        {
+            const int startingPoint = 0;
+            for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+            {
+                var distance = solverData.Input.Distances[startingPoint, visit];
+                for (int day = 0; day < solverData.NumberOfDays; day++)
+                {
+                    for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+                    {
+                        for (int timeslice = 0; timeslice < Math.Min(distance, solverData.SlicesPerDay[day]); timeslice++)
+                        {
+                            // Z1 == 0
+                            var expr = solverData.Variables.Visits[day][santa][visit, timeslice];
+                            solverData.Solver.Add(expr == 0);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Santas need to go back home from their last Visit
+        /// </summary>
+        private void CreateSantaNeedsTimeToGetHomeConstraint()
+        {
+            const int homePoint = 0;
+            for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+            {
+                var distance = solverData.Input.Distances[visit, homePoint];
+                for (int day = 0; day < solverData.NumberOfDays; day++)
+                {
+                    for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+                    {
+                        var lastTimeslice = solverData.SlicesPerDay[day] - 1;
+                        for (int timeslice = 0; timeslice < Math.Min(distance, lastTimeslice); timeslice++)
+                        {
+                            // Z1 == 0
+                            var expr = solverData.Variables.Visits[day][santa][visit, lastTimeslice - timeslice];
+                            solverData.Solver.Add(expr == 0);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Santas are not able to beam and therefore,
+        /// it needs a certain time to get from one visit to another
+        /// </summary>
+        private void CreateSantaNeedTimeBetweenVisitsConstraint()
+        {
+
+            // Warning, potential performance problem
         }
 
         /// <summary>
