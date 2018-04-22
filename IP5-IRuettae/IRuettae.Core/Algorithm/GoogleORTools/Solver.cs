@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using IRuettae.Core.Algorithm.GoogleORTools.Detail;
 using IRuettae.Core.Algorithm.GoogleORTools.TargetFunctionBuilders;
 using GLS = Google.OrTools.LinearSolver;
@@ -39,6 +40,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
             AddConstraints();
             AddTargetFunction();
 
+            Debug.WriteLine($"Number of constraints: {solverData.Solver.NumConstraints()}");
             hasModel = true;
             resultState = ResultState.NotSolved;
         }

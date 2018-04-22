@@ -30,11 +30,7 @@ namespace IRuettae.Core.Algorithm
                     break;
             }
 
-#if DEBUG
-            throw new Exception("Model is infeasible");
-#else
             return null;
-#endif
         }
     }
 }

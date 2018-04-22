@@ -16,7 +16,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 
         public Route CreateResult()
         {
-            Debug.WriteLine($"{solverData.Solver.Objective().Value()} is the value of the target function.");
+            Debug.WriteLine($"Value of the target function: {solverData.Solver.Objective().Value()}");
 
             var route = new Route(solverData.NumberOfSantas, solverData.NumberOfDays);
             {
@@ -39,8 +39,8 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                 }
             }
 
-            Debug.WriteLine("Result is:");
-            Debug.WriteLine(route.ToString());
+            Debug.Write("Result is:");
+            Debug.Write(route.ToString());
 
             return route;
         }
