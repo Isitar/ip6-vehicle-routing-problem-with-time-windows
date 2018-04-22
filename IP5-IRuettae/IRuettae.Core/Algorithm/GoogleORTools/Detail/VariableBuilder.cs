@@ -19,8 +19,14 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         public void CreateVariables()
         {
             CreateVisits();
+            CreateSantaVisits();
             CreateWays();
             CreateSantas();
+        }
+
+        private void CreateSantaVisits()
+        {
+            solverData.Variables.SantaVisits = solverData.Solver.MakeIntVarMatrix(solverData.NumberOfSantas, solverData.NumberOfVisits, 0, solverData.Input.VisitsLength.Max());
         }
 
         private void CreateVisits()
