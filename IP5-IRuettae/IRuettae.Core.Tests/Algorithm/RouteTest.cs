@@ -16,25 +16,25 @@ namespace IRuettae.Core.Tests.Algorithm
         {
             var r1 = new Route(2, 2);
             {
-                r1.Waypoints[0, 0].Add(1);
-                r1.Waypoints[0, 0].Add(2);
-                r1.Waypoints[0, 1].Add(3);
-                r1.Waypoints[0, 1].Add(4);
-                r1.Waypoints[1, 0].Add(5);
-                r1.Waypoints[1, 0].Add(6);
-                r1.Waypoints[1, 1].Add(7);
-                r1.Waypoints[1, 1].Add(8);
+                r1.Waypoints[0, 0].Add(new Waypoint(1, 1));
+                r1.Waypoints[0, 0].Add(new Waypoint(2, 1));
+                r1.Waypoints[0, 1].Add(new Waypoint(3, 1));
+                r1.Waypoints[0, 1].Add(new Waypoint(4, 1));
+                r1.Waypoints[1, 0].Add(new Waypoint(5, 1));
+                r1.Waypoints[1, 0].Add(new Waypoint(6, 1));
+                r1.Waypoints[1, 1].Add(new Waypoint(7, 1));
+                r1.Waypoints[1, 1].Add(new Waypoint(8, 1));
             }
             var r2 = new Route(2, 2);
             {
-                r2.Waypoints[0, 0].Add(1);
-                r2.Waypoints[0, 0].Add(2);
-                r2.Waypoints[0, 1].Add(3);
-                r2.Waypoints[0, 1].Add(4);
-                r2.Waypoints[1, 0].Add(5);
-                r2.Waypoints[1, 0].Add(6);
-                r2.Waypoints[1, 1].Add(7);
-                r2.Waypoints[1, 1].Add(8);
+                r2.Waypoints[0, 0].Add(new Waypoint(1, 1));
+                r2.Waypoints[0, 0].Add(new Waypoint(2, 1));
+                r2.Waypoints[0, 1].Add(new Waypoint(3, 1));
+                r2.Waypoints[0, 1].Add(new Waypoint(4, 1));
+                r2.Waypoints[1, 0].Add(new Waypoint(5, 1));
+                r2.Waypoints[1, 0].Add(new Waypoint(6, 1));
+                r2.Waypoints[1, 1].Add(new Waypoint(7, 1));
+                r2.Waypoints[1, 1].Add(new Waypoint(8, 1));
             }
 
             Assert.IsTrue(r1.Equals(r2));
@@ -45,25 +45,25 @@ namespace IRuettae.Core.Tests.Algorithm
         {
             var r1 = new Route(2, 2);
             {
-                r1.Waypoints[0, 0].Add(1);
-                r1.Waypoints[0, 0].Add(2);
-                r1.Waypoints[0, 1].Add(3);
-                r1.Waypoints[0, 1].Add(4);
-                r1.Waypoints[1, 0].Add(5);
-                r1.Waypoints[1, 0].Add(6);
-                r1.Waypoints[1, 1].Add(7);
-                r1.Waypoints[1, 1].Add(8);
+                r1.Waypoints[0, 0].Add(new Waypoint(1, 1));
+                r1.Waypoints[0, 0].Add(new Waypoint(2, 1));
+                r1.Waypoints[0, 1].Add(new Waypoint(3, 1));
+                r1.Waypoints[0, 1].Add(new Waypoint(4, 1));
+                r1.Waypoints[1, 0].Add(new Waypoint(5, 1));
+                r1.Waypoints[1, 0].Add(new Waypoint(6, 1));
+                r1.Waypoints[1, 1].Add(new Waypoint(7, 1));
+                r1.Waypoints[1, 1].Add(new Waypoint(8, 1));
             }
             var r2 = new Route(2, 2);
             {
-                r2.Waypoints[0, 0].Add(1);
-                r2.Waypoints[0, 0].Add(2);
-                r2.Waypoints[0, 1].Add(3);
-                r2.Waypoints[0, 1].Add(4);
-                r2.Waypoints[1, 0].Add(5);
-                r2.Waypoints[1, 0].Add(6);
-                r2.Waypoints[1, 1].Add(7);
-                r2.Waypoints[1, 1].Add(100000);
+                r1.Waypoints[0, 0].Add(new Waypoint(1, 1));
+                r1.Waypoints[0, 0].Add(new Waypoint(2, 1));
+                r1.Waypoints[0, 1].Add(new Waypoint(3, 1));
+                r1.Waypoints[0, 1].Add(new Waypoint(4, 1));
+                r1.Waypoints[1, 0].Add(new Waypoint(5, 1));
+                r1.Waypoints[1, 0].Add(new Waypoint(6, 1));
+                r1.Waypoints[1, 1].Add(new Waypoint(7, 1));
+                r1.Waypoints[1, 1].Add(new Waypoint(8, 1000000));
             }
 
             Assert.IsFalse(r1.Equals(r2));

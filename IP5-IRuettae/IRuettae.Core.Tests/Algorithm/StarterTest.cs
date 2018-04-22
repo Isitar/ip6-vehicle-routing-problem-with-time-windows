@@ -47,11 +47,11 @@ namespace IRuettae.Core.Test.Algorithm
 
             var X = int.MaxValue;
             int[,] distances = {
-                { 1, 1, 1, 1, 1},
-                { 1, X, 1, X, X},
-                { 1, X, X, X, X},
-                { 1, X, X, 1, X},
-                { 1, X, X, X, X},
+                { 0, 1, 1, 1, 1},
+                { 1, 0, 1, X, X},
+                { 1, X, 0, X, X},
+                { 1, X, X, 0, 1},
+                { 1, X, X, X, 0},
             };
 
             int[] visitLength =
@@ -69,22 +69,28 @@ namespace IRuettae.Core.Test.Algorithm
             var actual = Starter.Optimise(model);
             var expected = new Route(model.Santas.Length, model.Santas[0].GetLength(0))
             {
-                Waypoints = new List<int>[,] {
+                Waypoints = new List<Waypoint>[,] {
                     { // santa 1
-                        new List<int>()
+                        new List<Waypoint>()
                         { // day 1
-                            0, 1, 2,
+                            new Waypoint { visit = 0, startTime = 0 },
+                            new Waypoint { visit = 1, startTime = 2 },
+                            new Waypoint { visit = 2, startTime = 4 },
+                            new Waypoint { visit = 0, startTime = 7 },
                         },
-                        new List<int>()
+                        new List<Waypoint>()
                         { // day 2
-                            0, 3, 4,
+                            new Waypoint { visit = 0, startTime = 0 },
+                            new Waypoint { visit = 3, startTime = 2 },
+                            new Waypoint { visit = 4, startTime = 5 },
+                            new Waypoint { visit = 0, startTime = 7 },
                         },
                     },
                     { // santa 2
-                        new List<int>()
+                        new List<Waypoint>()
                         { // day 1
                         },
-                        new List<int>()
+                        new List<Waypoint>()
                         { // day 2
                         },
                     }

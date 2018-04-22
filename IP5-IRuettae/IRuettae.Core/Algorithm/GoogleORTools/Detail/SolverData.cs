@@ -15,6 +15,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         public int NumberOfVisits { get; }
         public int NumberOfDays { get; }
         public int[] SlicesPerDay { get; }
+        public int StartEndPoint { get; }
         public SolverVariables Variables { get; }
 
         public SolverData(SolverInputData solverInputData, GLS.Solver solver)
@@ -25,6 +26,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             NumberOfVisits = solverInputData.VisitsDuration.Length;
             NumberOfDays = solverInputData.Visits.Length;
             SlicesPerDay = solverInputData.Santas.Select(d => d.GetLength(1)).ToArray();
+            StartEndPoint = 0;
             Variables = new SolverVariables();
         }
     }
