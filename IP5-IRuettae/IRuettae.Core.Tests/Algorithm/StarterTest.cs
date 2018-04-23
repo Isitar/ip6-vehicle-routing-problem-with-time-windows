@@ -113,6 +113,5 @@ namespace IRuettae.Core.Test.Algorithm
             // shouldn't throw an exception
             Assert.IsNotNull(Starter.Optimise(model));
         }
-
     }
 }

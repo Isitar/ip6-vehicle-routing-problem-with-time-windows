@@ -33,7 +33,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 
                         // append way back home
                         var last = route.Waypoints[santa, day].LastOrDefault();
-                        var addTime = solverData.Input.VisitsDuration[last.visit] + solverData.Input.Distances[last.visit, solverData.StartEndPoint];
+                        var addTime = solverData.Input.Distances[last.visit, solverData.StartEndPoint];
                         route.Waypoints[santa, day].Add(new Waypoint(0, last.startTime + addTime));
                     }
                 }

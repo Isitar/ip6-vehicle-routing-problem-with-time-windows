@@ -60,7 +60,12 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         /// </summary>
         private void CreateSingleVisitConstraint()
         {
-            // TODO MEYERJ constraint fails
+            solverData.Variables.DebugStarts = new GLS.Variable[solverData.NumberOfDays][][];
+
+            for (int day = 0; day < solverData.NumberOfDays; day++)
+            {
+                solverData.Variables.DebugStarts[day] = new GLS.Variable[solverData.NumberOfVisits][];
+            }
 
             for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
             {
@@ -71,17 +76,18 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                 var duration = solverData.Input.VisitsDuration[visit];
                 for (int day = 0; day < solverData.NumberOfDays; day++)
                 {
-                    var possibleStarts = solverData.Solver.MakeBoolVarArray(solverData.SlicesPerDay[day]);
-                    for (int startTimeslice = 0; startTimeslice < solverData.SlicesPerDay[day]; startTimeslice++)
+                    solverData.Variables.DebugStarts[day][visit] = solverData.Solver.MakeBoolVarArray(solverData.SlicesPerDay[day]);
+                    for (int startTimeslice = 0; startTimeslice + duration < solverData.SlicesPerDay[day]; startTimeslice++)
                     {
                         // Z + (duration - 1) >= Z1 + Z2 + ...
                         var sumStart = new LinearExpr();
-                        var start = possibleStarts[startTimeslice];
-                        for (int timeslice = 0; startTimeslice < duration; startTimeslice++)
+                        var start = solverData.Variables.DebugStarts[day][visit][startTimeslice];
+                        for (int timeslice = 0; timeslice < duration; timeslice++)
                         {
+                            int currentTimeslice = startTimeslice + timeslice;
                             // Z <= Z1
-                            solverData.Solver.Add(start <= solverData.Variables.Visits[day][visit, timeslice]);
-                            sumStart += solverData.Variables.Visits[day][visit, timeslice];
+                            solverData.Solver.Add(start <= solverData.Variables.Visits[day][visit, currentTimeslice]);
+                            sumStart += solverData.Variables.Visits[day][visit, currentTimeslice];
                         }
                         solverData.Solver.Add(start + (duration - 1) >= sumStart);
                         sum += start;
@@ -89,7 +95,6 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                 }
                 solverData.Solver.Add(1 == sum);
             }
-            throw new Exception();
         }
 
         /// <summary>

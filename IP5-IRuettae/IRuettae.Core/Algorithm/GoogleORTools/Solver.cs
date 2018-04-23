@@ -70,7 +70,39 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
         private ResultState SolveInternal()
         {
             resultState = FromGoogleResultState(solver.Solve());
+
+#if DEBUG
+            PrintDebugOutput();
+#endif
+
             return resultState;
+        }
+
+        private void PrintDebugOutput()
+        {
+            Debug.WriteLine("");
+            Debug.WriteLine("DEBUG OUTPUT");
+            Debug.WriteLine("");
+            for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+            {
+                Debug.WriteLine($"Visit: {visit}");
+                for (int day = 0; day < solverData.NumberOfDays; day++)
+                {
+                    Debug.WriteLine($"Day: {day}");
+                    for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
+                    {
+                        Debug.Write(solverData.Variables.DebugStarts[day][visit][timeslice].SolutionValue());
+                    }
+                    Debug.WriteLine(" (DebugStarts)");
+                    for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
+                    {
+                        Debug.Write(solverData.Variables.Visits[day][visit, timeslice].SolutionValue());
+                    }
+                    Debug.WriteLine(" (Visits)");
+                    Debug.WriteLine("");
+                }
+                Debug.WriteLine("");
+            }
         }
 
         private ResultState FromGoogleResultState(int resultState)

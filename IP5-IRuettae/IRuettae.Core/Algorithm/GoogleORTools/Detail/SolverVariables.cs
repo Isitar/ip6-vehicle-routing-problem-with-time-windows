@@ -33,5 +33,10 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         /// [santa][from,to] is using way
         /// </summary>
         public GLS.Variable[][,] UsesWay { get; set; }
+
+        /// <summary>
+        /// [day][visit][timeslice]
+        /// </summary>
+        public GLS.Variable[][][] DebugStarts { get; set; }
     }
 }
