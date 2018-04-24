@@ -30,6 +30,34 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             CreateSantaNeedsTimeToGetHomeConstraint();
             CreateSantaNeedTimeBetweenVisitsConstraint();
             CreateSingleVisitConstraint();
+            CreateUsesSantaConstraint();
+        }
+
+        /// <summary>
+        /// Santa is beeing used if he visits anybody on that day
+        /// </summary>
+        private void CreateUsesSantaConstraint()
+        {
+            for (int day = 0; day < solverData.NumberOfDays; day++)
+            {
+                for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+                {
+                    var isUsed = solverData.Variables.UsesSanta[day, santa];
+                    var sum = new LinearExpr();
+                    for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+                    {
+                        for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
+                        {
+                            var current = solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
+                            sum += current;
+                            // Z >= Z1
+                            solverData.Solver.Add(isUsed >= current);
+                        }
+                    }
+                    // Z <= Z1 + Z2 + ...
+                    solverData.Solver.Add(isUsed <= sum);
+                }
+            }
         }
 
         /// <summary>
