@@ -14,7 +14,8 @@ namespace IRuettae.Core.Test.Algorithm
         [TestMethod]
         public SolverInputData GetModel()
         {
-            var t = true;
+            const bool t = true;
+            const bool f = false;
             bool[][,] santas = {
                 new bool[,] {
                     { t, t, t, t, t, t },
@@ -47,7 +48,7 @@ namespace IRuettae.Core.Test.Algorithm
 
             var X = int.MaxValue;
             int[,] distances = {
-                { 0, 1, 1, 1, 1},
+                { 0, 1, 5, 1, 1},
                 { 1, 0, 1, X, X},
                 { 1, X, 0, X, X},
                 { 1, X, X, 0, 1},

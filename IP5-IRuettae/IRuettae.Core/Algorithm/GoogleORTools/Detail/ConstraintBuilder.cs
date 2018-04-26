@@ -151,7 +151,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                     {
                         // Z == 0
                         var expr = solverData.Variables.Visits[day][visit, timeslice];
-                        solverData.Solver.Add(expr <= 0);
+                        solverData.Solver.Add(expr == 0);
                     }
                 }
             }
@@ -172,7 +172,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                     {
                         // Z == 0
                         var expr = solverData.Variables.Visits[day][visit, lastTimeslice - timeslice];
-                        solverData.Solver.Add(expr <= 0);
+                        solverData.Solver.Add(expr == 0);
                     }
                 }
             }
@@ -197,50 +197,49 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                     {
                         var distance = solverData.Input.Distances[visit, destination];
                         // don't add unnecessary constraints
-                        if (distance > 0)
+                        if (distance <= 0) continue;
+
+                        for (int day = 0; day < solverData.NumberOfDays; day++)
                         {
-                            for (int day = 0; day < solverData.NumberOfDays; day++)
+                            // if you visit "visit", you cannot visit "destination" on the same day
+                            int slicesPerDay = solverData.SlicesPerDay[day];
+                            if (distance >= slicesPerDay)
                             {
-                                // if you visit "visit", you cannot visit "destination" on the same day
-                                int slicesPerDay = solverData.SlicesPerDay[day];
-                                if (distance > slicesPerDay)
-                                {
-                                    var A = solverData.Variables.SantaDayVisit[day][santa, visit];
-                                    var B = solverData.Variables.SantaDayVisit[day][santa, destination];
+                                var A = solverData.Variables.SantaDayVisit[day][santa, visit];
+                                var B = solverData.Variables.SantaDayVisit[day][santa, destination];
 
-                                    solverData.Solver.Add(A + B <= 1);
-
-                                }
-                                // default case
-                                else
+                                solverData.Solver.Add(A + B <= 1);
+                            }
+                            // default case
+                            else
+                            {
+                                for (int timeslice = 0; timeslice < slicesPerDay - distance; timeslice++)
                                 {
-                                    for (int timeslice = 0; timeslice < slicesPerDay - distance; timeslice++)
+                                    var A = solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
+                                    var B = new LinearExpr();
+                                    int numberOfBs = 0;
+
+                                    // 1 because same timeslot is handled by another constraint
+                                    for (int distCounter = 1; distCounter <= distance; distCounter++)
                                     {
-                                        var A = solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
-                                        var B = new LinearExpr();
-                                        int numberOfBs = 0;
-                                        // 1 because same timeslot is handled by another constraint
-                                        for (int distCounter = 1; distCounter <= distance; distCounter++)
-                                        {
-                                            #region simple but stupid constraint:
+                                        #region simple but stupid constraint:
 
-                                            //var B = solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
-                                            //solverData.Solver.Add(B <= 1 - A);
+                                        // var B = solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
+                                        // solverData.Solver.Add(B <= 1 - A);
 
-                                            #endregion
+                                        #endregion
 
-                                            B += solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
-                                            numberOfBs++;
-                                        }
-
-                                        // A <= 1 - B would be easy but B can be greater than 0 and A has to be >= 0
-                                        // so we multiply A by numberOfBs, possible values are 0 (if A == 0) or numberOfBs (if A == 1)
-                                        // if B == 0, A can be 1 (numberOfBs <= numberOfBs), else A has to be 0 (numberOfBs - (at least 1)) is smaller than numberOfBs
-                                        solverData.Solver.Add(numberOfBs * A <= numberOfBs - B);
-#if DEBUG
-                                        constraintCounter++;
-#endif
+                                        B += solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
+                                        numberOfBs++;
                                     }
+
+                                    // A <= 1 - B would be easy but B can be greater than 0 and A has to be >= 0
+                                    // so we multiply A by numberOfBs, possible values are 0 (if A == 0) or numberOfBs (if A == 1)
+                                    // if B == 0, A can be 1 (numberOfBs <= numberOfBs), else A has to be 0 (numberOfBs - (at least 1)) is smaller than numberOfBs
+                                    solverData.Solver.Add(numberOfBs * A <= numberOfBs - B);
+#if DEBUG
+                                    constraintCounter++;
+#endif
                                 }
                             }
                         }
