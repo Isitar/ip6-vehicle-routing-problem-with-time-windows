@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Google.OrTools.LinearSolver;
@@ -28,9 +30,12 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             CreateSantaOnlyOnePlaceConstraint();
             CreateSantaNeedTimeToFirstVisitConstraint();
             CreateSantaNeedsTimeToGetHomeConstraint();
+
             CreateSantaNeedTimeBetweenVisitsConstraint();
+
             CreateSingleVisitConstraint();
             CreateUsesSantaConstraint();
+
         }
 
         /// <summary>
@@ -139,7 +144,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                     {
                         // Z == 0
                         var expr = solverData.Variables.Visits[day][visit, timeslice];
-                        solverData.Solver.Add(expr == 0);
+                        solverData.Solver.Add(expr <= 0);
                     }
                 }
             }
@@ -160,7 +165,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                     {
                         // Z == 0
                         var expr = solverData.Variables.Visits[day][visit, lastTimeslice - timeslice];
-                        solverData.Solver.Add(expr == 0);
+                        solverData.Solver.Add(expr <= 0);
                     }
                 }
             }
@@ -169,11 +174,52 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         /// <summary>
         /// Santas are not able to beam and therefore,
         /// it needs a certain time to get from one visit to another
+        /// except if distance is 0
         /// </summary>
         private void CreateSantaNeedTimeBetweenVisitsConstraint()
         {
-            // Warning, potential performance problem
-            // TODO
+            // idea: A santa can only be in one place if the next visit is not near
+            // ex: A0 = "desired visit", Way time = 2
+            // A0 + (B1 OR B2) <= 1
+
+
+            // A0 XOR (B1 OR B2) <= 1
+            var constraintCounter = 0;
+            for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+            {
+                for (int visit = 0; visit < solverData.NumberOfVisits; visit++)
+                {
+                    for (int destination = 0; destination < solverData.NumberOfVisits; destination++)
+                    {
+                        var distance = solverData.Input.Distances[visit, destination];
+                        // don't add unnecessary constraints
+                        if (distance > 0)
+                        {
+                            for (int day = 0; day < solverData.NumberOfDays; day++)
+                            {
+                                for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day] - distance; timeslice++)
+                                {
+                                    var A = solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
+                                    //var B = new LinearExpr();
+                                    // 1 because same timeslot is handled by another constraint
+                                    for (int distCounter = 1; distCounter <= distance; distCounter++)
+                                    {
+                                        var B = solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
+                                        solverData.Solver.Add(B <= 1 - A);
+                                      //  B += solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
+                                        
+                                    }
+
+                                    constraintCounter++;
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            Console.WriteLine($"Number of constraints added: {constraintCounter}");
         }
 
         /// <summary>
