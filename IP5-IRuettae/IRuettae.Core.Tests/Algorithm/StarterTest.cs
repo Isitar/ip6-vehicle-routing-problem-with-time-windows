@@ -48,7 +48,7 @@ namespace IRuettae.Core.Test.Algorithm
 
             var X = int.MaxValue;
             int[,] distances = {
-                { 0, 1, 5, 1, 1},
+                { 0, 1, 3, 1, 1},
                 { 1, 0, 1, X, X},
                 { 1, X, 0, X, X},
                 { 1, X, X, 0, 1},

@@ -201,7 +201,11 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 
                         for (int day = 0; day < solverData.NumberOfDays; day++)
                         {
+
+
                             // if you visit "visit", you cannot visit "destination" on the same day
+                            // !!! WRONG !!!, since we're in bidirectional space, you can not visit B if a -> b > #timeslices but you can visit B if b->a < #timeslices
+
                             int slicesPerDay = solverData.SlicesPerDay[day];
                             if (distance >= slicesPerDay)
                             {
@@ -224,8 +228,8 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                                     {
                                         #region simple but stupid constraint:
 
-                                        // var B = solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
-                                        // solverData.Solver.Add(B <= 1 - A);
+                                        var B2 = solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
+                                        solverData.Solver.Add(B2 <= 1 - A);
 
                                         #endregion
 
@@ -237,6 +241,10 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                                     // so we multiply A by numberOfBs, possible values are 0 (if A == 0) or numberOfBs (if A == 1)
                                     // if B == 0, A can be 1 (numberOfBs <= numberOfBs), else A has to be 0 (numberOfBs - (at least 1)) is smaller than numberOfBs
                                     solverData.Solver.Add(numberOfBs * A <= numberOfBs - B);
+
+                                    // Check if this is also a solution ?
+                                    solverData.Solver.Add(B <= (numberOfBs + 1) *(1-A) );
+
 #if DEBUG
                                     constraintCounter++;
 #endif
