@@ -195,20 +195,27 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                         // don't add unnecessary constraints
                         if (distance > 0)
                         {
+                            
+                            var minDelta = distance + 1;
+
                             for (int day = 0; day < solverData.NumberOfDays; day++)
                             {
-                                for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day] - distance; timeslice++)
+                                for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day] - minDelta; timeslice++)
                                 {
                                     var A = solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
-                                    //var B = new LinearExpr();
+                                    var B = new LinearExpr();
+                                    int numberOfBs = 0;
                                     // 1 because same timeslot is handled by another constraint
-                                    for (int distCounter = 1; distCounter <= distance; distCounter++)
+                                    // +1 because distance needs to be walked
+                                    for (int distCounter = 1; distCounter <= minDelta; distCounter++)
                                     {
-                                        var B = solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
-                                        solverData.Solver.Add(B <= 1 - A);
-                                      //  B += solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
-                                        
+                                        //var B = solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
+                                        //solverData.Solver.Add(B <= 1 - A);
+                                        B += solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
+                                        numberOfBs++;
                                     }
+
+                                    solverData.Solver.Add(numberOfBs* A <= numberOfBs-B);
 
                                     constraintCounter++;
                                 }
@@ -219,7 +226,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                 }
             }
 
-            Console.WriteLine($"Number of constraints added: {constraintCounter}");
+            Debug.WriteLine($"CreateSantaNeedTimeBetweenVisitsConstraint - added {constraintCounter} constraints");
         }
 
         /// <summary>
