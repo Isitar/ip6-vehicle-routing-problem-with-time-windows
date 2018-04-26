@@ -21,10 +21,17 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 
         public void CreateConstraints()
         {
+            //TODO: organize methods properly
+
+            //variables
             CreateVisitsConstraint();
+            CreateSantaDayVisitsConstraint();
+            CreateSantaVisitsConstraint();
+
+            // real constraints
             CreateVisitAvailableConstraint();
             CreateVisitOverallLengthConstraint();
-            CreateSantaVisitsConstraint();
+            
             CreateOnlyOneSantaPerVisitConstraint();
             CreateSantaAvailableConstraint();
             CreateSantaOnlyOnePlaceConstraint();
@@ -178,11 +185,10 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         /// </summary>
         private void CreateSantaNeedTimeBetweenVisitsConstraint()
         {
-            // idea: A santa can only be in one place if the next visit is not near
-            // ex: A0 = "desired visit", Way time = 2
-            // A0 XOR (B1 OR B2) <= 1
-            // A0 + (B1 OR B2) <= 1
+#if DEBUG
             var constraintCounter = 0;
+#endif
+
             for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
             {
                 for (int visit = 0; visit < solverData.NumberOfVisits; visit++)
@@ -193,32 +199,48 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                         // don't add unnecessary constraints
                         if (distance > 0)
                         {
-                            
-                            var minDelta = distance + 1;
-
                             for (int day = 0; day < solverData.NumberOfDays; day++)
                             {
-                                for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day] - minDelta; timeslice++)
+                                // if you visit "visit", you cannot visit "destination" on the same day
+                                int slicesPerDay = solverData.SlicesPerDay[day];
+                                if (distance > slicesPerDay)
                                 {
-                                    var A = solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
-                                    var B = new LinearExpr();
-                                    int numberOfBs = 0;
-                                    // 1 because same timeslot is handled by another constraint
-                                    // +1 because distance needs to be walked
-                                    for (int distCounter = 1; distCounter <= minDelta; distCounter++)
+                                    var A = solverData.Variables.SantaDayVisit[day][santa, visit];
+                                    var B = solverData.Variables.SantaDayVisit[day][santa, destination];
+
+                                    solverData.Solver.Add(A + B <= 1);
+
+                                }
+                                // default case
+                                else
+                                {
+                                    for (int timeslice = 0; timeslice < slicesPerDay - distance; timeslice++)
                                     {
-                                        #region simple but stupid constraint:
-                                        //var B = solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
-                                        //solverData.Solver.Add(B <= 1 - A);
-                                        #endregion
+                                        var A = solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
+                                        var B = new LinearExpr();
+                                        int numberOfBs = 0;
+                                        // 1 because same timeslot is handled by another constraint
+                                        for (int distCounter = 1; distCounter <= distance; distCounter++)
+                                        {
+                                            #region simple but stupid constraint:
 
-                                        B += solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
-                                        numberOfBs++;
+                                            //var B = solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
+                                            //solverData.Solver.Add(B <= 1 - A);
+
+                                            #endregion
+
+                                            B += solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
+                                            numberOfBs++;
+                                        }
+
+                                        // A <= 1 - B would be easy but B can be greater than 0 and A has to be >= 0
+                                        // so we multiply A by numberOfBs, possible values are 0 (if A == 0) or numberOfBs (if A == 1)
+                                        // if B == 0, A can be 1 (numberOfBs <= numberOfBs), else A has to be 0 (numberOfBs - (at least 1)) is smaller than numberOfBs
+                                        solverData.Solver.Add(numberOfBs * A <= numberOfBs - B);
+#if DEBUG
+                                        constraintCounter++;
+#endif
                                     }
-
-                                    solverData.Solver.Add(numberOfBs* A <= numberOfBs-B);
-
-                                    constraintCounter++;
                                 }
                             }
                         }
@@ -226,8 +248,9 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 
                 }
             }
-
+#if DEBUG
             Debug.WriteLine($"CreateSantaNeedTimeBetweenVisitsConstraint - added {constraintCounter} constraints");
+#endif
         }
 
         /// <summary>
@@ -337,6 +360,35 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                         }
                     }
                     solverData.Solver.Add(santaVisits <= sumOfSlices);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Variable creation
+        /// </summary>
+        private void CreateSantaDayVisitsConstraint()
+        {
+            for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+            {
+                for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+                {
+                    for (int day = 0; day < solverData.NumberOfDays; day++)
+                    {
+                        var santaDayVisits = solverData.Variables.SantaDayVisit[day][santa, visit];
+                        var sumOfSlices = new LinearExpr();
+                        // Z <= Z1 + Z2 + ...
+                        for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
+                        {
+                            var slice = solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
+                            sumOfSlices += slice;
+
+                            // Z >= Z1
+                            solverData.Solver.Add(santaDayVisits >= slice);
+                        }
+
+                        solverData.Solver.Add(santaDayVisits <= sumOfSlices);
+                    }
                 }
             }
         }
