@@ -180,10 +180,8 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         {
             // idea: A santa can only be in one place if the next visit is not near
             // ex: A0 = "desired visit", Way time = 2
-            // A0 + (B1 OR B2) <= 1
-
-
             // A0 XOR (B1 OR B2) <= 1
+            // A0 + (B1 OR B2) <= 1
             var constraintCounter = 0;
             for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
             {
@@ -209,8 +207,11 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                                     // +1 because distance needs to be walked
                                     for (int distCounter = 1; distCounter <= minDelta; distCounter++)
                                     {
+                                        #region simple but stupid constraint:
                                         //var B = solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
                                         //solverData.Solver.Add(B <= 1 - A);
+                                        #endregion
+
                                         B += solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
                                         numberOfBs++;
                                     }
