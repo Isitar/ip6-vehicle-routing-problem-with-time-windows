@@ -167,8 +167,8 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                 var distance = solverData.Input.Distances[visit, solverData.StartEndPoint];
                 for (int day = 0; day < solverData.NumberOfDays; day++)
                 {
-                    var lastTimeslice = solverData.SlicesPerDay[day] - 1;
-                    for (int timeslice = 0; timeslice < Math.Min(distance, lastTimeslice); timeslice++)
+                    var lastTimeslice = solverData.SlicesPerDay[day] -1;
+                    for (int timeslice = 0; timeslice <= Math.Min(distance, lastTimeslice); timeslice++)
                     {
                         // Z == 0
                         var expr = solverData.Variables.Visits[day][visit, lastTimeslice - timeslice];
@@ -203,16 +203,28 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                         {
 
 
-                            // if you visit "visit", you cannot visit "destination" on the same day
-                            // !!! WRONG !!!, since we're in bidirectional space, you can not visit B if a -> b > #timeslices but you can visit B if b->a < #timeslices
+                            // since we're in bidirectional space, you can not visit B if a -> b > #timeslices
+                            // but you can visit B if b->a < #timeslices
+                            // --> add constraint to dissalow future use of B
 
                             int slicesPerDay = solverData.SlicesPerDay[day];
                             if (distance >= slicesPerDay)
                             {
-                                var A = solverData.Variables.SantaDayVisit[day][santa, visit];
-                                var B = solverData.Variables.SantaDayVisit[day][santa, destination];
+                                for (int timeslice = 0; timeslice < slicesPerDay; timeslice++)
+                                {
+                                    var A = solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
+                                    var B = new LinearExpr();
 
-                                solverData.Solver.Add(A + B <= 1);
+                                    for (int timeSliceB = timeslice; timeSliceB < slicesPerDay; timeSliceB++)
+                                    {
+                                        B += solverData.Variables.VisitsPerSanta[day][santa][destination, timeSliceB];
+                                    }
+
+                                    int numberOfBs = slicesPerDay - timeslice;
+                               
+                                    solverData.Solver.Add(numberOfBs * A <= numberOfBs - B);
+                                }
+
                             }
                             // default case
                             else
@@ -228,8 +240,8 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                                     {
                                         #region simple but stupid constraint:
 
-                                        var B2 = solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
-                                        solverData.Solver.Add(B2 <= 1 - A);
+                                        //var B2 = solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
+                                        //solverData.Solver.Add(B2 <= 1 - A);
 
                                         #endregion
 
@@ -243,7 +255,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                                     solverData.Solver.Add(numberOfBs * A <= numberOfBs - B);
 
                                     // Check if this is also a solution ?
-                                    solverData.Solver.Add(B <= (numberOfBs + 1) *(1-A) );
+                                   // solverData.Solver.Add(B <= (numberOfBs + 1) *(1-A) );
 
 #if DEBUG
                                     constraintCounter++;

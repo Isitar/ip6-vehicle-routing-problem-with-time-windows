@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="Algorithm\RouteTest.cs" />
     <Compile Include="Algorithm\StarterTest.cs" />
+    <Compile Include="Algorithm\WayConstraintTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

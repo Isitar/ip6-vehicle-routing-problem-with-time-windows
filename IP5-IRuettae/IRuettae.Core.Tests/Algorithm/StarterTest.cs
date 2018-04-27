@@ -11,7 +11,7 @@ namespace IRuettae.Core.Test.Algorithm
     [TestClass]
     public class StarterTest
     {
-        [TestMethod]
+        
         public SolverInputData GetModel()
         {
             const bool t = true;
@@ -48,7 +48,7 @@ namespace IRuettae.Core.Test.Algorithm
 
             var X = int.MaxValue;
             int[,] distances = {
-                { 0, 1, 3, 1, 1},
+                { 0, 1, 1, 1, 1},
                 { 1, 0, 1, X, X},
                 { 1, X, 0, X, X},
                 { 1, X, X, 0, 1},
@@ -57,7 +57,7 @@ namespace IRuettae.Core.Test.Algorithm
 
             int[] visitLength =
             {
-                0, 1, 2, 2, 2,
+                1, 2, 2, 2, 2,
             };
 
             return new SolverInputData(santas, visitLength, visits, 5, distances);

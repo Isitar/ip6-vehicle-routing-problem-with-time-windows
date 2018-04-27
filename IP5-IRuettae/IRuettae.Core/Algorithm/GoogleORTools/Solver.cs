@@ -83,6 +83,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
             Debug.WriteLine("");
             Debug.WriteLine("DEBUG OUTPUT");
             Debug.WriteLine("");
+
             for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
             {
                 Debug.WriteLine($"Visit: {visit}");
@@ -99,9 +100,9 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
                         Debug.Write(solverData.Variables.Visits[day][visit, timeslice].SolutionValue());
                     }
                     Debug.WriteLine(" (Visits)");
-                    Debug.WriteLine("");
+                    Debug.WriteLine(string.Empty);
                 }
-                Debug.WriteLine("");
+                Debug.WriteLine(string.Empty);
             }
         }
 

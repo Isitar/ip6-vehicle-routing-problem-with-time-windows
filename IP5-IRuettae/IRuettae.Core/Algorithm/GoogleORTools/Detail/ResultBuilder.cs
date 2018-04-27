@@ -19,25 +19,25 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             Debug.WriteLine($"Value of the target function: {solverData.Solver.Objective().Value()}");
 
             var route = new Route(solverData.NumberOfSantas, solverData.NumberOfDays);
-            {
-                for (int day = 0; day < solverData.NumberOfDays; day++)
-                {
-                    for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
-                    {
-                        Waypoint? nextLocation = new Waypoint(0, 0);
-                        do
-                        {
-                            route.Waypoints[santa, day].Add(nextLocation.Value);
-                            nextLocation = GetNextLocation(day, santa, nextLocation.Value);
-                        } while (nextLocation.HasValue);
 
-                        // append way back home
-                        var last = route.Waypoints[santa, day].LastOrDefault();
-                        var addTime = solverData.Input.Distances[last.visit, solverData.StartEndPoint];
-                        route.Waypoints[santa, day].Add(new Waypoint(0, last.startTime + addTime));
-                    }
+            for (int day = 0; day < solverData.NumberOfDays; day++)
+            {
+                for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+                {
+                    Waypoint? nextLocation = new Waypoint(0, 0);
+                    do
+                    {
+                        route.Waypoints[santa, day].Add(nextLocation.Value);
+                        nextLocation = GetNextLocation(day, santa, nextLocation.Value);
+                    } while (nextLocation.HasValue);
+
+                    // append way back home
+                    var last = route.Waypoints[santa, day].LastOrDefault();
+                    var addTime = solverData.Input.Distances[last.visit, solverData.StartEndPoint];
+                    route.Waypoints[santa, day].Add(new Waypoint(0, last.startTime + addTime + 1));
                 }
             }
+
 
             Debug.Write("Result is:");
             Debug.Write(route.ToString());

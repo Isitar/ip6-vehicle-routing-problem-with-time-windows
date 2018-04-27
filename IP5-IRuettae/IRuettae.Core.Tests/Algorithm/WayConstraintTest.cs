@@ -1,0 +1,83 @@
+﻿using IRuettae.Core.Algorithm;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace IRuettae.Core.Tests.Algorithm
+{
+    [TestClass]
+    public class WayConstraintTest
+    {
+
+        [TestMethod]
+        public SolverInputData GetModel()
+        {
+            // 1 Santa, 5 timeslots
+            // A <-> B : 1
+            // A <-> C : 1
+            // B <-> C : 1
+            
+
+            // Visit duration:
+            // A : 0
+            // B : 1
+            // C : 1
+
+
+            const bool t = true;
+            const bool f = false;
+            bool[][,] santas =
+            {
+                new[,]
+                {
+                    {t, t, t, t, t, t},
+                }
+            };
+
+            VisitState d = VisitState.Default;
+            VisitState[][,] visits =
+            {
+                new[,]
+                {
+                    {d, d, d, d, d, d},
+                    {d, d, d, d, d, d},
+                    {d, d, d, d, d, d},
+                },
+
+            };
+
+            var X = int.MaxValue;
+            int[,] distances =
+            {
+                {0, 1, 1},
+                {1, 0, 1},
+                {1, 1, 0},
+            };
+
+            int[] visitLength =
+            {
+                0, 1, 1,
+            };
+
+            return new SolverInputData(santas, visitLength, visits, 5, distances);
+        }
+
+
+        [TestMethod]
+        public void TestRespectingWay()
+        {
+            var model = GetModel();
+            var calculatedRoute = Starter.Optimise(model);
+            Assert.IsNotNull(calculatedRoute);
+            
+            var waypoints = calculatedRoute.Waypoints[0, 0];
+            Assert.AreEqual(4, waypoints.Count);
+            Assert.AreEqual(0, waypoints[0].visit);
+            Assert.AreEqual(1, waypoints[1].visit);
+            Assert.AreEqual(2, waypoints[2].visit);
+
+            Assert.AreEqual(0, waypoints[0].startTime);
+            Assert.AreEqual(1, waypoints[1].startTime);
+            Assert.AreEqual(3, waypoints[2].startTime);
+
+        }
+    }
+}
