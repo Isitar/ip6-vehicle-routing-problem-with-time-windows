@@ -31,7 +31,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             // real constraints
             CreateVisitAvailableConstraint();
             CreateVisitOverallLengthConstraint();
-            
+
             CreateOnlyOneSantaPerVisitConstraint();
             CreateSantaAvailableConstraint();
             CreateSantaOnlyOnePlaceConstraint();
@@ -167,7 +167,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                 var distance = solverData.Input.Distances[visit, solverData.StartEndPoint];
                 for (int day = 0; day < solverData.NumberOfDays; day++)
                 {
-                    var lastTimeslice = solverData.SlicesPerDay[day] -1;
+                    var lastTimeslice = solverData.SlicesPerDay[day] - 1;
                     for (int timeslice = 0; timeslice <= Math.Min(distance, lastTimeslice); timeslice++)
                     {
                         // Z == 0
@@ -221,7 +221,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                                     }
 
                                     int numberOfBs = slicesPerDay - timeslice;
-                               
+
                                     solverData.Solver.Add(numberOfBs * A <= numberOfBs - B);
                                 }
 
@@ -243,7 +243,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                                         //var B2 = solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
                                         //solverData.Solver.Add(B2 <= 1 - A);
 
-                                        #endregion
+                                        #endregion simple but stupid constraint:
 
                                         B += solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter];
                                         numberOfBs++;
@@ -255,7 +255,8 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                                     solverData.Solver.Add(numberOfBs * A <= numberOfBs - B);
 
                                     // Check if this is also a solution ?
-                                   // solverData.Solver.Add(B <= (numberOfBs + 1) *(1-A) );
+                                    // solverData.Solver.Add(B <= (numberOfBs + 1) *(1-A) );
+                                    // = sovlerData.Solver.Add(numberOfBs * A <= numberOfBs + 1 - B) -> i think not, because if B=1, then A=1 is possible
 
 #if DEBUG
                                     constraintCounter++;
