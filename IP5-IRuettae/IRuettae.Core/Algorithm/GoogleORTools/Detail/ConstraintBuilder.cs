@@ -23,23 +23,23 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         {
             //TODO: organize methods properly
 
-            ////variables
+            //variables
             CreateVisitsConstraint();
             CreateSantaDayVisitsConstraint();
             CreateSantaVisitsConstraint();
-            //
-            //// real constraints
+
+            // real constraints
             CreateVisitAvailableConstraint();
             CreateVisitOverallLengthConstraint();
-            //
+
             CreateOnlyOneSantaPerVisitConstraint();
             CreateSantaAvailableConstraint();
             CreateSantaOnlyOnePlaceConstraint();
             CreateSantaNeedTimeToFirstVisitConstraint();
             CreateSantaNeedsTimeToGetHomeConstraint();
-            //
+
             CreateSantaNeedTimeBetweenVisitsConstraint();
-            //
+
             CreateSingleVisitConstraint();
             CreateUsesSantaConstraint();
             CreateNumberOfSantasNeededConstraint();
@@ -189,7 +189,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                 var distance = solverData.Input.Distances[visit, solverData.StartEndPoint];
                 for (int day = 0; day < solverData.NumberOfDays; day++)
                 {
-                    var start = solverData.SlicesPerDay[day] - distance;
+                    var start = Math.Max(0, solverData.SlicesPerDay[day] - distance);
                     // Z1 + Z2 + ... == 0
                     var sum = new LinearExpr();
                     for (int timeslice = start; timeslice < solverData.SlicesPerDay[day]; timeslice++)
