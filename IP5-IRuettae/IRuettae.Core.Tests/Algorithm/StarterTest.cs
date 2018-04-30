@@ -19,10 +19,8 @@ namespace IRuettae.Core.Test.Algorithm
             bool[][,] santas = {
                 new bool[,] {
                     { t, t, t, t, t, t },
-                    { t, t, t, t, t, t },
                 },
                 new bool[,] {
-                    { t, t, t, t, t, t, t },
                     { t, t, t, t, t, t, t },
                 },
             };
@@ -74,7 +72,7 @@ namespace IRuettae.Core.Test.Algorithm
                     { // santa 1
                         new List<Waypoint>()
                         { // day 1
-                            new Waypoint (0, 0),
+                            new Waypoint (0,-1),
                             new Waypoint (1, 1),
                             new Waypoint (2, 3),
                             new Waypoint (2, 4),
@@ -82,7 +80,7 @@ namespace IRuettae.Core.Test.Algorithm
                         },
                         new List<Waypoint>()
                         { // day 2
-                            new Waypoint (0, 0),
+                            new Waypoint (0,-1),
                             new Waypoint (3, 1),
                             new Waypoint (3, 2),
                             new Waypoint (4, 4),
@@ -90,14 +88,6 @@ namespace IRuettae.Core.Test.Algorithm
                             new Waypoint (0, 7),
                         },
                     },
-                    { // santa 2
-                        new List<Waypoint>()
-                        { // day 1
-                        },
-                        new List<Waypoint>()
-                        { // day 2
-                        },
-                    }
                 }
             };
 

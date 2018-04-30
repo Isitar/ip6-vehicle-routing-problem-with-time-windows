@@ -25,6 +25,19 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                 for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
                 {
                     Waypoint? nextLocation = new Waypoint(0, -1);
+                    nextLocation = GetNextLocation(day, santa, nextLocation.Value);
+                    if (!nextLocation.HasValue)
+                    {
+                        // no visits that evening
+                        continue;
+                    }
+
+                    // create way from home
+                    {
+                        var distance = solverData.Input.Distances[solverData.StartEndPoint, nextLocation.Value.visit];
+                        nextLocation = new Waypoint(0, nextLocation.Value.startTime - distance - 1);
+                    }
+
                     do
                     {
                         route.Waypoints[santa, day].Add(nextLocation.Value);
@@ -32,9 +45,11 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                     } while (nextLocation.HasValue);
 
                     // append way back home
-                    var last = route.Waypoints[santa, day].LastOrDefault();
-                    var addTime = solverData.Input.Distances[last.visit, solverData.StartEndPoint];
-                    route.Waypoints[santa, day].Add(new Waypoint(0, last.startTime + addTime + 1));
+                    {
+                        var last = route.Waypoints[santa, day].LastOrDefault();
+                        var addTime = solverData.Input.Distances[last.visit, solverData.StartEndPoint];
+                        route.Waypoints[santa, day].Add(new Waypoint(0, last.startTime + addTime + 1));
+                    }
                 }
             }
 
