@@ -15,7 +15,7 @@ namespace IRuettae.Core.Test.Algorithm
         public SolverInputData GetModel()
         {
             const bool t = true;
-            const bool f = false;
+            //const bool f = false;
             bool[][,] santas = {
                 new bool[,] {
                     { t, t, t, t, t, t },
@@ -77,13 +77,16 @@ namespace IRuettae.Core.Test.Algorithm
                             new Waypoint (0, 0),
                             new Waypoint (1, 1),
                             new Waypoint (2, 3),
+                            new Waypoint (2, 4),
                             new Waypoint (0, 6),
                         },
                         new List<Waypoint>()
                         { // day 2
                             new Waypoint (0, 0),
                             new Waypoint (3, 1),
+                            new Waypoint (3, 2),
                             new Waypoint (4, 4),
+                            new Waypoint (4, 5),
                             new Waypoint (0, 7),
                         },
                     },
