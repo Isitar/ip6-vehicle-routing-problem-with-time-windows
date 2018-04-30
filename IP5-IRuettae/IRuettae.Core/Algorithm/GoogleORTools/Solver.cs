@@ -80,9 +80,9 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
 
         private void PrintDebugOutput()
         {
-            Debug.WriteLine("");
+            Debug.WriteLine(string.Empty);
             Debug.WriteLine("DEBUG OUTPUT");
-            Debug.WriteLine("");
+            Debug.WriteLine(string.Empty);
 
             for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
             {
@@ -94,12 +94,33 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
                     {
                         Debug.Write(solverData.Variables.VisitStart[day][visit][timeslice].SolutionValue());
                     }
-                    Debug.WriteLine(" (DebugStarts)");
+                    Debug.WriteLine(" (VisitStart)");
                     for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                     {
                         Debug.Write(solverData.Variables.Visits[day][visit, timeslice].SolutionValue());
                     }
                     Debug.WriteLine(" (Visits)");
+                    Debug.WriteLine(string.Empty);
+                }
+                Debug.WriteLine(string.Empty);
+            }
+
+            Debug.WriteLine(string.Empty);
+            for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+            {
+                Debug.WriteLine($"Santa: {santa}");
+                for (int day = 0; day < solverData.NumberOfDays; day++)
+                {
+                    Debug.WriteLine($"Day: {day}");
+                    for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+                    {
+                        for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
+                        {
+                            Debug.Write(solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice].SolutionValue());
+                        }
+                        Debug.WriteLine($" (Visit {visit})");
+                        Debug.WriteLine(string.Empty);
+                    }
                     Debug.WriteLine(string.Empty);
                 }
                 Debug.WriteLine(string.Empty);
