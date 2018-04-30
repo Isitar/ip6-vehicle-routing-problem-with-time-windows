@@ -11,7 +11,7 @@ namespace IRuettae.Core.Test.Algorithm
     [TestClass]
     public class StarterTest
     {
-        
+
         public SolverInputData GetModel()
         {
             const bool t = true;
@@ -57,7 +57,7 @@ namespace IRuettae.Core.Test.Algorithm
 
             int[] visitLength =
             {
-                1, 2, 2, 2, 2,
+                0, 1, 2, 2, 2,
             };
 
             return new SolverInputData(santas, visitLength, visits, 5, distances);
