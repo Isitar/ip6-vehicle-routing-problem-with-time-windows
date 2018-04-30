@@ -24,7 +24,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             {
                 for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
                 {
-                    Waypoint? nextLocation = new Waypoint(0, 0);
+                    Waypoint? nextLocation = new Waypoint(0, -1);
                     do
                     {
                         route.Waypoints[santa, day].Add(nextLocation.Value);
