@@ -23,23 +23,23 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         {
             //TODO: organize methods properly
 
-            //variables
+            ////variables
             CreateVisitsConstraint();
             CreateSantaDayVisitsConstraint();
             CreateSantaVisitsConstraint();
-
-            // real constraints
+            //
+            //// real constraints
             CreateVisitAvailableConstraint();
             CreateVisitOverallLengthConstraint();
-
+            //
             CreateOnlyOneSantaPerVisitConstraint();
             CreateSantaAvailableConstraint();
             CreateSantaOnlyOnePlaceConstraint();
             CreateSantaNeedTimeToFirstVisitConstraint();
             CreateSantaNeedsTimeToGetHomeConstraint();
-
+            //
             CreateSantaNeedTimeBetweenVisitsConstraint();
-
+            //
             CreateSingleVisitConstraint();
             CreateUsesSantaConstraint();
             CreateNumberOfSantasNeededConstraint();
@@ -168,12 +168,13 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                 var distance = solverData.Input.Distances[solverData.StartEndPoint, visit];
                 for (int day = 0; day < solverData.NumberOfDays; day++)
                 {
+                    // Z1 + Z2 + ... == 0
+                    var sum = new LinearExpr();
                     for (int timeslice = 0; timeslice < Math.Min(distance, solverData.SlicesPerDay[day]); timeslice++)
                     {
-                        // Z == 0
-                        var expr = solverData.Variables.Visits[day][visit, timeslice];
-                        solverData.Solver.Add(expr == 0);
+                        sum += solverData.Variables.Visits[day][visit, timeslice];
                     }
+                    solverData.Solver.Add(sum == 0);
                 }
             }
         }
@@ -188,13 +189,14 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                 var distance = solverData.Input.Distances[visit, solverData.StartEndPoint];
                 for (int day = 0; day < solverData.NumberOfDays; day++)
                 {
-                    var lastTimeslice = solverData.SlicesPerDay[day] - 1;
-                    for (int timeslice = 0; timeslice <= Math.Min(distance, lastTimeslice); timeslice++)
+                    var start = solverData.SlicesPerDay[day] - distance;
+                    // Z1 + Z2 + ... == 0
+                    var sum = new LinearExpr();
+                    for (int timeslice = start; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                     {
-                        // Z == 0
-                        var expr = solverData.Variables.Visits[day][visit, lastTimeslice - timeslice];
-                        solverData.Solver.Add(expr == 0);
+                        sum += solverData.Variables.Visits[day][visit, timeslice];
                     }
+                    solverData.Solver.Add(sum == 0);
                 }
             }
         }

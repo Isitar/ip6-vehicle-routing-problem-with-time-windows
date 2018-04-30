@@ -48,8 +48,8 @@ namespace IRuettae.Core.Tests.Algorithm
             int[,] distances =
             {
                 {0, 1, 1},
-                {1, 0, 1},
-                {1, 1, 0},
+                {1, 0, 2},
+                {1, 2, 0},
             };
 
             int[] visitLength =
@@ -74,9 +74,9 @@ namespace IRuettae.Core.Tests.Algorithm
             Assert.AreEqual(1, waypoints[1].visit);
             Assert.AreEqual(2, waypoints[2].visit);
 
-            Assert.AreEqual(0, waypoints[0].startTime);
+            Assert.AreEqual(-1, waypoints[0].startTime);
             Assert.AreEqual(1, waypoints[1].startTime);
-            Assert.AreEqual(3, waypoints[2].startTime);
+            Assert.AreEqual(4, waypoints[2].startTime);
 
         }
     }
