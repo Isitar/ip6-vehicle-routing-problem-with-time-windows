@@ -191,9 +191,9 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 
             for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
             {
-                for (int visit = 0; visit < solverData.NumberOfVisits; visit++)
+                for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
                 {
-                    for (int destination = 0; destination < solverData.NumberOfVisits; destination++)
+                    for (int destination = 1; destination < solverData.NumberOfVisits; destination++)
                     {
                         var distance = solverData.Input.Distances[visit, destination];
                         // don't add unnecessary constraints
