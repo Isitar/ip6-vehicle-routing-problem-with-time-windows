@@ -31,19 +31,51 @@ namespace IRuettae.Preprocessing.Mapping
 
         public SolverInputData Build()
         {
-            //bool[][,] santas
+            var timeslotLength = 5 * 60 * 1000; //5 minutes
 
-            foreach (var day in days)
+            bool[][,] santasVar = new bool[days.Count][,];
+            VisitState[][,] visitsVar = new VisitState[days.Count][,];
+
+
+            for (int day = 0; day < days.Count; day++)
             {
+                (var starttime, var endtime) = days[day];
+                var numberOfTimeslots = Convert.ToInt32(Math.Ceiling((endtime - starttime).TotalMinutes / timeslotLength));
+                santasVar[day] = new bool[santas.Count, numberOfTimeslots];
+                // set all santas available
+                for (int i = 0; i < santas.Count; i++)
+                {
+                    for (int j = 0; j < numberOfTimeslots; j++)
+                    {
+                        santasVar[day][i, j] = true;
+                    }
+                }
 
+                // visits
+                visitsVar[day] = new VisitState[visits.Count, numberOfTimeslots];
+                
+                for (int v = 0; v < visits.Count; v++)
+                {
+                    // set all to default
+                    for (int j = 0; j < numberOfTimeslots; j++)
+                    {
+                        visitsVar[day][v, j] = VisitState.Default;
+                    }
+                    // TODO: Set other states
+                }
             }
 
-            
-            //     VisitState[][,] visits = {
-            //     int[,] distances = {
 
-            //         int[] visitLength =
-            //{
+            int[,] distances = new int[visits.Count, visits.Count];
+            for (int v = 0; v < visits.Count; v++)
+            {
+                for (int d = 0; d < visits.Count; d++)
+                {
+                    distances[v, d] = visits[v].FromWays.First(w => w.To.Equals(visits[d]))?.Duration ?? int.MaxValue;
+                }
+            }
+
+            int[] visitLength = visits.Select(v => Convert.ToInt32(Math.Ceiling(v.Duration / (60 * timeslotLength)))).ToArray();
             return null;
         }
     }
