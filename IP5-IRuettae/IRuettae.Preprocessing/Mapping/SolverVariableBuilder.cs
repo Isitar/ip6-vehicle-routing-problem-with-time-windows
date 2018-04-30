@@ -13,6 +13,7 @@ namespace IRuettae.Preprocessing.Mapping
         private List<Santa> santas = null;
         private List<Visit> visits = null;
         private List<Way> ways = null;
+        private int timeslotLength = 5 * 60; //5 minutes
 
         /// <summary>
         /// List of days(StartTime, EndTime)
@@ -27,11 +28,20 @@ namespace IRuettae.Preprocessing.Mapping
             this.days = days;
         }
 
+        /// <summary>
+        /// Converts seconds to timeslice unit.
+        /// </summary>
+        /// <param name="seconds"></param>
+        /// <returns></returns>
+        private int SecondsToTimeslice(double seconds)
+        {
+            return Convert.ToInt32(Math.Ceiling(seconds / timeslotLength));
+        }
 
 
         public SolverInputData Build()
         {
-            var timeslotLength = 5 * 60 * 1000; //5 minutes
+
 
             bool[][,] santasVar = new bool[days.Count][,];
             VisitState[][,] visitsVar = new VisitState[days.Count][,];
@@ -53,7 +63,7 @@ namespace IRuettae.Preprocessing.Mapping
 
                 // visits
                 visitsVar[day] = new VisitState[visits.Count, numberOfTimeslots];
-                
+
                 for (int v = 0; v < visits.Count; v++)
                 {
                     // set all to default
@@ -71,12 +81,12 @@ namespace IRuettae.Preprocessing.Mapping
             {
                 for (int d = 0; d < visits.Count; d++)
                 {
-                    distances[v, d] = visits[v].FromWays.First(w => w.To.Equals(visits[d]))?.Duration ?? int.MaxValue;
+                    distances[v, d] = SecondsToTimeslice(visits[v].FromWays.First(w => w.To.Equals(visits[d])).Duration);
                 }
             }
 
-            int[] visitLength = visits.Select(v => Convert.ToInt32(Math.Ceiling(v.Duration / (60 * timeslotLength)))).ToArray();
-            return null;
+            int[] visitLength = visits.Select(v => SecondsToTimeslice(v.Duration)).ToArray();
+            return new SolverInputData(santasVar, visitLength, visitsVar, timeslotLength / 60, distances);
         }
     }
 }
