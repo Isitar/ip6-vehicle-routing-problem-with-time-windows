@@ -22,7 +22,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         {
             Input = solverInputData;
             Solver = solver;
-            NumberOfSantas = solverInputData.Santas.Length;
+            NumberOfSantas = solverInputData.Santas[0].GetLength(0);
             NumberOfVisits = solverInputData.VisitsDuration.Length;
             NumberOfDays = solverInputData.Visits.Length;
             SlicesPerDay = solverInputData.Santas.Select(d => d.GetLength(1)).ToArray();

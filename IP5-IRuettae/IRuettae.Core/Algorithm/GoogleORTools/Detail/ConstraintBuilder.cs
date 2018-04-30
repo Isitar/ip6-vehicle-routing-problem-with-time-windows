@@ -254,10 +254,6 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                                     // if B == 0, A can be 1 (numberOfBs <= numberOfBs), else A has to be 0 (numberOfBs - (at least 1)) is smaller than numberOfBs
                                     solverData.Solver.Add(numberOfBs * A <= numberOfBs - B);
 
-                                    // Check if this is also a solution ?
-                                    // solverData.Solver.Add(B <= (numberOfBs + 1) *(1-A) );
-                                    // = sovlerData.Solver.Add(numberOfBs * A <= numberOfBs + 1 - B) -> i think not, because if B=1, then A=1 is possible
-
 #if DEBUG
                                     constraintCounter++;
 #endif
