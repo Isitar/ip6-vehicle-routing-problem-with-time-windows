@@ -92,7 +92,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
                     Debug.WriteLine($"Day: {day}");
                     for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                     {
-                        Debug.Write(solverData.Variables.DebugStarts[day][visit][timeslice].SolutionValue());
+                        Debug.Write(solverData.Variables.VisitStart[day][visit][timeslice].SolutionValue());
                     }
                     Debug.WriteLine(" (DebugStarts)");
                     for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)

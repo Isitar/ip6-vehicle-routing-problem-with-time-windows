@@ -14,7 +14,7 @@ namespace IRuettae.Core.Tests.Algorithm
             // A <-> B : 1
             // A <-> C : 1
             // B <-> C : 1
-            
+
 
             // Visit duration:
             // A : 0
@@ -23,7 +23,7 @@ namespace IRuettae.Core.Tests.Algorithm
 
 
             const bool t = true;
-            const bool f = false;
+            //const bool f = false;
             bool[][,] santas =
             {
                 new[,]
@@ -44,7 +44,7 @@ namespace IRuettae.Core.Tests.Algorithm
 
             };
 
-            var X = int.MaxValue;
+            //var X = int.MaxValue;
             int[,] distances =
             {
                 {0, 1, 1},
@@ -67,7 +67,7 @@ namespace IRuettae.Core.Tests.Algorithm
             var model = GetModel();
             var calculatedRoute = Starter.Optimise(model);
             Assert.IsNotNull(calculatedRoute);
-            
+
             var waypoints = calculatedRoute.Waypoints[0, 0];
             Assert.AreEqual(4, waypoints.Count);
             Assert.AreEqual(0, waypoints[0].visit);

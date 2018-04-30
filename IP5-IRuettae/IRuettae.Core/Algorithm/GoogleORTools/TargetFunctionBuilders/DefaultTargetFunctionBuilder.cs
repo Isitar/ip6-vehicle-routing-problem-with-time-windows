@@ -20,7 +20,8 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.TargetFunctionBuilders
         {
             var factory = new TargetFunctionFactory(solverData);
 
-            targetFunction += factory.CreateTargetFunction(TargetType.ShortestRoute, null);
+            targetFunction += factory.CreateTargetFunction(TargetType.MinSantas, null);
+            targetFunction += factory.CreateTargetFunction(TargetType.MinSantaShifts, null);
 
             solverData.Solver.Maximize(targetFunction);
         }

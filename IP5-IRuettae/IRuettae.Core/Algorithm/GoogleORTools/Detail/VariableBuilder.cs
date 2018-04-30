@@ -24,17 +24,20 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             CreateSantaDayVisits();
             CreateSantas();
             CreateUsesSanta();
+            CreateNumberOfSantasNeeded();
+            CreateNumberOfSantasNeededOverall();
+            CreateVisitStart();
         }
 
         private void CreateVisits()
         {
             solverData.Variables.Visits = new GLS.Variable[solverData.NumberOfDays][,];
 
-            for (int i = 0; i < solverData.NumberOfDays; i++)
+            for (int day = 0; day < solverData.NumberOfDays; day++)
             {
                 var rows = solverData.NumberOfVisits;
-                var cols = solverData.SlicesPerDay[i];
-                solverData.Variables.Visits[i] = solverData.Solver.MakeBoolVarMatrix(rows, cols);
+                var cols = solverData.SlicesPerDay[day];
+                solverData.Variables.Visits[day] = solverData.Solver.MakeBoolVarMatrix(rows, cols);
             }
         }
 
@@ -47,11 +50,11 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         {
             solverData.Variables.SantaDayVisit = new GLS.Variable[solverData.NumberOfDays][,];
 
-            for (int i = 0; i < solverData.NumberOfDays; i++)
+            for (int day = 0; day < solverData.NumberOfDays; day++)
             {
                 var rows = solverData.NumberOfSantas;
                 var cols = solverData.NumberOfVisits;
-                solverData.Variables.SantaDayVisit[i] = solverData.Solver.MakeBoolVarMatrix(rows, cols);
+                solverData.Variables.SantaDayVisit[day] = solverData.Solver.MakeBoolVarMatrix(rows, cols);
             }
 
         }
@@ -88,6 +91,32 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         private void CreateUsesSanta()
         {
             solverData.Variables.UsesSanta = solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfDays, solverData.NumberOfSantas);
+        }
+
+        private void CreateNumberOfSantasNeeded()
+        {
+            solverData.Variables.NumberOfSantasNeeded = solverData.Solver.MakeIntVarArray(solverData.NumberOfDays, 1, solverData.NumberOfSantas);
+        }
+
+        private void CreateNumberOfSantasNeededOverall()
+        {
+            var name = nameof(solverData.Variables.NumberOfSantasNeededOverall);
+            solverData.Variables.NumberOfSantasNeededOverall = solverData.Solver.MakeIntVar(1, solverData.NumberOfSantas, name);
+        }
+
+        private void CreateVisitStart()
+        {
+            solverData.Variables.VisitStart = new GLS.Variable[solverData.NumberOfDays][][];
+
+            for (int day = 0; day < solverData.NumberOfDays; day++)
+            {
+                solverData.Variables.VisitStart[day] = new GLS.Variable[solverData.NumberOfVisits][];
+                for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+                {
+                    solverData.Variables.VisitStart[day][visit] = solverData.Solver.MakeBoolVarArray(solverData.SlicesPerDay[day]);
+                }
+            }
+
         }
     }
 }

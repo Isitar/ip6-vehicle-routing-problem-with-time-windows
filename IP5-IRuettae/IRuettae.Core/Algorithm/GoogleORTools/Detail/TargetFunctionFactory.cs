@@ -27,13 +27,27 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             switch (target)
             {
                 case TargetType.ShortestRoute:
-                    return AddTargetFunctionShortestRoute(weight);
+                    return CreateTargetFunctionShortestRoute(weight);
+                case TargetType.MinSantas:
+                    return CreateTargetFunctionMinSantas(weight);
+                case TargetType.MinSantaShifts:
+                    return CreateTargetFunctionMinSantaShifts(weight);
                 default:
                     throw new NotSupportedException($"The type {target} is not supported.");
             }
         }
 
-        private LinearExpr AddTargetFunctionShortestRoute(double? weight)
+        private LinearExpr CreateTargetFunctionMinSantaShifts(double? weight)
+        {
+            return -solverData.Variables.NumberOfSantasNeeded.Sum();
+        }
+
+        private LinearExpr CreateTargetFunctionMinSantas(double? weight)
+        {
+            return -solverData.Variables.NumberOfSantasNeededOverall;
+        }
+
+        private LinearExpr CreateTargetFunctionShortestRoute(double? weight)
         {
             // TODO MEYERJ may lead to incorrect results if factor is around 0
             // -> investigate further
