@@ -33,16 +33,11 @@ namespace IRuettae.Preprocessing.Mapping
         /// </summary>
         /// <param name="seconds"></param>
         /// <returns></returns>
-        private int SecondsToTimeslice(double seconds)
-        {
-            return Convert.ToInt32(Math.Ceiling(seconds / timeslotLength));
-        }
+        private int SecondsToTimeslice(double seconds) => Convert.ToInt32(Math.Ceiling(seconds / timeslotLength));
 
 
         public SolverInputData Build()
         {
-
-
             bool[][,] santasVar = new bool[days.Count][,];
             VisitState[][,] visitsVar = new VisitState[days.Count][,];
 
