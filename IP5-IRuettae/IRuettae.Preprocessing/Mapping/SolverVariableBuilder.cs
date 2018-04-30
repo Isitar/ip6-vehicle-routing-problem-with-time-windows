@@ -13,7 +13,7 @@ namespace IRuettae.Preprocessing.Mapping
         private List<Santa> santas = null;
         private List<Visit> visits = null;
         private List<Way> ways = null;
-        private int timeslotLength = 5 * 60; //5 minutes
+        private const int timeslotLength = 5 * 60; //5 minutes
 
         /// <summary>
         /// List of days(StartTime, EndTime)
@@ -45,7 +45,7 @@ namespace IRuettae.Preprocessing.Mapping
             for (int day = 0; day < days.Count; day++)
             {
                 (var starttime, var endtime) = days[day];
-                var numberOfTimeslots = Convert.ToInt32(Math.Ceiling((endtime - starttime).TotalMinutes / timeslotLength));
+                var numberOfTimeslots = Convert.ToInt32(Math.Ceiling((endtime - starttime).TotalSeconds / timeslotLength));
                 santasVar[day] = new bool[santas.Count, numberOfTimeslots];
                 // set all santas available
                 for (int i = 0; i < santas.Count; i++)
