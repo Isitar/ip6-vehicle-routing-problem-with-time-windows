@@ -12,10 +12,6 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.TargetFunctionBuilders
     {
         private GLS.LinearExpr targetFunction = new GLS.LinearExpr();
 
-        public DefaultTargetFunctionBuilder()
-        {
-        }
-
         public override void CreateTargetFunction(SolverData solverData)
         {
             var factory = new TargetFunctionFactory(solverData);
