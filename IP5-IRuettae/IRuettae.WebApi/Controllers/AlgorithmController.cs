@@ -15,20 +15,23 @@ namespace IRuettae.WebApi.Controllers
     public class AlgorithmController : ApiController
     {
         [HttpPost]
-        public Route CalculateRoute(int year, int timeslotLength = 5 * 60)
+        public Route CalculateRoute(int year, int timeslotLength = 5 * 60, int timePerChild = 15, int beta0Time = 5)
         {
 
             using (var dbSession = SessionFactory.Instance.OpenSession())
             using (var transaction = dbSession.BeginTransaction())
             {
+                var visits = dbSession.Query<Visit>().Take(10).ToList();
+                visits.ForEach(v => v.Duration = 60* (v.NumberOfChildren * timePerChild + beta0Time));
+
                 var solverVariableBuilder = new SolverVariableBuilder(timeslotLength)
                 {
-                    Visits = dbSession.Query<Visit>().ToList(),
+                    Visits = visits,
                     Santas = dbSession.Query<Santa>().ToList(),
                     Days = new List<(DateTime, DateTime)>
                     {
-                        (new DateTime(2017, 12, 6, 18, 00, 00), new DateTime(2017, 12, 6, 22, 00, 00)),
-                        (new DateTime(2017, 12, 7, 18, 00, 00), new DateTime(2017, 12, 7, 22, 00, 00))
+                        (new DateTime(2017, 12, 6, 17, 00, 00), new DateTime(2017, 12, 6, 22, 00, 00)),
+                        (new DateTime(2017, 12, 7, 17, 00, 00), new DateTime(2017, 12, 7, 22, 00, 00))
                     }
                 };
                 var solverInputData = solverVariableBuilder.Build();
