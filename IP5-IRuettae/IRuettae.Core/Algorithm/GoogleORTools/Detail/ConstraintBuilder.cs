@@ -44,6 +44,75 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             CreateUsesSantaConstraint();
             CreateNumberOfSantasNeededConstraint();
             CreateNumberOfSantasNeededOverallConstraint();
+            CreateSantaEnRouteConstraint();
+        }
+
+        /// <summary>
+        /// A santa is en route, if he is visiting someone or walking around
+        /// </summary>
+        private void CreateSantaEnRouteConstraint()
+        {
+            // is visiting someone
+            for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+            {
+                for (int day = 0; day < solverData.NumberOfDays; day++)
+                {
+                    for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
+                    {
+                        var visiting = solverData.Variables.SantaEnRoute[day][santa, timeslice];
+                        for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+                        {
+                            // Z >= Z1
+                            solverData.Solver.Add(visiting >= solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice]);
+                        }
+                    }
+                }
+            }
+
+            // santa is walking between visits
+            // means, santa is walking if there is at least one visit before and at least one after
+            for (int day = 0; day < solverData.NumberOfDays; day++)
+            {
+                for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+                {
+                    var slicesPerDay = solverData.SlicesPerDay[day];
+                    for (int timeslice = 0; timeslice < slicesPerDay; timeslice++)
+                    {
+
+                        var visitBefore = CreateVisitBefore(day, santa, 0, timeslice);
+                        var visitAfter = CreateVisitBefore(day, santa, timeslice + 1, slicesPerDay);
+
+                        var walking = solverData.Variables.SantaEnRoute[day][santa, timeslice];
+                        // Z + 1 >= Z1 + Z2
+                        solverData.Solver.Add(walking + 1 >= visitBefore + visitAfter);
+                    }
+                }
+
+            }
+        }
+
+        /// <summary>
+        /// Create a variable, which has the value true, if there is at least one visit in the given range
+        /// </summary>
+        /// <param name="day"></param>
+        /// <param name="santa"></param>
+        /// <param name="timesliceFrom">inclusive</param>
+        /// <param name="timesliceTo">exclusive</param>
+        /// <returns></returns>
+        private Variable CreateVisitBefore(int day, int santa, int timesliceFrom, int timesliceTo)
+        {
+            var hasVisit = solverData.Solver.MakeBoolVar(string.Empty);
+            var sum = new LinearExpr();
+            for (int timeslice = timesliceFrom; timeslice < timesliceTo; timeslice++)
+            {
+                var v = solverData.Variables.SantaEnRoute[day][santa, timeslice];
+                sum += v;
+                // Z >= Z1
+                solverData.Solver.Add(hasVisit >= v);
+            }
+            // Z <= Z1 + Z2 + ...
+            solverData.Solver.Add(hasVisit <= sum);
+            return hasVisit;
         }
 
         /// <summary>

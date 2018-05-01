@@ -20,6 +20,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.TargetFunctionBuilders
         {
             var factory = new TargetFunctionFactory(solverData);
 
+            targetFunction += factory.CreateTargetFunction(TargetType.MinTime, null);
             targetFunction += factory.CreateTargetFunction(TargetType.MinSantas, null);
             targetFunction += factory.CreateTargetFunction(TargetType.MinSantaShifts, null);
 

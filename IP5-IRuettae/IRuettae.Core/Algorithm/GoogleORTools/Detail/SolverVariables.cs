@@ -45,12 +45,21 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         public GLS.Variable[,] UsesSanta { get; set; }
 
         /// <summary>
+        /// [day][santa,timeslice] is on his way (visiting or walking around)
+        /// warning: those values may be too high,
+        /// if TargetType.MinTime is not part of the target function
+        /// </summary>
+        public GLS.Variable[][,] SantaEnRoute { get; set; }
+
+        /// <summary>
         /// [day] number of santas needed
         /// </summary>
         public GLS.Variable[] NumberOfSantasNeeded { get; set; }
 
         /// <summary>
         /// number of santas needed overall (maximum on some day)
+        /// warning: this value may be too high,
+        /// if TargetType.MinSantas is not part of the target function
         /// </summary>
         public GLS.Variable NumberOfSantasNeededOverall { get; set; }
     }

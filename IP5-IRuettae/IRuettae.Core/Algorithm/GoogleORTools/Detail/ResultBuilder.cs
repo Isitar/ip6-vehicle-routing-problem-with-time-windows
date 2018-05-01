@@ -16,8 +16,6 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 
         public Route CreateResult()
         {
-            Debug.WriteLine($"Value of the target function: {solverData.Solver.Objective().Value()}");
-
             var route = new Route(solverData.NumberOfSantas, solverData.NumberOfDays);
 
             for (int day = 0; day < solverData.NumberOfDays; day++)

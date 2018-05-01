@@ -8,7 +8,7 @@ namespace IRuettae.Core.Algorithm
 {
     enum TargetType
     {
-        ShortestRoute, // the routes should be as short as possible
+        MinTime, // the overall time should be minimised
         MinSantas, // the number of santas needed overall should be minimised
         MinSantaShifts, // the number of santas needed each day should be minimised
     }

@@ -21,13 +21,13 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         /// </summary>
         /// <param name="target"></param>
         /// <param name="weight"></param>
-        /// <returns>LinearExpr which should be maximised</returns>
+        /// <returns>LinearExpr which should be minimised</returns>
         public LinearExpr CreateTargetFunction(TargetType target, double? weight = 1.0)
         {
             switch (target)
             {
-                case TargetType.ShortestRoute:
-                    return CreateTargetFunctionShortestRoute(weight);
+                case TargetType.MinTime:
+                    return CreateTargetFunctionMinTime(weight);
                 case TargetType.MinSantas:
                     return CreateTargetFunctionMinSantas(weight);
                 case TargetType.MinSantaShifts:
@@ -37,40 +37,28 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             }
         }
 
+        private LinearExpr CreateTargetFunctionMinTime(double? weight)
+        {
+            var sum = new LinearExpr[solverData.NumberOfDays];
+            for (int day = 0; day < solverData.NumberOfDays; day++)
+            {
+                sum[day] = new LinearExpr();
+                foreach (var v in solverData.Variables.SantaEnRoute[day])
+                {
+                    sum[day] += v;
+                }
+            }
+            return LinearExprArrayHelper.Sum(sum);
+        }
+
         private LinearExpr CreateTargetFunctionMinSantaShifts(double? weight)
         {
-            return -solverData.Variables.NumberOfSantasNeeded.Sum();
+            return solverData.Variables.NumberOfSantasNeeded.Sum();
         }
 
         private LinearExpr CreateTargetFunctionMinSantas(double? weight)
         {
-            return -solverData.Variables.NumberOfSantasNeededOverall;
-        }
-
-        private LinearExpr CreateTargetFunctionShortestRoute(double? weight)
-        {
-            // TODO MEYERJ may lead to incorrect results if factor is around 0
-            // -> investigate further
-            //double factor = -1.0;
-            //if (weight.HasValue)
-            //{
-            //    double totalDistance = 0;
-            //    foreach (var distance in variables.Distances)
-            //    {
-            //        totalDistance += distance;
-            //    }
-            //    factor *= weight.Value / totalDistance;
-            //}
-
-            LinearExpr expr = new LinearExpr();
-            //for (int row = 0; row < variables.NumberLocations; row++)
-            //{
-            //    for (int col = 0; col < variables.NumberLocations; col++)
-            //    {
-            //        expr += (factor * variables.Distances[row, col]) * variables.UsesWay[row, col];
-            //    }
-            //}
-            return expr;
+            return solverData.Variables.NumberOfSantasNeededOverall;
         }
     }
 }

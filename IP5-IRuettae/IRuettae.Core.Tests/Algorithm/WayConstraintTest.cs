@@ -71,8 +71,18 @@ namespace IRuettae.Core.Tests.Algorithm
             var waypoints = calculatedRoute.Waypoints[0, 0];
             Assert.AreEqual(4, waypoints.Count);
             Assert.AreEqual(0, waypoints[0].visit);
-            Assert.AreEqual(1, waypoints[1].visit);
-            Assert.AreEqual(2, waypoints[2].visit);
+
+            // Order may change
+            if (waypoints[1].visit == 1)
+            {
+                Assert.AreEqual(1, waypoints[1].visit);
+                Assert.AreEqual(2, waypoints[2].visit);
+            }
+            else
+            {
+                Assert.AreEqual(2, waypoints[1].visit);
+                Assert.AreEqual(1, waypoints[2].visit);
+            }
 
             Assert.AreEqual(-1, waypoints[0].startTime);
             Assert.AreEqual(1, waypoints[1].startTime);
