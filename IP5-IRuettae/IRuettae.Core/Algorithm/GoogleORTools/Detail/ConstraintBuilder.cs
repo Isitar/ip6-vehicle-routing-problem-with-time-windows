@@ -53,21 +53,21 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         private void CreateSantaEnRouteConstraint()
         {
             // is visiting someone
-            for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
-            {
-                for (int day = 0; day < solverData.NumberOfDays; day++)
-                {
-                    for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
-                    {
-                        var visiting = solverData.Variables.SantaEnRoute[day][santa, timeslice];
-                        for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
-                        {
-                            // Z >= Z1
-                            solverData.Solver.Add(visiting >= solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice]);
-                        }
-                    }
-                }
-            }
+            //for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+            //{
+            //    for (int day = 0; day < solverData.NumberOfDays; day++)
+            //    {
+            //        for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
+            //        {
+            //            var visiting = solverData.Variables.SantaEnRoute[day][santa, timeslice];
+            //            for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+            //            {
+            //                // Z >= Z1
+            //                solverData.Solver.Add(visiting >= solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice]);
+            //            }
+            //        }
+            //    }
+            //}
 
             // santa is walking between visits
             // means, santa is walking if there is at least one visit before and at least one after
@@ -87,8 +87,50 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                         solverData.Solver.Add(walking + 1 >= visitBefore + visitAfter);
                     }
                 }
-
             }
+
+            // set all fields in SantaEnRoute, when santa visits visit
+            // see GetSumOfEnRoute for further explanation
+            for (int day = 0; day < solverData.NumberOfDays; day++)
+            {
+                for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+                {
+                    for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+                    {
+                        for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
+                        {
+                            var isVisiting = solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
+                            var (santaEnRoute, numberOfSummands) = GetSumOfEnRoute(day, santa, visit, timeslice);
+                            solverData.Solver.Add(santaEnRoute >= numberOfSummands * isVisiting);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// The the sum of all fields in SantaEnRoute that must be set, if santa visits the given visit
+        /// A field in SantaEnRoute must be set if:
+        /// - Santa is visiting visit
+        /// - Santa is busy walking from home to visit
+        /// - Santa is busy walking from visit to home
+        /// </summary>
+        /// <param name="day"></param>
+        /// <param name="santa"></param>
+        /// <param name="visit"></param>
+        /// <param name="timesliceVisit"></param>
+        /// <returns>sum of all fields that must be set and the number of fields</returns>
+        private (LinearExpr, int) GetSumOfEnRoute(int day, int santa, int visit, int timesliceVisit)
+        {
+            var sum = new LinearExpr();
+            var StartEndPoint = solverData.StartEndPoint;
+            var timesliceFrom = Math.Max(0, timesliceVisit - solverData.Input.Distances[StartEndPoint, visit]);
+            var timesliceTo = Math.Min(solverData.SlicesPerDay[day], timesliceVisit + solverData.Input.Distances[visit, StartEndPoint] + 1);
+            for (int timeslice = timesliceFrom; timeslice < timesliceTo; timeslice++)
+            {
+                sum += solverData.Variables.SantaEnRoute[day][santa, timeslice];
+            }
+            return (sum, timesliceTo - timesliceFrom);
         }
 
         /// <summary>
