@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using IRuettae.Core.Algorithm;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace IRuettae.Core.Test.Algorithm
+namespace IRuettae.Core.Tests.Algorithm
 {
     [TestClass]
     public class StarterTest
