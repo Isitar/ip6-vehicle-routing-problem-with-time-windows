@@ -144,6 +144,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\AlgorithmController.cs" />
     <Compile Include="Controllers\CSVImportController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SantaController.cs" />
@@ -151,6 +152,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AlgorithmStarterVM.cs" />
     <Compile Include="Models\BreakVM.cs" />
     <Compile Include="Models\ViewState.cs" />
     <Compile Include="Models\PeriodVM.cs" />
@@ -312,6 +314,7 @@
     <Content Include="Views\Santa\Delete.cshtml" />
     <Content Include="Views\Santa\BreakForm.cshtml" />
     <Content Include="Views\Santa\DetailsBreakList.cshtml" />
+    <Content Include="Views\Algorithm\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\logs\" />
