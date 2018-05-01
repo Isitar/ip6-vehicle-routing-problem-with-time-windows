@@ -95,7 +95,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
             Debug.WriteLine("====================");
             Debug.WriteLine("-Metadata");
             Debug.WriteLine(string.Empty);
-            Debug.WriteLine($"Value of the target function (negated): {-solverData.Solver.Objective().Value()}");
+            Debug.WriteLine($"Value of the target function: {solverData.Solver.Objective().Value()}");
             Debug.WriteLine($"Variables: {solverData.Solver.NumVariables()}");
             Debug.WriteLine($"Number of constraints: {solverData.Solver.NumConstraints()}");
             Debug.WriteLine($"Number of exact constraints: {solverData.Solver.ComputeExactConditionNumber()}");
