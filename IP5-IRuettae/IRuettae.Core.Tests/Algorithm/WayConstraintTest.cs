@@ -6,8 +6,6 @@ namespace IRuettae.Core.Tests.Algorithm
     [TestClass]
     public class WayConstraintTest
     {
-
-        [TestMethod]
         public SolverInputData GetModel()
         {
             // 1 Santa, 5 timeslots
