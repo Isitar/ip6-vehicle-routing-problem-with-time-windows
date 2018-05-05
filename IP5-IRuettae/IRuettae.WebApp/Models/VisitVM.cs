@@ -51,7 +51,7 @@ namespace IRuettae.WebApp.Models
         public virtual bool AlternativeAddressNeeded { get; set; }
 
         
-        [DisplayName("Dauer")]
+        [DisplayName("Dauer [s]")]
         public virtual double Duration { get; set; }
 
         public VisitVM()
@@ -59,6 +59,11 @@ namespace IRuettae.WebApp.Models
             Desired = new List<PeriodVM>();
             Unavailable = new List<PeriodVM>();
             Year = DateTime.Now.Year;
+        }
+
+        public override string ToString()
+        {
+            return $"{Street}, {Zip} {City}";
         }
     }
 }

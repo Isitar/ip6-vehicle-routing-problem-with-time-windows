@@ -18,6 +18,7 @@ namespace IRuettae.WebApi.Controllers
                 dbSession.Delete("from Period p");
                 dbSession.Delete("from Way w");
                 dbSession.Delete("from Visit v");
+                dbSession.Delete("from Santa s");
                 transaction.Commit();
             }
 
