@@ -70,7 +70,7 @@ namespace IRuettae.Core.Tests.Algorithm
             var lastWaypoint = result.Waypoints[0, 0].Last();
             var duration = lastWaypoint.startTime - firstWaypoint.startTime;
 
-            Assert.AreEqual(5, duration);
+            Assert.AreEqual(6, duration);
         }
     }
 }
