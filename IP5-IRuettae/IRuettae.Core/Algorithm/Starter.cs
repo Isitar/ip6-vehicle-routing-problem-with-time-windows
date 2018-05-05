@@ -11,14 +11,14 @@ namespace IRuettae.Core.Algorithm
 {
     public class Starter
     {
-        public static Route Optimise(SolverInputData solverInputData)
+        public static Route Optimise(SolverInputData solverInputData, TargetBuilderType builderType = TargetBuilderType.Default)
         {
             if (!solverInputData.IsValid())
             {
                 throw new ArgumentException();
             }
 
-            var solver = new Solver(solverInputData, new DefaultTargetFunctionBuilder());
+            var solver = new Solver(solverInputData, TargetFunctionBuilderFactory.Create(builderType));
             var resultState = solver.Solve();
             switch (resultState)
             {

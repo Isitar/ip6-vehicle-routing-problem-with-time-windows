@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Google.OrTools.LinearSolver;
+using IRuettae.Core.Algorithm.GoogleORTools.Detail;
 
-namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
+namespace IRuettae.Core.Algorithm.GoogleORTools.TargetFunctionBuilders
 {
     class TargetFunctionFactory
     {
