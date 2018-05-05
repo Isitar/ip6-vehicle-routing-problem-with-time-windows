@@ -24,21 +24,15 @@ namespace IRuettae.Core.Algorithm
         public VisitState[][,] Visits { get; }
 
         /// <summary>
-        /// in min
-        /// </summary>
-        public int TimesliceDuration { get; }
-
-        /// <summary>
         /// [from,to] distance in timeslices
         /// </summary>
         public int[,] Distances { get; }
 
-        public SolverInputData(bool[][,] santas, int[] visitsDuration, VisitState[][,] visits, int timesliceDuration, int[,] distances)
+        public SolverInputData(bool[][,] santas, int[] visitsDuration, VisitState[][,] visits, int[,] distances)
         {
             Santas = santas;
             VisitsDuration = visitsDuration;
             Visits = visits;
-            TimesliceDuration = timesliceDuration;
             Distances = distances;
         }
 

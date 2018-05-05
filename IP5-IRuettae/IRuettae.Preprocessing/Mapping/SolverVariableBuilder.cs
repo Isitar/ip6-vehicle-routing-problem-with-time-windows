@@ -18,7 +18,7 @@ namespace IRuettae.Preprocessing.Mapping
         /// <summary>
         /// List of days(StartTime, EndTime)
         /// </summary>
-        public List<(DateTime, DateTime)> Days { get; set;  }
+        public List<(DateTime, DateTime)> Days { get; set; }
 
         public SolverVariableBuilder(int timeslotLength, List<Santa> santas = null, List<Visit> visits = null, List<(DateTime, DateTime)> days = null)
         {
@@ -97,7 +97,7 @@ namespace IRuettae.Preprocessing.Mapping
             }
 
             int[] visitLength = Visits.Select(v => SecondsToTimeslice(v.Duration)).ToArray();
-            return new SolverInputData(santasVar, visitLength, visitsVar, timeslotLength / 60, distances);
+            return new SolverInputData(santasVar, visitLength, visitsVar, distances);
         }
     }
 }

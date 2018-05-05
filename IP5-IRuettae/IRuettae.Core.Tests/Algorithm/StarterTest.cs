@@ -58,7 +58,7 @@ namespace IRuettae.Core.Tests.Algorithm
                 0, 1, 2, 2, 2,
             };
 
-            return new SolverInputData(santas, visitLength, visits, 5, distances);
+            return new SolverInputData(santas, visitLength, visits, distances);
         }
 
         [TestMethod]
