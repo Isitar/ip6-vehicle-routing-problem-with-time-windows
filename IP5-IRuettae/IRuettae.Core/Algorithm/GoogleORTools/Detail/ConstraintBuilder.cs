@@ -45,6 +45,36 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             CreateNumberOfSantasNeededConstraint();
             CreateNumberOfSantasNeededOverallConstraint();
             CreateSantaEnRouteConstraint();
+
+            CreatePerformanceConstraints();
+        }
+
+        /// <summary>
+        /// Create all constraint that should benefit the performance
+        /// </summary>
+        private void CreatePerformanceConstraints()
+        {
+            CreateOrderSantaConstraint();
+        }
+
+        /// <summary>
+        /// Santa N can only be used if Santa N-1 is used
+        /// </summary>
+        private void CreateOrderSantaConstraint()
+        {
+            for (int day = 0; day < solverData.NumberOfDays; day++)
+            {
+                for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+                {
+                    // N*Z <= Z1 + Z2 + ... + ZN
+                    var sum = new LinearExpr();
+                    for (int preSanta = 0; preSanta < santa; preSanta++)
+                    {
+                        sum += solverData.Variables.UsesSanta[day, preSanta];
+                    }
+                    solverData.Solver.Add(santa * solverData.Variables.UsesSanta[day, santa] <= sum);
+                }
+            }
         }
 
         /// <summary>
