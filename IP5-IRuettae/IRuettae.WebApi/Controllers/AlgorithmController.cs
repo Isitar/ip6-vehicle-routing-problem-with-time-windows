@@ -63,7 +63,7 @@ namespace IRuettae.WebApi.Controllers
                     (new DateTime(2017,12,8,17,0,0), new DateTime(2017,12,8,22,0,0)),
                   //  (new DateTime(2017,12,9,17,0,0), new DateTime(2017,12,9,22,0,0))
                 },
-                StarterId = 197,
+                StarterId = 12,
                 TimePerChild = 5,
                 TimeSliceDuration = 5 * 60
             };

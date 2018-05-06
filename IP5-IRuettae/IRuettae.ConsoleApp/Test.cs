@@ -23,14 +23,18 @@ namespace IRuettae.ConsoleApp
         //    ExportMPSVisits(15);
         //    ExportMPSVisits(20);
         //    ExportMPSVisits(29);
-            TestAlgorithm(5);
+            TestAlgorithm(12);
         }
 
 
 
         private static void TestAlgorithm(int n_visits)
         {
-            TestSerailDataVisits($"SerializedObjects/SolverInput{n_visits}Visits.serial");
+            for (int i = 0; i < 3; i++)
+            {
+                TestSerailDataVisits($"SerializedObjects/SolverInput{n_visits}Visits.serial");
+            }
+            
         }
 
         private static void ExportMPSVisits(int n_visits)
@@ -43,10 +47,14 @@ namespace IRuettae.ConsoleApp
         {
             var solverInputData = Deserialize(serialDataName);
 
-            var sw = Stopwatch.StartNew();
-            Starter.Optimise(solverInputData);
-            sw.Stop();
-            Console.WriteLine("Elapsed s: " + sw.ElapsedMilliseconds /1000);
+            for (int i = 0; i < 3; i++)
+            {
+                var sw = Stopwatch.StartNew();
+
+                Starter.Optimise(solverInputData);
+                sw.Stop();
+                Console.WriteLine($"{i}: Elapsed s: {sw.ElapsedMilliseconds / 1000}");
+            }
         }
 
         private static SolverInputData Deserialize(string path)

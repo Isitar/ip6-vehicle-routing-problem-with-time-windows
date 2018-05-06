@@ -86,7 +86,9 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
             PrintDebugRessourcesBefore("SolveInternal");
 
             solver.Objective().SetMinimization();
-            resultState = FromGoogleResultState(solver.Solve());
+            var mparams = new GLS.MPSolverParameters();
+            mparams.SetDoubleParam(GLS.MPSolverParameters.RELATIVE_MIP_GAP, double.MaxValue);
+            resultState = FromGoogleResultState(solver.Solve(mparams));
 
             PrintDebugRessourcesAfter();
 #if DEBUG

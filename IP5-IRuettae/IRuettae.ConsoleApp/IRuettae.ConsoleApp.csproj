@@ -67,6 +67,9 @@
     <None Include="SerializedObjects\SolverInput10Visits.serial">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="SerializedObjects\SolverInput12Visits.serial">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="SerializedObjects\SolverInput15Visits.serial">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
