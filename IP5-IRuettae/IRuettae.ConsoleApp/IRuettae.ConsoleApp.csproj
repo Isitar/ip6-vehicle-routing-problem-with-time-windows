@@ -67,6 +67,7 @@
     <None Include="SerializedObjects\RealSolverInput.serial">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="SerializedObjects\SolverInput10Visits.serial" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IRuettae.Core\IRuettae.Core.csproj">

@@ -26,7 +26,7 @@ namespace IRuettae.ConsoleApp
         {
             SolverInputData solverInputData;
             // test
-            using (var stream = File.Open("SerializedObjects/RealSolverInput.serial", FileMode.Open))
+            using (var stream = File.Open("SerializedObjects/SolverInput10Visits.serial", FileMode.Open))
             {
                 solverInputData = (SolverInputData)new BinaryFormatter().Deserialize(stream);
             }
