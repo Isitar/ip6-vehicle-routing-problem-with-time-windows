@@ -1,9 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
+using IRuettae.Core.Algorithm;
 using IRuettae.GeoCalculations.RouteCalculation;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace IRuettae.ConsoleApp
 {
@@ -11,9 +17,25 @@ namespace IRuettae.ConsoleApp
     {
         internal static void Run(string[] args)
         {
-            TestGeolocator();
+            TestRealDataAlgorithm();
+            //TestGeolocator();
         }
 
+
+        private static void TestRealDataAlgorithm()
+        {
+            SolverInputData solverInputData;
+            // test
+            using (var stream = File.Open("SerializedObjects/RealSolverInput.obj", FileMode.Open))
+            {
+                solverInputData = (SolverInputData)new BinaryFormatter().Deserialize(stream);
+            }
+            
+            var sw = Stopwatch.StartNew();
+            Starter.Optimise(solverInputData);
+            sw.Stop();
+            Console.WriteLine("Elapsed ms: " + sw.ElapsedMilliseconds);
+        }
 
         private static void TestGeolocator()
         {

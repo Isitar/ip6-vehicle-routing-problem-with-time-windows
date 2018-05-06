@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace IRuettae.Core.Algorithm
 {
+    [Serializable]
     public class SolverInputData
     {
         /// <summary>
@@ -27,6 +28,7 @@ namespace IRuettae.Core.Algorithm
         /// [from,to] distance in timeslices
         /// </summary>
         public int[,] Distances { get; }
+
 
         public SolverInputData(bool[][,] santas, int[] visitsDuration, VisitState[][,] visits, int[,] distances)
         {
