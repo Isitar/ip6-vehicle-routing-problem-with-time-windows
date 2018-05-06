@@ -13,7 +13,6 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
 
         private bool hasModel = false;
         private ResultState resultState = ResultState.NotSolved;
-        //private Route result = null;
 
         private readonly GLS.Solver solver = new GLS.Solver("SantaProblem", GLS.Solver.CBC_MIXED_INTEGER_PROGRAMMING);
         private readonly AbstractTargetFunctionBuilder targetFunctionBuilder;
@@ -46,31 +45,50 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
 
         private void InitGoogleSolver()
         {
+            PrintDebugRessourcesBefore("InitGoogleSolver");
+
             solver.Reset();
+
+            PrintDebugRessourcesAfter();
         }
 
         private void AddVariables()
         {
+            PrintDebugRessourcesBefore("AddVariables");
+
             var vb = new VariableBuilder(solverData);
             vb.CreateVariables();
+
+            PrintDebugRessourcesAfter();
         }
 
         private void AddConstraints()
         {
+            PrintDebugRessourcesBefore("AddConstraints");
+
             var cb = new ConstraintBuilder(solverData);
             cb.CreateConstraints();
+
+            PrintDebugRessourcesAfter();
         }
 
         private void AddTargetFunction()
         {
+            PrintDebugRessourcesBefore("AddTargetFunction");
+
             targetFunctionBuilder.CreateTargetFunction(solverData);
+
+            PrintDebugRessourcesAfter();
         }
 
         private ResultState SolveInternal()
         {
+            PrintDebugRessourcesBefore("SolveInternal");
+
             solver.Objective().SetMinimization();
             resultState = FromGoogleResultState(solver.Solve());
 
+            PrintDebugRessourcesAfter();
 #if DEBUG
             PrintDebugOutput();
 #endif
@@ -210,6 +228,23 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
         {
             var rb = new ResultBuilder(solverData);
             return rb.CreateResult();
+        }
+
+        private void PrintDebugRessourcesBefore(string name)
+        {
+            Debug.WriteLine("");
+            Debug.WriteLine($"{name}");
+            PrintDebugRessources("before");
+        }
+
+        private void PrintDebugRessourcesAfter()
+        {
+            PrintDebugRessources("after");
+        }
+
+        private void PrintDebugRessources(string description)
+        {
+            Debug.WriteLine($"{description}: {solverData.Solver.NumConstraints()} constraint, {Process.GetCurrentProcess().PrivateMemorySize64 / 1024 / 1024} MB used memory;");
         }
     }
 }
