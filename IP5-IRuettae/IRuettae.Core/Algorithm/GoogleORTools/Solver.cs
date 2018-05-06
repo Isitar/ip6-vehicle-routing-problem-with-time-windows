@@ -220,7 +220,9 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
             {
                 CreateModel();
             }
-            return solver.ExportModelAsMpsFormat(true, false);
+
+           // return solver.ExportModelAsLpFormat(false);
+            return solver.ExportModelAsMpsFormat(false, false);
         }
 
         public string ImportMPS()

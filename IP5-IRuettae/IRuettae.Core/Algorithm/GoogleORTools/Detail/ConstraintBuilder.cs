@@ -552,7 +552,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                         }
                     }
                 }
-                solverData.Solver.Add(solverData.Input.VisitsDuration[visit] + new LinearExpr() == sum);
+                solverData.Solver.Add(solverData.Input.VisitsDuration[visit] == sum);
             }
         }
     }

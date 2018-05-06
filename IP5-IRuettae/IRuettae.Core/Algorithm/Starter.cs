@@ -32,5 +32,14 @@ namespace IRuettae.Core.Algorithm
 
             return null;
         }
+
+        public static void SaveMps(string path,
+            SolverInputData solverInputData,
+            TargetBuilderType builderType = TargetBuilderType.Default
+            )
+        {
+            var solver = new Solver(solverInputData, TargetFunctionBuilderFactory.Create(builderType));
+            System.IO.File.WriteAllText(path, solver.ExportMPS());
+        }
     }
 }

@@ -52,27 +52,29 @@ namespace IRuettae.WebApi.Controllers
 
 
         [HttpGet]
-        public IEnumerable<TimeSpan> Benchmark()
+        public IEnumerable<TimeSpan> Benchmark(int n_visits)
         {
             var algorithmStarter = new AlgorithmStarter
             {
                 Year = 2017,
-                Beta0 = 5,
+                Beta0 = 15,
                 Days = new List<(DateTime, DateTime)>()
                 {
                     (new DateTime(2017,12,8,17,0,0), new DateTime(2017,12,8,22,0,0)),
-                    (new DateTime(2017,12,9,17,0,0), new DateTime(2017,12,9,22,0,0))
+                  //  (new DateTime(2017,12,9,17,0,0), new DateTime(2017,12,9,22,0,0))
                 },
                 StarterId = 197,
-                TimePerChild = 15,
+                TimePerChild = 5,
                 TimeSliceDuration = 5 * 60
             };
             SolverInputData solverInputData;
 
+            
+
             var retVal = new List<TimeSpan>();
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
-                var visits = dbSession.Query<Visit>().ToList();
+                var visits = dbSession.Query<Visit>().Take(n_visits).ToList();
                 visits.ForEach(v => v.Duration = 60 * (v.NumberOfChildren * algorithmStarter.TimePerChild + algorithmStarter.Beta0));
                 visits.Sort((a, b) =>
                 {
@@ -93,22 +95,23 @@ namespace IRuettae.WebApi.Controllers
                 solverInputData = solverVariableBuilder.Build();
             }
 
-            var path = HostingEnvironment.MapPath("~/App_Data/solverInput.obj");
+            var path = HostingEnvironment.MapPath($"~/App_Data/SolverInput{n_visits}Visits.serial");
             using (var stream = File.Open(path, FileMode.Create))
             {
                 new BinaryFormatter().Serialize(stream, solverInputData);
             }
 
-            for (int i = 0; i < 1; ++i)
-            {
-                var sw = Stopwatch.StartNew();
-                Starter.Optimise(solverInputData);
-                sw.Stop();
-                Console.WriteLine("Elapsed ms: " + sw.ElapsedMilliseconds);
-                retVal.Add(sw.Elapsed);
-            }
+            //for (int i = 0; i < 1; ++i)
+            //{
+            //    var sw = Stopwatch.StartNew();
+            //    Starter.Optimise(solverInputData);
+            //    sw.Stop();
+            //    Console.WriteLine("Elapsed ms: " + sw.ElapsedMilliseconds);
+            //    retVal.Add(sw.Elapsed);
+            //}
 
-            return retVal;
+            //return retVal;
+            return null;
         }
     }
 }

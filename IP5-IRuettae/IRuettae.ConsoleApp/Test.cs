@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -17,24 +18,43 @@ namespace IRuettae.ConsoleApp
     {
         internal static void Run(string[] args)
         {
-            TestRealDataAlgorithm();
-            //TestGeolocator();
+            ExportMPSVisits(5);
+            ExportMPSVisits(10);
+            ExportMPSVisits(15);
+            ExportMPSVisits(20);
+            ExportMPSVisits(29);
+            TestAlgorithm(5);
         }
 
 
-        private static void TestRealDataAlgorithm()
+
+        private static void TestAlgorithm(int n_visits)
         {
-            SolverInputData solverInputData;
-            // test
-            using (var stream = File.Open("SerializedObjects/SolverInput10Visits.serial", FileMode.Open))
-            {
-                solverInputData = (SolverInputData)new BinaryFormatter().Deserialize(stream);
-            }
-            
+            TestSerailDataVisits($"SerializedObjects/SolverInput{n_visits}Visits.serial");
+        }
+
+        private static void ExportMPSVisits(int n_visits)
+        {
+            var solverInputData = Deserialize($"SerializedObjects/SolverInput{n_visits}Visits.serial");
+            Starter.SaveMps($"{n_visits}_mps.mps", solverInputData, TargetBuilderType.Default);
+        }
+
+        private static void TestSerailDataVisits(string serialDataName)
+        {
+            var solverInputData = Deserialize(serialDataName);
+
             var sw = Stopwatch.StartNew();
             Starter.Optimise(solverInputData);
             sw.Stop();
             Console.WriteLine("Elapsed ms: " + sw.ElapsedMilliseconds);
+        }
+
+        private static SolverInputData Deserialize(string path)
+        {
+            using (var stream = File.Open(path, FileMode.Open))
+            {
+                return (SolverInputData)new BinaryFormatter().Deserialize(stream);
+            }
         }
 
         private static void TestGeolocator()
