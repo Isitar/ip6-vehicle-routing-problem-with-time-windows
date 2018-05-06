@@ -33,9 +33,29 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.TargetFunctionBuilders
                     return CreateTargetFunctionMinSantas(weight);
                 case TargetType.MinSantaShifts:
                     return CreateTargetFunctionMinSantaShifts(weight);
+                case TargetType.TryVisitEarly:
+                    return CreateTargetFunctionTryVisitEarly(weight);
                 default:
                     throw new NotSupportedException($"The type {target} is not supported.");
             }
+        }
+
+        private LinearExpr CreateTargetFunctionTryVisitEarly(double? weight)
+        {
+            var sum = new LinearExpr[solverData.NumberOfDays];
+            for (int day = 0; day < solverData.NumberOfDays; day++)
+            {
+                sum[day] = new LinearExpr();
+                for (int timeslice = 1; timeslice < solverData.SlicesPerDay[day]; timeslice++)
+                {
+                    for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+                    {
+                        sum[day] += solverData.Variables.SantaEnRoute[day][santa, timeslice];
+                    }
+                    sum[day] *= timeslice;
+                }
+            }
+            return LinearExprArrayHelper.Sum(sum);
         }
 
         private LinearExpr CreateTargetFunctionMinTime(double? weight)
