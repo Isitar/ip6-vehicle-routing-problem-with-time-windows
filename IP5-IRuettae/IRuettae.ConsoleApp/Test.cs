@@ -46,7 +46,7 @@ namespace IRuettae.ConsoleApp
             var sw = Stopwatch.StartNew();
             Starter.Optimise(solverInputData);
             sw.Stop();
-            Console.WriteLine("Elapsed ms: " + sw.ElapsedMilliseconds);
+            Console.WriteLine("Elapsed s: " + sw.ElapsedMilliseconds /1000);
         }
 
         private static SolverInputData Deserialize(string path)
