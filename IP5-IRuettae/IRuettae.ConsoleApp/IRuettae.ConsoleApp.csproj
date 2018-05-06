@@ -67,8 +67,12 @@
     <None Include="SerializedObjects\SolverInput10Visits.serial">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="SerializedObjects\SolverInput20Visits.serial" />
-    <None Include="SerializedObjects\SolverInput29Visits.serial" />
+    <None Include="SerializedObjects\SolverInput20Visits.serial">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="SerializedObjects\SolverInput29Visits.serial">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IRuettae.Core\IRuettae.Core.csproj">
