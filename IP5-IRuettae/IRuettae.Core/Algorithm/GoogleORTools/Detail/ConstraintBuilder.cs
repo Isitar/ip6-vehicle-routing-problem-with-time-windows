@@ -38,7 +38,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             CreateSantaNeedTimeToFirstVisitConstraint();
             CreateSantaNeedsTimeToGetHomeConstraint();
 
-            CreateSantaNeedTimeBetweenVisitsConstraint();
+            CreateSantaNeedTimeBetweenVisitsConstraintBigM();
 
             CreateSingleVisitConstraint();
             CreateUsesSantaConstraint();
@@ -355,7 +355,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         }
 
 
-        private void CreateSantaNeedTimeBetweenVisitsConstraintWORKING()
+        private void CreateSantaNeedTimeBetweenVisitsConstraintSmallM()
         {
 
 #if DEBUG
@@ -437,7 +437,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         /// it needs a certain time to get from one visit to another
         /// except if distance is 0
         /// </summary>
-        private void CreateSantaNeedTimeBetweenVisitsConstraint()
+        private void CreateSantaNeedTimeBetweenVisitsConstraintBigM()
         {
 #if DEBUG
             var constraintCounter = 0;
