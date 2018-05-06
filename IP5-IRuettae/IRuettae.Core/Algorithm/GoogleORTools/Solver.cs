@@ -7,7 +7,7 @@ using GLS = Google.OrTools.LinearSolver;
 
 namespace IRuettae.Core.Algorithm.GoogleORTools
 {
-    class Solver : ISolver
+    internal class Solver : ISolver
     {
         private readonly SolverData solverData;
 

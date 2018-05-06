@@ -8,7 +8,7 @@ using GLS = Google.OrTools.LinearSolver;
 
 namespace IRuettae.Core.Algorithm.GoogleORTools.TargetFunctionBuilders
 {
-    class DefaultTargetFunctionBuilder : AbstractTargetFunctionBuilder
+    internal class DefaultTargetFunctionBuilder : AbstractTargetFunctionBuilder
     {
         private GLS.LinearExpr targetFunction = new GLS.LinearExpr();
 

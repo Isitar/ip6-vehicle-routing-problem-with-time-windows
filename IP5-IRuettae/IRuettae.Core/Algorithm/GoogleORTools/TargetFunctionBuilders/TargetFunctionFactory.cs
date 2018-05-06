@@ -8,7 +8,7 @@ using IRuettae.Core.Algorithm.GoogleORTools.Detail;
 
 namespace IRuettae.Core.Algorithm.GoogleORTools.TargetFunctionBuilders
 {
-    class TargetFunctionFactory
+    internal class TargetFunctionFactory
     {
         private readonly SolverData solverData;
 

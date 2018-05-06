@@ -3,7 +3,7 @@ using GLS = Google.OrTools.LinearSolver;
 
 namespace IRuettae.Core.Algorithm.GoogleORTools.TargetFunctionBuilders
 {
-    class MinTimeOnlyTargetFunctionBuilder : AbstractTargetFunctionBuilder
+    internal class MinTimeOnlyTargetFunctionBuilder : AbstractTargetFunctionBuilder
     {
         private GLS.LinearExpr targetFunction = new GLS.LinearExpr();
 

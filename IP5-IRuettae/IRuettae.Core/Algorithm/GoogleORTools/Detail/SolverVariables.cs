@@ -7,7 +7,7 @@ using GLS = Google.OrTools.LinearSolver;
 
 namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 {
-    class SolverVariables
+    internal class SolverVariables
     {
         /// <summary>
         /// [day][santa][visit,timeslice] is visiting

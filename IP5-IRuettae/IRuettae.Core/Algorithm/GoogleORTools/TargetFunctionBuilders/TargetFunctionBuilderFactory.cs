@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IRuettae.Core.Algorithm.GoogleORTools.TargetFunctionBuilders
 {
-    static class TargetFunctionBuilderFactory
+    internal static class TargetFunctionBuilderFactory
     {
         public static AbstractTargetFunctionBuilder Create(TargetBuilderType type)
         {

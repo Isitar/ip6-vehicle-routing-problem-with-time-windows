@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IRuettae.Core.Algorithm.GoogleORTools.TargetFunctionBuilders
 {
-    enum TargetType
+    internal enum TargetType
     {
         MinTime, // the overall time should be minimised
         MinSantas, // the number of santas needed overall should be minimised

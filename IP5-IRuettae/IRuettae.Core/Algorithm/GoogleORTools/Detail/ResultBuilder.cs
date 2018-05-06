@@ -5,7 +5,7 @@ using IRuettae.Core.Algorithm.GoogleORTools.Detail;
 
 namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 {
-    class ResultBuilder
+    internal class ResultBuilder
     {
         private readonly SolverData solverData;
 
