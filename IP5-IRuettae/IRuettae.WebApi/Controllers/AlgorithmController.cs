@@ -72,7 +72,7 @@ namespace IRuettae.WebApi.Controllers
             var retVal = new List<TimeSpan>();
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
-                var visits = dbSession.Query<Visit>().ToList();
+                var visits = dbSession.Query<Visit>().Take(10).ToList();
                 visits.ForEach(v => v.Duration = 60 * (v.NumberOfChildren * algorithmStarter.TimePerChild + algorithmStarter.Beta0));
                 visits.Sort((a, b) =>
                 {
@@ -102,7 +102,7 @@ namespace IRuettae.WebApi.Controllers
             for (int i = 0; i < 1; ++i)
             {
                 var sw = Stopwatch.StartNew();
-                Starter.Optimise(solverInputData2);
+                Starter.Optimise(solverInputData);
                 sw.Stop();
                 Console.WriteLine("Elapsed ms: " + sw.ElapsedMilliseconds);
                 retVal.Add(sw.Elapsed);
