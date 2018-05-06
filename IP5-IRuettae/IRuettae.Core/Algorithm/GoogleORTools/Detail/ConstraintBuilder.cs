@@ -64,7 +64,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         {
             for (int day = 0; day < solverData.NumberOfDays; day++)
             {
-                for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+                for (int santa = 1; santa < solverData.NumberOfSantas; santa++)
                 {
                     // N*Z <= Z1 + Z2 + ... + ZN
                     var sum = new LinearExpr();
