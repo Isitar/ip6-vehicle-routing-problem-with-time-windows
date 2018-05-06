@@ -47,6 +47,18 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             CreateSantaEnRouteConstraint();
 
             CreatePerformanceConstraints();
+
+            CreateDebugConstraint();
+        }
+
+        private void CreateDebugConstraint()
+        {
+            var sum = new LinearExpr();
+            for (int i = 35; i < solverData.SlicesPerDay[0]; i++)
+            {
+                sum += solverData.Variables.Santas[0][0, i];
+            }
+            solverData.Solver.Add(0 == sum);
         }
 
         /// <summary>
@@ -66,7 +78,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             {
                 for (int santa = 1; santa < solverData.NumberOfSantas; santa++)
                 {
-                    // N*Z <= Z1 + Z2 + ... + ZN
+                    // N*Z <= Z0 + Z1 + ... + Z(N-1)
                     var sum = new LinearExpr();
                     for (int preSanta = 0; preSanta < santa; preSanta++)
                     {
@@ -459,7 +471,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                     for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                     {
                         // Z == (int)availble
-                        var expr = solverData.Variables.Santas[day][santa, timeslice] == Convert.ToInt32(solverData.Input.Santas[day][santa, timeslice]);
+                        var expr = solverData.Variables.Santas[day][santa, timeslice] <= Convert.ToInt32(solverData.Input.Santas[day][santa, timeslice]);
                         solverData.Solver.Add(expr);
                     }
                 }
