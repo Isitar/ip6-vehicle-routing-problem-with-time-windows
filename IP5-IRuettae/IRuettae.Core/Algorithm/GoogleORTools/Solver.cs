@@ -85,8 +85,11 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
         {
             PrintDebugRessourcesBefore("SolveInternal");
 
+            var param = new GLS.MPSolverParameters();
+            //param.SetDoubleParam(GLS.MPSolverParameters.RELATIVE_MIP_GAP, double.MaxValue);
+
             solver.Objective().SetMinimization();
-            resultState = FromGoogleResultState(solver.Solve());
+            resultState = FromGoogleResultState(solver.Solve(param));
 
             PrintDebugRessourcesAfter();
 #if DEBUG
@@ -221,7 +224,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
                 CreateModel();
             }
 
-           // return solver.ExportModelAsLpFormat(false);
+            // return solver.ExportModelAsLpFormat(false);
             return solver.ExportModelAsMpsFormat(false, false);
         }
 
