@@ -50,7 +50,7 @@ namespace IRuettae.Core.Tests.Algorithm
 
 
         [TestMethod]
-        public void TestMinTimeOnly()
+        public void TestMultipleSanta()
         {
             var model = GetModel();
             var result = Starter.Optimise(model, TargetBuilderType.MinTimeOnly);

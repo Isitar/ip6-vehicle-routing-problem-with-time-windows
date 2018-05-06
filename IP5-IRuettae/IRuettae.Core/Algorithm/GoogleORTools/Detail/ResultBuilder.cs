@@ -45,12 +45,12 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                     // append way back home
                     {
                         var last = route.Waypoints[santa, day].LastOrDefault();
-                        var addTime = solverData.Input.Distances[last.visit, solverData.StartEndPoint];
-                        route.Waypoints[santa, day].Add(new Waypoint(0, last.startTime + addTime + 1));
+                        var duration = solverData.Input.VisitsDuration[last.visit];
+                        var distance = solverData.Input.Distances[last.visit, solverData.StartEndPoint];
+                        route.Waypoints[santa, day].Add(new Waypoint(0, last.startTime + duration + distance));
                     }
                 }
             }
-
 
             Debug.Write("Result is:");
             Debug.Write(route.ToString());
@@ -64,6 +64,11 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             {
                 for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
                 {
+                    if (visit == value.visit)
+                    {
+                        continue;
+                    }
+
                     if (solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice].SolutionValue() == 1)
                     {
                         return new Waypoint(visit, timeslice);
