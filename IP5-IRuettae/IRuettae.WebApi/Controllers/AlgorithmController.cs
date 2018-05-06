@@ -65,14 +65,14 @@ namespace IRuettae.WebApi.Controllers
                 },
                 StarterId = 197,
                 TimePerChild = 15,
-                TimeSliceDuration = 5
+                TimeSliceDuration = 5 * 60
             };
             SolverInputData solverInputData;
 
             var retVal = new List<TimeSpan>();
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
-                var visits = dbSession.Query<Visit>().Take(10).ToList();
+                var visits = dbSession.Query<Visit>().ToList();
                 visits.ForEach(v => v.Duration = 60 * (v.NumberOfChildren * algorithmStarter.TimePerChild + algorithmStarter.Beta0));
                 visits.Sort((a, b) =>
                 {
