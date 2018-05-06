@@ -210,6 +210,10 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
             return ResultState.Unknown;
         }
 
+        /// <summary>
+        /// Returns the mps as string
+        /// </summary>
+        /// <returns>mps as string</returns>
         public string ExportMPS()
         {
             if (!hasModel)
