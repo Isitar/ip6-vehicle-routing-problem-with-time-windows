@@ -48,7 +48,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 
             CreatePerformanceConstraints();
 
-            CreateDebugConstraint();
+            //CreateDebugConstraint();
         }
 
         private void CreateDebugConstraint()
@@ -461,7 +461,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                                 if (distance <= 0) continue;
 
                                 // 1 because same timeslot is handled by another constraint
-                                for (int distCounter = 1; distCounter <= Math.Min(distance, slicesPerDay - timeslice -1); distCounter++)
+                                for (int distCounter = 1; distCounter <= Math.Min(distance, slicesPerDay - timeslice - 1); distCounter++)
                                 {
                                     B += solverData.Variables.VisitsPerSanta[day][santa][destination,
                                         timeslice + distCounter];
