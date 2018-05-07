@@ -103,23 +103,6 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         /// </summary>
         private void CreateSantaEnRouteConstraint()
         {
-            // is visiting someone
-            //for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
-            //{
-            //    for (int day = 0; day < solverData.NumberOfDays; day++)
-            //    {
-            //        for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
-            //        {
-            //            var visiting = solverData.Variables.SantaEnRoute[day][santa, timeslice];
-            //            for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
-            //            {
-            //                // Z >= Z1
-            //                solverData.Solver.Add(visiting >= solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice]);
-            //            }
-            //        }
-            //    }
-            //}
-
             // santa is walking between visits
             // means, santa is walking if there is at least one visit before and at least one after
             for (int day = 0; day < solverData.NumberOfDays; day++)
