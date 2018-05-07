@@ -67,6 +67,15 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         private void CreatePerformanceConstraints()
         {
             CreateOrderSantaConstraint();
+            CreateSanta0VisitsVisit1Constraint();
+        }
+
+        /// <summary>
+        /// Santa 0 should visit Visit 1
+        /// </summary>
+        private void CreateSanta0VisitsVisit1Constraint()
+        {
+            solverData.Solver.Add(solverData.Variables.SantaVisits[0, 1] == 1);
         }
 
         /// <summary>
