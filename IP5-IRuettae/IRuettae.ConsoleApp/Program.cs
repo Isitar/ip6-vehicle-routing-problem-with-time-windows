@@ -11,6 +11,7 @@ namespace IRuettae.ConsoleApp
         static void Main(string[] args)
         {
             Test.Run(args);
+            Console.WriteLine("Program has finished, press enter to close it.");
             Console.ReadLine();
         }
     }
