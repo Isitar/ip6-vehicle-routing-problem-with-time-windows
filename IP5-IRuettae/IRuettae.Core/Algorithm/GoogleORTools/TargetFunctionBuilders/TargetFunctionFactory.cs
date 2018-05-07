@@ -42,6 +42,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.TargetFunctionBuilders
 
         private LinearExpr CreateTargetFunctionTryVisitEarly(double? weight)
         {
+            var maxWeight = 0.0;
             var sum = new LinearExpr[solverData.NumberOfDays];
             for (int day = 0; day < solverData.NumberOfDays; day++)
             {
@@ -50,12 +51,21 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.TargetFunctionBuilders
                 {
                     for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
                     {
-                        sum[day] += solverData.Variables.SantaEnRoute[day][santa, timeslice];
+                        sum[day] += solverData.Variables.SantaEnRoute[day][santa, timeslice] * timeslice;
+
                     }
-                    sum[day] *= timeslice;
                 }
+                double slices = solverData.SlicesPerDay[day];
+
+                // gauss sum formula
+                maxWeight += (slices * slices + slices) / 2;
             }
-            return LinearExprArrayHelper.Sum(sum);
+
+            if (weight.HasValue)
+            {
+                weight /= maxWeight;
+            }
+            return LinearExprArrayHelper.Sum(sum) * (weight ?? 1.0);
         }
 
         private LinearExpr CreateTargetFunctionMinTime(double? weight)
