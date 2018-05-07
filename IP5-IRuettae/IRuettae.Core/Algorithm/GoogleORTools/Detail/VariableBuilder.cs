@@ -21,7 +21,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             CreateVisitsPerSanta();
             CreateVisits();
             CreateSantaVisits();
-            CreateSantaDayVisits();
+            //CreateSantaDayVisits();
             CreateSantas();
             CreateUsesSanta();
             CreateNumberOfSantasNeeded();
@@ -47,18 +47,18 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             solverData.Variables.SantaVisits = solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfSantas, solverData.NumberOfVisits);
         }
 
-        private void CreateSantaDayVisits()
-        {
-            solverData.Variables.SantaDayVisit = new GLS.Variable[solverData.NumberOfDays][,];
+        //private void CreateSantaDayVisits()
+        //{
+        //    solverData.Variables.SantaDayVisit = new GLS.Variable[solverData.NumberOfDays][,];
 
-            for (int day = 0; day < solverData.NumberOfDays; day++)
-            {
-                var rows = solverData.NumberOfSantas;
-                var cols = solverData.NumberOfVisits;
-                solverData.Variables.SantaDayVisit[day] = solverData.Solver.MakeBoolVarMatrix(rows, cols);
-            }
+        //    for (int day = 0; day < solverData.NumberOfDays; day++)
+        //    {
+        //        var rows = solverData.NumberOfSantas;
+        //        var cols = solverData.NumberOfVisits;
+        //        solverData.Variables.SantaDayVisit[day] = solverData.Solver.MakeBoolVarMatrix(rows, cols);
+        //    }
 
-        }
+        //}
 
         private void CreateVisitsPerSanta()
         {

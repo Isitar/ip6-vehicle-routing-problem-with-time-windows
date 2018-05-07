@@ -25,7 +25,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 
             //variables
             CreateVisitsConstraint();
-            CreateSantaDayVisitsConstraint();
+            //CreateSantaDayVisitsConstraint();
             CreateSantaVisitsConstraint();
 
             // real constraints
@@ -38,7 +38,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             CreateSantaNeedTimeToFirstVisitConstraint();
             CreateSantaNeedsTimeToGetHomeConstraint();
 
-            CreateSantaNeedTimeBetweenVisitsConstraintBigM();
+            CreateSantaNeedTimeBetweenVisitsConstraintSmallM();
 
             CreateSingleVisitConstraint();
             CreateUsesSantaConstraint();
@@ -610,34 +610,34 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             }
         }
 
-        /// <summary>
-        /// Variable creation
-        /// </summary>
-        private void CreateSantaDayVisitsConstraint()
-        {
-            for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
-            {
-                for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
-                {
-                    for (int day = 0; day < solverData.NumberOfDays; day++)
-                    {
-                        var santaDayVisits = solverData.Variables.SantaDayVisit[day][santa, visit];
-                        var sumOfSlices = new LinearExpr();
-                        // Z <= Z1 + Z2 + ...
-                        for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
-                        {
-                            var slice = solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
-                            sumOfSlices += slice;
+        ///// <summary>
+        ///// Variable creation
+        ///// </summary>
+        //private void CreateSantaDayVisitsConstraint()
+        //{
+        //    for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+        //    {
+        //        for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+        //        {
+        //            for (int day = 0; day < solverData.NumberOfDays; day++)
+        //            {
+        //                var santaDayVisits = solverData.Variables.SantaDayVisit[day][santa, visit];
+        //                var sumOfSlices = new LinearExpr();
+        //                // Z <= Z1 + Z2 + ...
+        //                for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
+        //                {
+        //                    var slice = solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
+        //                    sumOfSlices += slice;
 
-                            // Z >= Z1
-                            solverData.Solver.Add(santaDayVisits >= slice);
-                        }
+        //                    // Z >= Z1
+        //                    solverData.Solver.Add(santaDayVisits >= slice);
+        //                }
 
-                        solverData.Solver.Add(santaDayVisits <= sumOfSlices);
-                    }
-                }
-            }
-        }
+        //                solverData.Solver.Add(santaDayVisits <= sumOfSlices);
+        //            }
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Each visit must be overall visited the right number of timeslices
