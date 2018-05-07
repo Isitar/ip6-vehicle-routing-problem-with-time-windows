@@ -119,7 +119,6 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
             Debug.WriteLine($"Value of the target function: {solverData.Solver.Objective().Value()}");
             Debug.WriteLine($"Variables: {solverData.Solver.NumVariables()}");
             Debug.WriteLine($"Number of constraints: {solverData.Solver.NumConstraints()}");
-            Debug.WriteLine($"Number of exact constraints: {solverData.Solver.ComputeExactConditionNumber()}");
             Debug.WriteLine($"Iterations: {solverData.Solver.Iterations()}");
             Debug.WriteLine($"Nodes: {solverData.Solver.Nodes()}");
             Debug.WriteLine($"Objective Minimization: {solverData.Solver.Objective().Minimization()}");
