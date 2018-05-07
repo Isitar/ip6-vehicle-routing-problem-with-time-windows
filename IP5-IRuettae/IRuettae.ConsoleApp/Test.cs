@@ -32,11 +32,7 @@ namespace IRuettae.ConsoleApp
         private static void TestAlgorithm(int n_visits)
         {
             Console.WriteLine($"Start testing algorithm with {n_visits} visits");
-            for (int i = 0; i < 3; i++)
-            {
-                TestSerailDataVisits($"SerializedObjects/SolverInput{n_visits}Visits.serial");
-            }
-
+            TestSerailDataVisits($"SerializedObjects/SolverInput{n_visits}Visits.serial");
         }
 
         private static void ExportMPSVisits(int n_visits)
@@ -45,17 +41,17 @@ namespace IRuettae.ConsoleApp
             Starter.SaveMps($"{n_visits}_mps.mps", solverInputData, TargetBuilderType.Default);
         }
 
-        private static void TestSerailDataVisits(string serialDataName)
+        private static void TestSerailDataVisits(string serialDataName, int numberOfRuns = 5)
         {
             var solverInputData = Deserialize(serialDataName);
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 1; i <= numberOfRuns; i++)
             {
                 var sw = Stopwatch.StartNew();
 
                 Starter.Optimise(solverInputData);
                 sw.Stop();
-                Console.WriteLine($"{i}: Elapsed s: {sw.ElapsedMilliseconds / 1000}");
+                Console.WriteLine($"{i}/{numberOfRuns}: Elapsed s: {sw.ElapsedMilliseconds / 1000}");
             }
         }
 
