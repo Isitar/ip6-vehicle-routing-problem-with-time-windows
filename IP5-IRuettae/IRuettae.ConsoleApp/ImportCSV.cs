@@ -7,7 +7,7 @@ using IRuettae.Preprocessing.CSVImport;
 
 namespace IRuettae.ConsoleApp
 {
-    class ImportCSV
+    internal class ImportCSV
     {
         internal static void Run(string[] args)
         {
