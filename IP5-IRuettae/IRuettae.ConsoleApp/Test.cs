@@ -23,6 +23,7 @@ namespace IRuettae.ConsoleApp
         //    ExportMPSVisits(15);
         //    ExportMPSVisits(20);
         //    ExportMPSVisits(29);
+            
             TestAlgorithm(12);
         }
 
@@ -30,6 +31,7 @@ namespace IRuettae.ConsoleApp
 
         private static void TestAlgorithm(int n_visits)
         {
+            Console.WriteLine($"Start testing algorithm with {n_visits} visits");
             for (int i = 0; i < 3; i++)
             {
                 TestSerailDataVisits($"SerializedObjects/SolverInput{n_visits}Visits.serial");
