@@ -18,12 +18,12 @@ namespace IRuettae.ConsoleApp
     {
         internal static void Run(string[] args)
         {
-        //    ExportMPSVisits(5);
-        //    ExportMPSVisits(10);
-        //    ExportMPSVisits(15);
-        //    ExportMPSVisits(20);
-        //    ExportMPSVisits(29);
-            TestAlgorithm(12);
+            //ExportMPSVisits(5);
+            //ExportMPSVisits(10);
+            //ExportMPSVisits(15);
+            //ExportMPSVisits(20);
+            //ExportMPSVisits(29);
+            TestAlgorithm(5);
         }
 
 
@@ -34,7 +34,7 @@ namespace IRuettae.ConsoleApp
             {
                 TestSerailDataVisits($"SerializedObjects/SolverInput{n_visits}Visits.serial");
             }
-            
+
         }
 
         private static void ExportMPSVisits(int n_visits)
