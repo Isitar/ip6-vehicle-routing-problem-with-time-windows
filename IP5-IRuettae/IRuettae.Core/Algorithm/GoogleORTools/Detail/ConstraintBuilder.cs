@@ -38,7 +38,10 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
             CreateSantaNeedTimeToFirstVisitConstraint();
             CreateSantaNeedsTimeToGetHomeConstraint();
 
-            CreateSantaNeedTimeBetweenVisitsConstraintSmallM();
+            CreateSantaNeedTimeBetweenVisitsConstraintBigM();
+            //CreateSantaNeedTimeBetweenVisitsConstraintSmallM();
+
+            //CreateSantaNeedTimeBetweenVisitsConstraintTinyM();
 
             CreateSingleVisitConstraint();
             CreateUsesSantaConstraint();
@@ -427,6 +430,72 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 #endif
         }
 
+        private void CreateSantaNeedTimeBetweenVisitsConstraintTinyM()
+        {
+
+#if DEBUG
+            var constraintCounter = 0;
+#endif
+
+            for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+            {
+                for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+                {
+                    for (int destination = 1; destination < solverData.NumberOfVisits; destination++)
+                    {
+                        var distance = solverData.Input.Distances[visit, destination];
+                        // don't add unnecessary constraints
+                        if (distance <= 0) continue;
+
+                        for (int day = 0; day < solverData.NumberOfDays; day++)
+                        {
+                            // since we're in bidirectional space, you can not visit B if a -> b > #timeslices
+                            // but you can visit B if b->a < #timeslices
+                            // --> add constraint to dissalow future use of B
+
+                            int slicesPerDay = solverData.SlicesPerDay[day];
+                            if (distance >= slicesPerDay)
+                            {
+                                for (int timeslice = 0; timeslice < slicesPerDay; timeslice++)
+                                {
+                                    var A = solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
+                                    var B = new LinearExpr();
+
+                                    for (int timeSliceB = timeslice; timeSliceB < slicesPerDay; timeSliceB++)
+                                    {
+                                        B += solverData.Variables.VisitsPerSanta[day][santa][destination, timeSliceB];
+                                    }
+
+                                    int numberOfBs = slicesPerDay - timeslice;
+
+                                    solverData.Solver.Add(numberOfBs * A <= numberOfBs - B);
+                                }
+                            }
+                            // default case
+                            else
+                            {
+                                for (int timeslice = 0; timeslice < slicesPerDay - distance; timeslice++)
+                                {
+                                    var A = solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
+                                    for (int distCounter = 1; distCounter <= distance; distCounter++)
+                                    {
+                                        solverData.Solver.Add(A <= 1 - solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter]);
+#if DEBUG
+                                    constraintCounter++;
+#endif
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+#if DEBUG
+            Debug.WriteLine($"CreateSantaNeedTimeBetweenVisitsConstraint - added {constraintCounter} constraints");
+#endif
+        }
+
         /// <summary>
         /// Santas are not able to beam and therefore,
         /// it needs a certain time to get from one visit to another
@@ -485,6 +554,51 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
 #endif
         }
 
+        private void CreateSantaNeedTimeBetweenVisitsConstraintGiantM()
+        {
+#if DEBUG
+            var constraintCounter = 0;
+#endif
+            for (int day = 0; day < solverData.NumberOfDays; day++)
+            {
+                int slicesPerDay = solverData.SlicesPerDay[day];
+                for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+                {
+                    for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+                    {
+                        for (int timeslice = 0; timeslice < slicesPerDay; timeslice++)
+                        {
+                            int numberOfBs = 0;
+                            var A = solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
+                            var B = new LinearExpr();
+                            for (int destination = 1; destination < solverData.NumberOfVisits; destination++)
+                            {
+                                var distance = solverData.Input.Distances[visit, destination];
+                                // don't add unnecessary constraints
+                                if (distance <= 0) continue;
+
+                                // 1 because same timeslot is handled by another constraint
+                                for (int distCounter = 1; distCounter <= Math.Min(distance, slicesPerDay - timeslice - 1); distCounter++)
+                                {
+                                    B += solverData.Variables.VisitsPerSanta[day][santa][destination,
+                                        timeslice + distCounter];
+                                    numberOfBs++;
+                                }
+                            }
+                            solverData.Solver.Add(int.MaxValue * A <= int.MaxValue - B);
+
+#if DEBUG
+                            constraintCounter++;
+#endif
+                        }
+                    }
+
+                }
+            }
+#if DEBUG
+            Debug.WriteLine($"CreateSantaNeedTimeBetweenVisitsConstraint - added {constraintCounter} constraints");
+#endif
+        }
         /// <summary>
         /// Visit is only available, when the inputs says so
         /// </summary>
