@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.ConsoleApp", "IRuettae.ConsoleApp\IRuettae.ConsoleApp.csproj", "{5E7DB822-C12C-4B12-A8FB-D8336F6E272E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.FormsApp", "IRuettae.FormsApp\IRuettae.FormsApp.csproj", "{53351C64-C040-4F3B-85B1-DEB7615380EC}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.WebApp", "IRuettae.WebApp\IRuettae.WebApp.csproj", "{AB95E2B1-929A-4ECA-A848-AD7AC3D73DB7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.WebApp.Tests", "IRuettae.WebApp.Tests\IRuettae.WebApp.Tests.csproj", "{AE883BE4-3D4F-44E1-A3ED-F59C7D57083D}"
@@ -44,12 +42,6 @@ Global
 		{5E7DB822-C12C-4B12-A8FB-D8336F6E272E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E7DB822-C12C-4B12-A8FB-D8336F6E272E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E7DB822-C12C-4B12-A8FB-D8336F6E272E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{53351C64-C040-4F3B-85B1-DEB7615380EC}.Debug With RealGoogle|Any CPU.ActiveCfg = Debug With RealGoogle|Any CPU
-		{53351C64-C040-4F3B-85B1-DEB7615380EC}.Debug With RealGoogle|Any CPU.Build.0 = Debug With RealGoogle|Any CPU
-		{53351C64-C040-4F3B-85B1-DEB7615380EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{53351C64-C040-4F3B-85B1-DEB7615380EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{53351C64-C040-4F3B-85B1-DEB7615380EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{53351C64-C040-4F3B-85B1-DEB7615380EC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AB95E2B1-929A-4ECA-A848-AD7AC3D73DB7}.Debug With RealGoogle|Any CPU.ActiveCfg = Debug With RealGoogle|Any CPU
 		{AB95E2B1-929A-4ECA-A848-AD7AC3D73DB7}.Debug With RealGoogle|Any CPU.Build.0 = Debug With RealGoogle|Any CPU
 		{AB95E2B1-929A-4ECA-A848-AD7AC3D73DB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
