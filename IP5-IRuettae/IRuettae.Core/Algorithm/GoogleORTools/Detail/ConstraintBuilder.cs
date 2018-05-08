@@ -274,6 +274,9 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         /// </summary>
         private void CreateSingleVisitConstraint()
         {
+
+            // Todo: MEYERJ das ganze Modell eventuell mehr von VisitStart abhängig machen
+
             for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
             {
                 // Z = Z1 + Z2 + ...
@@ -622,27 +625,49 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
         //    }
         //}
 
+        static bool old = false;
         /// <summary>
         /// Each visit must be overall visited the right number of timeslices
         /// </summary>
         private void CreateVisitOverallLengthConstraint()
         {
-            for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+            Console.Out.WriteLine($"old={old}");
+            if (old)
             {
-                // X = Z1 + Z2 + ...
-                var sum = new LinearExpr();
-                for (int day = 0; day < solverData.NumberOfDays; day++)
+                for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
                 {
-                    for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+                    // X = Z1 + Z2 + ...
+                    var sum = new LinearExpr();
+                    for (int day = 0; day < solverData.NumberOfDays; day++)
+                    {
+                        for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+                        {
+                            for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
+                            {
+                                sum += solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
+                            }
+                        }
+                    }
+                    solverData.Solver.Add(solverData.Input.VisitsDuration[visit] == sum);
+                }
+            }
+            else
+            {
+
+                for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+                {
+                    var sum = new LinearExpr();
+                    for (int day = 0; day < solverData.NumberOfDays; day++)
                     {
                         for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                         {
-                            sum += solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
+                            sum += solverData.Variables.VisitStart[day][visit][timeslice];
                         }
                     }
+                    solverData.Solver.Add(1 == sum);
                 }
-                solverData.Solver.Add(solverData.Input.VisitsDuration[visit] == sum);
             }
+            old = !old;
         }
     }
 }
