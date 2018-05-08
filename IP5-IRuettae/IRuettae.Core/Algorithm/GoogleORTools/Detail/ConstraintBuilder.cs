@@ -481,7 +481,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
                                     {
                                         solverData.Solver.Add(A <= 1 - solverData.Variables.VisitsPerSanta[day][santa][destination, timeslice + distCounter]);
 #if DEBUG
-                                    constraintCounter++;
+                                        constraintCounter++;
 #endif
                                     }
                                 }
