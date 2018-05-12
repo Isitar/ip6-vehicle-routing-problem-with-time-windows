@@ -119,7 +119,7 @@ namespace IRuettae.WebApi.Controllers
 
         [HttpGet]
         [Route("ExecuteNewAlgorithm")]
-        public IEnumerable<TimeSpan> ExecuteNewAlgorithm(int n_visits)
+        public string ExecuteNewAlgorithm(int n_visits)
         {
             var algorithmStarter = new AlgorithmStarter
             {
@@ -136,12 +136,10 @@ namespace IRuettae.WebApi.Controllers
             };
             Core.Algorithm.NoTimeSlicing.SolverInputData solverInputData;
 
-
-
-            var retVal = new List<TimeSpan>();
+            var visits = new List<Visit>();
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
-                var visits = dbSession.Query<Visit>().Take(n_visits).ToList();
+                visits = dbSession.Query<Visit>().Take(n_visits).ToList();
                 visits.ForEach(v => v.Duration = 60 * (v.NumberOfChildren * algorithmStarter.TimePerChild + algorithmStarter.Beta0));
                 visits.Sort((a, b) =>
                 {
@@ -168,16 +166,29 @@ namespace IRuettae.WebApi.Controllers
                 new BinaryFormatter().Serialize(stream, solverInputData);
             }
 
+            var retval = string.Empty;
+
             for (int i = 0; i < 1; ++i)
             {
                 var sw = Stopwatch.StartNew();
-                Starter.Optimise(solverInputData, useNewSovler:true);
+                var route = Starter.Optimise(solverInputData, useNewSovler:true);
                 sw.Stop();
+                foreach (var santaDayWaypoints in route.Waypoints)
+                {
+                    retval += "-- Santa --" + Environment.NewLine;
+                    retval += santaDayWaypoints.Aggregate("",
+                        (carry, n) =>
+                        {
+                            var dbvisit = visits[n.visit];
+                            return carry + Environment.NewLine + $"{dbvisit.Street} {dbvisit.Zip} {dbvisit.City}";
+                        });
+                }
+                
                 Console.WriteLine("Elapsed ms: " + sw.ElapsedMilliseconds);
-                retVal.Add(sw.Elapsed);
+                
             }
 
-            return retVal;
+            return retval;
         }
     }
 }
