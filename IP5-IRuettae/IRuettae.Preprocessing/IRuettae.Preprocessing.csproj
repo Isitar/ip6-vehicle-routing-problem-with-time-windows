@@ -56,6 +56,7 @@
     <Compile Include="CSVImport\Import.cs" />
     <Compile Include="CSVImport\ImportModel.cs" />
     <Compile Include="CSVImport\Period.cs" />
+    <Compile Include="Mapping\SolverVariableBuilderNew.cs" />
     <Compile Include="Mapping\SolverVariableBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

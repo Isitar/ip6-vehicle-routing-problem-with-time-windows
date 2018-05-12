@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IRuettae.Core.Algorithm
 {
@@ -12,7 +8,7 @@ namespace IRuettae.Core.Algorithm
         NotAvailable,
     }
 
-    static class Extensions
+    internal static class Extensions
     {
 
         public static bool IsAvailable(this VisitState s)
@@ -21,8 +17,11 @@ namespace IRuettae.Core.Algorithm
             {
                 case VisitState.Default:
                     return true;
+                case VisitState.NotAvailable:
+                    return false;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(s), s, null);
             }
-            return false;
         }
     }
 }

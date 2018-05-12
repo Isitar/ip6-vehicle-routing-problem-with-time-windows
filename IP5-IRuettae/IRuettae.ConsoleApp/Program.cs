@@ -10,7 +10,8 @@ namespace IRuettae.ConsoleApp
     {
         static void Main(string[] args)
         {
-            Test.Run(args);
+            //Test.Run(args);
+            TestNewSolution.Test();
             Console.WriteLine("Program has finished, press enter to close it.");
             Console.ReadLine();
         }

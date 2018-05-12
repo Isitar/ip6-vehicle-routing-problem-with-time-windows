@@ -11,22 +11,37 @@ namespace IRuettae.Core.Algorithm
 {
     public class Starter
     {
-        public static Route Optimise(SolverInputData solverInputData, TargetBuilderType builderType = TargetBuilderType.Default)
+        public static Route Optimise(object solverInputData, TargetBuilderType builderType = TargetBuilderType.Default, bool useNewSovler =false)
         {
-            if (!solverInputData.IsValid())
-            {
-                throw new ArgumentException();
-            }
+            //if (!solverInputData.IsValid())
+            //{
+            //    throw new ArgumentException();
+            //}
 
-            var solver = new Solver(solverInputData, TargetFunctionBuilderFactory.Create(builderType));
+            ISolver solver;
+            if (useNewSovler)
+            {
+                solver = new NoTimeSlicing.Solver((NoTimeSlicing.SolverInputData) solverInputData,
+                    NoTimeSlicing.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(builderType));
+            }
+            else
+            {
+                solver = new Solver((SolverInputData) solverInputData, TargetFunctionBuilderFactory.Create(builderType));
+            }
+            
+        
             var resultState = solver.Solve();
             switch (resultState)
             {
                 case ResultState.Optimal:
                 case ResultState.Feasible:
                     return solver.GetResult();
+                case ResultState.Unknown:
+                case ResultState.NotSolved:
                 case ResultState.Infeasible:
+                    break;
                 default:
+                    Console.WriteLine("Warning: Api changed, new result state");
                     break;
             }
 
