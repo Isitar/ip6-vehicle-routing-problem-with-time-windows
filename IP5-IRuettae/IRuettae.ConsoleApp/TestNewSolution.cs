@@ -38,7 +38,7 @@ namespace IRuettae.ConsoleApp
         private static void TestSerailDataVisits(string serialDataName, int numberOfRuns = 5)
         {
             var solverInputData = Deserialize(serialDataName);
-            double mip_gap = 0.5;
+            double mip_gap = 0.2;
 
             for (int i = 1; i <= numberOfRuns; i++)
             {
