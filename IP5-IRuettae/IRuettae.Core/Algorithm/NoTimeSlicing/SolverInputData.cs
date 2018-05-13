@@ -42,5 +42,11 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing
             Distances = distances;
             DayDuration = dayDuration;
         }
+
+
+        /// <summary>
+        /// [visit] name
+        /// </summary>
+        public string[] VisitNames { get; set; }
     }
 }

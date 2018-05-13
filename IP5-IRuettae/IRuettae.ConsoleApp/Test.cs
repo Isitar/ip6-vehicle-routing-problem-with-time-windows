@@ -16,6 +16,7 @@ namespace IRuettae.ConsoleApp
 {
     internal class Test
     {
+        private const ConsoleColor OutputColor = ConsoleColor.Green;
         internal static void Run(string[] args)
         {
 
@@ -30,9 +31,10 @@ namespace IRuettae.ConsoleApp
 
 
 
+
         private static void TestAlgorithm(int n_visits)
         {
-            Console.WriteLine($"Start testing algorithm with {n_visits} visits");
+            ConsoleExt.WriteLine($"Start testing algorithm with {n_visits} visits", OutputColor);
             TestSerailDataVisits($"SerializedObjects/SolverInput{n_visits}Visits.serial");
         }
 
@@ -52,7 +54,7 @@ namespace IRuettae.ConsoleApp
 
                 Starter.Optimise(solverInputData);
                 sw.Stop();
-                Console.WriteLine($"{i}/{numberOfRuns}: Elapsed s: {sw.ElapsedMilliseconds / 1000}");
+                ConsoleExt.WriteLine($"{i}/{numberOfRuns}: Elapsed s: {sw.ElapsedMilliseconds / 1000}", OutputColor);
             }
         }
 
@@ -69,7 +71,7 @@ namespace IRuettae.ConsoleApp
             var key = "AIzaSyAdTPEkyVKvA0ZvVNAAZK5Ot3fl8zyBsks";
             var routeCalculator = new GoogleRouteCalculator(key);
             var (distance, duration) = routeCalculator.CalculateWalkingDistance("Othmarsingerstrasse 18 5600 Lenzburg", "Migros Lenzburg");
-            Console.WriteLine($"Distance [m]: {distance}, Duration [s]: {duration}");
+            ConsoleExt.WriteLine($"Distance [m]: {distance}, Duration [s]: {duration}", OutputColor);
         }
     }
 }

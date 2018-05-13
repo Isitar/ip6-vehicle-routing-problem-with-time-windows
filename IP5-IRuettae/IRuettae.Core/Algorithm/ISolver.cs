@@ -9,6 +9,7 @@ namespace IRuettae.Core.Algorithm
     public interface ISolver
     {
         ResultState Solve();
+        ResultState Solve(double MIP_GAP);
         string ExportMPS();
         string ImportMPS();
         Route GetResult();

@@ -10,7 +10,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
     internal class Solver : ISolver
     {
         private readonly SolverData solverData;
-
+        private double MIP_GAP = 0;
         private bool hasModel = false;
         private ResultState resultState = ResultState.NotSolved;
 
@@ -30,6 +30,12 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
         {
             CreateModel();
             return SolveInternal();
+        }
+
+        public ResultState Solve(double MIP_GAP)
+        {
+            this.MIP_GAP = MIP_GAP;
+            return Solve();
         }
 
         private void CreateModel()
@@ -86,7 +92,7 @@ namespace IRuettae.Core.Algorithm.GoogleORTools
             PrintDebugRessourcesBefore("SolveInternal");
 
             var param = new GLS.MPSolverParameters();
-            param.SetDoubleParam(GLS.MPSolverParameters.RELATIVE_MIP_GAP, 100);
+            param.SetDoubleParam(GLS.MPSolverParameters.RELATIVE_MIP_GAP, MIP_GAP);
 
             solver.Objective().SetMinimization();
             solver.EnableOutput();

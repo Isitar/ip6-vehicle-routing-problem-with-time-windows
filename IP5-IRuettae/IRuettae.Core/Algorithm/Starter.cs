@@ -11,7 +11,7 @@ namespace IRuettae.Core.Algorithm
 {
     public class Starter
     {
-        public static Route Optimise(object solverInputData, TargetBuilderType builderType = TargetBuilderType.Default, bool useNewSovler =false)
+        public static Route Optimise(object solverInputData, TargetBuilderType builderType = TargetBuilderType.Default, bool useNewSovler = false)
         {
             //if (!solverInputData.IsValid())
             //{
@@ -21,15 +21,15 @@ namespace IRuettae.Core.Algorithm
             ISolver solver;
             if (useNewSovler)
             {
-                solver = new NoTimeSlicing.Solver((NoTimeSlicing.SolverInputData) solverInputData,
+                solver = new NoTimeSlicing.Solver((NoTimeSlicing.SolverInputData)solverInputData,
                     NoTimeSlicing.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(builderType));
             }
             else
             {
-                solver = new Solver((SolverInputData) solverInputData, TargetFunctionBuilderFactory.Create(builderType));
+                solver = new Solver((SolverInputData)solverInputData, TargetFunctionBuilderFactory.Create(builderType));
             }
-            
-        
+
+
             var resultState = solver.Solve();
             switch (resultState)
             {
@@ -49,11 +49,22 @@ namespace IRuettae.Core.Algorithm
         }
 
         public static void SaveMps(string path,
-            SolverInputData solverInputData,
+            object solverInputData,
             TargetBuilderType builderType = TargetBuilderType.Default
             )
         {
-            var solver = new Solver(solverInputData, TargetFunctionBuilderFactory.Create(builderType));
+            ISolver solver = null;
+            switch (solverInputData)
+            {
+                case SolverInputData sid:
+                    solver = new Solver(sid, TargetFunctionBuilderFactory.Create(builderType));
+                    break;
+                case NoTimeSlicing.SolverInputData sid:
+                    solver = new NoTimeSlicing.Solver(sid, NoTimeSlicing.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(builderType));
+                    break;
+            }
+
+
             System.IO.File.WriteAllText(path, solver.ExportMPS());
         }
     }

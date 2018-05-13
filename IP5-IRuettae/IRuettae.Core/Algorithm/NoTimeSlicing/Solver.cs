@@ -14,6 +14,7 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing
 
         private bool hasModel = false;
         private ResultState resultState = ResultState.NotSolved;
+        private double MIP_GAP = 0;
 
         private readonly GLS.Solver solver = new GLS.Solver("SantaProblem", GLS.Solver.CBC_MIXED_INTEGER_PROGRAMMING);
         private readonly AbstractTargetFunctionBuilder targetFunctionBuilder;
@@ -31,6 +32,12 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing
         {
             CreateModel();
             return SolveInternal();
+        }
+
+        public ResultState Solve(double MIP_GAP)
+        {
+            this.MIP_GAP = MIP_GAP;
+            return Solve();
         }
 
         private void CreateModel()
@@ -87,7 +94,7 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing
             PrintDebugRessourcesBefore("SolveInternal");
 
             var param = new GLS.MPSolverParameters();
-            param.SetDoubleParam(GLS.MPSolverParameters.RELATIVE_MIP_GAP, 0);
+            param.SetDoubleParam(GLS.MPSolverParameters.RELATIVE_MIP_GAP, MIP_GAP);
 
             solver.Objective().SetMinimization();
             solver.EnableOutput();

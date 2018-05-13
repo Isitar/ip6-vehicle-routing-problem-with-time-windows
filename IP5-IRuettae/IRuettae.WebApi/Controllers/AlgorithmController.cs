@@ -84,6 +84,10 @@ namespace IRuettae.WebApi.Controllers
                     {
                         return -1;
                     }
+                    if (b.Id == algorithmStarter.StarterId)
+                    {
+                        return 1;
+                    }
                     return a.Id.CompareTo(b.Id);
                 });
 
@@ -119,7 +123,7 @@ namespace IRuettae.WebApi.Controllers
 
         [HttpGet]
         [Route("ExecuteNewAlgorithm")]
-        public string ExecuteNewAlgorithm(int n_visits)
+        public IEnumerable<string> ExecuteNewAlgorithm(int n_visits)
         {
             var algorithmStarter = new AlgorithmStarter
             {
@@ -147,8 +151,15 @@ namespace IRuettae.WebApi.Controllers
                     {
                         return -1;
                     }
+
+                    if (b.Id == algorithmStarter.StarterId)
+                    {
+                        return 1;
+                    }
                     return a.Id.CompareTo(b.Id);
                 });
+
+                var test = string.Join(";", visits.Select(v => v.Id));
 
                 var solverVariableBuilder = new SolverVariableBuilderNew
                 {
@@ -158,6 +169,7 @@ namespace IRuettae.WebApi.Controllers
                 };
 
                 solverInputData = solverVariableBuilder.Build();
+                solverInputData.VisitNames = visits.Select(v => $"{v.Street} {v.Zip} {v.City}").ToArray();
             }
 
             var path = HostingEnvironment.MapPath($"~/App_Data/SolverInputNew{n_visits}Visits.serial");
@@ -166,7 +178,8 @@ namespace IRuettae.WebApi.Controllers
                 new BinaryFormatter().Serialize(stream, solverInputData);
             }
 
-            var retval = string.Empty;
+
+            var retval = new List<string>();
 
             for (int i = 0; i < 1; ++i)
             {
@@ -175,16 +188,12 @@ namespace IRuettae.WebApi.Controllers
                 sw.Stop();
                 foreach (var santaDayWaypoints in route.Waypoints)
                 {
-                    retval += "-- Santa --" + Environment.NewLine;
-                    retval += santaDayWaypoints.Aggregate("",
-                        (carry, n) =>
-                        {
-                            var dbvisit = visits[n.visit];
-                            return carry + Environment.NewLine + $"{dbvisit.Street} {dbvisit.Zip} {dbvisit.City}";
-                        });
+                    retval.Add(santaDayWaypoints.Aggregate("",
+                        (carry, n) => carry + Environment.NewLine + solverInputData.VisitNames[n.visit])
+                    );
                 }
                 
-                Console.WriteLine("Elapsed ms: " + sw.ElapsedMilliseconds);
+                Debug.WriteLine("Elapsed ms: " + sw.ElapsedMilliseconds);
                 
             }
 
