@@ -17,8 +17,8 @@ namespace IRuettae.ConsoleApp
         private const ConsoleColor ResultColor = ConsoleColor.Green;
         public static void Test()
         {
-            ExportMPSVisits(33);
-            TestAlgorithm(33);
+            
+            TestAlgorithm(35);
         }
 
 
@@ -26,7 +26,7 @@ namespace IRuettae.ConsoleApp
         private static void TestAlgorithm(int n_visits)
         {
             ConsoleExt.WriteLine($"Start testing algorithm with {n_visits} visits", InfoColor);
-            TestSerailDataVisits($"SerializedObjects/SolverInputNew{n_visits}Visits.serial");
+            TestSerailDataVisits($"SerializedObjects/SolverInputNew{n_visits}Visits.serial", numberOfRuns: 1);
         }
 
         private static void ExportMPSVisits(int n_visits)
@@ -38,22 +38,33 @@ namespace IRuettae.ConsoleApp
         private static void TestSerailDataVisits(string serialDataName, int numberOfRuns = 5)
         {
             var solverInputData = Deserialize(serialDataName);
+            double mip_gap = 0.5;
 
             for (int i = 1; i <= numberOfRuns; i++)
             {
                 var sw = Stopwatch.StartNew();
 
-                var route = Starter.Optimise(solverInputData, useNewSovler: true);
+                var routeResult = Starter.Optimise(solverInputData, MIP_GAP: mip_gap);
                 sw.Stop();
                 ConsoleExt.WriteLine($"{i}/{numberOfRuns}: Elapsed s: {sw.ElapsedMilliseconds / 1000}", InfoColor);
 
                 Console.WriteLine();
                 Console.WriteLine();
+                var routes = routeResult.Waypoints
+                                .Cast<List<Waypoint>>()
+                                .Select(wp => wp.Aggregate("",
+                                    (carry, n) => carry + Environment.NewLine + solverInputData.VisitNames[n.visit]));
 
-                foreach (var santaDayWaypoints in route.Waypoints)
+
+                int ctr = 0;
+                foreach (var route in routes)
                 {
-                    ConsoleExt.WriteLine(santaDayWaypoints.Aggregate("",(carry, n) => carry + Environment.NewLine + solverInputData.VisitNames[n.visit]), ResultColor);
+                    File.WriteAllText($"R{ctr}_{mip_gap}.csv",$"Address{Environment.NewLine}{route}");
+                    ConsoleExt.WriteLine(ctr.ToString(), ResultColor);
+                    ConsoleExt.WriteLine(route, ResultColor);
+                    ctr++;
                 }
+
             }
         }
 
@@ -100,7 +111,7 @@ namespace IRuettae.ConsoleApp
                 //10
             };
             var solverInputData = new SolverInputData(santas, visitsDuration, visits, distances, dayDuration);
-            Starter.Optimise(solverInputData, TargetBuilderType.Default, true);
+            Starter.Optimise(solverInputData);
 
         }
     }

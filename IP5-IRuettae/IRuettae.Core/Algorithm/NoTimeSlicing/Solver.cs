@@ -16,7 +16,8 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing
         private ResultState resultState = ResultState.NotSolved;
         private double MIP_GAP = 0;
 
-        private readonly GLS.Solver solver = new GLS.Solver("SantaProblem", GLS.Solver.CBC_MIXED_INTEGER_PROGRAMMING);
+        private readonly GLS.Solver solver = //GLS.Solver.CreateSolver("Santa Problem", "SCIP_MIXED_INTEGER_PROGRAMMING");
+                                             new GLS.Solver("SantaProblem", GLS.Solver.CBC_MIXED_INTEGER_PROGRAMMING);
         private readonly AbstractTargetFunctionBuilder targetFunctionBuilder;
 
         /// <summary>

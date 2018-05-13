@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using IRuettae.Core.Algorithm.GoogleORTools.Detail;
-using IRuettae.Core.Algorithm.GoogleORTools.TargetFunctionBuilders;
+using IRuettae.Core.Algorithm.TimeSlicing.Detail;
+using IRuettae.Core.Algorithm.TimeSlicing.TargetFunctionBuilders;
 using GLS = Google.OrTools.LinearSolver;
 
-namespace IRuettae.Core.Algorithm.GoogleORTools
+namespace IRuettae.Core.Algorithm.TimeSlicing
 {
     internal class Solver : ISolver
     {

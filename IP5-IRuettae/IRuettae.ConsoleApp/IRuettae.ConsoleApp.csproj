@@ -42,6 +42,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Santa_1.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -90,7 +93,7 @@
     <None Include="SerializedObjects\SolverInputNew18Visits.serial">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="SerializedObjects\SolverInputNew33Visits.serial">
+    <None Include="SerializedObjects\SolverInputNew35Visits.serial">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="SerializedObjects\SolverInputNew5Visits.serial">
@@ -110,6 +113,10 @@
       <Project>{b84cadd1-5f00-4b62-a363-9a047e39fbbd}</Project>
       <Name>IRuettae.Preprocessing</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+    <Content Include="Santa_1.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

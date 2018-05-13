@@ -3,34 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using IRuettae.Core.Algorithm.GoogleORTools;
-using IRuettae.Core.Algorithm.GoogleORTools.Detail;
-using IRuettae.Core.Algorithm.GoogleORTools.TargetFunctionBuilders;
+using IRuettae.Core.Algorithm.TimeSlicing;
+using IRuettae.Core.Algorithm.TimeSlicing.Detail;
+using IRuettae.Core.Algorithm.TimeSlicing.TargetFunctionBuilders;
 
 namespace IRuettae.Core.Algorithm
 {
     public class Starter
     {
-        public static Route Optimise(object solverInputData, TargetBuilderType builderType = TargetBuilderType.Default, bool useNewSovler = false)
+        public static Route Optimise(object solverInputData, TargetBuilderType builderType = TargetBuilderType.Default, double MIP_GAP = 0)
         {
-            //if (!solverInputData.IsValid())
-            //{
-            //    throw new ArgumentException();
-            //}
-
             ISolver solver;
-            if (useNewSovler)
+            switch (solverInputData)
             {
-                solver = new NoTimeSlicing.Solver((NoTimeSlicing.SolverInputData)solverInputData,
-                    NoTimeSlicing.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(builderType));
-            }
-            else
-            {
-                solver = new Solver((SolverInputData)solverInputData, TargetFunctionBuilderFactory.Create(builderType));
+                case SolverInputData sid:
+                    solver = new Solver(sid, TargetFunctionBuilderFactory.Create(builderType));
+                    break;
+                case NoTimeSlicing.SolverInputData sid:
+                    solver = new NoTimeSlicing.Solver(sid, NoTimeSlicing.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(builderType));
+                    break;
+                default:
+                    throw new ArgumentException("SolverInputData not recognized");
             }
 
 
-            var resultState = solver.Solve();
+            var resultState = solver.Solve(MIP_GAP);
             switch (resultState)
             {
                 case ResultState.Optimal:
@@ -48,12 +45,9 @@ namespace IRuettae.Core.Algorithm
             return null;
         }
 
-        public static void SaveMps(string path,
-            object solverInputData,
-            TargetBuilderType builderType = TargetBuilderType.Default
-            )
+        public static void SaveMps(string path, object solverInputData, TargetBuilderType builderType = TargetBuilderType.Default)
         {
-            ISolver solver = null;
+            ISolver solver;
             switch (solverInputData)
             {
                 case SolverInputData sid:
@@ -62,6 +56,8 @@ namespace IRuettae.Core.Algorithm
                 case NoTimeSlicing.SolverInputData sid:
                     solver = new NoTimeSlicing.Solver(sid, NoTimeSlicing.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(builderType));
                     break;
+                default:
+                    throw new ArgumentException("SolverInputData not recognized");
             }
 
 

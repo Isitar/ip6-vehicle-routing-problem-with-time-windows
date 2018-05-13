@@ -1,7 +1,7 @@
-﻿using IRuettae.Core.Algorithm.GoogleORTools.Detail;
+﻿using IRuettae.Core.Algorithm.TimeSlicing.Detail;
 using GLS = Google.OrTools.LinearSolver;
 
-namespace IRuettae.Core.Algorithm.GoogleORTools.TargetFunctionBuilders
+namespace IRuettae.Core.Algorithm.TimeSlicing.TargetFunctionBuilders
 {
     internal class MinTimeOnlyTargetFunctionBuilder : AbstractTargetFunctionBuilder
     {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Google.OrTools.LinearSolver;
 using GLS = Google.OrTools.LinearSolver;
 
-namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
+namespace IRuettae.Core.Algorithm.TimeSlicing.Detail
 {
     internal class ConstraintBuilder
     {

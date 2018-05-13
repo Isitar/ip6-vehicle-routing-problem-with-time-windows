@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IRuettae.Core.Algorithm.GoogleORTools.TargetFunctionBuilders
+namespace IRuettae.Core.Algorithm.TimeSlicing.TargetFunctionBuilders
 {
     internal static class TargetFunctionBuilderFactory
     {

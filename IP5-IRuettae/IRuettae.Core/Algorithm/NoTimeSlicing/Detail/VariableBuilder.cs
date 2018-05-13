@@ -60,7 +60,6 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
             var rows = solverData.SolverInputData.Santas.Length;
             var cols = solverData.SolverInputData.Visits.GetLength(1);
             solverData.Variables.SantaVisit = solverData.Solver.MakeBoolVarMatrix(rows, cols, "SantaVisit");
-
         }
 
     }

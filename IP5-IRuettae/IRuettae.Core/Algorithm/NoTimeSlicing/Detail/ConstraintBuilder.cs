@@ -12,13 +12,14 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
 {
     internal class ConstraintBuilder
     {
-        private SolverData solverData;
-
+        private readonly SolverData solverData;
 
         public ConstraintBuilder(SolverData solverData)
         {
             this.solverData = solverData;
         }
+
+        private GLS.Solver Solver => solverData.Solver;
 
         public void CreateConstraints()
         {
@@ -28,8 +29,37 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
             SantaRouteCost();
 
             // Real Constraints
+            VisitUnavailable();
             VisitUsedExactlyOnce();
             StartVisitVistedByEveryUsedSanta();
+
+            //Performance
+            PerformanceConstraints();
+        }
+
+        private void VisitUnavailable()
+        {
+            var realSantaCount = solverData.SolverInputData.Santas.GetLength(1);
+            var realDayCount = solverData.SolverInputData.Santas.GetLength(0);
+            foreach (var santa in Enumerable.Range(0,solverData.NumberOfSantas))
+            {
+                for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+                {
+                    var available = Convert.ToInt32(solverData.SolverInputData.Visits[santa / realSantaCount, visit].IsAvailable());
+                    Solver.Add(solverData.Variables.SantaVisit[santa, visit] <= available);
+                }
+            }
+        }
+
+        private void PerformanceConstraints()
+        {
+            FirstVisitByFirstSanta();
+
+        }
+
+        private void FirstVisitByFirstSanta()
+        {
+            Solver.Add(solverData.Variables.SantaVisit[0, 1] == 1);
         }
 
         private void StartVisitVistedByEveryUsedSanta()
@@ -38,12 +68,10 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
             {
                 for (var visit = 1; visit < solverData.NumberOfVisits; visit++)
                 {
-                    solverData.Solver.Add(solverData.Variables.SantaVisit[santa, 0] >= solverData.Variables.SantaVisit[santa, visit]);
+                    Solver.Add(solverData.Variables.SantaVisit[santa, 0] >= solverData.Variables.SantaVisit[santa, visit]);
                 }
 
-                solverData.Solver.Add(solverData.Variables.SantaVisit[santa, 0] <= 1);
-
-
+                Solver.Add(solverData.Variables.SantaVisit[santa, 0] <= 1);
             }
         }
 
@@ -54,17 +82,17 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
                 foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
                 {
                     var sourceVisitedBySanta = solverData.Variables.SantaVisit[santa, source];
-                    for (var destination = source; destination < solverData.NumberOfVisits; destination++) 
+                    for (var destination = source; destination < solverData.NumberOfVisits; destination++)
                     {
                         var destinationVisitedBySanta = solverData.Variables.SantaVisit[santa, destination];
 
-                        solverData.Solver.Add(solverData.Variables.SantaUsesWay[santa][source, destination] <= sourceVisitedBySanta);
-                        solverData.Solver.Add(solverData.Variables.SantaUsesWay[santa][source, destination] <= destinationVisitedBySanta);
-                        solverData.Solver.Add(solverData.Variables.SantaUsesWay[santa][source, destination] >= sourceVisitedBySanta + destinationVisitedBySanta - 1);
+                        Solver.Add(solverData.Variables.SantaUsesWay[santa][source, destination] <= sourceVisitedBySanta);
+                        Solver.Add(solverData.Variables.SantaUsesWay[santa][source, destination] <= destinationVisitedBySanta);
+                        Solver.Add(solverData.Variables.SantaUsesWay[santa][source, destination] >= sourceVisitedBySanta + destinationVisitedBySanta - 1);
 
-                        solverData.Solver.Add(solverData.Variables.SantaUsesWay[santa][destination, source] <= sourceVisitedBySanta);
-                        solverData.Solver.Add(solverData.Variables.SantaUsesWay[santa][destination, source] <= destinationVisitedBySanta);
-                        solverData.Solver.Add(solverData.Variables.SantaUsesWay[santa][destination, source] >= sourceVisitedBySanta + destinationVisitedBySanta - 1);
+                        Solver.Add(solverData.Variables.SantaUsesWay[santa][destination, source] <= sourceVisitedBySanta);
+                        Solver.Add(solverData.Variables.SantaUsesWay[santa][destination, source] <= destinationVisitedBySanta);
+                        Solver.Add(solverData.Variables.SantaUsesWay[santa][destination, source] >= sourceVisitedBySanta + destinationVisitedBySanta - 1);
                     }
                 }
             }
@@ -79,14 +107,14 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
                 var expr = new LinearExpr();
                 foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
                 {
-                    
+
                     foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
-                        expr += solverData.Variables.SantaUsesWay[santa][source, destination] *solverData.SolverInputData.Distances[source, destination];
+                        expr += solverData.Variables.SantaUsesWay[santa][source, destination] * solverData.SolverInputData.Distances[source, destination];
                         expr += solverData.Variables.SantaUsesWay[santa][destination, source] * solverData.SolverInputData.Distances[destination, source];
                     }
                 }
-                solverData.Solver.Add(solverData.Variables.SantaRouteCost[santa] == expr);
+                Solver.Add(solverData.Variables.SantaRouteCost[santa] == expr);
             }
         }
 
@@ -101,7 +129,7 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
                             solverData.SolverInputData.VisitsDuration[visit];
                 }
 
-                solverData.Solver.Add(solverData.Variables.SantaVisitTime[santa] == expr);
+                Solver.Add(solverData.Variables.SantaVisitTime[santa] == expr);
             }
         }
 
@@ -116,7 +144,7 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
                     visitVisited += solverData.Variables.SantaVisit[santa, visit];
                 }
 
-                solverData.Solver.Add(visitVisited == 1);
+                Solver.Add(visitVisited == 1);
             }
         }
     }

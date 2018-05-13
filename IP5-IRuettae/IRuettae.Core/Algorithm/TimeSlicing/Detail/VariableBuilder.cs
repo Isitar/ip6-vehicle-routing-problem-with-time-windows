@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GLS = Google.OrTools.LinearSolver;
 
-namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
+namespace IRuettae.Core.Algorithm.TimeSlicing.Detail
 {
     internal class VariableBuilder
     {

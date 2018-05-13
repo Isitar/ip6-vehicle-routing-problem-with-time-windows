@@ -47,9 +47,9 @@ namespace IRuettae.Preprocessing.Mapping
                 throw new InvalidOperationException();
             }
 
-        
-            bool[,] santasVar = new bool[Days.Count,Santas.Count];
-            VisitState[,] visitsVar = new VisitState[Days.Count,Visits.Count];
+
+            bool[,] santasVar = new bool[Days.Count, Santas.Count];
+            VisitState[,] visitsVar = new VisitState[Days.Count, Visits.Count];
             int[] visitDuration = Visits.Select(v => (int)Math.Ceiling(v.Duration)).ToArray();
 
             for (int day = 0; day < Days.Count; day++)
@@ -57,14 +57,13 @@ namespace IRuettae.Preprocessing.Mapping
                 // set all santas available all days
                 for (int santa = 0; santa < Santas.Count; santa++)
                 {
-                        santasVar[day, santa] = true;                    
+                    santasVar[day, santa] = true;
                 }
 
 
                 for (int v = 0; v < Visits.Count; v++)
                 {
-                        visitsVar[day,v] = VisitState.Default;
-                    // TODO: Set other states
+                    visitsVar[day, v] = Visits[v].Unavailable.Any(p => Days[day].Item1 <= p.Start && p.Start <= Days[day].Item2) ? VisitState.NotAvailable : VisitState.Default;
                 }
 
 
@@ -80,7 +79,10 @@ namespace IRuettae.Preprocessing.Mapping
                 }
             }
 
-            int[] dayDuration = Days.Select((startEnd) => (int) Math.Ceiling((startEnd.Item2 - startEnd.Item1).TotalSeconds)).ToArray();
+            //var avgWayDuration = Visits.SelectMany(v => v.FromWays).Average(w => w.Duration);
+            //var avgWaysPerSanta = Visits.Count / Santas.Count;
+
+            int[] dayDuration = Days.Select((startEnd) => (int)Math.Ceiling((startEnd.Item2 - startEnd.Item1).TotalSeconds * 0.7)).ToArray();
 
             return new Core.Algorithm.NoTimeSlicing.SolverInputData(santasVar, visitDuration, visitsVar, distances,
                 dayDuration);

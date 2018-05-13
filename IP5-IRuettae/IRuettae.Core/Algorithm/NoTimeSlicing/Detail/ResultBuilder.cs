@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using IRuettae.Core.Algorithm.GoogleORTools.Detail;
+using IRuettae.Core.Algorithm.TimeSlicing.Detail;
 
 namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
 {

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
-using IRuettae.Core.Algorithm.GoogleORTools.Detail;
 
-namespace IRuettae.Core.Algorithm.GoogleORTools.Detail
+namespace IRuettae.Core.Algorithm.TimeSlicing.Detail
 {
     internal class ResultBuilder
     {
