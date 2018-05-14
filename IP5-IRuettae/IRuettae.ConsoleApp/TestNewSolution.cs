@@ -17,7 +17,7 @@ namespace IRuettae.ConsoleApp
         private const ConsoleColor ResultColor = ConsoleColor.Green;
         public static void Test()
         {
-            
+            //ExportMPSVisits(35);
             TestAlgorithm(35);
         }
 

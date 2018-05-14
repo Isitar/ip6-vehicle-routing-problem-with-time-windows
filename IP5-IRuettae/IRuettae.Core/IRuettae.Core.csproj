@@ -41,11 +41,13 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Google.OrTools, Version=6.7.4973.32602, Culture=neutral, PublicKeyToken=8976cf6a4a76bd5f, processorArchitecture=AMD64">
-      <HintPath>..\packages\Google.OrTools.6.7.4973\lib\net40\Google.OrTools.dll</HintPath>
+    <Reference Include="Google.OrTools, Version=6.7.5064.28967, Culture=neutral, PublicKeyToken=c435c0a701c42932, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libs\Google.OrTools.dll</HintPath>
     </Reference>
     <Reference Include="Google.Protobuf, Version=3.5.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Protobuf.3.5.1\lib\net45\Google.Protobuf.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libs\Google.Protobuf.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -92,7 +94,10 @@
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Libs\Google.OrTools.dll" />
+    <Content Include="Libs\Google.Protobuf.dll" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

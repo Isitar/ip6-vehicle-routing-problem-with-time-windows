@@ -16,8 +16,8 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing
         private ResultState resultState = ResultState.NotSolved;
         private double MIP_GAP = 0;
 
-        private readonly GLS.Solver solver = //GLS.Solver.CreateSolver("Santa Problem", "SCIP_MIXED_INTEGER_PROGRAMMING");
-                                             new GLS.Solver("SantaProblem", GLS.Solver.CBC_MIXED_INTEGER_PROGRAMMING);
+        private readonly GLS.Solver solver = new GLS.Solver("Santa Problem", GLS.Solver.SCIP_MIXED_INTEGER_PROGRAMMING);
+        //new GLS.Solver("SantaProblem", GLS.Solver.CBC_MIXED_INTEGER_PROGRAMMING);
         private readonly AbstractTargetFunctionBuilder targetFunctionBuilder;
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing
             Debug.WriteLine("DEBUG OUTPUT");
             Debug.WriteLine(string.Empty);
 
-            
+
             PrintMeta();
             PrintVariables();
         }
@@ -127,14 +127,14 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing
 
         private void PrintVariables()
         {
-            
+
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
                 DebugHR();
                 Debug.WriteLine($"{santa} Santa Visits: ");
                 foreach (var visit in Enumerable.Range(0, solverData.NumberOfVisits))
                 {
-                    Debug.WriteLine($"Visit {visit}: {solverData.Variables.SantaVisit[santa,visit].SolutionValue()}" );
+                    Debug.WriteLine($"Visit {visit}: {solverData.Variables.SantaVisit[santa, visit].SolutionValue()}");
                 }
                 Debug.WriteLine(String.Empty);
             }

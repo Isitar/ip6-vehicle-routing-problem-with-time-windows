@@ -41,7 +41,7 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
         {
             var realSantaCount = solverData.SolverInputData.Santas.GetLength(1);
             var realDayCount = solverData.SolverInputData.Santas.GetLength(0);
-            foreach (var santa in Enumerable.Range(0,solverData.NumberOfSantas))
+            foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
                 for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
                 {
@@ -59,7 +59,17 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
 
         private void FirstVisitByFirstSanta()
         {
-            Solver.Add(solverData.Variables.SantaVisit[0, 1] == 1);
+            var realSantaCount = solverData.SolverInputData.Santas.GetLength(1);
+            var realDayCount = solverData.SolverInputData.Santas.GetLength(0);
+
+            if (solverData.SolverInputData.Visits[0, 1].IsAvailable())
+            {
+                Solver.Add(solverData.Variables.SantaVisit[0, 1] == 1);
+            }
+            else
+            {
+                Solver.Add(solverData.Variables.SantaVisit[realSantaCount + 1, 1] == 1);
+            }
         }
 
         private void StartVisitVistedByEveryUsedSanta()
