@@ -14,7 +14,7 @@ namespace IRuettae.Core.Algorithm.TimeSlicing
         private bool hasModel = false;
         private ResultState resultState = ResultState.NotSolved;
 
-        private readonly GLS.Solver solver = new GLS.Solver("SantaProblem", GLS.Solver.CBC_MIXED_INTEGER_PROGRAMMING);
+        private readonly GLS.Solver solver = new GLS.Solver("SantaProblem", GLS.Solver.SCIP_MIXED_INTEGER_PROGRAMMING);
         private readonly AbstractTargetFunctionBuilder targetFunctionBuilder;
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace IRuettae.Core.Algorithm.TimeSlicing
             param.SetDoubleParam(GLS.MPSolverParameters.RELATIVE_MIP_GAP, MIP_GAP);
 
             solver.Objective().SetMinimization();
-            solver.EnableOutput();
+            //solver.EnableOutput();
             resultState = FromGoogleResultState(solver.Solve(param));
 
             PrintDebugRessourcesAfter();
