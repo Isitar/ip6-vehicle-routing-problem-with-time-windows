@@ -97,6 +97,9 @@
   <ItemGroup>
     <Content Include="Libs\Google.OrTools.dll" />
     <Content Include="Libs\Google.Protobuf.dll" />
+    <Content Include="libscip-4.0.0.mingw.x86_64.msvc.opt.spx2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

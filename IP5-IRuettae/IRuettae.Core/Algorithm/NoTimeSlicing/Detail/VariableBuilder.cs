@@ -28,9 +28,13 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
 
         private void CreateSantaUsesWay()
         {
+            solverData.Variables.SantaGraphEdge = new GLS.Variable[solverData.NumberOfSantas][,];
             solverData.Variables.SantaUsesWay = new GLS.Variable[solverData.NumberOfSantas][,];
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
+                solverData.Variables.SantaGraphEdge[santa] =
+                    solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfVisits, solverData.NumberOfVisits, $"Santa_{santa}_graphEdge");
+
                 solverData.Variables.SantaUsesWay[santa] =
                     solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfVisits, solverData.NumberOfVisits, $"Santa_{santa}_usesWay");
             }

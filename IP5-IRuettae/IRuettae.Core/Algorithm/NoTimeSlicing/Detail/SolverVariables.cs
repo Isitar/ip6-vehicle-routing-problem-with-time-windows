@@ -27,6 +27,12 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
 
         /// <summary>
         /// [santa][source,destination] if santa visits both, source & dest
+        /// Used for spanningTree Constraint
+        /// </summary>
+        public GLS.Variable[][,] SantaGraphEdge { get; set; }
+
+        /// <summary>
+        /// [santa][source,destination] if santa uses this way (calculated by spanningTree)
         /// </summary>
         public GLS.Variable[][,] SantaUsesWay { get; set; }
     }
