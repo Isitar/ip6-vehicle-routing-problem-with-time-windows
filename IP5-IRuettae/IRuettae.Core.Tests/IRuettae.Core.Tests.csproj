@@ -59,6 +59,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithm\MSTTests.cs" />
     <Compile Include="Algorithm\MultipleSantaTest.cs" />
     <Compile Include="Algorithm\RouteDistrubutionTest.cs" />
     <Compile Include="Algorithm\RouteTest.cs" />

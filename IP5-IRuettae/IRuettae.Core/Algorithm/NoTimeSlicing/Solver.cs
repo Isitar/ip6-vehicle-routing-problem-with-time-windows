@@ -136,9 +136,27 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing
                 {
                     Debug.WriteLine($"Visit {visit}: {solverData.Variables.SantaVisit[santa, visit].SolutionValue()}");
                 }
-                Debug.WriteLine(String.Empty);
+                Debug.WriteLine(string.Empty);
             }
             DebugHR();
+
+            foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
+            {
+                Debug.WriteLine($"{santa} Santa Uses Way");
+                foreach (var source in Enumerable.Range(0,solverData.NumberOfVisits))
+                {
+                    foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
+                    {
+                        var value = solverData.Variables.SantaUsesWay[santa][source, destination].SolutionValue();
+                        if (Math.Abs(value) > 0.0001)
+                        {
+                            Debug.WriteLine($"S: {source}  |  D: {destination}");
+                        }
+                    }
+
+                }
+                DebugHR();
+            }
 
         }
 

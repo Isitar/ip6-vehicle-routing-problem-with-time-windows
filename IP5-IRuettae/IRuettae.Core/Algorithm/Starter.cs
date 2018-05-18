@@ -28,7 +28,7 @@ namespace IRuettae.Core.Algorithm
 
 
             var resultState = solver.Solve(MIP_GAP);
-            switch (resultState)
+             switch (resultState)
             {
                 case ResultState.Optimal:
                 case ResultState.Feasible:
