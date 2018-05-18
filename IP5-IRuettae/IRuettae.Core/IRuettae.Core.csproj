@@ -71,8 +71,11 @@
     <Compile Include="Algorithm\NoTimeSlicing\TargetFunctionBuilders\TargetFunctionBuilderFactory.cs" />
     <Compile Include="Algorithm\NoTimeSlicing\TargetFunctionBuilders\TargetFunctionFactory.cs" />
     <Compile Include="Algorithm\NoTimeSlicing\TargetFunctionBuilders\TargetType.cs" />
+    <Compile Include="Algorithm\RouteDistribution\Solver.cs" />
+    <Compile Include="Algorithm\RouteDistribution\SolverInputData.cs" />
     <Compile Include="Algorithm\TimeSlicing\Detail\SolverData.cs" />
     <Compile Include="Algorithm\TimeSlicing\Detail\SolverVariables.cs" />
+    <Compile Include="Algorithm\RouteDistribution\RouteDistribution.cs" />
     <Compile Include="Algorithm\TimeSlicing\TargetFunctionBuilders\AbstractTargetFunctionBuilder.cs" />
     <Compile Include="Algorithm\TimeSlicing\Detail\ConstraintBuilder.cs" />
     <Compile Include="Algorithm\TimeSlicing\TargetFunctionBuilders\DefaultTargetFunctionBuilder.cs" />
