@@ -7,7 +7,7 @@ using IRuettae.Persistence.Entities;
 
 namespace IRuettae.Preprocessing.Mapping
 {
-    public class SolverVariableBuilderNew
+    public class SolverVariableBuilderNoTimeSlicing
     {
         public List<Santa> Santas { get; set; }
 
@@ -19,7 +19,7 @@ namespace IRuettae.Preprocessing.Mapping
         /// </summary>
         public List<(DateTime, DateTime)> Days { get; set; }
 
-        public SolverVariableBuilderNew(List<Santa> santas = null, List<Visit> visits = null, List<(DateTime, DateTime)> days = null)
+        public SolverVariableBuilderNoTimeSlicing(List<Santa> santas = null, List<Visit> visits = null, List<(DateTime, DateTime)> days = null)
         {
             Santas = santas;
             Visits = visits;
@@ -79,10 +79,7 @@ namespace IRuettae.Preprocessing.Mapping
                 }
             }
 
-            //var avgWayDuration = Visits.SelectMany(v => v.FromWays).Average(w => w.Duration);
-            //var avgWaysPerSanta = Visits.Count / Santas.Count;
-
-            int[] dayDuration = Days.Select((startEnd) => (int)Math.Ceiling((startEnd.Item2 - startEnd.Item1).TotalSeconds * 0.7)).ToArray();
+            int[] dayDuration = Days.Select((startEnd) => (int)Math.Ceiling((startEnd.Item2 - startEnd.Item1).TotalSeconds)).ToArray();
 
             return new Core.Algorithm.NoTimeSlicing.SolverInputData(santasVar, visitDuration, visitsVar, distances,
                 dayDuration);

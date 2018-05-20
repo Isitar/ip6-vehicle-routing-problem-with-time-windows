@@ -28,8 +28,11 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
 
         private void CreateSantaUsesWay()
         {
-            solverData.Variables.SantaGraphEdge = new GLS.Variable[solverData.NumberOfSantas][,];
             solverData.Variables.SantaUsesWay = new GLS.Variable[solverData.NumberOfSantas][,];
+
+            solverData.Variables.SantaGraphEdge = new GLS.Variable[solverData.NumberOfSantas][,];
+            solverData.Variables.SantaWayFlow = new GLS.Variable[solverData.NumberOfSantas][,];
+            solverData.Variables.SantaWayHasFlow = new GLS.Variable[solverData.NumberOfSantas][,];
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
                 solverData.Variables.SantaGraphEdge[santa] =
@@ -37,6 +40,11 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
 
                 solverData.Variables.SantaUsesWay[santa] =
                     solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfVisits, solverData.NumberOfVisits, $"Santa_{santa}_usesWay");
+
+                solverData.Variables.SantaWayFlow[santa] =
+                    solverData.Solver.MakeNumVarMatrix(solverData.NumberOfVisits, solverData.NumberOfVisits, 0, double.MaxValue, $"Santa_{santa}_wayFlow");
+                solverData.Variables.SantaWayHasFlow[santa] =
+                    solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfVisits, solverData.NumberOfVisits, $"Santa_{santa}_wayHasFlow");
             }
         }
 
@@ -64,6 +72,8 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
             var rows = solverData.SolverInputData.Santas.Length;
             var cols = solverData.SolverInputData.Visits.GetLength(1);
             solverData.Variables.SantaVisit = solverData.Solver.MakeBoolVarMatrix(rows, cols, "SantaVisit");
+
+            solverData.Variables.SantaVisitFlow = solverData.Solver.MakeNumVarMatrix(rows, cols, 0, solverData.NumberOfVisits, "SantaVisitFlow");
         }
 
     }

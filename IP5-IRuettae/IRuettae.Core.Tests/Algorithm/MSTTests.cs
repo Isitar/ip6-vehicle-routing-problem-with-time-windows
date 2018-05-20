@@ -32,7 +32,16 @@ namespace IRuettae.Core.Tests.Algorithm
                 {5, 3, 1, 1, 0}
             };
 
-            int[] dayDuration = new int[1] {12};
+            //     5 - 4
+            //     \_3_/
+            //       |
+            //       |
+            //       2
+            //       |
+            //       |
+            //       1
+
+            int[] dayDuration = new int[1] {17};
 
             var solverInputData = new SolverInputData(santas, visitsDuration, visitStates, distances, dayDuration);
             var result = Starter.Optimise(solverInputData);

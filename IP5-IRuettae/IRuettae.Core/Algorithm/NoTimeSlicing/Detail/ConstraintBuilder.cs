@@ -47,7 +47,9 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
             var realSantaCount = solverData.SolverInputData.Santas.GetLength(1);
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
-                Solver.Add(solverData.Variables.SantaRouteCost[santa] + solverData.Variables.SantaVisitTime[santa] <=
+                Solver.Add(
+                    solverData.Variables.SantaRouteCost[santa] +
+                    solverData.Variables.SantaVisitTime[santa] <=
                            solverData.SolverInputData.DayDuration[santa / realSantaCount]);
             }
         }
@@ -58,55 +60,92 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
 
             MST_NumberOfEdgesConstraint();
             MST_MaxDestinationOfOnce();
-            MST_MinDestinationNMinusOne();
+
             MST_SourceAndDestAtLeastOnce();
             MST_NoSelfie();
             MST_NoBackAndFourth();
 
+
+            MST_Flow();
+        }
+
+        private void MST_Flow()
+        {
+            foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
+            {
+                var santaWayFlow = solverData.Variables.SantaWayFlow[santa];
+                var santaWayHasFlow = solverData.Variables.SantaWayHasFlow[santa];
+                var santaUsesWay = solverData.Variables.SantaUsesWay[santa];
+
+
+                // add flow for start destination
+                Solver.Add(solverData.Variables.SantaVisitFlow[santa, 0] == solverData.NumberOfVisits);
+
+
+                // flow only possible if neighbours have flow
+                for (var source = 1; source < solverData.NumberOfVisits; source++)
+                {
+                    var sumFlowNeightbours = new LinearExpr();
+                    foreach (var incomingNeighbours in Enumerable.Range(0, solverData.NumberOfVisits))
+                    {
+                        sumFlowNeightbours += santaWayFlow[incomingNeighbours, source];
+                    }
+
+                    foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
+                    {
+                        Solver.Add(santaWayFlow[source, destination] <= sumFlowNeightbours - 1);
+                    }
+                }
+
+                // spread flow
+                foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
+                {
+                    foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
+                    {
+                        Solver.Add(santaWayFlow[source, destination] <= solverData.Variables.SantaVisitFlow[santa, source] - 1);
+                        Solver.Add(santaWayFlow[source, destination] <= santaUsesWay[source, destination] * solverData.NumberOfVisits);
+                    }
+                }
+
+                foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
+                {
+                    foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
+                    {
+                        Solver.Add(santaWayHasFlow[source, destination] <= santaWayFlow[source, destination]);
+                    }
+                }
+
+
+                var sumOfFlow = new LinearExpr();
+                var sumOfEdges = new LinearExpr();
+                foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
+                {
+                    foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
+                    {
+                        sumOfFlow += santaWayHasFlow[source, destination];
+                        sumOfEdges += santaUsesWay[source, destination];
+                    }
+                }
+
+                Solver.Add(sumOfFlow == sumOfEdges);
+            }
         }
 
         private void MST_OnlyAvailableEdges()
         {
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
-                var sumOfDestinations = new LinearExpr();
                 foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
                 {
-
                     foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
                         Solver.Add(solverData.Variables.SantaUsesWay[santa][source, destination] <=
-                                   solverData.Variables.SantaGraphEdge[santa][source, destination]);
+                                   solverData.Variables.SantaGraphEdge[santa][source, destination]
+                                   );
                     }
                 }
             }
         }
-
-        private void MST_MinDestinationNMinusOne()
-        {
-            foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
-            {
-                var sumOfDestinations = new LinearExpr();
-                foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
-                {
-                    var numOfDestinations = new LinearExpr();
-                    foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
-                    {
-                        numOfDestinations += solverData.Variables.SantaUsesWay[santa][source, destination];
-                    }
-
-                    sumOfDestinations += numOfDestinations;
-
-                }
-
-                var numberOfVertices = new LinearExpr();
-                numberOfVertices = Enumerable
-                    .Range(0, solverData.NumberOfVisits)
-                    .Aggregate(numberOfVertices, (current, visit) => current + solverData.Variables.SantaVisit[santa, visit]);
-                Solver.Add(sumOfDestinations == numberOfVertices - 1);
-            }
-        }
-
         private void MST_NoBackAndFourth()
         {
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
@@ -173,18 +212,19 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
         {
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
-                var numberOfVertices = new LinearExpr();
-                numberOfVertices = Enumerable
+
+                var numberOfVertices = Enumerable
                     .Range(0, solverData.NumberOfVisits)
-                    .Aggregate(numberOfVertices, (current, visit) => current + solverData.Variables.SantaVisit[santa, visit]);
+                    .Aggregate(new LinearExpr(), (current, visit) => current + solverData.Variables.SantaVisit[santa, visit]);
 
                 var numberOfEdges = new LinearExpr();
-                numberOfEdges = Enumerable
-                    .Range(0, solverData.NumberOfVisits)
-                    .Aggregate(numberOfEdges, (current1, source) =>
-                        Enumerable
-                            .Range(0, solverData.NumberOfVisits)
-                            .Aggregate(current1, (current, destination) => current + solverData.Variables.SantaUsesWay[santa][source, destination]));
+                foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
+                {
+                    foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
+                    {
+                        numberOfEdges += solverData.Variables.SantaUsesWay[santa][source, destination];
+                    }
+                }
 
                 Solver.Add(numberOfEdges == numberOfVertices - 1);
             }

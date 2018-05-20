@@ -143,7 +143,7 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
                 Debug.WriteLine($"{santa} Santa Uses Way");
-                foreach (var source in Enumerable.Range(0,solverData.NumberOfVisits))
+                foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
                 {
                     foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
@@ -152,6 +152,22 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing
                         {
                             Debug.WriteLine($"S: {source}  |  D: {destination}");
                         }
+                    }
+
+                }
+                DebugHR();
+            }
+
+
+            foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
+            {
+                Debug.WriteLine($"{santa} Santa Way Flow");
+                foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
+                {
+                    foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
+                    {
+                        var value = solverData.Variables.SantaWayFlow[santa][source, destination].SolutionValue();
+                        Debug.WriteLine($"S: {source}  |  D: {destination} | {value}");
                     }
 
                 }

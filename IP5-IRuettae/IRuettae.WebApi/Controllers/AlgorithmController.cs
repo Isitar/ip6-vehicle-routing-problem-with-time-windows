@@ -160,7 +160,7 @@ namespace IRuettae.WebApi.Controllers
 
                 var test = string.Join(";", visits.Select(v => v.Id));
 
-                var solverVariableBuilder = new SolverVariableBuilderNew
+                var solverVariableBuilder = new SolverVariableBuilderNoTimeSlicing
                 {
                     Visits = visits,
                     Santas = dbSession.Query<Santa>().ToList(),
