@@ -53,14 +53,17 @@ namespace IRuettae.Core.Tests.Algorithm
         [TestMethod]
         public void TestConnectedMultipleSantaGraph()
         {
-            bool[,] santas = new bool[1, 1] { { true } };
-            int[] visitsDuration = new int[9] { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-            VisitState[,] visitStates = new VisitState[2, 9] {
+            const int numberOfDays = 2;
+            const int numberOfVisit = 9;
+            const int numberOfSantas = 1;
+            bool[,] santas = new bool[numberOfDays, numberOfSantas] { { true }, { true } };
+            int[] visitsDuration = new int[numberOfVisit] { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+            VisitState[,] visitStates = new VisitState[numberOfDays, numberOfVisit] {
                 {VisitState.Default, VisitState.Default,VisitState.Default,VisitState.Default,VisitState.Default,VisitState.Default, VisitState.Default,VisitState.Default,VisitState.Default},
                 {VisitState.Default, VisitState.Default,VisitState.Default,VisitState.Default,VisitState.Default,VisitState.Default, VisitState.Default,VisitState.Default,VisitState.Default}
             };
 
-            int[,] distances = new int[9, 9]
+            int[,] distances = new int[numberOfVisit, numberOfVisit]
             {
                 {0, 2, 4, 5, 5, 2, 4, 5, 5}, // v0
                 {2, 0, 2, 3, 3, 4, 6, 7, 7},// v1
@@ -90,7 +93,7 @@ namespace IRuettae.Core.Tests.Algorithm
             //     /   \
             //     8 - 7
 
-            int[] dayDuration = new int[2] { 17, 17 };
+            int[] dayDuration = new int[numberOfDays] { 17, 17 };
 
             var solverInputData = new SolverInputData(santas, visitsDuration, visitStates, distances, dayDuration);
             var result = Starter.Optimise(solverInputData);

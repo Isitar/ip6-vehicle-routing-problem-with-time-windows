@@ -171,7 +171,6 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
 
         private void MST_SourceAndDestAtLeastOnce()
         {
-
             foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
             {
                 var sumUsedAsSourceOrDest = new LinearExpr();
@@ -218,12 +217,10 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
             }
         }
 
-
         private void MST_NumberOfEdgesConstraint()
         {
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
-
                 var numberOfVertices = Enumerable
                     .Range(0, solverData.NumberOfVisits)
                     .Aggregate(new LinearExpr(), (current, visit) => current + solverData.Variables.SantaVisit[santa, visit]);
@@ -258,7 +255,26 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
         private void PerformanceConstraints()
         {
             FirstVisitByFirstSanta();
+            MST_OverallSum();
+        }
 
+        private void MST_OverallSum()
+        {
+            var overallUseWay = new LinearExpr();
+            var overallHasFlow = new LinearExpr();
+            foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
+            {
+                foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
+                {
+                    foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
+                    {
+                        overallHasFlow += solverData.Variables.SantaWayHasFlow[santa][source,destination];
+                        overallUseWay += solverData.Variables.SantaUsesWay[santa][source, destination];
+                    }
+                }
+            }
+
+            Solver.Add(overallUseWay == overallHasFlow);
         }
 
         private void FirstVisitByFirstSanta()

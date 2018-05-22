@@ -19,10 +19,7 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing
         private readonly GLS.Solver solver = new GLS.Solver("Santa Problem", GLS.Solver.SCIP_MIXED_INTEGER_PROGRAMMING);
         //new GLS.Solver("SantaProblem", GLS.Solver.CBC_MIXED_INTEGER_PROGRAMMING);
         private readonly AbstractTargetFunctionBuilder targetFunctionBuilder;
-
-        /// <summary>
-        ///
-        /// </summary>
+        
         public Solver(SolverInputData solverInputData, AbstractTargetFunctionBuilder targetFunctionBuilder)
         {
             this.solverData = new SolverData(solverInputData, solver);
@@ -159,20 +156,20 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing
             }
 
 
-            foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
-            {
-                Debug.WriteLine($"{santa} Santa Way Flow");
-                foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
-                {
-                    foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
-                    {
-                        var value = solverData.Variables.SantaWayFlow[santa][source, destination].SolutionValue();
-                        Debug.WriteLine($"S: {source}  |  D: {destination} | {value}");
-                    }
+            //foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
+            //{
+            //    Debug.WriteLine($"{santa} Santa Way Flow");
+            //    foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
+            //    {
+            //        foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
+            //        {
+            //            var value = solverData.Variables.SantaWayFlow[santa][source, destination].SolutionValue();
+            //            Debug.WriteLine($"S: {source}  |  D: {destination} | {value}");
+            //        }
 
-                }
-                DebugHR();
-            }
+            //    }
+            //    DebugHR();
+            //}
 
         }
 

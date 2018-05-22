@@ -69,7 +69,7 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
 
         public void CreateSantaVisit()
         {
-            var rows = solverData.SolverInputData.Santas.Length * solverData.SolverInputData.DayDuration.Length;
+            var rows = solverData.SolverInputData.Santas.Length;
             var cols = solverData.SolverInputData.Visits.GetLength(1);
             solverData.Variables.SantaVisit = solverData.Solver.MakeBoolVarMatrix(rows, cols, "SantaVisit");
 

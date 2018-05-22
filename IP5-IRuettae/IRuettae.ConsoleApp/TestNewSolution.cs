@@ -18,7 +18,7 @@ namespace IRuettae.ConsoleApp
         public static void Test()
         {
             ExportMPSVisits(35);
-            //TestAlgorithm(35);
+            TestAlgorithm(35);
         }
 
 
@@ -32,13 +32,15 @@ namespace IRuettae.ConsoleApp
         private static void ExportMPSVisits(int n_visits)
         {
             var solverInputData = Deserialize($"SerializedObjects/SolverInputNew{n_visits}Visits.serial");
+            solverInputData.DayDuration = solverInputData.DayDuration.Select(d => (int)(d / 0.7)).ToArray();
             Starter.SaveMps($"New_{n_visits}_mps.mps", solverInputData, TargetBuilderType.Default);
             ConsoleExt.WriteLine($"Saved mps for {n_visits} visits", InfoColor);
         }
         private static void TestSerailDataVisits(string serialDataName, int numberOfRuns = 5)
         {
             var solverInputData = Deserialize(serialDataName);
-            double mip_gap = 0.2;
+            solverInputData.DayDuration = solverInputData.DayDuration.Select(d => (int)(d / 0.7)).ToArray();
+            double mip_gap = 0.08;
 
             for (int i = 1; i <= numberOfRuns; i++)
             {
