@@ -35,18 +35,20 @@ namespace IRuettae.Core.Algorithm.TimeSlicing.Detail
             CreateOnlyOneSantaPerVisitConstraint();
             CreateSantaAvailableConstraint();
             CreateSantaOnlyOnePlaceConstraint();
-            CreateSantaNeedTimeToFirstVisitConstraint();
-            CreateSantaNeedsTimeToGetHomeConstraint();
+
+            CreateSantaNeedTimeToFirstVisitConstraintV2();
+            CreateSantaNeedsTimeToGetHomeConstraintV2();
 
             CreateSantaNeedTimeBetweenVisitsConstraintBigM();
             //CreateSantaNeedTimeBetweenVisitsConstraintSmallM();
 
             //CreateSantaNeedTimeBetweenVisitsConstraintTinyM();
 
-            CreateSingleVisitConstraint();
+            CreateSingleVisitConstraintV2();
             CreateUsesSantaConstraint();
             CreateNumberOfSantasNeededConstraint();
             CreateNumberOfSantasNeededOverallConstraint();
+
             CreateSantaEnRouteConstraint();
 
             CreatePerformanceConstraints();
@@ -90,13 +92,7 @@ namespace IRuettae.Core.Algorithm.TimeSlicing.Detail
             {
                 for (int santa = 1; santa < solverData.NumberOfSantas; santa++)
                 {
-                    // N*Z <= Z0 + Z1 + ... + Z(N-1)
-                    var sum = new LinearExpr();
-                    for (int preSanta = 0; preSanta < santa; preSanta++)
-                    {
-                        sum += solverData.Variables.UsesSanta[day, preSanta];
-                    }
-                    solverData.Solver.Add(santa * solverData.Variables.UsesSanta[day, santa] <= sum);
+                    solverData.Solver.Add(solverData.Variables.UsesSanta[day, santa] <= solverData.Variables.UsesSanta[day, santa - 1]);
                 }
             }
         }
@@ -310,6 +306,53 @@ namespace IRuettae.Core.Algorithm.TimeSlicing.Detail
         }
 
         /// <summary>
+        /// A visit has to be in one piece
+        /// </summary>
+        private void CreateSingleVisitConstraintV2()
+        {
+
+            // Todo: MEYERJ das ganze Modell eventuell mehr von VisitStart abhängig machen
+
+            for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+            {
+                // Z = Z1 + Z2 + ...
+                // one possible start must be true
+                var sum = new LinearExpr();
+
+                for (int day = 0; day < solverData.NumberOfDays; day++)
+                {
+                    for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day] - 1; timeslice++)
+                    {
+                        var start = solverData.Variables.VisitStart[day][visit][timeslice + 1];
+                        var t0 = solverData.Variables.Visits[day][visit, timeslice];
+                        var t1 = solverData.Variables.Visits[day][visit, timeslice + 1];
+
+
+                        // special case if the visit starts at timeslice 0
+                        if (timeslice == 0)
+                        {
+                            var start0 = solverData.Variables.VisitStart[day][visit][timeslice];
+                            solverData.Solver.Add(start0 == t0);
+                            sum += start0;
+                        }
+
+                        // Z <= !Z1
+                        solverData.Solver.Add(start <= 1 - t0);
+                        // Z <= Z2
+                        solverData.Solver.Add(start <= t1);
+                        // Z + 1>= !Z1 + Z2
+                        solverData.Solver.Add(start + 1 >= 1 - t0 + t1);
+
+
+                        sum += start;
+                    }
+                }
+
+                solverData.Solver.Add(1 == sum);
+            }
+        }
+
+        /// <summary>
         /// Santas need time to go to the first Visit
         /// </summary>
         private void CreateSantaNeedTimeToFirstVisitConstraint()
@@ -324,6 +367,27 @@ namespace IRuettae.Core.Algorithm.TimeSlicing.Detail
                     for (int timeslice = 0; timeslice < Math.Min(distance, solverData.SlicesPerDay[day]); timeslice++)
                     {
                         sum += solverData.Variables.Visits[day][visit, timeslice];
+                    }
+                    solverData.Solver.Add(sum == 0);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Santas need time to go to the first Visit
+        /// </summary>
+        private void CreateSantaNeedTimeToFirstVisitConstraintV2()
+        {
+            for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+            {
+                var distance = solverData.Input.Distances[solverData.StartEndPoint, visit];
+                for (int day = 0; day < solverData.NumberOfDays; day++)
+                {
+                    // Z1 + Z2 + ... == 0
+                    var sum = new LinearExpr();
+                    for (int timeslice = 0; timeslice < Math.Min(distance, solverData.SlicesPerDay[day]); timeslice++)
+                    {
+                        sum += solverData.Variables.VisitStart[day][visit][timeslice];
                     }
                     solverData.Solver.Add(sum == 0);
                 }
@@ -346,6 +410,29 @@ namespace IRuettae.Core.Algorithm.TimeSlicing.Detail
                     for (int timeslice = start; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                     {
                         sum += solverData.Variables.Visits[day][visit, timeslice];
+                    }
+                    solverData.Solver.Add(sum == 0);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Santas need to go back home from their last Visit
+        /// </summary>
+        private void CreateSantaNeedsTimeToGetHomeConstraintV2()
+        {
+            for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+            {
+                var distance = solverData.Input.Distances[visit, solverData.StartEndPoint];
+                var duration = solverData.Input.VisitsDuration[visit];
+                for (int day = 0; day < solverData.NumberOfDays; day++)
+                {
+                    var start = Math.Max(0, solverData.SlicesPerDay[day] - distance - duration + 1);
+                    // Z1 + Z2 + ... == 0
+                    var sum = new LinearExpr();
+                    for (int timeslice = start; timeslice < solverData.SlicesPerDay[day]; timeslice++)
+                    {
+                        sum += solverData.Variables.VisitStart[day][visit][timeslice];
                     }
                     solverData.Solver.Add(sum == 0);
                 }
@@ -709,10 +796,34 @@ namespace IRuettae.Core.Algorithm.TimeSlicing.Detail
                 }
             }
         }
+
+        /// <summary>
+        /// Each visit must be overall visited the right number of timeslices
+        /// </summary>
+        private void CreateVisitOverallLengthConstraint()
+        {
+            for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+            {
+                // X = Z1 + Z2 + ...
+                var sum = new LinearExpr();
+                for (int day = 0; day < solverData.NumberOfDays; day++)
+                {
+                    for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
+                    {
+                        for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
+                        {
+                            sum += solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
+                        }
+                    }
+                }
+                solverData.Solver.Add(solverData.Input.VisitsDuration[visit] == sum);
+            }
+        }
+
         /// <summary>
         /// Each visit must made (exactly once)
         /// </summary>
-        private void CreateVisitOverallLengthConstraint()
+        private void CreateVisitOverallLengthConstraintV2()
         {
             for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
             {

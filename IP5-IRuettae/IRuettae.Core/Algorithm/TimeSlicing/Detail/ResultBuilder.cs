@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace IRuettae.Core.Algorithm.TimeSlicing.Detail
@@ -58,7 +59,8 @@ namespace IRuettae.Core.Algorithm.TimeSlicing.Detail
 
         private Waypoint? GetNextLocation(int day, int santa, Waypoint value)
         {
-            for (int timeslice = value.startTime + 1; timeslice < solverData.SlicesPerDay[day]; timeslice++)
+            int nextPossibleStart = value.startTime + Math.Max(1, solverData.Input.VisitsDuration[value.visit]);
+            for (int timeslice = nextPossibleStart; timeslice < solverData.SlicesPerDay[day]; timeslice++)
             {
                 for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
                 {
