@@ -79,9 +79,15 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
 
 
                 // add flow for start destination
-                Solver.Add(solverData.Variables.SantaVisitFlow[santa, 0] == solverData.Variables.SantaVisit[santa,0]* solverData.NumberOfVisits);
+                //Solver.Add(solverData.Variables.SantaVisitFlow[santa, 0] == solverData.Variables.SantaVisit[santa,0]* solverData.NumberOfVisits);
 
-             
+                // flow only possible if santa uses way
+                foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
+                {
+                    Solver.Add(santaWayFlow[source, 0] == santaUsesWay[source, 0] * solverData.NumberOfVisits);
+                    Solver.Add(santaWayFlow[0, source] == santaUsesWay[0, source] * solverData.NumberOfVisits);
+                }
+
 
                 // flow only possible if santa uses way
                 foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
@@ -103,17 +109,21 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
                     }
 
                     // node has value of incoming flow
-                    Solver.Add(solverData.Variables.SantaVisitFlow[santa, source] <= sumFlowNeightbours);
+                    //Solver.Add(solverData.Variables.SantaVisitFlow[santa, source] <= sumFlowNeightbours);
+                    foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
+                    {
+                        Solver.Add(santaWayFlow[source, destination] <= sumFlowNeightbours - 1 * solverData.Variables.SantaVisit[santa, source]);
+                    }
                 }
 
                 // spread flow
-                foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
-                {
-                    foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
-                    {
-                        Solver.Add(santaWayFlow[source, destination] <= solverData.Variables.SantaVisitFlow[santa, source] - 1 * solverData.Variables.SantaVisit[santa, source]);
-                    }
-                }
+                //foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
+                //{
+                //    foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
+                //    {
+                        //Solver.Add(santaWayFlow[source, destination] <= solverData.Variables.SantaVisitFlow[santa, source] - 1 * solverData.Variables.SantaVisit[santa, source]);
+                //    }
+                //}
 
                 // hasFlow Variable
                 foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
@@ -268,7 +278,7 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
                 {
                     foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
-                        overallHasFlow += solverData.Variables.SantaWayHasFlow[santa][source,destination];
+                        overallHasFlow += solverData.Variables.SantaWayHasFlow[santa][source, destination];
                         overallUseWay += solverData.Variables.SantaUsesWay[santa][source, destination];
                     }
                 }

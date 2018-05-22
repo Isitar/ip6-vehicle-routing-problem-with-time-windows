@@ -45,10 +45,5 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
         /// [santa][source,destination] how much flow way has
         /// </summary>
         public GLS.Variable[][,] SantaWayHasFlow { get; set; }
-        /// <summary>
-        /// [santa,visit] how much flow way has
-        /// </summary>
-        public GLS.Variable[,] SantaVisitFlow { get; set; }
-
     }
 }
