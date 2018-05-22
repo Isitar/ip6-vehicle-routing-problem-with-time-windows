@@ -38,13 +38,13 @@ namespace IRuettae.Core.Algorithm.TimeSlicing.Detail
             {
                 var rows = solverData.NumberOfVisits;
                 var cols = solverData.SlicesPerDay[day];
-                solverData.Variables.Visits[day] = solverData.Solver.MakeBoolVarMatrix(rows, cols);
+                solverData.Variables.Visits[day] = solverData.Solver.MakeBoolVarMatrix(rows, cols, $"Visit_Day_{day}");
             }
         }
 
         private void CreateSantaVisits()
         {
-            solverData.Variables.SantaVisits = solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfSantas, solverData.NumberOfVisits);
+            solverData.Variables.SantaVisits = solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfSantas, solverData.NumberOfVisits, "SantaVisits");
         }
 
         //private void CreateSantaDayVisits()
@@ -72,7 +72,7 @@ namespace IRuettae.Core.Algorithm.TimeSlicing.Detail
                 var cols = solverData.SlicesPerDay[i];
                 for (int j = 0; j < solverData.NumberOfSantas; j++)
                 {
-                    solverData.Variables.VisitsPerSanta[i][j] = solverData.Solver.MakeBoolVarMatrix(rows, cols);
+                    solverData.Variables.VisitsPerSanta[i][j] = solverData.Solver.MakeBoolVarMatrix(rows, cols, $"VisitsPerSanta_Day_{i}_Santa_{j}");
                 }
             }
         }
@@ -85,24 +85,23 @@ namespace IRuettae.Core.Algorithm.TimeSlicing.Detail
             {
                 var rows = solverData.NumberOfSantas;
                 var cols = solverData.SlicesPerDay[i];
-                solverData.Variables.Santas[i] = solverData.Solver.MakeBoolVarMatrix(rows, cols);
+                solverData.Variables.Santas[i] = solverData.Solver.MakeBoolVarMatrix(rows, cols, $"Santas_Day_{i}");
             }
         }
 
         private void CreateUsesSanta()
         {
-            solverData.Variables.UsesSanta = solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfDays, solverData.NumberOfSantas);
+            solverData.Variables.UsesSanta = solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfDays, solverData.NumberOfSantas, "UsesSanta");
         }
 
         private void CreateNumberOfSantasNeeded()
         {
-            solverData.Variables.NumberOfSantasNeeded = solverData.Solver.MakeIntVarArray(solverData.NumberOfDays, 1, solverData.NumberOfSantas);
+            solverData.Variables.NumberOfSantasNeeded = solverData.Solver.MakeIntVarArray(solverData.NumberOfDays, 1, solverData.NumberOfSantas, "NumberOfSantasNeeded");
         }
 
         private void CreateNumberOfSantasNeededOverall()
         {
-            var name = nameof(solverData.Variables.NumberOfSantasNeededOverall);
-            solverData.Variables.NumberOfSantasNeededOverall = solverData.Solver.MakeIntVar(1, solverData.NumberOfSantas, name);
+            solverData.Variables.NumberOfSantasNeededOverall = solverData.Solver.MakeIntVar(1, solverData.NumberOfSantas, "NumberOfSantasNeededOverall");
         }
 
         private void CreateVisitStart()
@@ -114,7 +113,7 @@ namespace IRuettae.Core.Algorithm.TimeSlicing.Detail
                 solverData.Variables.VisitStart[day] = new GLS.Variable[solverData.NumberOfVisits][];
                 for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
                 {
-                    solverData.Variables.VisitStart[day][visit] = solverData.Solver.MakeBoolVarArray(solverData.SlicesPerDay[day]);
+                    solverData.Variables.VisitStart[day][visit] = solverData.Solver.MakeBoolVarArray(solverData.SlicesPerDay[day], $"VisitStart_Day_{day}_Visit_{visit}");
                 }
             }
         }
@@ -127,7 +126,7 @@ namespace IRuettae.Core.Algorithm.TimeSlicing.Detail
             {
                 var rows = solverData.NumberOfSantas;
                 var cols = solverData.SlicesPerDay[i];
-                solverData.Variables.SantaEnRoute[i] = solverData.Solver.MakeBoolVarMatrix(rows, cols);
+                solverData.Variables.SantaEnRoute[i] = solverData.Solver.MakeBoolVarMatrix(rows, cols, $"SantaEnRoute_Day_{i}");
             }
         }
     }
