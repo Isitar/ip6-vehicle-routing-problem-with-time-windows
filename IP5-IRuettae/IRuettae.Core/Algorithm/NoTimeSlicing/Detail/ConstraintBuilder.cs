@@ -162,19 +162,21 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
 
         private void MST_SourceAndDestAtLeastOnce()
         {
-            foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
+
+            foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
             {
-                foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
+                var sumUsedAsSourceOrDest = new LinearExpr();
+                foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
                 {
-                    var sumUsedAsSourceOrDest = new LinearExpr();
+
                     foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
                         sumUsedAsSourceOrDest += solverData.Variables.SantaUsesWay[santa][source, destination];
                         sumUsedAsSourceOrDest += solverData.Variables.SantaUsesWay[santa][destination, source];
                     }
-
-                    Solver.Add(sumUsedAsSourceOrDest >= 1);
                 }
+
+                Solver.Add(sumUsedAsSourceOrDest >= 1);
             }
         }
 

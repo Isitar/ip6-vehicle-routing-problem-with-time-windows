@@ -41,13 +41,63 @@ namespace IRuettae.Core.Tests.Algorithm
             //       |
             //       1
 
-            int[] dayDuration = new int[1] {17};
+            int[] dayDuration = new int[1] { 17 };
 
             var solverInputData = new SolverInputData(santas, visitsDuration, visitStates, distances, dayDuration);
             var result = Starter.Optimise(solverInputData);
             Assert.IsNotNull(result);
-            Assert.AreEqual(5, result.Waypoints[0,0].Count);
-            
+            Assert.AreEqual(5, result.Waypoints[0, 0].Count);
+
+        }
+
+        [TestMethod]
+        public void TestConnectedMultipleSantaGraph()
+        {
+            bool[,] santas = new bool[1, 2] { { true, true } };
+            int[] visitsDuration = new int[9] { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+            VisitState[,] visitStates = new VisitState[1, 9] {
+                {
+                    VisitState.Default, VisitState.Default,VisitState.Default,VisitState.Default,VisitState.Default,VisitState.Default, VisitState.Default,VisitState.Default,VisitState.Default
+                }
+            };
+
+            int[,] distances = new int[9, 9]
+            {
+                {0, 2, 4, 5, 5, 2, 4, 5, 5}, // v0
+                {2, 0, 2, 3, 3, 4, 6, 7, 7},// v1
+                {4, 2, 0, 1, 1, 6, 8, 9, 9},// v2
+                {5, 3, 1, 0, 1, 7, 9, 10,10},// v3
+                {5, 3, 1, 1, 0, 7, 9, 10,10},// v4
+                {2, 4, 6, 7, 7, 0, 2, 3, 3},// v5
+                {4, 6, 8, 9, 9, 2, 0, 1, 1},// v6
+                {5, 7, 9,10,10, 3, 1, 0, 1},// v7
+                {5, 7, 9,10,10, 3, 1, 1, 0},// v8
+            };
+
+            //     4 - 3
+            //     \_2_/
+            //       |
+            //       |
+            //       1
+            //       |
+            //       |
+            //       0 V0
+            //       |
+            //       |
+            //       5
+            //       |
+            //       |
+            //      _6_
+            //     /   \
+            //     8 - 7
+
+            int[] dayDuration = new int[1] { 17 };
+
+            var solverInputData = new SolverInputData(santas, visitsDuration, visitStates, distances, dayDuration);
+            var result = Starter.Optimise(solverInputData);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(5, result.Waypoints[0, 0].Count);
+
         }
 
     }
