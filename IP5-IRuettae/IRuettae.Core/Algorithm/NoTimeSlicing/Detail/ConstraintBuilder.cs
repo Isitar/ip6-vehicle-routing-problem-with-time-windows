@@ -248,6 +248,22 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
         {
             FirstVisitByFirstSanta();
             MST_OverallSum();
+            MST_FixingSantaUsesWay();
+        }
+
+        private void MST_FixingSantaUsesWay()
+        {
+            foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
+            {
+                foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
+                {
+                    foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
+                    {
+                        Solver.Add(solverData.Variables.SantaUsesWay[santa][source, destination] <=
+                                   solverData.Variables.SantaWayHasFlow[santa][source, destination]);
+                    }
+                }
+            }
         }
 
         private void MST_OverallSum()
@@ -332,7 +348,7 @@ namespace IRuettae.Core.Algorithm.NoTimeSlicing.Detail
                         // Span-tree *2 <= 2* TSP in symetric graph
                         // I think this works for us too since A->C <= A->B->C
                         expr += solverData.Variables.SantaUsesWay[santa][source, destination] * solverData.SolverInputData.Distances[source, destination];
-                        expr += solverData.Variables.SantaUsesWay[santa][destination, source] * solverData.SolverInputData.Distances[destination, source];
+                        expr += solverData.Variables.SantaUsesWay[santa][source, destination] * solverData.SolverInputData.Distances[destination, source];
                     }
                 }
                 Solver.Add(solverData.Variables.SantaRouteCost[santa] == expr);
