@@ -1,12 +1,18 @@
 ﻿@model IRuettae.WebApp.Models.AlgorithmStarterVM
 
-@using (Html.BeginForm("CalculateRouteAsync","Algorithm",FormMethod.Post))
+
+<h4><i class="fa fa-terminal"></i> Algorithmus starter</h4>
+@Html.ActionLink("Resultate", "RunningProcesses", null, new { @class = "btn btn-success" })
+
+<hr />
+
+
+@using (Html.BeginForm("CalculateRouteAsync", "Algorithm", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4><i class="fa fa-terminal"></i> Algorithmus starter</h4>
-        <hr />
+
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
         <div class="form-group row">

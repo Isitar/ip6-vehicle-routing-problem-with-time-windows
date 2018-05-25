@@ -156,6 +156,7 @@ namespace IRuettae.WebApi.Helpers
                 {
                     sb.AppendLine(ctr.ToString());
                     sb.AppendLine(route);
+                    ctr++;
                 }
 
                 routeCalculation.ClusteringResult = sb.ToString();
@@ -189,8 +190,11 @@ namespace IRuettae.WebApi.Helpers
                 routeCalculation.State = RouteCalculationState.RunningPhase2;
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
-                var inputData = schedulingSovlerVariableBuilders.Select(vb => vb.Build());
-                var routeResults = inputData.Select(id => Starter.Optimise(id, TargetBuilderType.Default, routeCalculation.SchedulingMipGap)).ToList();
+                var inputData = schedulingSovlerVariableBuilders.Where(vb => vb.Visits.Count > 0).Select(vb => vb.Build()).ToList();
+
+                var routeResults = inputData
+                    .Where(id => id.Visits.Length > 0)
+                    .Select(id => Starter.Optimise(id, TargetBuilderType.Default, routeCalculation.SchedulingMipGap)).ToList();
 
                 routeCalculation.SchedulingResult = Json.Encode(routeResults);
                 // gets captured by eventwriter

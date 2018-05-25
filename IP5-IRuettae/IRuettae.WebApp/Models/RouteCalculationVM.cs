@@ -42,7 +42,7 @@ namespace IRuettae.WebApp.Models
         public virtual string ClusteringResult { get; set; }
 
         // Phase 2
-        [DisplayName("Zeitgenauigkeit")]
+        [DisplayName("Zeitgenauigkeit [s]")]
         public virtual int TimeSliceDuration { get; set; }
         [DisplayName("Scheduling MIP GAP")]
         public virtual double SchedulingMipGap{ get; set; }

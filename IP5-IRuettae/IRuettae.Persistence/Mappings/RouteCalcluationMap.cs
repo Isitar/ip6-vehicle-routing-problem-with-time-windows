@@ -33,6 +33,7 @@ namespace IRuettae.Persistence.Mappings
             Map(x => x.State);
             Map(x => x.StateText);
             Map(x => x.EndTime);
+            Map(x => x.StartTime);
         }
     }
 }

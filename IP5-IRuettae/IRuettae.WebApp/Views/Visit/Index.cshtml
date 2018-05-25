@@ -19,7 +19,7 @@
     <div class="form-group row">
         @Html.LabelFor(m => m.Year, new { @class = "col-md-2 col-form-label" })
         <div class="col-md-10">
-            @Html.EditorFor(model => model.Year, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.EditorFor(model => model.Year, new { htmlAttributes = new { @class = "form-control year-input" } })
             @Html.ValidationMessageFor(model => model.Year, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -27,10 +27,10 @@
     if (Model != null && Model.AlternativeAddressNeeded)
     {
         <div class="form-group row">
-            @Html.LabelFor(m => m.OriginalStreet, new {@class = "col-md-2 col-form-label"})
+            @Html.LabelFor(m => m.OriginalStreet, new { @class = "col-md-2 col-form-label" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.OriginalStreet, new {htmlAttributes = new {@class = "form-control"}})
-                @Html.ValidationMessageFor(model => model.OriginalStreet, "", new {@class = "text-danger"})
+                @Html.EditorFor(model => model.OriginalStreet, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.OriginalStreet, "", new { @class = "text-danger" })
             </div>
         </div>
     }
@@ -44,23 +44,23 @@
     </div>
 
     if (Model != null && Model.AlternativeAddressNeeded)
-    { 
+    {
 
 
-         <div class="form-group row small">
-             @Html.LabelFor(m => m.DeltaWayDuration, new {@class = "col-md-2 col-form-label"})
-             <div class="col-md-4">
-                 @Html.EditorFor(model => model.DeltaWayDuration, new {htmlAttributes = new {@class = "form-control form-control-sm"}})
-                 @Html.ValidationMessageFor(model => model.DeltaWayDuration, "", new {@class = "text-danger"})
-             </div>
+        <div class="form-group row small">
+            @Html.LabelFor(m => m.DeltaWayDuration, new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.DeltaWayDuration, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                @Html.ValidationMessageFor(model => model.DeltaWayDuration, "", new { @class = "text-danger" })
+            </div>
 
-             @Html.LabelFor(m => m.DeltaWayDistance, new {@class = "col-md-2 col-form-label"})
-             <div class="col-md-4">
-                 @Html.EditorFor(model => model.DeltaWayDistance, new {htmlAttributes = new {@class = "form-control form-control-sm"}})
-                 @Html.ValidationMessageFor(model => model.DeltaWayDistance, "", new {@class = "text-danger"})
-             </div>
-         </div>
-     }
+            @Html.LabelFor(m => m.DeltaWayDistance, new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.DeltaWayDistance, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                @Html.ValidationMessageFor(model => model.DeltaWayDistance, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    }
 
     <div class="form-group row">
         @Html.LabelFor(m => m.Zip, new { @class = "col-md-1 col-form-label" })
@@ -147,47 +147,52 @@
     <script type="text/javascript">
         $(document).ready(function() {
 
-
-            $('#AddDesired').click(function() {
-                var desired = $('.desired');
-                var count = desired.length;
-                var clone = desired.first().clone();
-                clone.html($(clone).html().replace(/\[0\]/g, '[' + count + ']'));
-                clone.html($(clone).html().replace(/"_0__"/g, '_' + count + '__'));
-                desired.last().after(clone);
-            });
-
-            $('#AddUnavailable').click(function() {
-                var unavailable = $('.unavailable');
-                var count = unavailable.length;
-                var clone = unavailable.first().clone();
-                clone.html($(clone).html().replace(/\[0\]/g, '[' + count + ']'));
-                clone.html($(clone).html().replace(/"_0__"/g, '_' + count + '__'));
-                unavailable.last().after(clone);
-            });
-
-            document.getElementById('Zip-Input').oninput = function () {
-                if ( $('#Zip-Input').val().length !== 4) return;
-                var url = '@Url.Action("CityFromZip", "Visit")?zip=' + $('#Zip-Input').val();
-                console.log('requesting ' + url);
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    dataType: 'json',
-                    contentType: 'application/json; charset=utf-8',
-                    success: function(data) {
-                        if (data.length === 1) {
-                            $('#City-Input').val(data[0]);
-                        } else {
-                            $('#City-Input').autocomplete({
-                                source: data
-                                }
-                            );
-                        }
-                    }
-                });
-            };
-
+            $('.year-input').each(function () {
+                if ($(this).val() === '') {
+                    $(this).val(@DateTime.Today.Year);
+                }
         });
+
+        $('#AddDesired').click(function() {
+            var desired = $('.desired');
+            var count = desired.length;
+            var clone = desired.first().clone();
+            clone.html($(clone).html().replace(/\[0\]/g, '[' + count + ']'));
+            clone.html($(clone).html().replace(/"_0__"/g, '_' + count + '__'));
+            desired.last().after(clone);
+        });
+
+        $('#AddUnavailable').click(function() {
+            var unavailable = $('.unavailable');
+            var count = unavailable.length;
+            var clone = unavailable.first().clone();
+            clone.html($(clone).html().replace(/\[0\]/g, '[' + count + ']'));
+            clone.html($(clone).html().replace(/"_0__"/g, '_' + count + '__'));
+            unavailable.last().after(clone);
+        });
+
+        document.getElementById('Zip-Input').oninput = function() {
+            if ($('#Zip-Input').val().length !== 4) return;
+            var url = '@Url.Action("CityFromZip", "Visit")?zip=' + $('#Zip-Input').val();
+            console.log('requesting ' + url);
+            $.ajax({
+                url: url,
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                success: function(data) {
+                    if (data.length === 1) {
+                        $('#City-Input').val(data[0]);
+                    } else {
+                        $('#City-Input').autocomplete({
+                                source: data
+                            }
+                        );
+                    }
+                }
+            });
+        };
+
+    });
     </script>
 }
