@@ -18,5 +18,6 @@ namespace IRuettae.WebApi.Helpers
         }
 
         public event EventHandler<char> CharWritten;
+
     }
 }

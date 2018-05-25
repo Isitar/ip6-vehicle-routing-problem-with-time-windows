@@ -13,5 +13,7 @@ namespace IRuettae.Core.Algorithm
         string ExportMPS();
         string ImportMPS();
         Route GetResult();
+
+        double SolutionValue();
     }
 }

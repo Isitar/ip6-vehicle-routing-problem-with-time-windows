@@ -16,19 +16,27 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
         public Route CreateResult()
         {
 
-            var route = new Route(solverData.NumberOfSantas, 1);
-            foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
+            var realNumberOfSantas = solverData.SolverInputData.Santas.GetLength(1);
+            var realNumberOfDays = solverData.SolverInputData.Santas.GetLength(0);
+
+            var route = new Route(realNumberOfSantas, realNumberOfDays);
+            foreach (var santa in Enumerable.Range(0, realNumberOfSantas))
             {
-                route.Waypoints[santa, 0] = new List<Waypoint>();
-                foreach (var visit in Enumerable.Range(0, solverData.NumberOfVisits))
+                foreach (var day in Enumerable.Range(0, realNumberOfDays))
                 {
-                    if (Math.Abs(solverData.Variables.SantaVisit[santa, visit].SolutionValue() - 1) < 0.0001)
+                    var waypoints = new List<Waypoint>();
+                    
+                    foreach (var visit in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
-                        route.Waypoints[santa, 0].Add(new Waypoint(visit,0));
+                        if (Math.Abs(solverData.Variables.SantaVisit[day * realNumberOfSantas + santa, visit].SolutionValue() - 1) < 0.0001)
+                        {
+                            waypoints.Add(new Waypoint(visit, 0));
+                        }
                     }
+
+                    route.Waypoints[santa, day] = waypoints;
                 }
             }
-
             return route;
         }
     }

@@ -1,0 +1,127 @@
+﻿@model IEnumerable<IRuettae.WebApp.Models.RouteCalculationVM>
+<h1>Algorithmus Resultate</h1>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.StartTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Year)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TimePerChild)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TimePerChildOffset)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StarterVisitId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NumberOfSantas)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NumberOfVisits)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SantaJson)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.VisitsJson)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ClusteringOptimisationFunction)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ClustringMipGap)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ClusteringResult)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TimeSliceDuration)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SchedulingMipGap)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SchedulingResult)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Result)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.State)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StateText)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EndTime)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.StartTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Year)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TimePerChild)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TimePerChildOffset)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StarterVisitId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NumberOfSantas)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NumberOfVisits)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SantaJson)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.VisitsJson)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ClusteringOptimisationFunction)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ClustringMipGap)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ClusteringResult)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TimeSliceDuration)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SchedulingMipGap)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SchedulingResult)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Result)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.State)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StateText)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EndTime)
+        </td>
+    </tr>
+}
+
+</table>

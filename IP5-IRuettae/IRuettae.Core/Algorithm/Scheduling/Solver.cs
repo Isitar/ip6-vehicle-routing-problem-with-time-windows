@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using IRuettae.Core.Algorithm.Scheduling.Detail;
 using IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders;
 using GLS = Google.OrTools.LinearSolver;
@@ -95,7 +96,7 @@ namespace IRuettae.Core.Algorithm.Scheduling
             param.SetDoubleParam(GLS.MPSolverParameters.RELATIVE_MIP_GAP, MIP_GAP);
 
             solver.Objective().SetMinimization();
-            //solver.EnableOutput();
+            solver.EnableOutput();
             resultState = FromGoogleResultState(solver.Solve(param));
 
             PrintDebugRessourcesAfter();
@@ -241,8 +242,14 @@ namespace IRuettae.Core.Algorithm.Scheduling
 
         public Route GetResult()
         {
-            var rb = new ResultBuilder(solverData);
-            return rb.CreateResult();
+            var route = new ResultBuilder(solverData).CreateResult();
+            route.SolutionValue = SolutionValue();
+            return route;
+        }
+
+        public double SolutionValue()
+        {
+            return solver.Objective().Value();
         }
 
         private void PrintDebugRessourcesBefore(string name)

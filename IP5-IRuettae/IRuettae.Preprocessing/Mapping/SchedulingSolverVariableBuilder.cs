@@ -6,7 +6,7 @@ using IRuettae.Persistence.Entities;
 
 namespace IRuettae.Preprocessing.Mapping
 {
-    public class SolverVariableBuilderScheduling
+    public class SchedulingSolverVariableBuilder
     {
         public List<Santa> Santas { get; set; }
 
@@ -20,7 +20,7 @@ namespace IRuettae.Preprocessing.Mapping
         /// </summary>
         public List<(DateTime, DateTime)> Days { get; set; }
 
-        public SolverVariableBuilderScheduling(int timeslotLength, List<Santa> santas = null, List<Visit> visits = null, List<(DateTime, DateTime)> days = null)
+        public SchedulingSolverVariableBuilder(int timeslotLength, List<Santa> santas = null, List<Visit> visits = null, List<(DateTime, DateTime)> days = null)
         {
             Santas = santas;
             Visits = visits;

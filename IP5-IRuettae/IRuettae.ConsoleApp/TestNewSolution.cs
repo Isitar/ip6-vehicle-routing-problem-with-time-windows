@@ -7,6 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.Algorithm;
+using IRuettae.WebApi.Helpers;
 using SolverInputData = IRuettae.Core.Algorithm.Clustering.SolverInputData;
 
 namespace IRuettae.ConsoleApp
@@ -17,21 +18,28 @@ namespace IRuettae.ConsoleApp
         private const ConsoleColor ResultColor = ConsoleColor.Green;
         public static void Test()
         {
+            
+            var eventTextWriter = new EventTextWriter();
+            eventTextWriter.CharWritten += (sender, c) => { Debug.Write(c); };
+            Console.OpenStandardOutput();
+            Console.SetOut(eventTextWriter);
+
+
             ExportMPSVisits(35);
             TestAlgorithm(35);
         }
 
-
-
+        
         private static void TestAlgorithm(int n_visits)
         {
             ConsoleExt.WriteLine($"Start testing algorithm with {n_visits} visits", InfoColor);
-            TestSerailDataVisits($"SerializedObjects/SolverInputNew{n_visits}Visits.serial", numberOfRuns: 1);
+            
+            TestSerailDataVisits($"SerializedObjects/ClusteringSolverInput{n_visits}Visits.serial", numberOfRuns: 1);
         }
 
         private static void ExportMPSVisits(int n_visits)
         {
-            var solverInputData = Deserialize($"SerializedObjects/SolverInputNew{n_visits}Visits.serial");
+            var solverInputData = Deserialize($"SerializedObjects/ClusteringSolverInput{n_visits}Visits.serial");
             // solverInputData.DayDuration = solverInputData.DayDuration.Select(d => (int)(d / 0.7)).ToArray();
             Starter.SaveMps($"New_{n_visits}_mps.mps", solverInputData, TargetBuilderType.Default);
             ConsoleExt.WriteLine($"Saved mps for {n_visits} visits", InfoColor);

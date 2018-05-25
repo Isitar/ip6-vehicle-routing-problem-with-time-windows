@@ -7,7 +7,7 @@ using SolverInputData = IRuettae.Core.Algorithm.Clustering.SolverInputData;
 
 namespace IRuettae.Preprocessing.Mapping
 {
-    public class SolverVariableBuilderClustering
+    public class ClusteringSolverVariableBuilder
     {
         public List<Santa> Santas { get; set; }
 
@@ -19,7 +19,7 @@ namespace IRuettae.Preprocessing.Mapping
         /// </summary>
         public List<(DateTime, DateTime)> Days { get; set; }
 
-        public SolverVariableBuilderClustering(List<Santa> santas = null, List<Visit> visits = null, List<(DateTime, DateTime)> days = null)
+        public ClusteringSolverVariableBuilder(List<Santa> santas = null, List<Visit> visits = null, List<(DateTime, DateTime)> days = null)
         {
             Santas = santas;
             Visits = visits;

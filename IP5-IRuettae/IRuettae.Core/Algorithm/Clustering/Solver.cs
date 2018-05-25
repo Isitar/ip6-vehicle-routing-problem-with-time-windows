@@ -92,6 +92,7 @@ namespace IRuettae.Core.Algorithm.Clustering
             PrintDebugRessourcesBefore("SolveInternal");
 
             var param = new GLS.MPSolverParameters();
+            
             param.SetDoubleParam(GLS.MPSolverParameters.RELATIVE_MIP_GAP, MIP_GAP);
 
             solver.Objective().SetMinimization();
@@ -227,8 +228,14 @@ namespace IRuettae.Core.Algorithm.Clustering
 
         public Route GetResult()
         {
-            var rb = new ResultBuilder(solverData);
-            return rb.CreateResult();
+            var route = new ResultBuilder(solverData).CreateResult();
+            route.SolutionValue = SolutionValue();
+            return route;
+        }
+
+        public double SolutionValue()
+        {
+            return solver.Objective().Value();
         }
 
         private void PrintDebugRessourcesBefore(string name)

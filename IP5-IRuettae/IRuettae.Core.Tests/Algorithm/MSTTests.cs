@@ -98,8 +98,14 @@ namespace IRuettae.Core.Tests.Algorithm
             var solverInputData = new SolverInputData(santas, visitsDuration, visitStates, distances, dayDuration, null);
             var result = Starter.Optimise(solverInputData);
             Assert.IsNotNull(result);
-            //Assert.AreEqual(5, result.Waypoints[0, 0].Count);
+            var possibleRoutes = new[] { "0 | 0;5 | 0;6 | 0;7 | 0;8 | 0", "0 | 0;1 | 0;2 | 0;3 | 0;4 | 0" };
 
+            var route1 = string.Join(";", result.Waypoints[0, 0]);
+            var route2 = string.Join(";", result.Waypoints[0, 1]);
+
+            Assert.IsTrue(possibleRoutes.Contains(route1));
+            Assert.IsTrue(possibleRoutes.Contains(route2));
+            Assert.AreNotEqual(route1, route2);
         }
 
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using IRuettae.WebApp.Models;
@@ -12,7 +13,7 @@ namespace IRuettae.WebApp.Controllers
 {
     public class AlgorithmController : Controller
     {
-        private static readonly HttpClient Client = new HttpClient() { BaseAddress = new Uri(Settings.Default.WebAPIBaseUrl) };
+        private static readonly HttpClient Client = new HttpClient() { BaseAddress = new Uri(Settings.Default.WebAPIBaseUrl), Timeout = TimeSpan.FromHours(1)};
         
         public ActionResult Index()
         {
@@ -30,12 +31,19 @@ namespace IRuettae.WebApp.Controllers
         }
 
         [HttpPost]
-        public string CalculateRoute(AlgorithmStarterVM asvm)
+        public async System.Threading.Tasks.Task<string> CalculateRouteAsync(AlgorithmStarterVM asvm)
         {
             asvm.Days = asvm.DaysPeriod.Select(p => (p.Start.Value, p.End.Value)).ToList();
-            Client.Timeout = TimeSpan.FromHours(10);
-            var result = Client.PostAsJsonAsync("api/algorithm/calculateroute", asvm).Result;
+//            Client.Timeout = TimeSpan.FromHours(10);
+            var result = await Client.PostAsJsonAsync("api/algorithm/StartRouteCalculation", asvm);
             return result.Content.ToString();
+        }
+
+        public async Task<ViewResult> RunningProcesses()
+        {
+            var result = await Client.GetAsync("api/algorithm/RouteCalculations");
+            var routeCalculations = JArray.Parse(result.Content.ReadAsStringAsync().Result).ToObject<RouteCalculationVM[]>();
+            return View(routeCalculations);
         }
     }
 }

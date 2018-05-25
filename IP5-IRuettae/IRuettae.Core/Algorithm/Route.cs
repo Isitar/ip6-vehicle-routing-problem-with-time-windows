@@ -17,6 +17,11 @@ namespace IRuettae.Core.Algorithm
             this.visit = visit;
             this.startTime = startTime;
         }
+
+        public override string ToString()
+        {
+            return $"{visit} | {startTime}";
+        }
     }
 
     public class Route
@@ -37,6 +42,8 @@ namespace IRuettae.Core.Algorithm
                 }
             }
         }
+
+        public double SolutionValue { get; set; }
 
         public override bool Equals(object obj)
         {

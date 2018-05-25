@@ -154,6 +154,7 @@
     </Compile>
     <Compile Include="Models\AlgorithmStarterVM.cs" />
     <Compile Include="Models\BreakVM.cs" />
+    <Compile Include="Models\RouteCalculationVM.cs" />
     <Compile Include="Models\ViewState.cs" />
     <Compile Include="Models\PeriodVM.cs" />
     <Compile Include="Models\SantaVM.cs" />
@@ -315,6 +316,7 @@
     <Content Include="Views\Santa\BreakForm.cshtml" />
     <Content Include="Views\Santa\DetailsBreakList.cshtml" />
     <Content Include="Views\Algorithm\Index.cshtml" />
+    <Content Include="Views\Algorithm\RunningProcesses.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\logs\" />

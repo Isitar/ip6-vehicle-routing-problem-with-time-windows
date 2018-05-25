@@ -52,9 +52,10 @@ namespace IRuettae.ConsoleApp
             {
                 var sw = Stopwatch.StartNew();
 
-                Starter.Optimise(solverInputData);
+                var route = Starter.Optimise(solverInputData);
                 sw.Stop();
                 ConsoleExt.WriteLine($"{i}/{numberOfRuns}: Elapsed s: {sw.ElapsedMilliseconds / 1000}", OutputColor);
+                ConsoleExt.WriteLine($"SolutionVal: {route.SolutionValue}", ConsoleColor.Yellow);
             }
         }
 
