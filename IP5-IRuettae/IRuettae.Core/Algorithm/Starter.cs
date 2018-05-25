@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using IRuettae.Core.Algorithm.TimeSlicing;
-using IRuettae.Core.Algorithm.TimeSlicing.Detail;
-using IRuettae.Core.Algorithm.TimeSlicing.TargetFunctionBuilders;
+using IRuettae.Core.Algorithm.Scheduling;
+using IRuettae.Core.Algorithm.Scheduling.Detail;
+using IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders;
 
 namespace IRuettae.Core.Algorithm
 {
@@ -19,8 +19,8 @@ namespace IRuettae.Core.Algorithm
                 case SolverInputData sid:
                     solver = new Solver(sid, TargetFunctionBuilderFactory.Create(builderType));
                     break;
-                case NoTimeSlicing.SolverInputData sid:
-                    solver = new NoTimeSlicing.Solver(sid, NoTimeSlicing.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(builderType));
+                case Clustering.SolverInputData sid:
+                    solver = new Clustering.Solver(sid, Clustering.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(builderType));
                     break;
                 default:
                     throw new ArgumentException("SolverInputData not recognized");
@@ -53,8 +53,8 @@ namespace IRuettae.Core.Algorithm
                 case SolverInputData sid:
                     solver = new Solver(sid, TargetFunctionBuilderFactory.Create(builderType));
                     break;
-                case NoTimeSlicing.SolverInputData sid:
-                    solver = new NoTimeSlicing.Solver(sid, NoTimeSlicing.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(builderType));
+                case Clustering.SolverInputData sid:
+                    solver = new Clustering.Solver(sid, Clustering.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(builderType));
                     break;
                 default:
                     throw new ArgumentException("SolverInputData not recognized");

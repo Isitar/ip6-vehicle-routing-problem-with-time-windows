@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Web.Hosting;
 using System.Web.Http;
 using IRuettae.Core.Algorithm;
@@ -39,7 +41,7 @@ namespace IRuettae.WebApi.Controllers
                     return a.Id.CompareTo(b.Id);
                 });
 
-                var solverVariableBuilder = new SolverVariableBuilder(algorithmStarter.TimeSliceDuration)
+                var solverVariableBuilder = new SolverVariableBuilderScheduling(algorithmStarter.TimeSliceDuration)
                 {
                     Visits = visits,
                     Santas = dbSession.Query<Santa>().ToList(),
@@ -91,7 +93,7 @@ namespace IRuettae.WebApi.Controllers
                     return a.Id.CompareTo(b.Id);
                 });
 
-                var solverVariableBuilder = new SolverVariableBuilder(algorithmStarter.TimeSliceDuration)
+                var solverVariableBuilder = new SolverVariableBuilderScheduling(algorithmStarter.TimeSliceDuration)
                 {
                     Visits = visits,
                     Santas = dbSession.Query<Santa>().ToList(),
@@ -120,88 +122,85 @@ namespace IRuettae.WebApi.Controllers
             return null;
         }
 
-
-        [HttpGet]
-        [Route("ExecuteNewAlgorithm")]
-        public IEnumerable<string> ExecuteNewAlgorithm(int n_visits)
+        /// <summary>
+        /// Starts a new route calculation job
+        /// </summary>
+        /// <param name="algorithmStarter"></param>
+        /// <returns>the id of the route calcluation job</returns>
+        [HttpPost]
+        [Route("StartRouteCalculation")]
+        public long StartRouteCalculation([FromBody]AlgorithmStarter algorithmStarter)
         {
-            var algorithmStarter = new AlgorithmStarter
-            {
-                Year = 2017,
-                Beta0 = 15,
-                Days = new List<(DateTime, DateTime)>()
-                {
-                    (new DateTime(2017,12,8,17,0,0), new DateTime(2017,12,8,22,0,0)),
-                    (new DateTime(2017,12,9,17,0,0), new DateTime(2017,12,9,22,0,0))
-                },
-                StarterId = 12,
-                TimePerChild = 5,
-            };
-            Core.Algorithm.NoTimeSlicing.SolverInputData solverInputData;
 
+            RouteCalculation rc;
+            var bgWorker = new BackgroundWorker();
+
+            List<Santa> santas;
+            List<Visit> visits;
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
-                var visits = new List<Visit>();
-                visits = dbSession.Query<Visit>().Take(n_visits).ToList();
-                visits.ForEach(v => v.Duration = 60 * (v.NumberOfChildren * algorithmStarter.TimePerChild + algorithmStarter.Beta0));
-                visits.Sort((a, b) =>
+
+                santas = dbSession.Query<Santa>().ToList();
+
+                visits = dbSession.Query<Visit>()
+                   .Where(v => v.Year == algorithmStarter.Year || v.Id == algorithmStarter.StarterId)
+                   .ToList();
+
+
+                rc = new RouteCalculation
                 {
-                    if (a.Id == algorithmStarter.StarterId)
-                    {
-                        return -1;
-                    }
-
-                    if (b.Id == algorithmStarter.StarterId)
-                    {
-                        return 1;
-                    }
-                    return a.Id.CompareTo(b.Id);
-                });
-
-                var test = string.Join(";", visits.Select(v => v.Id));
-
-                var solverVariableBuilder = new SolverVariableBuilderNoTimeSlicing
-                {
-                    Visits = visits,
-                    Santas = dbSession.Query<Santa>().ToList(),
-                    Days = algorithmStarter.Days
+                    Days = algorithmStarter.Days,
+                    NumberOfSantas = santas.Count,
+                    NumberOfVisits = visits.Count,
+                    SantaJson = System.Web.Helpers.Json.Encode(santas),
+                    VisitsJson = System.Web.Helpers.Json.Encode(visits),
+                    StarterVisitId = algorithmStarter.StarterId,
+                    State = RouteCalculationState.Creating,
+                    TimePerChild = algorithmStarter.TimePerChild,
+                    TimePerChildOffset = algorithmStarter.Beta0,
+                    TimeSliceDuration = algorithmStarter.TimeSliceDuration,
+                    Year = algorithmStarter.Year,
+                    ClusteringOptimisationFunction = ClusteringOptimisationGoals.OverallMinTime
                 };
-
-                solverInputData = solverVariableBuilder.Build();
-                solverInputData.VisitNames = visits.Select(v => $"{v.Street} {v.Zip} {v.City}").ToArray();
+                rc = dbSession.Merge(rc);
             }
 
-            var serialPath = HostingEnvironment.MapPath($"~/App_Data/SolverInputNew{n_visits}Visits.serial");
-            using (var stream = File.Open(serialPath, FileMode.Create))
-            {
-                new BinaryFormatter().Serialize(stream, solverInputData);
-            }
-
-            var mpsPath = HostingEnvironment.MapPath($"~/App_Data/MPS_{n_visits}Visits_new.mps");
-            Starter.SaveMps(mpsPath,solverInputData);
-
-            var sw = Stopwatch.StartNew();
-            var routeResult = Starter.Optimise(solverInputData, MIP_GAP: 0.5);
-            sw.Stop();
-            var routes = routeResult.Waypoints
-                .Cast<List<Waypoint>>()
-                .Select(wp => wp.Aggregate("",
-                    (carry, n) => carry + Environment.NewLine + solverInputData.VisitNames[n.visit]))
-                .ToList();
+            return rc.Id;
 
 
-            var ctr = 0;
-            foreach (var route in routes)
-            {
-                File.WriteAllText(HostingEnvironment.MapPath($"~/App_Data/R{ctr}_{0.5}.csv"), $"Address{Environment.NewLine}{route}");
-                //ConsoleExt.WriteLine(ctr.ToString(), ResultColor);
-                //ConsoleExt.WriteLine(route, ResultColor);
-                ctr++;
-            }
 
 
-            Debug.WriteLine("Elapsed ms: " + sw.ElapsedMilliseconds);
-            return routes;
+            //var serialPath = HostingEnvironment.MapPath($"~/App_Data/SolverInputNew{n_visits}Visits.serial");
+            //using (var stream = File.Open(serialPath, FileMode.Create))
+            //{
+            //    new BinaryFormatter().Serialize(stream, solverInputData);
+            //}
+
+            //var mpsPath = HostingEnvironment.MapPath($"~/App_Data/MPS_{n_visits}Visits_new.mps");
+            //Starter.SaveMps(mpsPath, solverInputData);
+
+            //var sw = Stopwatch.StartNew();
+            //var routeResult = Starter.Optimise(solverInputData, MIP_GAP: 0.5);
+            //sw.Stop();
+            //var routes = routeResult.Waypoints
+            //    .Cast<List<Waypoint>>()
+            //    .Select(wp => wp.Aggregate("",
+            //        (carry, n) => carry + Environment.NewLine + solverInputData.VisitNames[n.visit]))
+            //    .ToList();
+
+
+            //var ctr = 0;
+            //foreach (var route in routes)
+            //{
+            //    File.WriteAllText(HostingEnvironment.MapPath($"~/App_Data/R{ctr}_{0.5}.csv"), $"Address{Environment.NewLine}{route}");
+            //    //ConsoleExt.WriteLine(ctr.ToString(), ResultColor);
+            //    //ConsoleExt.WriteLine(route, ResultColor);
+            //    ctr++;
+            //}
+
+
+            //Debug.WriteLine("Elapsed ms: " + sw.ElapsedMilliseconds);
+            //return routes;
         }
     }
 }

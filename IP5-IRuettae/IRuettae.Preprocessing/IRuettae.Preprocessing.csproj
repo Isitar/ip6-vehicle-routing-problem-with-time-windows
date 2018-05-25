@@ -56,8 +56,8 @@
     <Compile Include="CSVImport\Import.cs" />
     <Compile Include="CSVImport\ImportModel.cs" />
     <Compile Include="CSVImport\Period.cs" />
-    <Compile Include="Mapping\SolverVariableBuilderNoTimeSlicing.cs" />
-    <Compile Include="Mapping\SolverVariableBuilder.cs" />
+    <Compile Include="Mapping\SolverVariableBuilderClustering.cs" />
+    <Compile Include="Mapping\SolverVariableBuilderScheduling.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

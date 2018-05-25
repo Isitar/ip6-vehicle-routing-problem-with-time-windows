@@ -7,7 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.Algorithm;
-using SolverInputData = IRuettae.Core.Algorithm.NoTimeSlicing.SolverInputData;
+using SolverInputData = IRuettae.Core.Algorithm.Clustering.SolverInputData;
 
 namespace IRuettae.ConsoleApp
 {
@@ -112,7 +112,14 @@ namespace IRuettae.ConsoleApp
                 10,
                 //10
             };
-            var solverInputData = new SolverInputData(santas, visitsDuration, visits, distances, dayDuration);
+
+            var santaBreaks = new int[numberOfSantas][]
+            {
+                new int[] {},
+                new int[] {}
+            };
+
+            var solverInputData = new SolverInputData(santas, visitsDuration, visits, distances, dayDuration, santaBreaks);
             Starter.Optimise(solverInputData);
 
         }

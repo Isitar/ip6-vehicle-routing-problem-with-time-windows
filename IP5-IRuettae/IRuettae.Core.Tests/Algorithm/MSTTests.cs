@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.Algorithm;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SolverInputData = IRuettae.Core.Algorithm.NoTimeSlicing.SolverInputData;
+using SolverInputData = IRuettae.Core.Algorithm.Clustering.SolverInputData;
 
 namespace IRuettae.Core.Tests.Algorithm
 {
@@ -43,7 +43,7 @@ namespace IRuettae.Core.Tests.Algorithm
 
             int[] dayDuration = new int[1] { 17 };
 
-            var solverInputData = new SolverInputData(santas, visitsDuration, visitStates, distances, dayDuration);
+            var solverInputData = new SolverInputData(santas, visitsDuration, visitStates, distances, dayDuration, null);
             var result = Starter.Optimise(solverInputData);
             Assert.IsNotNull(result);
             Assert.AreEqual(5, result.Waypoints[0, 0].Count);
@@ -95,7 +95,7 @@ namespace IRuettae.Core.Tests.Algorithm
 
             int[] dayDuration = new int[numberOfDays] { 17, 17 };
 
-            var solverInputData = new SolverInputData(santas, visitsDuration, visitStates, distances, dayDuration);
+            var solverInputData = new SolverInputData(santas, visitsDuration, visitStates, distances, dayDuration, null);
             var result = Starter.Optimise(solverInputData);
             Assert.IsNotNull(result);
             //Assert.AreEqual(5, result.Waypoints[0, 0].Count);

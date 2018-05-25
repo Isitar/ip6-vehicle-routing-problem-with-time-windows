@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Google.OrTools.LinearSolver;
-using IRuettae.Core.Algorithm.TimeSlicing.Detail;
-using IRuettae.Core.Algorithm.TimeSlicing.TargetFunctionBuilders;
+using IRuettae.Core.Algorithm.Scheduling.Detail;
+using IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders;
 using GLS = Google.OrTools.LinearSolver;
 
 namespace IRuettae.Core.Algorithm.RouteDistribution
