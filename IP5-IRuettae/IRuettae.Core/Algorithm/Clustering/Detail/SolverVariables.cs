@@ -5,7 +5,7 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
     internal class SolverVariables
     {
         /// <summary>
-        /// [Santa,Visit] if santa visits this visit
+        /// [Santa,Visit] if santa visits this Visit
         /// </summary>
         public GLS.Variable[,] SantaVisit { get; set; }
 

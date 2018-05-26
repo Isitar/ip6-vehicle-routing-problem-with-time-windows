@@ -63,7 +63,7 @@ namespace IRuettae.ConsoleApp
                 var routes = routeResult.Waypoints
                                 .Cast<List<Waypoint>>()
                                 .Select(wp => wp.Aggregate("",
-                                    (carry, n) => carry + Environment.NewLine + solverInputData.VisitNames[n.visit]));
+                                    (carry, n) => carry + Environment.NewLine + solverInputData.VisitNames[n.Visit]));
 
 
                 int ctr = 0;

@@ -10,22 +10,22 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
     internal class SolverVariables
     {
         /// <summary>
-        /// [day][santa][visit,timeslice] is visiting
+        /// [day][santa][Visit,timeslice] is visiting
         /// </summary>
         public GLS.Variable[][][,] VisitsPerSanta { get; set; }
 
         /// <summary>
-        /// [day][visit,timeslice] is beeing visited by any santa
+        /// [day][Visit,timeslice] is beeing visited by any santa
         /// </summary>
         public GLS.Variable[][,] Visits { get; set; }
 
         /// <summary>
-        /// [santa,visit] is santa visiting visit
+        /// [santa,Visit] is santa visiting Visit
         /// </summary>
         public GLS.Variable[,] SantaVisits { get; set; }
 
         ///// <summary>
-        ///// [day][santa,visit] is santa visiting visit on day
+        ///// [day][santa,Visit] is santa visiting Visit on day
         ///// </summary>
         //public GLS.Variable[][,] SantaDayVisit { get; set; }
 
@@ -35,7 +35,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
         public GLS.Variable[][,] Santas { get; set; }
 
         /// <summary>
-        /// [day][visit][timeslice] is this the time when the visit starts
+        /// [day][Visit][timeslice] is this the time when the Visit starts
         /// </summary>
         public GLS.Variable[][][] VisitStart { get; set; }
 

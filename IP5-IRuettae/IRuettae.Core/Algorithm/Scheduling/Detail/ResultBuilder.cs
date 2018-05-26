@@ -21,7 +21,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
             {
                 for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
                 {
-                    Waypoint? nextLocation = new Waypoint(0, -1);
+                    Waypoint? nextLocation = new Waypoint(0, -1, solverData.Input.VisitIds[0]);
                     nextLocation = GetNextLocation(day, santa, nextLocation.Value);
                     if (!nextLocation.HasValue)
                     {
@@ -31,8 +31,8 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
 
                     // create way from home
                     {
-                        var distance = solverData.Input.Distances[solverData.StartEndPoint, nextLocation.Value.visit];
-                        nextLocation = new Waypoint(0, nextLocation.Value.startTime - distance - 1);
+                        var distance = solverData.Input.Distances[solverData.StartEndPoint, nextLocation.Value.Visit];
+                        nextLocation = new Waypoint(0, nextLocation.Value.StartTime - distance - 1, solverData.Input.VisitIds[0]);
                     }
 
                     do
@@ -44,9 +44,9 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
                     // append way back home
                     {
                         var last = route.Waypoints[santa, day].LastOrDefault();
-                        var duration = solverData.Input.VisitsDuration[last.visit];
-                        var distance = solverData.Input.Distances[last.visit, solverData.StartEndPoint];
-                        route.Waypoints[santa, day].Add(new Waypoint(0, last.startTime + duration + distance));
+                        var duration = solverData.Input.VisitsDuration[last.Visit];
+                        var distance = solverData.Input.Distances[last.Visit, solverData.StartEndPoint];
+                        route.Waypoints[santa, day].Add(new Waypoint(0, last.StartTime + duration + distance, solverData.Input.VisitIds[0]));
                     }
                 }
             }
@@ -59,19 +59,19 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
 
         private Waypoint? GetNextLocation(int day, int santa, Waypoint value)
         {
-            int nextPossibleStart = value.startTime + Math.Max(1, solverData.Input.VisitsDuration[value.visit]);
+            int nextPossibleStart = value.StartTime + Math.Max(1, solverData.Input.VisitsDuration[value.Visit]);
             for (int timeslice = nextPossibleStart; timeslice < solverData.SlicesPerDay[day]; timeslice++)
             {
                 for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
                 {
-                    if (visit == value.visit)
+                    if (visit == value.Visit)
                     {
                         continue;
                     }
 
                     if (solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice].SolutionValue() == 1)
                     {
-                        return new Waypoint(visit, timeslice);
+                        return new Waypoint(visit, timeslice, solverData.Input.VisitIds[visit]);
                     }
                 }
             }

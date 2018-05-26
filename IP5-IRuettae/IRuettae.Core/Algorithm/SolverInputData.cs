@@ -15,12 +15,12 @@ namespace IRuettae.Core.Algorithm
         public bool[][,] Santas { get; }
 
         /// <summary>
-        /// [visit] duration in timeslices
+        /// [Visit] duration in timeslices
         /// </summary>
         public int[] VisitsDuration { get; }
 
         /// <summary>
-        /// [day][visit,timeslice] is available
+        /// [day][Visit,timeslice] is available
         /// </summary>
         public VisitState[][,] Visits { get; }
 
@@ -30,12 +30,15 @@ namespace IRuettae.Core.Algorithm
         public int[,] Distances { get; }
 
 
-        public SolverInputData(bool[][,] santas, int[] visitsDuration, VisitState[][,] visits, int[,] distances)
+        public long[] VisitIds { get; }
+
+        public SolverInputData(bool[][,] santas, int[] visitsDuration, VisitState[][,] visits, int[,] distances, long[] visitIds)
         {
             Santas = santas;
             VisitsDuration = visitsDuration;
             Visits = visits;
             Distances = distances;
+            VisitIds = visitIds;
         }
 
         public bool IsValid()

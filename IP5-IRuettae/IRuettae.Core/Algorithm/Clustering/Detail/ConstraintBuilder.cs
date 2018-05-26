@@ -41,19 +41,22 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
 
         private void SantaBreaks()
         {
-            if (solverData.SolverInputData.SantaBreaks == null) { return; }
-            foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
-            {
-                int realSantaId = santa / solverData.SolverInputData.Santas.GetLength(1);
-                var santaBreaks = solverData.SolverInputData.SantaBreaks[realSantaId];
-                if (santaBreaks.Length > 0)
-                {
-                    foreach (var santaBreak in santaBreaks)
-                    {
-                        Solver.Add(solverData.Variables.SantaVisit[santa, santaBreak] == 1 * solverData.Variables.SantaVisit[santa, 0]);
-                    }
-                }
-            }
+            return;
+            // todo: handle mutiple days santabreak
+            //if (solverData.SolverInputData.SantaBreaks == null) { return; }
+
+            //foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
+            //{
+            //    int realSantaId = santa / solverData.SolverInputData.Santas.GetLength(1);
+            //    var santaBreaks = solverData.SolverInputData.SantaBreaks[realSantaId];
+            //    if (santaBreaks.Length > 0)
+            //    {
+            //        foreach (var santaBreak in santaBreaks)
+            //        {
+            //            Solver.Add(solverData.Variables.SantaVisit[santa, santaBreak] == 1 * solverData.Variables.SantaVisit[santa, 0]);
+            //        }
+            //    }
+            //}
         }
 
         private void SantaTimeConstraint()
@@ -388,7 +391,7 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
         {
 
             var santaBreaks = solverData.SolverInputData.SantaBreaks;
-            // 1 because start visit is visited by multiple santas
+            // 1 because start Visit is visited by multiple santas
             for (var visit = 1; visit < solverData.NumberOfVisits; visit++)
             {
                 var isBreak = false;
@@ -399,23 +402,24 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
                     visitVisited += solverData.Variables.SantaVisit[santa, visit];
                 }
 
-                if (santaBreaks != null)
-                {
-                    // if it's a break, it only needs to be visited if santa is used
-                    for (var breakSanta = 0; breakSanta < santaBreaks.Length; breakSanta++)
-                    {
-                        if (santaBreaks[breakSanta].Contains(visit))
-                        {
-                            isBreak = true;
-                            Solver.Add(visitVisited == 1 * solverData.Variables.SantaVisit[breakSanta, 0]);
-                        }
-                    }
-                }
+                //todo: handle mutiple days santa break
+                //if (santaBreaks != null)
+                //{
+                //    // if it's a break, it only needs to be visited if santa is used
+                //    for (var breakSanta = 0; breakSanta < santaBreaks.Length; breakSanta++)
+                //    {
+                //        if (santaBreaks[breakSanta].Contains(Visit))
+                //        {
+                //            isBreak = true;
+                //            Solver.Add(visitVisited == 1 * solverData.Variables.SantaVisit[breakSanta, 0]);
+                //        }
+                //    }
+                //}
 
-                if (!isBreak)
-                {
+                //if (!isBreak)
+                //{
                     Solver.Add(visitVisited == 1);
-                }
+                //}
             }
         }
     }

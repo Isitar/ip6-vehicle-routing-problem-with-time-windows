@@ -5,22 +5,25 @@ namespace IRuettae.Core.Algorithm
 {
     public struct Waypoint
     {
-        public int visit;
+        public int Visit;
 
         /// <summary>
         /// in timeslice
         /// </summary>
-        public int startTime;
+        public int StartTime;
 
-        public Waypoint(int visit, int startTime)
+        public long RealVisitId;
+
+        public Waypoint(int visit, int startTime, long realVisitId)
         {
-            this.visit = visit;
-            this.startTime = startTime;
+            Visit = visit;
+            StartTime = startTime;
+            RealVisitId = realVisitId;
         }
 
         public override string ToString()
         {
-            return $"{visit} | {startTime}";
+            return $"{Visit} | {StartTime}";
         }
     }
 
@@ -89,7 +92,7 @@ namespace IRuettae.Core.Algorithm
                     str += $"Visit | StartTime{System.Environment.NewLine}";
                     if (Waypoints[santa, day].Count > 0)
                     {
-                        str += Waypoints[santa, day].Select(w => $"{w.visit,6}| {w.startTime,6}").Aggregate((a, v) => a + System.Environment.NewLine + v);
+                        str += Waypoints[santa, day].Select(w => $"{w.Visit,6}| {w.StartTime,6}").Aggregate((a, v) => a + System.Environment.NewLine + v);
                     }
                     str += System.Environment.NewLine;
                 }

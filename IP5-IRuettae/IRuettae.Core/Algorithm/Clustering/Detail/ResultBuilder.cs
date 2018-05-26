@@ -25,12 +25,12 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
                 foreach (var day in Enumerable.Range(0, realNumberOfDays))
                 {
                     var waypoints = new List<Waypoint>();
-                    
+
                     foreach (var visit in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
                         if (Math.Abs(solverData.Variables.SantaVisit[day * realNumberOfSantas + santa, visit].SolutionValue() - 1) < 0.0001)
                         {
-                            waypoints.Add(new Waypoint(visit, 0));
+                            waypoints.Add(new Waypoint(visit, 0, solverData.SolverInputData.VisitIds[visit]));
                         }
                     }
 

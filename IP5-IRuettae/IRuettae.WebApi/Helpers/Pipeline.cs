@@ -39,21 +39,6 @@ namespace IRuettae.WebApi.Helpers
         {
             bgWorker = new BackgroundWorker();
             routeCalculation = dbSession.Merge(routeCalculation);
-            var eventTextWriter = new EventTextWriter();
-            var lastUpdate = DateTime.Now;
-            eventTextWriter.CharWritten += (o, c) =>
-            {
-                routeCalculation.StateText.Append(c);
-                if (DateTime.Now - lastUpdate > TimeSpan.FromMinutes(1))
-                {
-                    lastUpdate = DateTime.Now;
-                    dbSession.Update(routeCalculation);
-                    dbSession.Flush();
-                }
-            };
-            Console.SetOut(eventTextWriter);
-            Console.SetError(eventTextWriter);
-
             bgWorker.DoWork += (sender, args) =>
             {
 
@@ -90,21 +75,26 @@ namespace IRuettae.WebApi.Helpers
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
                 
-                var eventTextWriter2 = new EventTextWriter();
-                var lastUpdate2 = DateTime.Now;
+                var eventTextWriter = new EventTextWriter();
+                var lastUpdate = DateTime.Now;
                 eventTextWriter.CharWritten += (o, c) =>
                 {
-                    routeCalculation.StateText.Append(c);
+                    if (null == routeCalculation.StateText)
+                    {
+                        routeCalculation.StateText = string.Empty;
+                    }
+
+                    routeCalculation.StateText += c;
                     if (DateTime.Now - lastUpdate > TimeSpan.FromMinutes(1))
                     {
-                        lastUpdate2 = DateTime.Now;
+                        lastUpdate = DateTime.Now;
                         dbSession.Update(routeCalculation);
                         dbSession.Flush();
                     }
                 };
 
-                Console.SetOut(eventTextWriter2);
-                Console.SetError(eventTextWriter2);
+                Console.SetOut(eventTextWriter);
+                Console.SetError(eventTextWriter);
                 
 
                 // ******************************
@@ -132,10 +122,14 @@ namespace IRuettae.WebApi.Helpers
                         : TargetBuilderType.MinTimeOnly;
 #if DEBUG
                 var serialPath = HostingEnvironment.MapPath($"~/App_Data/ClusteringSolverInput{routeCalculation.NumberOfVisits}Visits.serial");
-                using (var stream = File.Open(serialPath, FileMode.Create))
+                if (serialPath != null)
                 {
-                    new BinaryFormatter().Serialize(stream, clusteringSolverInputData);
+                    using (var stream = File.Open(serialPath, FileMode.Create))
+                    {
+                        new BinaryFormatter().Serialize(stream, clusteringSolverInputData);
+                    }
                 }
+
                 var mpsPath = HostingEnvironment.MapPath($"~/App_Data/Clustering_{routeCalculation.NumberOfVisits}.mps");
                 Starter.SaveMps(mpsPath, clusteringSolverInputData, targetType);
 #endif
@@ -147,14 +141,14 @@ namespace IRuettae.WebApi.Helpers
 
                 var clusteredRoutes = phase1Result.Waypoints
                     .Cast<List<Waypoint>>()
-                    .Select(wp => wp.Aggregate("", (carry, n) => carry + Environment.NewLine + clusteringSolverInputData.VisitNames[n.visit]));
+                    .Select(wp => wp.Aggregate("", (carry, n) => carry + Environment.NewLine + $"[{n.RealVisitId} {clusteringSolverInputData.VisitNames[n.Visit]}]"));
 
                 routeCalculation.ClusteringResult = "";
                 var sb = new StringBuilder();
                 var ctr = 0;
                 foreach (var route in clusteredRoutes)
                 {
-                    sb.AppendLine(ctr.ToString());
+                    sb.AppendLine($"Route {ctr.ToString()}:");
                     sb.AppendLine(route);
                     ctr++;
                 }
@@ -178,7 +172,7 @@ namespace IRuettae.WebApi.Helpers
                         schedulingSovlerVariableBuilders.Add(
                             new SchedulingSolverVariableBuilder(routeCalculation.TimeSliceDuration,
                                 new List<Santa> { santas[santa] },
-                                visits.Where(v => cluster.Select(w => clusteringSolverInputData.VisitIds[w.visit]).Contains(v.Id)).ToList(),
+                                visits.Where(v => cluster.Select(w => w.RealVisitId).Contains(v.Id)).ToList(),
                                 new List<(DateTime, DateTime)> { routeCalculation.Days[day] }
                             )
                         );
@@ -190,10 +184,9 @@ namespace IRuettae.WebApi.Helpers
                 routeCalculation.State = RouteCalculationState.RunningPhase2;
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
-                var inputData = schedulingSovlerVariableBuilders.Where(vb => vb.Visits.Count > 0).Select(vb => vb.Build()).ToList();
+                var inputData = schedulingSovlerVariableBuilders.Where(vb => vb.Visits.Count > 1).Select(vb => vb.Build()).ToList();
 
                 var routeResults = inputData
-                    .Where(id => id.Visits.Length > 0)
                     .Select(id => Starter.Optimise(id, TargetBuilderType.Default, routeCalculation.SchedulingMipGap)).ToList();
 
                 routeCalculation.SchedulingResult = Json.Encode(routeResults);

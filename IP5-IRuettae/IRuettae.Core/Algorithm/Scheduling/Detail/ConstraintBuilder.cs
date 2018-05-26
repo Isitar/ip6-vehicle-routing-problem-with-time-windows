@@ -76,7 +76,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
         }
 
         /// <summary>
-        /// Santa 0 should visit Visit 1
+        /// Santa 0 should Visit Visit 1
         /// </summary>
         private void CreateSanta0VisitsVisit1Constraint()
         {
@@ -103,7 +103,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
         private void CreateSantaEnRouteConstraint()
         {
             // santa is walking between visits
-            // means, santa is walking if there is at least one visit before and at least one after
+            // means, santa is walking if there is at least one Visit before and at least one after
             for (int day = 0; day < solverData.NumberOfDays; day++)
             {
                 for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
@@ -122,7 +122,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
                 }
             }
 
-            // set all fields in SantaEnRoute, when santa visits visit
+            // set all fields in SantaEnRoute, when santa visits Visit
             // see GetSumOfEnRoute for further explanation
             for (int day = 0; day < solverData.NumberOfDays; day++)
             {
@@ -142,11 +142,11 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
         }
 
         /// <summary>
-        /// The the sum of all fields in SantaEnRoute that must be set, if santa visits the given visit
+        /// The the sum of all fields in SantaEnRoute that must be set, if santa visits the given Visit
         /// A field in SantaEnRoute must be set if:
-        /// - Santa is visiting visit
-        /// - Santa is busy walking from home to visit
-        /// - Santa is busy walking from visit to home
+        /// - Santa is visiting Visit
+        /// - Santa is busy walking from home to Visit
+        /// - Santa is busy walking from Visit to home
         /// </summary>
         /// <param name="day"></param>
         /// <param name="santa"></param>
@@ -167,7 +167,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
         }
 
         /// <summary>
-        /// Create a variable, which has the value true, if there is at least one visit in the given range
+        /// Create a variable, which has the value true, if there is at least one Visit in the given range
         /// </summary>
         /// <param name="day"></param>
         /// <param name="santa"></param>
@@ -269,7 +269,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
         }
 
         /// <summary>
-        /// A visit has to be in one piece
+        /// A Visit has to be in one piece
         /// </summary>
         private void CreateSingleVisitConstraint()
         {
@@ -306,7 +306,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
         }
 
         /// <summary>
-        /// A visit has to be in one piece
+        /// A Visit has to be in one piece
         /// </summary>
         private void CreateSingleVisitConstraintV2()
         {
@@ -328,7 +328,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
                         var t1 = solverData.Variables.Visits[day][visit, timeslice + 1];
 
 
-                        // special case if the visit starts at timeslice 0
+                        // special case if the Visit starts at timeslice 0
                         if (timeslice == 0)
                         {
                             var start0 = solverData.Variables.VisitStart[day][visit][timeslice];
@@ -459,8 +459,8 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
 
                         for (int day = 0; day < solverData.NumberOfDays; day++)
                         {
-                            // since we're in bidirectional space, you can not visit B if a -> b > #timeslices
-                            // but you can visit B if b->a < #timeslices
+                            // since we're in bidirectional space, you can not Visit B if a -> b > #timeslices
+                            // but you can Visit B if b->a < #timeslices
                             // --> add constraint to dissalow future use of B
 
                             int slicesPerDay = solverData.SlicesPerDay[day];
@@ -536,8 +536,8 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
 
                         for (int day = 0; day < solverData.NumberOfDays; day++)
                         {
-                            // since we're in bidirectional space, you can not visit B if a -> b > #timeslices
-                            // but you can visit B if b->a < #timeslices
+                            // since we're in bidirectional space, you can not Visit B if a -> b > #timeslices
+                            // but you can Visit B if b->a < #timeslices
                             // --> add constraint to dissalow future use of B
 
                             int slicesPerDay = solverData.SlicesPerDay[day];
@@ -585,7 +585,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
 
         /// <summary>
         /// Santas are not able to beam and therefore,
-        /// it needs a certain time to get from one visit to another
+        /// it needs a certain time to get from one Visit to another
         /// except if distance is 0
         /// </summary>
         private void CreateSantaNeedTimeBetweenVisitsConstraintBigM()
@@ -770,7 +770,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
         }
 
         /// <summary>
-        /// Each Visit is visited by a Santa, if Santa is there at at least one visit-timeslice
+        /// Each Visit is visited by a Santa, if Santa is there at at least one Visit-timeslice
         /// </summary>
         private void CreateSantaVisitsConstraint()
         {
@@ -798,7 +798,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
         }
 
         /// <summary>
-        /// Each visit must be overall visited the right number of timeslices
+        /// Each Visit must be overall visited the right number of timeslices
         /// </summary>
         private void CreateVisitOverallLengthConstraint()
         {
@@ -821,7 +821,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
         }
 
         /// <summary>
-        /// Each visit must made (exactly once)
+        /// Each Visit must made (exactly once)
         /// </summary>
         private void CreateVisitOverallLengthConstraintV2()
         {

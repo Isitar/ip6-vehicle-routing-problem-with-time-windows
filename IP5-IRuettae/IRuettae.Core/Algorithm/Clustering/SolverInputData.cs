@@ -11,12 +11,12 @@ namespace IRuettae.Core.Algorithm.Clustering
         public bool[,] Santas { get; }
 
         /// <summary>
-        /// [visit] duration in time unit
+        /// [Visit] duration in time unit
         /// </summary>
         public int[] VisitsDuration { get; }
 
         /// <summary>
-        /// [day,visit] is available
+        /// [day,Visit] is available
         /// </summary>
         public VisitState[,] Visits { get; }
 
@@ -32,7 +32,7 @@ namespace IRuettae.Core.Algorithm.Clustering
 
         /// <summary>
         /// Breaks for this santa
-        /// [santa] [visit,visit,visit]
+        /// [santa] [Visit,Visit,Visit]
         /// </summary>
         public int[][] SantaBreaks { get; }
 
@@ -48,12 +48,12 @@ namespace IRuettae.Core.Algorithm.Clustering
 
 
         /// <summary>
-        /// [visit] name
+        /// [Visit] name
         /// </summary>
         public string[] VisitNames { get; set; }
 
         /// <summary>
-        /// [visit] id
+        /// [Visit] id
         /// </summary>
         public long[] VisitIds{ get; set; }
     }
