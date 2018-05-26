@@ -121,6 +121,12 @@
         <td>
             @Html.DisplayFor(modelItem => item.EndTime)
         </td>
+        <td>
+            <a href="@Url.Action("Result",new {id=item.Id})">
+                <i class="fa fa-eye"></i>
+                @*Details*@
+            </a>
+        </td>
     </tr>
 }
 

@@ -9,6 +9,7 @@ namespace IRuettae.WebApp.Models
 {
     public class RouteCalculationVM
     {
+        public virtual long Id { get; set; }
         // starter Properties
         [DisplayName("Startzeit")]
         public virtual DateTime StartTime { get; set; }
