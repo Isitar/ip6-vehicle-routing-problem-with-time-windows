@@ -89,7 +89,7 @@
     <Compile Include="Algorithm\ResultState.cs" />
     <Compile Include="Algorithm\Route.cs" />
     <Compile Include="Algorithm\Clustering\SolverInputData.cs" />
-    <Compile Include="Algorithm\SolverInputData.cs" />
+    <Compile Include="Algorithm\Scheduling\SolverInputData.cs" />
     <Compile Include="Algorithm\Starter.cs" />
     <Compile Include="Algorithm\TargetBuilderType.cs" />
     <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\TargetType.cs" />

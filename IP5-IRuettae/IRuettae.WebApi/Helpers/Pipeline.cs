@@ -13,7 +13,9 @@ using System.Web.Hosting;
 using IRuettae.Core.Algorithm;
 using IRuettae.Persistence.Entities;
 using IRuettae.Preprocessing.Mapping;
+using IRuettae.WebApi.Models;
 using IRuettae.WebApi.Persistence;
+using Newtonsoft.Json;
 using NHibernate;
 
 namespace IRuettae.WebApi.Helpers
@@ -74,7 +76,7 @@ namespace IRuettae.WebApi.Helpers
                 routeCalculation.State = RouteCalculationState.Ready;
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
-                
+
                 var eventTextWriter = new EventTextWriter();
                 var lastUpdate = DateTime.Now;
                 eventTextWriter.CharWritten += (o, c) =>
@@ -95,7 +97,7 @@ namespace IRuettae.WebApi.Helpers
 
                 Console.SetOut(eventTextWriter);
                 Console.SetError(eventTextWriter);
-                
+
 
                 // ******************************
                 #region Clustering
@@ -139,28 +141,32 @@ namespace IRuettae.WebApi.Helpers
                 // gets captured by eventwriter
                 Console.WriteLine($"{DateTime.Now}: Clustering done");
 
-                var clusteredRoutes = phase1Result.Waypoints
-                    .Cast<List<Waypoint>>()
-                    .Select(wp => wp.Aggregate("", (carry, n) => carry + Environment.NewLine + $"[{n.RealVisitId} {clusteringSolverInputData.VisitNames[n.Visit]}]"));
 
-                routeCalculation.ClusteringResult = "";
-                var sb = new StringBuilder();
-                var ctr = 0;
-                foreach (var route in clusteredRoutes)
+                var clusteredRoutesSb = new StringBuilder();
+                for (int santa = 0; santa < phase1Result.Waypoints.GetLength(0); santa++)
                 {
-                    sb.AppendLine($"Route {ctr.ToString()}:");
-                    sb.AppendLine(route);
-                    ctr++;
+                    for (int day = 0; day < phase1Result.Waypoints.GetLength(1); day++)
+                    {
+                        var wp = phase1Result.Waypoints[santa, day].Aggregate(string.Empty, (carry, n) => carry + Environment.NewLine + $"[{n.RealVisitId} {clusteringSolverInputData.VisitNames[n.Visit]}]");
+                        clusteredRoutesSb.Append($"Route Santa {santa} on {phase1Result.StartingTime[day]}");
+                        clusteredRoutesSb.AppendLine(wp);
+                        clusteredRoutesSb.AppendLine(new string('-', 20));
+                    }
                 }
+                //var clusteredRoutes = phase1Result.Waypoints
+                //    .Cast<List<Waypoint>>()
+                //    .Select(wp =>  wp.Aggregate("", (carry, n) => carry + Environment.NewLine + $"[{n.RealVisitId} {clusteringSolverInputData.VisitNames[n.Visit]}]"));
 
-                routeCalculation.ClusteringResult = sb.ToString();
-#endregion
+
+
+                routeCalculation.ClusteringResult = clusteredRoutesSb.ToString();
+                #endregion
 
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
 
                 // ******************************
-#region Scheduling
+                #region Scheduling
                 // ******************************
 
                 var schedulingSovlerVariableBuilders = new List<SchedulingSolverVariableBuilder>();
@@ -187,15 +193,22 @@ namespace IRuettae.WebApi.Helpers
                 var inputData = schedulingSovlerVariableBuilders.Where(vb => vb.Visits.Count > 1).Select(vb => vb.Build()).ToList();
 
                 var routeResults = inputData
-                    .Select(id => Starter.Optimise(id, TargetBuilderType.Default, routeCalculation.SchedulingMipGap)).ToList();
+                    .Select(schedulingInputdata => new SchedulingResult()
+                    {
+                        Route = Starter.Optimise(schedulingInputdata, TargetBuilderType.Default, routeCalculation.SchedulingMipGap),
+                        StartingTime = schedulingInputdata.DayStartingTimes[0]
+                    }).ToList();
 
-                routeCalculation.SchedulingResult = Json.Encode(routeResults);
+                routeCalculation.SchedulingResult = JsonConvert.SerializeObject(routeResults);
                 // gets captured by eventwriter
                 Console.WriteLine($"{DateTime.Now}: Scheduling done");
                 #endregion
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
 
+
+                //todo: add last step?
+                routeCalculation.Result = routeCalculation.SchedulingResult;
 
                 routeCalculation.EndTime = DateTime.Now;
                 dbSession.Update(routeCalculation);

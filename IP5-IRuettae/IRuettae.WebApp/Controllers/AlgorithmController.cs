@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using IRuettae.WebApp.Models;
 using IRuettae.WebApp.Properties;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace IRuettae.WebApp.Controllers
@@ -39,11 +40,18 @@ namespace IRuettae.WebApp.Controllers
             return result.Content.ToString();
         }
 
-        public async Task<ViewResult> RunningProcesses()
+        public async Task<ViewResult> Results()
         {
             var result = await Client.GetAsync("api/algorithm/RouteCalculations");
             var routeCalculations = JArray.Parse(result.Content.ReadAsStringAsync().Result).ToObject<RouteCalculationVM[]>();
             return View(routeCalculations);
+        }
+
+        public async Task<ViewResult> Result(long id)
+        {
+            var result = await Client.GetAsync("api/algorithm/RouteCalculationWaypoints?id=" + id);
+            var routeCalculationWaypointVms = JsonConvert.DeserializeObject<List<RouteCalculationWaypointVM[]>>(result.Content.ReadAsStringAsync().Result);
+            return View(routeCalculationWaypointVms);
         }
     }
 }

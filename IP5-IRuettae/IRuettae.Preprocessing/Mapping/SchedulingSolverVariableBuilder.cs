@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using IRuettae.Core.Algorithm;
+using IRuettae.Core.Algorithm.Scheduling;
 using IRuettae.Persistence.Entities;
 
 namespace IRuettae.Preprocessing.Mapping
@@ -97,7 +98,7 @@ namespace IRuettae.Preprocessing.Mapping
             }
 
             int[] visitLength = Visits.Select(v => SecondsToTimeslice(v.Duration)).ToArray();
-            return new SolverInputData(santasVar, visitLength, visitsVar, distances, Visits.Select(v => v.Id).ToArray());
+            return new SolverInputData(santasVar, visitLength, visitsVar, distances, Visits.Select(v => v.Id).ToArray(), Days.Select(d => d.Item1).ToArray());
         }
     }
 }

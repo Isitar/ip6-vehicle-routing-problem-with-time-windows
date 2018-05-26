@@ -15,7 +15,6 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
 
         public Route CreateResult()
         {
-
             var realNumberOfSantas = solverData.SolverInputData.Santas.GetLength(1);
             var realNumberOfDays = solverData.SolverInputData.Santas.GetLength(0);
 
@@ -35,6 +34,7 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
                     }
 
                     route.Waypoints[santa, day] = waypoints;
+                    route.StartingTime = solverData.SolverInputData.DayStartingTime;
                 }
             }
             return route;

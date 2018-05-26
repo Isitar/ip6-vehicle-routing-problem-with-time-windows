@@ -1,4 +1,6 @@
-﻿using IRuettae.Core.Algorithm;
+﻿using System;
+using IRuettae.Core.Algorithm;
+using IRuettae.Core.Algorithm.Scheduling;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace IRuettae.Core.Tests.Algorithm
@@ -55,7 +57,7 @@ namespace IRuettae.Core.Tests.Algorithm
                 0, 1, 1,
             };
 
-            return new SolverInputData(santas, visitLength, visits, distances);
+            return new SolverInputData(santas, visitLength, visits, distances, new[] { 0L, 1L, 2L }, new[] { DateTime.Now });
         }
 
 

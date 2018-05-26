@@ -1,0 +1,34 @@
+﻿@model IEnumerable<IRuettae.WebApp.Models.RouteCalculationWaypointVM[]>
+
+<h1>Routes</h1>
+@foreach (var route in Model)
+{
+    <h2>Route</h2>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(m => m[0].StartTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(m => m[0].Visit)
+            </th>
+        </tr>
+
+        @foreach (var item in route)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartTime)
+                </td>
+
+                <td>
+                   @{
+                       var text = $"{item.Visit.Street} {item.Visit.Zip} {item.Visit.City}";
+                   }
+                    @text
+                </td>
+            </tr>
+        }
+    </table>
+
+}

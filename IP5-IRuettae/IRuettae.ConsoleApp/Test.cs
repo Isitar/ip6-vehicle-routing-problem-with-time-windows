@@ -8,6 +8,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.Algorithm;
+using IRuettae.Core.Algorithm.Scheduling;
 using IRuettae.GeoCalculations.RouteCalculation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

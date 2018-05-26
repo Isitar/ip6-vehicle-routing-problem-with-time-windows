@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ using IRuettae.WebApi.Helpers;
 using IRuettae.WebApi.Models;
 using IRuettae.WebApi.Persistence;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace IRuettae.WebApi.Controllers
 {
@@ -204,6 +206,24 @@ namespace IRuettae.WebApi.Controllers
             {
                 var routeCalculations = dbSession.Query<RouteCalculation>().ToList();
                 return routeCalculations;
+            }
+        }
+
+
+        [HttpGet]
+        [Route("RouteCalculationWaypoints")]
+        public IEnumerable<object> RouteCalculationWaypoints(long id)
+        {
+            using (var dbSession = SessionFactory.Instance.OpenSession())
+            {
+                var routeCalculation = dbSession.Get<RouteCalculation>(id);
+                var schedulingResults = JsonConvert.DeserializeObject<SchedulingResult[]>(routeCalculation.Result);
+
+                return schedulingResults.Select(sr => sr.Route.Waypoints[0, 0].Select(wp => new
+                {
+                    Visit = (VisitDTO)dbSession.Get<Visit>(wp.RealVisitId),
+                    StartTime = sr.StartingTime.AddSeconds(wp.StartTime * routeCalculation.TimeSliceDuration)
+                }).ToList()).ToList();
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace IRuettae.Core.Algorithm
@@ -33,6 +34,11 @@ namespace IRuettae.Core.Algorithm
         /// [santa,day] list of visits
         /// </summary>
         public List<Waypoint>[,] Waypoints { get; set; }
+
+        /// <summary>
+        /// [day] starting time
+        /// </summary>
+        public DateTime[] StartingTime { get; set; }
 
         public Route(int numberOfSantas, int numberOfDays)
         {

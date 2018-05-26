@@ -127,7 +127,7 @@ namespace IRuettae.ConsoleApp
                 new int[] {}
             };
 
-            var solverInputData = new SolverInputData(santas, visitsDuration, visits, distances, dayDuration, santaBreaks);
+            var solverInputData = new SolverInputData(santas, visitsDuration, visits, distances, dayDuration, santaBreaks, new []{DateTime.Now});
             Starter.Optimise(solverInputData);
 
         }

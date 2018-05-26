@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace IRuettae.Core.Algorithm
+namespace IRuettae.Core.Algorithm.Scheduling
 {
     [Serializable]
     public class SolverInputData
@@ -31,14 +28,16 @@ namespace IRuettae.Core.Algorithm
 
 
         public long[] VisitIds { get; }
+        public DateTime[] DayStartingTimes { get; }
 
-        public SolverInputData(bool[][,] santas, int[] visitsDuration, VisitState[][,] visits, int[,] distances, long[] visitIds)
+        public SolverInputData(bool[][,] santas, int[] visitsDuration, VisitState[][,] visits, int[,] distances, long[] visitIds, DateTime[] dayStartingTimes)
         {
             Santas = santas;
             VisitsDuration = visitsDuration;
             Visits = visits;
             Distances = distances;
             VisitIds = visitIds;
+            DayStartingTimes = dayStartingTimes;
         }
 
         public bool IsValid()

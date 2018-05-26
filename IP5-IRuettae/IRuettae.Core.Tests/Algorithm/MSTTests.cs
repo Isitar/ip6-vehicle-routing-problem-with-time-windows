@@ -43,7 +43,7 @@ namespace IRuettae.Core.Tests.Algorithm
 
             int[] dayDuration = new int[1] { 17 };
 
-            var solverInputData = new SolverInputData(santas, visitsDuration, visitStates, distances, dayDuration, null);
+            var solverInputData = new SolverInputData(santas, visitsDuration, visitStates, distances, dayDuration, null, new []{DateTime.Now});
             var result = Starter.Optimise(solverInputData);
             Assert.IsNotNull(result);
             Assert.AreEqual(5, result.Waypoints[0, 0].Count);
@@ -95,7 +95,7 @@ namespace IRuettae.Core.Tests.Algorithm
 
             int[] dayDuration = new int[numberOfDays] { 17, 17 };
 
-            var solverInputData = new SolverInputData(santas, visitsDuration, visitStates, distances, dayDuration, null);
+            var solverInputData = new SolverInputData(santas, visitsDuration, visitStates, distances, dayDuration, null, new[]{ DateTime.Now, DateTime.Now });
             var result = Starter.Optimise(solverInputData);
             Assert.IsNotNull(result);
             var possibleRoutes = new[] { "0 | 0;5 | 0;6 | 0;7 | 0;8 | 0", "0 | 0;1 | 0;2 | 0;3 | 0;4 | 0" };

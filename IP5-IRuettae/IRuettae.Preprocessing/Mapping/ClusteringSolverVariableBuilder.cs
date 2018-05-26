@@ -86,7 +86,7 @@ namespace IRuettae.Preprocessing.Mapping
             }
 
             var solverInputData = new SolverInputData(santasVar, visitDuration, visitsVar, distances,
-                dayDuration, santaBreaks)
+                dayDuration, santaBreaks, Days.Select(d => d.Item1).ToArray())
             {
                 VisitNames = Visits.Select(v => $"{v.Street} {v.Zip} {v.City}").ToArray(),
                 VisitIds = Visits.Select(v => v.Id).ToArray()

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.Algorithm;
+using IRuettae.Core.Algorithm.Scheduling;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace IRuettae.Core.Tests.Algorithm
@@ -58,7 +59,7 @@ namespace IRuettae.Core.Tests.Algorithm
                 0, 1, 2, 2, 2,
             };
 
-            return new SolverInputData(santas, visitLength, visits, distances);
+            return new SolverInputData(santas, visitLength, visits, distances, new[] { 0L, 1L, 2L, 3L, 4L }, new[] { DateTime.Now });
         }
 
         [TestMethod]
@@ -72,17 +73,17 @@ namespace IRuettae.Core.Tests.Algorithm
                     { // santa 1
                         new List<Waypoint>()
                         { // day 1
-                            new Waypoint (0,-1),
-                            new Waypoint (1, 1),
-                            new Waypoint (2, 3),
-                            new Waypoint (0, 6),
+                            new Waypoint (0,-1, 0),
+                            new Waypoint (1, 1, 1),
+                            new Waypoint (2, 3, 2),
+                            new Waypoint (0, 6, 0),
                         },
                         new List<Waypoint>()
                         { // day 2
-                            new Waypoint (0,-1),
-                            new Waypoint (3, 1),
-                            new Waypoint (4, 4),
-                            new Waypoint (0, 7),
+                            new Waypoint (0,-1, 0),
+                            new Waypoint (3, 1, 3),
+                            new Waypoint (4, 4, 4),
+                            new Waypoint (0, 7, 0),
                         },
                     },
                 }

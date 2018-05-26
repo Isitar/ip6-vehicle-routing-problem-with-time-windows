@@ -32,7 +32,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
                     // create way from home
                     {
                         var distance = solverData.Input.Distances[solverData.StartEndPoint, nextLocation.Value.Visit];
-                        nextLocation = new Waypoint(0, nextLocation.Value.StartTime - distance - 1, solverData.Input.VisitIds[0]);
+                        nextLocation = new Waypoint(0, (nextLocation.Value.StartTime - distance - 1), solverData.Input.VisitIds[0]);
                     }
 
                     do
