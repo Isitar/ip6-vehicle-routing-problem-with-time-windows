@@ -22,6 +22,12 @@ namespace IRuettae.Core.Algorithm
             RealVisitId = realVisitId;
         }
 
+        public Waypoint(int visit, int startTime)
+        {
+            Visit = visit;
+            StartTime = startTime;
+            RealVisitId = visit;
+        }
         public override string ToString()
         {
             return $"{Visit} | {StartTime}";
