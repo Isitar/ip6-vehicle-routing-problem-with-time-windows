@@ -24,7 +24,6 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
 
             //variables
             CreateVisitsConstraint();
-            //CreateSantaDayVisitsConstraint();
             CreateSantaVisitsConstraint();
 
             // real constraints
