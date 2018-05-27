@@ -285,21 +285,23 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
 
         private void MST_OverallSum()
         {
-            var overallUseWay = new LinearExpr();
-            var overallHasFlow = new LinearExpr();
+            var overallUseWay = new LinearExpr[solverData.NumberOfSantas];
+            var overallHasFlow = new LinearExpr[solverData.NumberOfSantas];
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
+                overallUseWay[santa] = new LinearExpr();
+                overallHasFlow[santa] = new LinearExpr();
                 foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
                 {
                     foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
-                        overallHasFlow += solverData.Variables.SantaWayHasFlow[santa][source, destination];
-                        overallUseWay += solverData.Variables.SantaUsesWay[santa][source, destination];
+                        overallHasFlow[santa] += solverData.Variables.SantaWayHasFlow[santa][source, destination];
+                        overallUseWay[santa] += solverData.Variables.SantaUsesWay[santa][source, destination];
                     }
                 }
             }
 
-            Solver.Add(overallUseWay == overallHasFlow);
+            Solver.Add(overallUseWay.Sum() == overallHasFlow.Sum());
         }
 
         private void FirstVisitByFirstSanta()
