@@ -17,9 +17,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders
             var factory = new TargetFunctionFactory(solverData);
 
             targetFunction += factory.CreateTargetFunction(TargetType.MinTime, null);
-            targetFunction += factory.CreateTargetFunction(TargetType.MinSantas, null);
-            targetFunction += factory.CreateTargetFunction(TargetType.MinSantaShifts, null);
-            //targetFunction += factory.CreateTargetFunction(TargetType.TryVisitEarly, null);
+            targetFunction += factory.CreateTargetFunction(TargetType.TryVisitEarly, 1.0);
             targetFunction += factory.CreateTargetFunction(TargetType.TryVisitDesired, 0.5);
 
             solverData.Solver.Minimize(targetFunction);

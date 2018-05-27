@@ -29,10 +29,6 @@ namespace IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders
             {
                 case TargetType.MinTime:
                     return CreateTargetFunctionMinTime(weight);
-                case TargetType.MinSantas:
-                    return CreateTargetFunctionMinSantas(weight);
-                case TargetType.MinSantaShifts:
-                    return CreateTargetFunctionMinSantaShifts(weight);
                 case TargetType.TryVisitEarly:
                     return CreateTargetFunctionTryVisitEarly(weight);
                 case TargetType.TryVisitDesired:
@@ -102,16 +98,6 @@ namespace IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders
                 }
             }
             return LinearExprArrayHelper.Sum(sum);
-        }
-
-        private LinearExpr CreateTargetFunctionMinSantaShifts(double? weight)
-        {
-            return solverData.Variables.NumberOfSantasNeeded.Sum();
-        }
-
-        private LinearExpr CreateTargetFunctionMinSantas(double? weight)
-        {
-            return solverData.Variables.NumberOfSantasNeededOverall;
         }
     }
 }

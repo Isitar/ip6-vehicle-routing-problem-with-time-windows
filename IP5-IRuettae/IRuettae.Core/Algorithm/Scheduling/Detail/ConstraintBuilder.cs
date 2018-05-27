@@ -45,8 +45,6 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
 
             CreateSingleVisitConstraintV2();
             CreateUsesSantaConstraint();
-            CreateNumberOfSantasNeededConstraint();
-            CreateNumberOfSantasNeededOverallConstraint();
 
             CreateSantaEnRouteConstraint();
 
@@ -187,34 +185,6 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
             // Z <= Z1 + Z2 + ...
             solverData.Solver.Add(hasVisit <= sum);
             return hasVisit;
-        }
-
-        /// <summary>
-        /// The number of santas needed overall must be bigger or equal the santas needed on every day
-        /// </summary>
-        private void CreateNumberOfSantasNeededOverallConstraint()
-        {
-            var count = solverData.Variables.NumberOfSantasNeededOverall;
-            for (int day = 0; day < solverData.NumberOfDays; day++)
-            {
-                solverData.Solver.Add(count >= solverData.Variables.NumberOfSantasNeeded[day]);
-            }
-        }
-
-        /// <summary>
-        /// The number of santas needed on a day is the sum of the individual santas which are in use
-        /// </summary>
-        private void CreateNumberOfSantasNeededConstraint()
-        {
-            for (int day = 0; day < solverData.NumberOfDays; day++)
-            {
-                var sum = new LinearExpr();
-                for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
-                {
-                    sum += solverData.Variables.UsesSanta[day, santa];
-                }
-                solverData.Solver.Add(solverData.Variables.NumberOfSantasNeeded[day] == sum);
-            }
         }
 
         /// <summary>

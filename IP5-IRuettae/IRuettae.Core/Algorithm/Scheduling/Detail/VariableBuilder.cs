@@ -24,8 +24,6 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
             //CreateSantaDayVisits();
             CreateSantas();
             CreateUsesSanta();
-            CreateNumberOfSantasNeeded();
-            CreateNumberOfSantasNeededOverall();
             CreateVisitStart();
             CreateSantaEnRoute();
         }
@@ -92,16 +90,6 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
         private void CreateUsesSanta()
         {
             solverData.Variables.UsesSanta = solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfDays, solverData.NumberOfSantas, "UsesSanta");
-        }
-
-        private void CreateNumberOfSantasNeeded()
-        {
-            solverData.Variables.NumberOfSantasNeeded = solverData.Solver.MakeIntVarArray(solverData.NumberOfDays, 1, solverData.NumberOfSantas, "NumberOfSantasNeeded");
-        }
-
-        private void CreateNumberOfSantasNeededOverall()
-        {
-            solverData.Variables.NumberOfSantasNeededOverall = solverData.Solver.MakeIntVar(1, solverData.NumberOfSantas, "NumberOfSantasNeededOverall");
         }
 
         private void CreateVisitStart()
