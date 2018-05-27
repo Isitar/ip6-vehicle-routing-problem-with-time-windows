@@ -394,7 +394,6 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
             // 1 because start Visit is visited by multiple santas
             for (var visit = 1; visit < solverData.NumberOfVisits; visit++)
             {
-                var isBreak = false;
 
                 var visitVisited = new LinearExpr();
                 foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
@@ -403,6 +402,7 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
                 }
 
                 //todo: handle mutiple days santa break
+                //var isBreak = false;
                 //if (santaBreaks != null)
                 //{
                 //    // if it's a break, it only needs to be visited if santa is used
@@ -418,7 +418,7 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
 
                 //if (!isBreak)
                 //{
-                    Solver.Add(visitVisited == 1);
+                Solver.Add(visitVisited == 1);
                 //}
             }
         }
