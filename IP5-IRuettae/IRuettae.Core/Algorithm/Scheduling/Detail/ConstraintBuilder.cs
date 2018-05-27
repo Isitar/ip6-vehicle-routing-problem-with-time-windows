@@ -25,21 +25,22 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
             //variables
             CreateVisitsConstraint();
             CreateSantaVisitsConstraint();
+            CreateUsesSantaConstraint();
 
             // real constraints
             CreateVisitAvailableConstraint();
             CreateVisitOverallLengthConstraint();
+            CreateSingleVisitConstraint();
 
+            // santa
             CreateOnlyOneSantaPerVisitConstraint();
             CreateSantaAvailableConstraint();
             CreateSantaOnlyOnePlaceConstraint();
 
+            // waytimes
             CreateSantaNeedTimeToFirstVisitConstraint();
             CreateSantaNeedsTimeToGetHomeConstraint();
             CreateSantaNeedTimeBetweenVisitsConstraint();
-
-            CreateSingleVisitConstraint();
-            CreateUsesSantaConstraint();
 
             CreateSantaEnRouteConstraint();
 
