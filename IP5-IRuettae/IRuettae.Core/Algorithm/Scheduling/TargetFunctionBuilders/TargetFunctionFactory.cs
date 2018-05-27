@@ -55,7 +55,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders
                 }
             }
 
-            return LinearExprArrayHelper.Sum(sum) * (weight ?? 1.0);
+            return sum.Sum() * (weight ?? 1.0);
         }
 
         private LinearExpr CreateTargetFunctionTryVisitEarly(double? weight)
@@ -83,7 +83,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders
             {
                 weight /= maxWeight;
             }
-            return LinearExprArrayHelper.Sum(sum) * (weight ?? 1.0);
+            return sum.Sum() * (weight ?? 1.0);
         }
 
         private LinearExpr CreateTargetFunctionMinTime(double? weight)
@@ -97,7 +97,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders
                     sum[day] += v;
                 }
             }
-            return LinearExprArrayHelper.Sum(sum);
+            return sum.Sum();
         }
     }
 }
