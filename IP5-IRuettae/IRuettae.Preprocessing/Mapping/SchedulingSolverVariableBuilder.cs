@@ -78,12 +78,42 @@ namespace IRuettae.Preprocessing.Mapping
 
                 for (int v = 0; v < Visits.Count; v++)
                 {
+                    var visit = Visits[v];
+
                     // set all to default
                     for (int j = 0; j < numberOfTimeslots; j++)
                     {
                         visitsVar[day][v, j] = VisitState.Default;
                     }
-                    // TODO: Set other states
+
+                    bool isCurrentDay(Period p) => p.Start.HasValue && p.End.HasValue && p.Start.Value.Date != starttime;
+                    (int startSlice, int endSlice) toTimeslice(Period p)
+                    {
+                        return (
+                            SecondsToTimeslice((p.Start.Value - starttime).TotalSeconds),
+                            SecondsToTimeslice((p.End.Value - starttime).TotalSeconds)
+                        );
+                    }
+
+                    // set desired
+                    foreach (var desired in visit.Desired.Where(isCurrentDay))
+                    {
+                        (var startSlice, var endSlice) = toTimeslice(desired);
+                        for (int t = startSlice; t < endSlice; t++)
+                        {
+                            visitsVar[day][v, t] = VisitState.Desired;
+                        }
+                    }
+
+                    // set unavailable
+                    foreach (var unavailable in visit.Unavailable.Where(isCurrentDay))
+                    {
+                        (var startSlice, var endSlice) = toTimeslice(unavailable);
+                        for (int t = startSlice; t < endSlice; t++)
+                        {
+                            visitsVar[day][v, t] = VisitState.Unavailable;
+                        }
+                    }
                 }
             }
 

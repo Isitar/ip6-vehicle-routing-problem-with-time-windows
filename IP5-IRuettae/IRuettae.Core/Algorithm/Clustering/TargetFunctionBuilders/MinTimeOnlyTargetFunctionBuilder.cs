@@ -13,7 +13,7 @@ namespace IRuettae.Core.Algorithm.Clustering.TargetFunctionBuilders
 
             targetFunction += factory.CreateTargetFunction(TargetType.MinTime, null);
 
-            solverData.Solver.Maximize(targetFunction);
+            solverData.Solver.Minimize(targetFunction);
         }
     }
 }

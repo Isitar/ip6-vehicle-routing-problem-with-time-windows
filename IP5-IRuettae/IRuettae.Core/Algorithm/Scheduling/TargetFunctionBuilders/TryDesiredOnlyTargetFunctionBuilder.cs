@@ -3,7 +3,7 @@ using GLS = Google.OrTools.LinearSolver;
 
 namespace IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders
 {
-    internal class MinTimeOnlyTargetFunctionBuilder : AbstractTargetFunctionBuilder
+    internal class TryDesiredOnlyTargetFunctionBuilder : AbstractTargetFunctionBuilder
     {
         private GLS.LinearExpr targetFunction = new GLS.LinearExpr();
 
@@ -11,7 +11,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders
         {
             var factory = new TargetFunctionFactory(solverData);
 
-            targetFunction += factory.CreateTargetFunction(TargetType.MinTime, null);
+            targetFunction += factory.CreateTargetFunction(TargetType.TryVisitDesired, null);
 
             solverData.Solver.Minimize(targetFunction);
         }

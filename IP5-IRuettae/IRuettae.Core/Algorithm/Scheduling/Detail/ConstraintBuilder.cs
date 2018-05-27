@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Google.OrTools.LinearSolver;
-using GLS = Google.OrTools.LinearSolver;
 
 namespace IRuettae.Core.Algorithm.Scheduling.Detail
 {

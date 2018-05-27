@@ -21,7 +21,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders
             targetFunction += factory.CreateTargetFunction(TargetType.MinSantaShifts, null);
             //targetFunction += factory.CreateTargetFunction(TargetType.TryVisitEarly, null);
 
-            solverData.Solver.Maximize(targetFunction);
+            solverData.Solver.Minimize(targetFunction);
         }
     }
 }

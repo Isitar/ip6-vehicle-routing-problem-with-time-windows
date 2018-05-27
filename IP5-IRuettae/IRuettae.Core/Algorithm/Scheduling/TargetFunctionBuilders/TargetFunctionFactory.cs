@@ -35,9 +35,31 @@ namespace IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders
                     return CreateTargetFunctionMinSantaShifts(weight);
                 case TargetType.TryVisitEarly:
                     return CreateTargetFunctionTryVisitEarly(weight);
+                case TargetType.TryVisitDesired:
+                    return CreateTargetFunctionTryVisitDesired(weight);
                 default:
                     throw new NotSupportedException($"The type {target} is not supported.");
             }
+        }
+
+        private LinearExpr CreateTargetFunctionTryVisitDesired(double? weight)
+        {
+            var sum = new LinearExpr[solverData.NumberOfVisits];
+            sum[0] = new LinearExpr();
+            for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+            {
+                sum[visit] = new LinearExpr();
+                for (int day = 0; day < solverData.NumberOfDays; day++)
+                {
+                    for (int timeslice = 1; timeslice < solverData.SlicesPerDay[day]; timeslice++)
+                    {
+                        var isDesired = solverData.Input.Visits[day][visit, timeslice] == VisitState.Desired;
+                        sum[visit] -= solverData.Variables.Visits[day][visit, timeslice] * Convert.ToInt32(isDesired);
+                    }
+                }
+            }
+
+            return LinearExprArrayHelper.Sum(sum) * (weight ?? 1.0);
         }
 
         private LinearExpr CreateTargetFunctionTryVisitEarly(double? weight)

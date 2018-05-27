@@ -10,5 +10,6 @@ namespace IRuettae.Core.Algorithm
     {
         Default,
         MinTimeOnly, // only minimises time
+        TryDesiredOnly, // only minimises try desired
     }
 }

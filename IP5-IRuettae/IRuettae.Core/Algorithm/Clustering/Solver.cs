@@ -19,7 +19,7 @@ namespace IRuettae.Core.Algorithm.Clustering
         private readonly GLS.Solver solver = new GLS.Solver("Santa Problem", GLS.Solver.SCIP_MIXED_INTEGER_PROGRAMMING);
         //new GLS.Solver("SantaProblem", GLS.Solver.CBC_MIXED_INTEGER_PROGRAMMING);
         private readonly AbstractTargetFunctionBuilder targetFunctionBuilder;
-        
+
         public Solver(SolverInputData solverInputData, AbstractTargetFunctionBuilder targetFunctionBuilder)
         {
             this.solverData = new SolverData(solverInputData, solver);
@@ -92,10 +92,9 @@ namespace IRuettae.Core.Algorithm.Clustering
             PrintDebugRessourcesBefore("SolveInternal");
 
             var param = new GLS.MPSolverParameters();
-            
+
             param.SetDoubleParam(GLS.MPSolverParameters.RELATIVE_MIP_GAP, MIP_GAP);
 
-            solver.Objective().SetMinimization();
             solver.EnableOutput();
             resultState = FromGoogleResultState(solver.Solve(param));
 

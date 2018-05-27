@@ -95,7 +95,6 @@ namespace IRuettae.Core.Algorithm.Scheduling
             var param = new GLS.MPSolverParameters();
             param.SetDoubleParam(GLS.MPSolverParameters.RELATIVE_MIP_GAP, MIP_GAP);
 
-            solver.Objective().SetMinimization();
             solver.EnableOutput();
             resultState = FromGoogleResultState(solver.Solve(param));
 

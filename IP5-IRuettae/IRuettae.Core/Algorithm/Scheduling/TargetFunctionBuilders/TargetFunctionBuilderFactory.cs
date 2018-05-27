@@ -16,6 +16,8 @@ namespace IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders
                     return new DefaultTargetFunctionBuilder();
                 case TargetBuilderType.MinTimeOnly:
                     return new MinTimeOnlyTargetFunctionBuilder();
+                case TargetBuilderType.TryDesiredOnly:
+                    return new TryDesiredOnlyTargetFunctionBuilder();
                 default:
                     break;
             }

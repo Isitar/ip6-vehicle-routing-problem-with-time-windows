@@ -80,6 +80,7 @@
     <Compile Include="Algorithm\Scheduling\Detail\ConstraintBuilder.cs" />
     <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\DefaultTargetFunctionBuilder.cs" />
     <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\MinTimeOnlyTargetFunctionBuilder.cs" />
+    <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\TryDesiredOnlyTargetFunctionBuilder.cs" />
     <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\TargetFunctionBuilderFactory.cs" />
     <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\TargetFunctionFactory.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\VariableBuilder.cs" />

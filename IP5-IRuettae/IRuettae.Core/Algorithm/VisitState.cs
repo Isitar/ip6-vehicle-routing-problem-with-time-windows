@@ -5,7 +5,8 @@ namespace IRuettae.Core.Algorithm
     public enum VisitState
     {
         Default, // no preference, should be available
-        NotAvailable,
+        Desired,
+        Unavailable,
     }
 
     internal static class Extensions
@@ -17,7 +18,9 @@ namespace IRuettae.Core.Algorithm
             {
                 case VisitState.Default:
                     return true;
-                case VisitState.NotAvailable:
+                case VisitState.Desired:
+                    return true;
+                case VisitState.Unavailable:
                     return false;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(s), s, null);
