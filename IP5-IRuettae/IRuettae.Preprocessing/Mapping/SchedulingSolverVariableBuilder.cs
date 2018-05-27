@@ -86,7 +86,7 @@ namespace IRuettae.Preprocessing.Mapping
                         visitsVar[day][v, j] = VisitState.Default;
                     }
 
-                    bool isCurrentDay(Period p) => p.Start.HasValue && p.End.HasValue && p.Start.Value.Date != starttime;
+                    bool isCurrentDay(Period p) => p.Start.HasValue && p.End.HasValue && p.Start.Value.Date == starttime.Date;
                     (int startSlice, int endSlice) toTimeslice(Period p)
                     {
                         return (
