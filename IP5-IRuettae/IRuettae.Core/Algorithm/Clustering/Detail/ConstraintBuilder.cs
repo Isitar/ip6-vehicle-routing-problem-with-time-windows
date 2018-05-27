@@ -41,22 +41,22 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
 
         private void SantaBreaks()
         {
-            return;
-            // todo: handle mutiple days santabreak
-            //if (solverData.SolverInputData.SantaBreaks == null) { return; }
+            if (solverData.SolverInputData.SantaBreaks == null) { return; }
 
-            //foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
-            //{
-            //    int realSantaId = santa / solverData.SolverInputData.Santas.GetLength(1);
-            //    var santaBreaks = solverData.SolverInputData.SantaBreaks[realSantaId];
-            //    if (santaBreaks.Length > 0)
-            //    {
-            //        foreach (var santaBreak in santaBreaks)
-            //        {
-            //            Solver.Add(solverData.Variables.SantaVisit[santa, santaBreak] == 1 * solverData.Variables.SantaVisit[santa, 0]);
-            //        }
-            //    }
-            //}
+            var realSantaCount = solverData.SolverInputData.Santas.GetLength(1);
+
+            foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
+            {
+                var realSantaId = santa % realSantaCount;
+                var santaBreaks = solverData.SolverInputData.SantaBreaks[realSantaId];
+                if (santaBreaks.Length > 0)
+                {
+                    foreach (var santaBreak in santaBreaks)
+                    {
+                        Solver.Add(solverData.Variables.SantaVisit[santa, santaBreak] == 1 * solverData.Variables.SantaVisit[santa, 0]);
+                    }
+                }
+            }
         }
 
         private void SantaTimeConstraint()
@@ -313,7 +313,7 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
             }
             else
             {
-                Solver.Add(solverData.Variables.SantaVisit[realSantaCount + 1, 1] == 1);
+                Solver.Add(solverData.Variables.SantaVisit[realSantaCount, 1] == 1);
             }
         }
 
@@ -391,6 +391,9 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
         {
 
             var santaBreaks = solverData.SolverInputData.SantaBreaks;
+            var realNumberOfDays = solverData.SolverInputData.Santas.GetLength(0);
+            var realNumberOfSantas = solverData.SolverInputData.Santas.GetLength(1);
+
             // 1 because start Visit is visited by multiple santas
             for (var visit = 1; visit < solverData.NumberOfVisits; visit++)
             {
@@ -402,24 +405,31 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
                 }
 
                 //todo: handle mutiple days santa break
-                //var isBreak = false;
-                //if (santaBreaks != null)
-                //{
-                //    // if it's a break, it only needs to be visited if santa is used
-                //    for (var breakSanta = 0; breakSanta < santaBreaks.Length; breakSanta++)
-                //    {
-                //        if (santaBreaks[breakSanta].Contains(Visit))
-                //        {
-                //            isBreak = true;
-                //            Solver.Add(visitVisited == 1 * solverData.Variables.SantaVisit[breakSanta, 0]);
-                //        }
-                //    }
-                //}
+                var isBreak = false;
+                if (santaBreaks != null)
+                {
+                    // if it's a break, it only needs to be visited if santa is used
+                    for (var breakSanta = 0; breakSanta < santaBreaks.Length; breakSanta++)
+                    {
+                        if (santaBreaks[breakSanta].Contains(visit))
+                        {
+                            isBreak = true;
+                            var sumSantaUsed = new LinearExpr();
+                            foreach (var day in Enumerable.Range(0, realNumberOfDays))
+                            {
+                                sumSantaUsed +=
+                                    solverData.Variables.SantaVisit[day * realNumberOfSantas + breakSanta, 0];
+                            }
 
-                //if (!isBreak)
-                //{
-                Solver.Add(visitVisited == 1);
-                //}
+                            Solver.Add(visitVisited == sumSantaUsed);
+                        }
+                    }
+                }
+
+                if (!isBreak)
+                {
+                    Solver.Add(visitVisited == 1);
+                }
             }
         }
     }
