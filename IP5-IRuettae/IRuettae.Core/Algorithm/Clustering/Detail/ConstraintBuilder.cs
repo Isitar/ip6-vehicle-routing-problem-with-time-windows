@@ -406,7 +406,6 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
                     visitVisited += solverData.Variables.SantaVisit[santa, visit];
                 }
 
-                //todo: handle mutiple days santa break
                 var isBreak = false;
                 if (santaBreaks != null)
                 {
