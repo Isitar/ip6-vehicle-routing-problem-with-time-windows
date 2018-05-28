@@ -1,34 +1,91 @@
 ﻿@model IEnumerable<IRuettae.WebApp.Models.RouteCalculationWaypointVM[]>
 
-<h1>Routes</h1>
-@foreach (var route in Model)
-{
-    <h2>Route</h2>
-    <table class="table">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(m => m[0].StartTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(m => m[0].Visit)
-            </th>
-        </tr>
 
-        @foreach (var item in route)
-        {
+
+@{
+    int counter = 0;
+    <h1>Routes</h1>
+    foreach (var route in Model)
+    {
+        counter = counter + 1;
+        <h2>Route</h2>
+        <div id="map-@counter" style="min-height: 300px"></div>
+        <table class="table">
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StartTime)
-                </td>
-
-                <td>
-                   @{
-                       var text = $"{item.Visit.Street} {item.Visit.Zip} {item.Visit.City}";
-                   }
-                    @text
-                </td>
+                <th>
+                    @Html.DisplayNameFor(m => m[0].StartTime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(m => m[0].Visit)
+                </th>
             </tr>
-        }
-    </table>
 
+            @foreach (var item in route)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartTime)
+                    </td>
+
+                    <td>
+                        @{
+                            var text = $"{item.Visit}";
+                        }
+                        @text
+                    </td>
+                </tr>
+            }
+        </table>
+        <script>
+            function initMap@(counter)() {
+                var directionsService = new google.maps.DirectionsService;
+                var directionsDisplay = new google.maps.DirectionsRenderer;
+                var map = new google.maps.Map(document.getElementById('map-@counter'),
+                    {
+                        zoom: 20,
+                        center: { lat: 41.85, lng: -87.65 }
+                    });
+                directionsDisplay.setMap(map);
+                calculateAndDisplayRoute@(counter)(directionsService, directionsDisplay);
+            }
+
+            function calculateAndDisplayRoute@(counter)(directionsService, directionsDisplay) {
+                var waypts = [];
+                @foreach (var wp in route.Skip(1).Take(route.Length - 2).Select(r => r.Visit.ToString()))
+                 {
+                     @Html.Raw(@"waypts.push({
+                         location:'"+ wp+@"',
+                         stopover: true
+                        });")
+                 }
+
+                directionsService.route({
+                        origin: '@route[0].Visit.ToString()',
+                        destination: '@route[route.Length - 1].Visit.ToString()',
+                        waypoints: waypts,
+                        optimizeWaypoints: true,
+                        travelMode: 'WALKING'
+                    },
+                    function(response, status) {
+                        if (status === 'OK') {
+                            directionsDisplay.setDirections(response);
+                        } else {
+                            window.alert('Directions request failed due to ' + status);
+                        }
+                    });
+            }
+        </script>
+
+    }
 }
+
+<script>
+    function initMap() {
+        @for (var i = 1; i <= counter; i++)
+        {
+            @Html.Raw($"initMap{i}();{Environment.NewLine}");
+        }
+    }
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDQKw_peFfQoSnd62jx7rW3SxmivD1hjSU&callback=initMap">
+</script>
