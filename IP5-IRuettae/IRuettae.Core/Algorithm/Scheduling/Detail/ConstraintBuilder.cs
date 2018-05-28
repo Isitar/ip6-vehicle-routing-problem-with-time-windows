@@ -27,13 +27,13 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
             CreateSantaVisitsConstraint();
             CreateUsesSantaConstraint();
 
-            // real constraints
+            // visit
             CreateVisitAvailableConstraint();
             CreateVisitOverallLengthConstraint();
             CreateSingleVisitConstraint();
+            CreateOnlyOneSantaPerVisitConstraint();
 
             // santa
-            CreateOnlyOneSantaPerVisitConstraint();
             CreateSantaAvailableConstraint();
             CreateSantaOnlyOnePlaceConstraint();
 
