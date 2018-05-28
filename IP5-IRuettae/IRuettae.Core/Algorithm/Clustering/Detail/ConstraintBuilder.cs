@@ -323,12 +323,14 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
         {
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
+                var sumSantaVisit = new LinearExpr();
                 for (var visit = 1; visit < solverData.NumberOfVisits; visit++)
                 {
                     Solver.Add(solverData.Variables.SantaVisit[santa, 0] >= solverData.Variables.SantaVisit[santa, visit]);
+                    sumSantaVisit += solverData.Variables.SantaVisit[santa, visit];
                 }
 
-                Solver.Add(solverData.Variables.SantaVisit[santa, 0] <= 1);
+                Solver.Add(solverData.Variables.SantaVisit[santa, 0] <= sumSantaVisit);
             }
         }
 
