@@ -58,13 +58,22 @@ namespace IRuettae.WebApp.Models
         [DisplayName("Resultat")]
         public virtual string Result { get; set; }
         [DisplayName("Status")]
-        public virtual int State { get; set; }
+        public virtual RouteCalculationState State { get; set; }
         [DisplayName("StatusText")]
         public virtual string StateText { get; set; }
         [DisplayName("Endzeit")]
         public virtual DateTime EndTime { get; set; }
-        
 
+        public enum RouteCalculationState
+        {
+            Creating,
+            Ready,
+            RunningPhase1,
+            RunningPhase2,
+            RunningPhase3,
+            Cancelled,
+            Finished
+        }
 
     }
 }

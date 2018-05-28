@@ -207,8 +207,8 @@ namespace IRuettae.WebApi.Helpers
                 dbSession.Flush();
 
 
-                //todo: add last step?
                 routeCalculation.Result = routeCalculation.SchedulingResult;
+                routeCalculation.State = RouteCalculationState.Finished;
 
                 routeCalculation.EndTime = DateTime.Now;
                 dbSession.Update(routeCalculation);
