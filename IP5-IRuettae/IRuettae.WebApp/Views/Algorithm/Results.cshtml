@@ -47,9 +47,6 @@
             @Html.DisplayNameFor(model => model.SchedulingResult)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Result)
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.State)
         </th>
         <th>
@@ -99,7 +96,7 @@
             <td>
                 @if (!string.IsNullOrEmpty(item.ClusteringResult))
                 {
-                    <button class="btn btn-info" data-toggle="collapse" data-target="#collapse-cl-@item.Id" aria-expanded="False" aria-controls="collapse-cl-@item.Id">Anzeigen</button>
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-cl-@item.Id" aria-expanded="False" aria-controls="collapse-cl-@item.Id">Anzeigen</button>
 
                     <div class="collapse" id="collapse-cl-@item.Id" style="min-width: 400px">
                         <div class="card card-body">
@@ -120,26 +117,11 @@
             <td>
                 @if (!string.IsNullOrEmpty(item.SchedulingResult))
                 {
-                    <button class="btn btn-info" data-toggle="collapse" data-target="#collapse-sr-@item.Id" aria-expanded="False" aria-controls="collapse-sr-@item.Id">Anzeigen</button>
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-sr-@item.Id" aria-expanded="False" aria-controls="collapse-sr-@item.Id">Anzeigen</button>
 
                     <div class="collapse" id="collapse-sr-@item.Id">
                         <div class="card card-body">
                             @foreach (var line in item.SchedulingResult?.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
-                            {
-                                <p>@line</p>
-                            }
-                        </div>
-                    </div>
-                }
-            </td>
-            <td>
-                @if (!string.IsNullOrEmpty(item.Result))
-                {
-                    <button class="btn btn-info" data-toggle="collapse" data-target="#collapse-r-@item.Id" aria-expanded="False" aria-controls="collapse-r-@item.Id">Anzeigen</button>
-
-                    <div class="collapse" id="collapse-r-@item.Id">
-                        <div class="card card-body">
-                            @foreach (var line in item.Result?.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
                             {
                                 <p>@line</p>
                             }
@@ -156,9 +138,10 @@
             <td>
                 @if (!string.IsNullOrEmpty(item.Result))
                 {
-                    <a href="@Url.Action("Result", new {id = item.Id})">
+                    <a href="@Url.Action("Result", new {id = item.Id})" class="btn btn-lg btn-info">
+                        
                         <i class="fa fa-eye"></i>
-                        @*Details*@
+                        Resultat
                     </a>
                 }
             </td>
