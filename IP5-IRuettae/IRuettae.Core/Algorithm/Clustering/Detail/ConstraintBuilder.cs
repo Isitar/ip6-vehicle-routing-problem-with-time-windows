@@ -93,20 +93,25 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
                 var santaWayFlow = solverData.Variables.SantaWayFlow[santa];
                 var santaWayHasFlow = solverData.Variables.SantaWayHasFlow[santa];
                 var santaUsesWay = solverData.Variables.SantaUsesWay[santa];
-
+                var numberOfVisitsInCluster = NumberOfSantaVisit(santa);
                 // flow for start location if santa is in use
                 foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
                 {
-                    Solver.Add(santaWayFlow[source, 0] == santaUsesWay[source, 0] * solverData.NumberOfVisits);
+                    //Solver.Add(santaWayFlow[source, 0] == santaUsesWay[source, 0] * solverData.NumberOfVisits);
                     Solver.Add(santaWayFlow[0, source] == santaUsesWay[0, source] * solverData.NumberOfVisits);
                 }
 
                 // flow only possible if santa uses way
-                foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
+                for (var source = 1; source < solverData.NumberOfVisits; source++)
                 {
-                    foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
+                    //   foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
+                    //{
+                    for (var destination = 1; source < solverData.NumberOfVisits; source++)
                     {
+                        //foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
+                        //{
                         Solver.Add(santaWayFlow[source, destination] <= santaUsesWay[source, destination] * solverData.NumberOfVisits);
+                        Solver.Add(santaWayFlow[source, destination] <= numberOfVisitsInCluster - 1);
                     }
                 }
 
@@ -206,7 +211,6 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
                     Solver.Add(solverData.Variables.SantaUsesWay[santa][source, source] == 0);
                 }
             }
-
         }
 
         private void MST_MaxDestinationOfOnce()
@@ -226,13 +230,15 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
             }
         }
 
+        private LinearExpr NumberOfSantaVisit(int santa) => Enumerable
+            .Range(0, solverData.NumberOfVisits)
+            .Aggregate(new LinearExpr(), (current, visit) => current + solverData.Variables.SantaVisit[santa, visit]);
+
         private void MST_NumberOfEdgesConstraint()
         {
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
-                var numberOfVertices = Enumerable
-                    .Range(0, solverData.NumberOfVisits)
-                    .Aggregate(new LinearExpr(), (current, visit) => current + solverData.Variables.SantaVisit[santa, visit]);
+                var numberOfVertices = NumberOfSantaVisit(santa);
 
                 var numberOfEdges = new LinearExpr();
                 foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
