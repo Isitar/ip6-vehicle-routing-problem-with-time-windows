@@ -101,17 +101,21 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
                     Solver.Add(santaWayFlow[0, source] == santaUsesWay[0, source] * solverData.NumberOfVisits);
                 }
 
-                // flow only possible if santa uses way
+                //flow only possible if santa uses way
+                foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
+                {
+                    foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
+                    {
+                        Solver.Add(santaWayFlow[source, destination] <= santaUsesWay[source, destination] * solverData.NumberOfVisits);
+                    }
+                }
+
+                // strengthen formulasation
                 for (var source = 1; source < solverData.NumberOfVisits; source++)
                 {
-                    //   foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
-                    //{
                     for (var destination = 1; source < solverData.NumberOfVisits; source++)
                     {
-                        //foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
-                        //{
-                        Solver.Add(santaWayFlow[source, destination] <= santaUsesWay[source, destination] * solverData.NumberOfVisits);
-                        Solver.Add(santaWayFlow[source, destination] <= numberOfVisitsInCluster - 1);
+                        Solver.Add(santaWayFlow[source, destination] <= numberOfVisitsInCluster);
                     }
                 }
 
