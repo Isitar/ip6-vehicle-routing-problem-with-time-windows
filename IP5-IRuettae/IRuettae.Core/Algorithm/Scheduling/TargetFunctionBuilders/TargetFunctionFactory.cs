@@ -21,9 +21,9 @@ namespace IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders
         ///
         /// </summary>
         /// <param name="target"></param>
-        /// <param name="weight"></param>
+        /// <param name="weight">1 is minimal weight, use higher weight for more important targets</param>
         /// <returns>LinearExpr which should be minimised</returns>
-        public LinearExpr CreateTargetFunction(TargetType target, double weight = 1.0)
+        public LinearExpr CreateTargetFunction(TargetType target, int weight = 1)
         {
             switch (target)
             {
@@ -38,7 +38,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders
             }
         }
 
-        private LinearExpr CreateTargetFunctionTryVisitDesired(double weight)
+        private LinearExpr CreateTargetFunctionTryVisitDesired(int weight)
         {
             var sum = new LinearExpr[solverData.NumberOfVisits];
             sum[0] = new LinearExpr();
@@ -58,7 +58,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders
             return sum.Sum() * weight;
         }
 
-        private LinearExpr CreateTargetFunctionTryVisitEarly(double weight)
+        private LinearExpr CreateTargetFunctionTryVisitEarly(int weight)
         {
             var maxWeight = 0.0;
             var sum = new LinearExpr[solverData.NumberOfDays];
@@ -82,7 +82,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders
             return sum.Sum() * weight;
         }
 
-        private LinearExpr CreateTargetFunctionMinTime(double weight)
+        private LinearExpr CreateTargetFunctionMinTime(int weight)
         {
             var sum = new LinearExpr[solverData.NumberOfDays];
             for (int day = 0; day < solverData.NumberOfDays; day++)
