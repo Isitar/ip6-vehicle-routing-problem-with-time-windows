@@ -11,29 +11,29 @@ namespace IRuettae.WebApp.Models
     public class AlgorithmStarterVM
     {
 
-        public IEnumerable<SelectListItem> StarterIds {get; set; }
+        public IEnumerable<SelectListItem> StarterIds { get; set; }
         [Required]
         [DisplayName("Startpunkt")]
         public int StarterId { get; set; }
 
         [DisplayName("Arbeitstage")]
-        public List<PeriodVM> DaysPeriod{ get; set; }
+        public List<PeriodVM> DaysPeriod { get; set; }
 
 
         [DisplayName("Arbeitstage")]
         public List<(DateTime, DateTime)> Days { get; set; }
 
-        [Range(1, Int32.MaxValue)]
+        [Range(1, int.MaxValue)]
         [DisplayName("Anzahl Tage")]
         public int NumberOfDays { get; set; }
-        [DisplayName("Timeslice Dauer")]
+        [DisplayName("Timeslice Dauer [s]")]
         public int TimeSliceDuration { get; set; }
         [Required]
-        [DisplayName("Zeit pro Kind")]
-        [Range(1,Int32.MaxValue)]
+        [DisplayName("Zeit pro Kind [min]")]
+        [Range(1, int.MaxValue)]
         public int TimePerChild { get; set; }
-        [Range(0, Int32.MaxValue)]
-        [DisplayName("+ Zeit für erstes Kind (β)")]
+        [Range(0, int.MaxValue)]
+        [DisplayName("+ Zeit für erstes Kind [min]")]
         public int Beta0 { get; set; }
 
         [Required]

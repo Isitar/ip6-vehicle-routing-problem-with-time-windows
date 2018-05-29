@@ -33,9 +33,6 @@ namespace IRuettae.Persistence.Entities
         public virtual double SchedulingMipGap{ get; set; }
         public virtual string SchedulingResult { get; set; }
 
-        // Phase 3
-
-
 
         // Running & Result
         public virtual string Result { get; set; }

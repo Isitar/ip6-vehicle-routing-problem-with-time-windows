@@ -1,9 +1,14 @@
-﻿@model IEnumerable<IRuettae.WebApp.Models.RouteCalculationVM>
+﻿@using IRuettae.WebApp.Models
+@model IEnumerable<IRuettae.WebApp.Models.RouteCalculationVM>
+
 <h1>Algorithmus Resultate</h1>
 <table class="table">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.StartTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EndTime)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Year)
@@ -15,40 +20,16 @@
             @Html.DisplayNameFor(model => model.TimePerChildOffset)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.StarterVisitId)
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.NumberOfSantas)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.NumberOfVisits)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.SantaJson)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.VisitsJson)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ClusteringOptimisationFunction)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ClustringMipGap)
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.ClusteringResult)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.TimeSliceDuration)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.SchedulingMipGap)
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.SchedulingResult)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Result)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.State)
@@ -56,78 +37,92 @@
         <th>
             @Html.DisplayNameFor(model => model.StateText)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.EndTime)
-        </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.StartTime)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Year)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TimePerChild)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TimePerChildOffset)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StarterVisitId)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.NumberOfSantas)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.NumberOfVisits)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.SantaJson)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.VisitsJson)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ClusteringOptimisationFunction)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ClustringMipGap)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ClusteringResult)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TimeSliceDuration)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.SchedulingMipGap)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.SchedulingResult)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Result)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.State)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StateText)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.EndTime)
-        </td>
-        <td>
-            <a href="@Url.Action("Result",new {id=item.Id})">
-                <i class="fa fa-eye"></i>
-                @*Details*@
-            </a>
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr class="@(item.State == RouteCalculationVM.RouteCalculationState.Finished ? "tr-green" :
+   (new []{RouteCalculationVM.RouteCalculationState.RunningPhase1,
+                RouteCalculationVM.RouteCalculationState.RunningPhase2,
+                RouteCalculationVM.RouteCalculationState.RunningPhase3,
+                RouteCalculationVM.RouteCalculationState.Ready
+        }).Contains(item.State) ? "tr-orange" : "tr-red")">
+            <td>
+                @Html.DisplayFor(modelItem => item.StartTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Year)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TimePerChild)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TimePerChildOffset)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumberOfSantas)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumberOfVisits)
+            </td>
+            <td>
+                @if (!string.IsNullOrEmpty(item.ClusteringResult))
+                {
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-cl-@item.Id" aria-expanded="False" aria-controls="collapse-cl-@item.Id">Anzeigen</button>
+
+                    <div class="collapse" id="collapse-cl-@item.Id" style="min-width: 400px">
+                        <div class="card card-body">
+                            @foreach (var line in item.ClusteringResult?.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
+                            {
+                                <p>@line</p>
+                            }
+                        </div>
+                    </div>
+                }
+            </td>
+            <td>
+                @if (!string.IsNullOrEmpty(item.SchedulingResult))
+                {
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-sr-@item.Id" aria-expanded="False" aria-controls="collapse-sr-@item.Id">Anzeigen</button>
+
+                    <div class="collapse" id="collapse-sr-@item.Id">
+                        <div class="card card-body">
+                            @foreach (var line in item.SchedulingResult?.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
+                            {
+                                <p>@line</p>
+                            }
+                        </div>
+                    </div>
+                }
+            </td>
+            <td style="text-wrap: none">
+
+                @if ((new[] { RouteCalculationVM.RouteCalculationState.Ready, RouteCalculationVM.RouteCalculationState.RunningPhase1, RouteCalculationVM.RouteCalculationState.RunningPhase2, RouteCalculationVM.RouteCalculationState.RunningPhase3 }).Contains(item.State))
+                {
+                    <i class="fas fa-spinner fa-pulse"></i>
+                }
+                &nbsp;
+                @Html.DisplayFor(modelItem => item.State)
+
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StateText)
+            </td>
+            <td>
+                @if (!string.IsNullOrEmpty(item.Result))
+                {
+                    <a href="@Url.Action("Result", new {id = item.Id})" class="btn btn-lg btn-info">
+
+                        <i class="fa fa-eye"></i>
+                        Resultat
+                    </a>
+                }
+            </td>
+        </tr>
+    }
 
 </table>

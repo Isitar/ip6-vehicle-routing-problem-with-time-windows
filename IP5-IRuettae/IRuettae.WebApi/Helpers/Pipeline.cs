@@ -43,176 +43,201 @@ namespace IRuettae.WebApi.Helpers
             routeCalculation = dbSession.Merge(routeCalculation);
             bgWorker.DoWork += (sender, args) =>
             {
-
-                var santas = dbSession.Query<Santa>().ToList();
-
-                var visits = dbSession.Query<Visit>()
-                    .Where(v => v.Year == routeCalculation.Year || v.Id == routeCalculation.StarterVisitId)
-                    .ToList();
-
-
-                visits.ForEach(v => v.Duration = 60 * (v.NumberOfChildren * routeCalculation.TimePerChild +
-                                       routeCalculation.TimePerChildOffset));
-
-                // set starterId to front
-                visits.Sort((a, b) =>
+                try
                 {
-                    if (a.Id == routeCalculation.StarterVisitId)
+                    var santas = dbSession.Query<Santa>().ToList();
+
+                    var visits = dbSession.Query<Visit>()
+                        .Where(v => v.Year == routeCalculation.Year || v.Id == routeCalculation.StarterVisitId)
+                        .ToList();
+
+
+                    visits.ForEach(v => v.Duration = 60 * (v.NumberOfChildren * routeCalculation.TimePerChild +
+                                                           routeCalculation.TimePerChildOffset));
+
+                    // set starterId to front
+                    visits.Sort((a, b) =>
                     {
-                        return -1;
-                    }
+                        if (a.Id == routeCalculation.StarterVisitId)
+                        {
+                            return -1;
+                        }
 
-                    if (b.Id == routeCalculation.StarterVisitId)
+                        if (b.Id == routeCalculation.StarterVisitId)
+                        {
+                            return 1;
+                        }
+
+                        return a.Id.CompareTo(b.Id);
+                    });
+
+
+                    routeCalculation.NumberOfSantas = santas.Count;
+                    routeCalculation.NumberOfVisits = visits.Count;
+                    routeCalculation.State = RouteCalculationState.Ready;
+                    dbSession.Update(routeCalculation);
+                    dbSession.Flush();
+
+                    var eventTextWriter = new EventTextWriter();
+                    var lastUpdate = DateTime.Now;
+                    eventTextWriter.CharWritten += (o, c) =>
                     {
-                        return 1;
-                    }
+                        if (null == routeCalculation.StateText)
+                        {
+                            routeCalculation.StateText = string.Empty;
+                        }
 
-                    return a.Id.CompareTo(b.Id);
-                });
+                        routeCalculation.StateText += c;
+                        if (DateTime.Now - lastUpdate > TimeSpan.FromMinutes(1))
+                        {
+                            lastUpdate = DateTime.Now;
+                            dbSession.Update(routeCalculation);
+                            dbSession.Flush();
+                        }
+                    };
+
+                    Console.SetOut(eventTextWriter);
+                    Console.SetError(eventTextWriter);
 
 
-                routeCalculation.NumberOfSantas = santas.Count;
-                routeCalculation.NumberOfVisits = visits.Count;
-                routeCalculation.State = RouteCalculationState.Ready;
-                dbSession.Update(routeCalculation);
-                dbSession.Flush();
+                    // ******************************
 
-                var eventTextWriter = new EventTextWriter();
-                var lastUpdate = DateTime.Now;
-                eventTextWriter.CharWritten += (o, c) =>
-                {
-                    if (null == routeCalculation.StateText)
+                    #region Clustering
+
+                    // ******************************
+
+                    var clusteringSolverVariableBuilder = new ClusteringSolverVariableBuilder
                     {
-                        routeCalculation.StateText = string.Empty;
-                    }
+                        Visits = visits,
+                        Santas = santas,
+                        Days = routeCalculation.Days
+                    };
 
-                    routeCalculation.StateText += c;
-                    if (DateTime.Now - lastUpdate > TimeSpan.FromMinutes(1))
-                    {
-                        lastUpdate = DateTime.Now;
-                        dbSession.Update(routeCalculation);
-                        dbSession.Flush();
-                    }
-                };
+                    var clusteringSolverInputData = clusteringSolverVariableBuilder.Build();
 
-                Console.SetOut(eventTextWriter);
-                Console.SetError(eventTextWriter);
+                    routeCalculation.StartTime = DateTime.Now;
 
+                    routeCalculation.State = RouteCalculationState.RunningPhase1;
+                    dbSession.Update(routeCalculation);
+                    dbSession.Flush();
 
-                // ******************************
-                #region Clustering
-                // ******************************
-
-                var clusteringSolverVariableBuilder = new ClusteringSolverVariableBuilder
-                {
-                    Visits = visits,
-                    Santas = santas,
-                    Days = routeCalculation.Days
-                };
-
-                var clusteringSolverInputData = clusteringSolverVariableBuilder.Build();
-
-                routeCalculation.StartTime = DateTime.Now;
-
-                routeCalculation.State = RouteCalculationState.RunningPhase1;
-                dbSession.Update(routeCalculation);
-                dbSession.Flush();
-
-                var targetType =
-                    routeCalculation.ClusteringOptimisationFunction == ClusteringOptimisationGoals.MinTimePerSanta
-                        ? TargetBuilderType.Default
-                        : TargetBuilderType.MinTimeOnly;
+                    var targetType =
+                        routeCalculation.ClusteringOptimisationFunction == ClusteringOptimisationGoals.MinTimePerSanta
+                            ? TargetBuilderType.Default
+                            : TargetBuilderType.MinTimeOnly;
 #if DEBUG
-                var serialPath = HostingEnvironment.MapPath($"~/App_Data/ClusteringSolverInput{routeCalculation.NumberOfVisits}Visits.serial");
-                if (serialPath != null)
-                {
-                    using (var stream = File.Open(serialPath, FileMode.Create))
+                    var serialPath =
+                        HostingEnvironment.MapPath(
+                            $"~/App_Data/ClusteringSolverInput{routeCalculation.NumberOfVisits}Visits.serial");
+                    if (serialPath != null)
                     {
-                        new BinaryFormatter().Serialize(stream, clusteringSolverInputData);
+                        using (var stream = File.Open(serialPath, FileMode.Create))
+                        {
+                            new BinaryFormatter().Serialize(stream, clusteringSolverInputData);
+                        }
                     }
-                }
 
-                var mpsPath = HostingEnvironment.MapPath($"~/App_Data/Clustering_{routeCalculation.NumberOfVisits}.mps");
-                Starter.SaveMps(mpsPath, clusteringSolverInputData, targetType);
+                    var mpsPath =
+                        HostingEnvironment.MapPath($"~/App_Data/Clustering_{routeCalculation.NumberOfVisits}.mps");
+                    Starter.SaveMps(mpsPath, clusteringSolverInputData, targetType);
 #endif
 
-                var phase1Result = Starter.Optimise(clusteringSolverInputData, targetType, routeCalculation.ClustringMipGap);
+                    var phase1Result = Starter.Optimise(clusteringSolverInputData, targetType,
+                        routeCalculation.ClustringMipGap);
 
-                // gets captured by eventwriter
-                Console.WriteLine($"{DateTime.Now}: Clustering done");
+                    // gets captured by eventwriter
+                    Console.WriteLine($"{DateTime.Now}: Clustering done");
 
 
-                var clusteredRoutesSb = new StringBuilder();
-                for (int santa = 0; santa < phase1Result.Waypoints.GetLength(0); santa++)
-                {
-                    for (int day = 0; day < phase1Result.Waypoints.GetLength(1); day++)
+                    var clusteredRoutesSb = new StringBuilder();
+                    for (int santa = 0; santa < phase1Result.Waypoints.GetLength(0); santa++)
                     {
-                        var wp = phase1Result.Waypoints[santa, day].Aggregate(string.Empty, (carry, n) => carry + Environment.NewLine + $"[{n.RealVisitId} {clusteringSolverInputData.VisitNames[n.Visit]}]");
-                        clusteredRoutesSb.Append($"Route Santa {santa} on {phase1Result.StartingTime[day]}");
-                        clusteredRoutesSb.AppendLine(wp);
-                        clusteredRoutesSb.AppendLine(new string('-', 20));
+                        for (int day = 0; day < phase1Result.Waypoints.GetLength(1); day++)
+                        {
+                            var wp = phase1Result.Waypoints[santa, day].Aggregate(string.Empty,
+                                (carry, n) =>
+                                    carry + Environment.NewLine +
+                                    $"[{n.RealVisitId} {clusteringSolverInputData.VisitNames[n.Visit]}]");
+                            clusteredRoutesSb.Append($"Route Santa {santa} on {phase1Result.StartingTime[day]}");
+                            clusteredRoutesSb.AppendLine(wp);
+                            clusteredRoutesSb.AppendLine(new string('-', 20));
+                        }
                     }
-                }
-                //var clusteredRoutes = phase1Result.Waypoints
-                //    .Cast<List<Waypoint>>()
-                //    .Select(wp =>  wp.Aggregate("", (carry, n) => carry + Environment.NewLine + $"[{n.RealVisitId} {clusteringSolverInputData.VisitNames[n.Visit]}]"));
+                    //var clusteredRoutes = phase1Result.Waypoints
+                    //    .Cast<List<Waypoint>>()
+                    //    .Select(wp =>  wp.Aggregate("", (carry, n) => carry + Environment.NewLine + $"[{n.RealVisitId} {clusteringSolverInputData.VisitNames[n.Visit]}]"));
 
 
 
-                routeCalculation.ClusteringResult = clusteredRoutesSb.ToString();
-                #endregion
+                    routeCalculation.ClusteringResult = clusteredRoutesSb.ToString();
 
-                dbSession.Update(routeCalculation);
-                dbSession.Flush();
+                    #endregion
 
-                // ******************************
-                #region Scheduling
-                // ******************************
+                    dbSession.Update(routeCalculation);
+                    dbSession.Flush();
 
-                var schedulingSovlerVariableBuilders = new List<SchedulingSolverVariableBuilder>();
-                foreach (var santa in Enumerable.Range(0, phase1Result.Waypoints.GetLength(0)))
-                {
-                    foreach (var day in Enumerable.Range(0, phase1Result.Waypoints.GetLength(1)))
+                    // ******************************
+
+                    #region Scheduling
+
+                    // ******************************
+
+                    var schedulingSovlerVariableBuilders = new List<SchedulingSolverVariableBuilder>();
+                    foreach (var santa in Enumerable.Range(0, phase1Result.Waypoints.GetLength(0)))
                     {
-                        var cluster = phase1Result.Waypoints[santa, day];
-                        schedulingSovlerVariableBuilders.Add(
-                            new SchedulingSolverVariableBuilder(routeCalculation.TimeSliceDuration,
-                                new List<Santa> { santas[santa] },
-                                visits.Where(v => cluster.Select(w => w.RealVisitId).Contains(v.Id)).ToList(),
-                                new List<(DateTime, DateTime)> { routeCalculation.Days[day] }
-                            )
-                        );
+                        foreach (var day in Enumerable.Range(0, phase1Result.Waypoints.GetLength(1)))
+                        {
+                            var cluster = phase1Result.Waypoints[santa, day];
+                            schedulingSovlerVariableBuilders.Add(
+                                new SchedulingSolverVariableBuilder(routeCalculation.TimeSliceDuration,
+                                    new List<Santa> {santas[santa]},
+                                    visits.Where(v => cluster.Select(w => w.RealVisitId).Contains(v.Id)).ToList(),
+                                    new List<(DateTime, DateTime)> {routeCalculation.Days[day]}
+                                )
+                            );
 
+                        }
                     }
+
+
+                    routeCalculation.State = RouteCalculationState.RunningPhase2;
+                    dbSession.Update(routeCalculation);
+                    dbSession.Flush();
+                    var inputData = schedulingSovlerVariableBuilders.Where(vb => vb.Visits.Count > 1)
+                        .Select(vb => vb.Build()).ToList();
+
+                    var routeResults = inputData
+                        .Select(schedulingInputdata => new SchedulingResult()
+                        {
+                            Route = Starter.Optimise(schedulingInputdata, TargetBuilderType.Default,
+                                routeCalculation.SchedulingMipGap),
+                            StartingTime = schedulingInputdata.DayStartingTimes[0]
+                        }).ToList();
+
+                    routeCalculation.SchedulingResult = JsonConvert.SerializeObject(routeResults);
+                    // gets captured by eventwriter
+                    Console.WriteLine($"{DateTime.Now}: Scheduling done");
+
+                    #endregion
+
+                    dbSession.Update(routeCalculation);
+                    dbSession.Flush();
+
+
+                    routeCalculation.Result = routeCalculation.SchedulingResult;
+                    routeCalculation.State = RouteCalculationState.Finished;
+
+                    routeCalculation.EndTime = DateTime.Now;
+                    dbSession.Update(routeCalculation);
+                    dbSession.Flush();
                 }
-
-
-                routeCalculation.State = RouteCalculationState.RunningPhase2;
-                dbSession.Update(routeCalculation);
-                dbSession.Flush();
-                var inputData = schedulingSovlerVariableBuilders.Where(vb => vb.Visits.Count > 1).Select(vb => vb.Build()).ToList();
-
-                var routeResults = inputData
-                    .Select(schedulingInputdata => new SchedulingResult()
-                    {
-                        Route = Starter.Optimise(schedulingInputdata, TargetBuilderType.Default, routeCalculation.SchedulingMipGap),
-                        StartingTime = schedulingInputdata.DayStartingTimes[0]
-                    }).ToList();
-
-                routeCalculation.SchedulingResult = JsonConvert.SerializeObject(routeResults);
-                // gets captured by eventwriter
-                Console.WriteLine($"{DateTime.Now}: Scheduling done");
-                #endregion
-                dbSession.Update(routeCalculation);
-                dbSession.Flush();
-
-
-                //todo: add last step?
-                routeCalculation.Result = routeCalculation.SchedulingResult;
-
-                routeCalculation.EndTime = DateTime.Now;
-                dbSession.Update(routeCalculation);
-                dbSession.Flush();
+                catch (Exception e)
+                {
+                    routeCalculation.State = RouteCalculationState.Cancelled;
+                    routeCalculation.StateText += "Error: " + e.Message;
+                    dbSession.Update(routeCalculation);
+                    dbSession.Flush();
+                }
             };
         }
 
