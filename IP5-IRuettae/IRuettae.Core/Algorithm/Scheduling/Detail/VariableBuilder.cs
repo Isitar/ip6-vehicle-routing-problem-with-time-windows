@@ -84,7 +84,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
 
             for (int day = 0; day < solverData.NumberOfDays; day++)
             {
-                solverData.Variables.VisitStart[day] = solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfVisits - 1, solverData.SlicesPerDay[day], $"VisitStart_Day{day}");
+                solverData.Variables.VisitStart[day] = solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfVisits, solverData.SlicesPerDay[day], $"VisitStart_Day{day}");
             }
         }
 

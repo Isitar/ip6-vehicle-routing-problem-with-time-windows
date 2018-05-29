@@ -58,7 +58,7 @@ namespace IRuettae.WebApi.Controllers
                 var solverInputData = solverVariableBuilder.Build();
                 var mpsPathScheduling = HostingEnvironment.MapPath($"~/App_Data/Scheduling_{visits.Count}.mps");
                 Starter.SaveMps(mpsPathScheduling, solverInputData, TargetBuilderType.Default);
-                
+
                 return Starter.Optimise(solverInputData);
             }
         }
@@ -150,8 +150,8 @@ namespace IRuettae.WebApi.Controllers
                 rc = new RouteCalculation
                 {
                     Days = algorithmStarter.Days,
-                    SantaJson = "", //JsonConvert.SerializeObject(santas,Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }),
-                    VisitsJson = "", //JsonConvert.SerializeObject(visits, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore}),
+                    SantaJson = "",
+                    VisitsJson = "",
                     StarterVisitId = algorithmStarter.StarterId,
                     State = RouteCalculationState.Creating,
                     TimePerChild = algorithmStarter.TimePerChild,
@@ -167,8 +167,8 @@ namespace IRuettae.WebApi.Controllers
                 rc2 = new RouteCalculation
                 {
                     Days = algorithmStarter.Days,
-                    SantaJson = "", //JsonConvert.SerializeObject(santas,Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }),
-                    VisitsJson = "", //JsonConvert.SerializeObject(visits, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore}),
+                    SantaJson = "",
+                    VisitsJson = "",
                     StarterVisitId = algorithmStarter.StarterId,
                     State = RouteCalculationState.Creating,
                     TimePerChild = algorithmStarter.TimePerChild,
