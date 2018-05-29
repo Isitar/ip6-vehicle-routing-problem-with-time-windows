@@ -26,35 +26,42 @@ namespace IRuettae.WebApi.Controllers
     [RoutePrefix("api/algorithm")]
     public class AlgorithmController : ApiController
     {
-        //[HttpPost]
-        //public Route CalculateRoute([FromBody] AlgorithmStarter algorithmStarter)
-        //{
+        [HttpPost]
+        public Route CalculateRoute([FromBody] AlgorithmStarter algorithmStarter)
+        {
 
-        //    using (var dbSession = SessionFactory.Instance.OpenSession())
-        //    using (var transaction = dbSession.BeginTransaction())
-        //    {
-        //        var visits = dbSession.Query<Visit>().Take(10).ToList();
-        //        visits.ForEach(v => v.Duration = 60 * (v.NumberOfChildren * algorithmStarter.TimePerChild + algorithmStarter.Beta0));
-        //        visits.Sort((a, b) =>
-        //        {
-        //            if (a.Id == algorithmStarter.StarterId)
-        //            {
-        //                return -1;
-        //            }
-        //            return a.Id.CompareTo(b.Id);
-        //        });
+            using (var dbSession = SessionFactory.Instance.OpenSession())
+            using (var transaction = dbSession.BeginTransaction())
+            {
+                var visits = dbSession.Query<Visit>().Where(v => v.Year == algorithmStarter.Year).ToList();
+                visits.ForEach(v => v.Duration = 60 * (v.NumberOfChildren * algorithmStarter.TimePerChild + algorithmStarter.Beta0));
+                visits.Sort((a, b) =>
+                {
+                    if (a.Id == algorithmStarter.StarterId)
+                    {
+                        return -1;
+                    }
+                    if (b.Id == algorithmStarter.StarterId)
+                    {
+                        return 1;
+                    }
+                    return a.Id.CompareTo(b.Id);
+                });
 
-        //        var solverVariableBuilder = new SchedulingSolverVariableBuilder(algorithmStarter.TimeSliceDuration)
-        //        {
-        //            Visits = visits,
-        //            Santas = dbSession.Query<Santa>().ToList(),
-        //            Days = algorithmStarter.Days
-        //        };
+                var solverVariableBuilder = new SchedulingSolverVariableBuilder(algorithmStarter.TimeSliceDuration)
+                {
+                    Visits = visits,
+                    Santas = dbSession.Query<Santa>().ToList(),
+                    Days = algorithmStarter.Days
+                };
 
-        //        var solverInputData = solverVariableBuilder.Build();
-        //        return Starter.Optimise(solverInputData);
-        //    }
-        //}
+                var solverInputData = solverVariableBuilder.Build();
+                var mpsPathScheduling = HostingEnvironment.MapPath($"~/App_Data/Scheduling_{visits.Count}.mps");
+                Starter.SaveMps(mpsPathScheduling, solverInputData, TargetBuilderType.Default);
+                
+                return Starter.Optimise(solverInputData);
+            }
+        }
 
 
         //[HttpGet]
@@ -136,7 +143,7 @@ namespace IRuettae.WebApi.Controllers
         {
 
             RouteCalculation rc;
-            var bgWorker = new BackgroundWorker();
+            RouteCalculation rc2;
 
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
@@ -152,13 +159,31 @@ namespace IRuettae.WebApi.Controllers
                     TimeSliceDuration = algorithmStarter.TimeSliceDuration,
                     Year = algorithmStarter.Year,
                     ClusteringOptimisationFunction = ClusteringOptimisationGoals.OverallMinTime,
-                    ClustringMipGap = 0.1,
-                    SchedulingMipGap = 0.1
+                    ClustringMipGap = 0.5,
+                    SchedulingMipGap = 0.05
                 };
                 rc = dbSession.Merge(rc);
+
+                rc2 = new RouteCalculation
+                {
+                    Days = algorithmStarter.Days,
+                    SantaJson = "", //JsonConvert.SerializeObject(santas,Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }),
+                    VisitsJson = "", //JsonConvert.SerializeObject(visits, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore}),
+                    StarterVisitId = algorithmStarter.StarterId,
+                    State = RouteCalculationState.Creating,
+                    TimePerChild = algorithmStarter.TimePerChild,
+                    TimePerChildOffset = algorithmStarter.Beta0,
+                    TimeSliceDuration = algorithmStarter.TimeSliceDuration,
+                    Year = algorithmStarter.Year,
+                    ClusteringOptimisationFunction = ClusteringOptimisationGoals.MinTimePerSanta,
+                    ClustringMipGap = 0.5,
+                    SchedulingMipGap = 0.05
+                };
+                rc2 = dbSession.Merge(rc2);
             }
 
             Task.Run(() => new Pipeline(rc).StartWorker());
+            Task.Run(() => new Pipeline(rc2).StartWorker());
 
             return rc.Id;
 

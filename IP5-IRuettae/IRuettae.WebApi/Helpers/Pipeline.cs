@@ -190,9 +190,9 @@ namespace IRuettae.WebApi.Helpers
                             var cluster = phase1Result.Waypoints[santa, day];
                             schedulingSovlerVariableBuilders.Add(
                                 new SchedulingSolverVariableBuilder(routeCalculation.TimeSliceDuration,
-                                    new List<Santa> {santas[santa]},
+                                    new List<Santa> { santas[santa] },
                                     visits.Where(v => cluster.Select(w => w.RealVisitId).Contains(v.Id)).ToList(),
-                                    new List<(DateTime, DateTime)> {routeCalculation.Days[day]}
+                                    new List<(DateTime, DateTime)> { routeCalculation.Days[day] }
                                 )
                             );
 
@@ -206,12 +206,19 @@ namespace IRuettae.WebApi.Helpers
                     var inputData = schedulingSovlerVariableBuilders.Where(vb => vb.Visits.Count > 1)
                         .Select(vb => vb.Build()).ToList();
 
+                    int ctr = 0;
                     var routeResults = inputData
-                        .Select(schedulingInputdata => new SchedulingResult()
+                        .AsParallel()
+                        .Select(schedulingInputdata =>
                         {
-                            Route = Starter.Optimise(schedulingInputdata, TargetBuilderType.Default,
-                                routeCalculation.SchedulingMipGap),
-                            StartingTime = schedulingInputdata.DayStartingTimes[0]
+                            var mpsPathScheduling = HostingEnvironment.MapPath($"~/App_Data/Scheduling_{ctr++}.mps");
+                            Starter.SaveMps(mpsPathScheduling, schedulingInputdata, TargetBuilderType.Default);
+                            return new SchedulingResult
+                            {
+                                Route = Starter.Optimise(schedulingInputdata, TargetBuilderType.Default,
+                                    routeCalculation.SchedulingMipGap),
+                                StartingTime = schedulingInputdata.DayStartingTimes[0]
+                            };
                         }).ToList();
 
                     routeCalculation.SchedulingResult = JsonConvert.SerializeObject(routeResults);

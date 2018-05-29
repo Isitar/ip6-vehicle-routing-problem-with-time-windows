@@ -63,7 +63,7 @@
                         origin: '@route[0].Visit.ToString()',
                         destination: '@route[route.Length - 1].Visit.ToString()',
                         waypoints: waypts,
-                        optimizeWaypoints: true,
+                        optimizeWaypoints: false,
                         travelMode: 'WALKING'
                     },
                     function(response, status) {

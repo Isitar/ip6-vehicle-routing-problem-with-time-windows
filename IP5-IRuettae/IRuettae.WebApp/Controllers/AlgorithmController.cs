@@ -35,8 +35,10 @@ namespace IRuettae.WebApp.Controllers
         public async System.Threading.Tasks.Task<ActionResult> CalculateRouteAsync(AlgorithmStarterVM asvm)
         {
             asvm.Days = asvm.DaysPeriod.Select(p => (p.Start.Value, p.End.Value)).ToList();
+            
             //            Client.Timeout = TimeSpan.FromHours(10);
             var result = await Client.PostAsJsonAsync("api/algorithm/StartRouteCalculation", asvm);
+            var x = JsonConvert.SerializeObject(asvm);
             return RedirectToAction("Results");
         }
 
