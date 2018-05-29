@@ -80,15 +80,11 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
 
         private void CreateVisitStart()
         {
-            solverData.Variables.VisitStart = new GLS.Variable[solverData.NumberOfDays][][];
+            solverData.Variables.VisitStart = new GLS.Variable[solverData.NumberOfDays][,];
 
             for (int day = 0; day < solverData.NumberOfDays; day++)
             {
-                solverData.Variables.VisitStart[day] = new GLS.Variable[solverData.NumberOfVisits][];
-                for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
-                {
-                    solverData.Variables.VisitStart[day][visit] = solverData.Solver.MakeBoolVarArray(solverData.SlicesPerDay[day], $"VisitStart_Day_{day}_Visit_{visit}");
-                }
+                solverData.Variables.VisitStart[day] = solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfVisits - 1, solverData.SlicesPerDay[day], $"VisitStart_Day{day}");
             }
         }
 

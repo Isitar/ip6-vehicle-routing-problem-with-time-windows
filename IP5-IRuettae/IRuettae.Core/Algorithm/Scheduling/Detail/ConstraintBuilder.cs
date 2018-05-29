@@ -253,7 +253,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
                 {
                     for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day] - 1; timeslice++)
                     {
-                        var start = solverData.Variables.VisitStart[day][visit][timeslice + 1];
+                        var start = solverData.Variables.VisitStart[day][visit, timeslice + 1];
                         var t0 = solverData.Variables.Visits[day][visit, timeslice];
                         var t1 = solverData.Variables.Visits[day][visit, timeslice + 1];
 
@@ -261,7 +261,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
                         // special case if the visit starts at timeslice 0
                         if (timeslice == 0)
                         {
-                            var start0 = solverData.Variables.VisitStart[day][visit][timeslice];
+                            var start0 = solverData.Variables.VisitStart[day][visit, timeslice];
                             solverData.Solver.Add(start0 == t0);
                             sum += start0;
                         }
@@ -296,7 +296,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
                     var sum = new LinearExpr();
                     for (int timeslice = 0; timeslice < Math.Min(distance, solverData.SlicesPerDay[day]); timeslice++)
                     {
-                        sum += solverData.Variables.VisitStart[day][visit][timeslice];
+                        sum += solverData.Variables.VisitStart[day][visit, timeslice];
                     }
                     solverData.Solver.Add(sum == 0);
                 }
@@ -319,7 +319,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
                     var sum = new LinearExpr();
                     for (int timeslice = start; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                     {
-                        sum += solverData.Variables.VisitStart[day][visit][timeslice];
+                        sum += solverData.Variables.VisitStart[day][visit, timeslice];
                     }
                     solverData.Solver.Add(sum == 0);
                 }
