@@ -11,7 +11,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders
         {
             var factory = new TargetFunctionFactory(solverData);
 
-            targetFunction += factory.CreateTargetFunction(TargetType.MinTime, null);
+            targetFunction += factory.CreateTargetFunction(TargetType.MinTime);
 
             solverData.Solver.Minimize(targetFunction);
         }
