@@ -189,7 +189,7 @@ namespace IRuettae.Core.Algorithm.Scheduling
                     Debug.WriteLine($"Day: {day}");
                     for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                     {
-                        Debug.Write(solverData.Variables.VisitStart[day][visit][timeslice].SolutionValue());
+                        Debug.Write(solverData.Variables.VisitStart[day][visit, timeslice].SolutionValue());
                     }
                     Debug.WriteLine(" (VisitStart)");
                     for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)

@@ -30,9 +30,9 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
         public GLS.Variable[][,] Santas { get; set; }
 
         /// <summary>
-        /// [day][Visit][timeslice] is this the time when the Visit starts
+        /// [day][Visit,timeslice] is this the time when the Visit starts
         /// </summary>
-        public GLS.Variable[][][] VisitStart { get; set; }
+        public GLS.Variable[][,] VisitStart { get; set; }
 
         /// <summary>
         /// [day,santa] is used
