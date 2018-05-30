@@ -40,5 +40,23 @@ namespace IRuettae.WebApi.Properties {
                 return ((string)(this["GoogleSearchRegion"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.07")]
+        public double MIPGapClustering {
+            get {
+                return ((double)(this["MIPGapClustering"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.1")]
+        public double MIPGapScheduling {
+            get {
+                return ((double)(this["MIPGapScheduling"]));
+            }
+        }
     }
 }

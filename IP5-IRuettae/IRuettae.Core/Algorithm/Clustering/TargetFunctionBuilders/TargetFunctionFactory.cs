@@ -36,23 +36,25 @@ namespace IRuettae.Core.Algorithm.Clustering.TargetFunctionBuilders
         private LinearExpr MinTimeTargetfunction(double? weight = 1)
         {
             var sum = new LinearExpr[solverData.NumberOfSantas];
-            foreach (var santa in Enumerable.Range(0,solverData.NumberOfSantas))
+            foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
                 sum[santa] = solverData.Variables.SantaVisitTime[santa] + solverData.Variables.SantaRouteCost[santa];
             }
-            
+
             return sum.Sum();
         }
 
         private LinearExpr MinTimePerSantaTargetfunction(double? weight = 1)
         {
             var sum = new LinearExpr[solverData.NumberOfSantas];
+            var sumSantaTotalTimePossible = new LinearExpr();
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
                 sum[santa] = solverData.Variables.SantaVisitTime[santa] + solverData.Variables.SantaRouteCost[santa];
+                sumSantaTotalTimePossible += solverData.Variables.SantaVisit[santa, 0] * solverData.SolverInputData.DayDuration[santa / solverData.SolverInputData.Santas.GetLength(1)];
             }
 
-            return sum.Sum() / solverData.NumberOfSantas;
+            return sum.Sum() - sumSantaTotalTimePossible;
         }
 
 

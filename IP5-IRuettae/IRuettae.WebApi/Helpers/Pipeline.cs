@@ -30,6 +30,7 @@ namespace IRuettae.WebApi.Helpers
         public Pipeline(RouteCalculation routeCalculation)
         {
             this.routeCalculation = routeCalculation;
+            routeCalculation.StateText = "";
             this.dbSession = SessionFactory.Instance.OpenSession();
             dbSession.FlushMode = FlushMode.Always;
 
@@ -74,30 +75,31 @@ namespace IRuettae.WebApi.Helpers
 
                     routeCalculation.NumberOfSantas = santas.Count;
                     routeCalculation.NumberOfVisits = visits.Count;
+                    
                     routeCalculation.State = RouteCalculationState.Ready;
                     dbSession.Update(routeCalculation);
                     dbSession.Flush();
 
-                    var eventTextWriter = new EventTextWriter();
-                    var lastUpdate = DateTime.Now;
-                    eventTextWriter.CharWritten += (o, c) =>
-                    {
-                        if (null == routeCalculation.StateText)
-                        {
-                            routeCalculation.StateText = string.Empty;
-                        }
+                    //var eventTextWriter = new EventTextWriter();
+                    //var lastUpdate = DateTime.Now;
+                    //eventTextWriter.CharWritten += (o, c) =>
+                    //{
+                    //    if (null == routeCalculation.StateText)
+                    //    {
+                    //        routeCalculation.StateText = string.Empty;
+                    //    }
 
-                        routeCalculation.StateText += c;
-                        if (DateTime.Now - lastUpdate > TimeSpan.FromMinutes(1))
-                        {
-                            lastUpdate = DateTime.Now;
-                            dbSession.Update(routeCalculation);
-                            dbSession.Flush();
-                        }
-                    };
+                    //    routeCalculation.StateText += c;
+                    //    if (DateTime.Now - lastUpdate > TimeSpan.FromMinutes(1))
+                    //    {
+                    //        lastUpdate = DateTime.Now;
+                    //        dbSession.Update(routeCalculation);
+                    //        dbSession.Flush();
+                    //    }
+                    //};
 
-                    Console.SetOut(eventTextWriter);
-                    Console.SetError(eventTextWriter);
+                    //Console.SetOut(eventTextWriter);
+                    //Console.SetError(eventTextWriter);
 
 
                     // ******************************
@@ -128,7 +130,7 @@ namespace IRuettae.WebApi.Helpers
 #if DEBUG
                     var serialPath =
                         HostingEnvironment.MapPath(
-                            $"~/App_Data/ClusteringSolverInput{routeCalculation.NumberOfVisits}Visits.serial");
+                            $"~/App_Data/ClusteringSolverInput{routeCalculation.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}Visits.serial");
                     if (serialPath != null)
                     {
                         using (var stream = File.Open(serialPath, FileMode.Create))
@@ -138,15 +140,14 @@ namespace IRuettae.WebApi.Helpers
                     }
 
                     var mpsPath =
-                        HostingEnvironment.MapPath($"~/App_Data/Clustering_{routeCalculation.NumberOfVisits}.mps");
+                        HostingEnvironment.MapPath($"~/App_Data/Clustering_{routeCalculation.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}.mps");
                     Starter.SaveMps(mpsPath, clusteringSolverInputData, targetType);
 #endif
 
                     var phase1Result = Starter.Optimise(clusteringSolverInputData, targetType,
                         routeCalculation.ClustringMipGap);
 
-                    // gets captured by eventwriter
-                    Console.WriteLine($"{DateTime.Now}: Clustering done");
+                    routeCalculation.StateText += $"{DateTime.Now}: Clustering done{Environment.NewLine}";
 
 
                     var clusteredRoutesSb = new StringBuilder();
@@ -211,7 +212,7 @@ namespace IRuettae.WebApi.Helpers
                         .AsParallel()
                         .Select(schedulingInputdata =>
                         {
-                            var mpsPathScheduling = HostingEnvironment.MapPath($"~/App_Data/Scheduling_{ctr++}.mps");
+                            var mpsPathScheduling = HostingEnvironment.MapPath($"~/App_Data/Scheduling_{routeCalculation.Id}_{ctr++}.mps");
                             Starter.SaveMps(mpsPathScheduling, schedulingInputdata, TargetBuilderType.Default);
                             return new SchedulingResult
                             {
@@ -223,7 +224,7 @@ namespace IRuettae.WebApi.Helpers
 
                     routeCalculation.SchedulingResult = JsonConvert.SerializeObject(routeResults);
                     // gets captured by eventwriter
-                    Console.WriteLine($"{DateTime.Now}: Scheduling done");
+                    routeCalculation.StateText += $"{DateTime.Now}: Scheduling done{Environment.NewLine}";
 
                     #endregion
 

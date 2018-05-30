@@ -38,7 +38,6 @@ namespace IRuettae.WebApp.Controllers
             
             //            Client.Timeout = TimeSpan.FromHours(10);
             var result = await Client.PostAsJsonAsync("api/algorithm/StartRouteCalculation", asvm);
-            var x = JsonConvert.SerializeObject(asvm);
             return RedirectToAction("Results");
         }
 

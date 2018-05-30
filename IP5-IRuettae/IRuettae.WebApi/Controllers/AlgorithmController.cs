@@ -159,8 +159,8 @@ namespace IRuettae.WebApi.Controllers
                     TimeSliceDuration = algorithmStarter.TimeSliceDuration,
                     Year = algorithmStarter.Year,
                     ClusteringOptimisationFunction = ClusteringOptimisationGoals.OverallMinTime,
-                    ClustringMipGap = 0.5,
-                    SchedulingMipGap = 0.05
+                    ClustringMipGap = Properties.Settings.Default.MIPGapClustering,
+                    SchedulingMipGap = Properties.Settings.Default.MIPGapScheduling,
                 };
                 rc = dbSession.Merge(rc);
 
@@ -176,8 +176,8 @@ namespace IRuettae.WebApi.Controllers
                     TimeSliceDuration = algorithmStarter.TimeSliceDuration,
                     Year = algorithmStarter.Year,
                     ClusteringOptimisationFunction = ClusteringOptimisationGoals.MinTimePerSanta,
-                    ClustringMipGap = 0.5,
-                    SchedulingMipGap = 0.05
+                    ClustringMipGap = Properties.Settings.Default.MIPGapClustering,
+                    SchedulingMipGap = Properties.Settings.Default.MIPGapScheduling,
                 };
                 rc2 = dbSession.Merge(rc2);
             }
