@@ -75,7 +75,7 @@ namespace IRuettae.WebApi.Helpers
 
                     routeCalculation.NumberOfSantas = santas.Count;
                     routeCalculation.NumberOfVisits = visits.Count;
-                    
+
                     routeCalculation.State = RouteCalculationState.Ready;
                     dbSession.Update(routeCalculation);
                     dbSession.Flush();
@@ -225,6 +225,13 @@ namespace IRuettae.WebApi.Helpers
                     routeCalculation.SchedulingResult = JsonConvert.SerializeObject(routeResults);
                     // gets captured by eventwriter
                     routeCalculation.StateText += $"{DateTime.Now}: Scheduling done{Environment.NewLine}";
+
+                    #endregion
+
+                    #region metrics
+
+                    routeCalculation.DesiredSeconds = 0;
+                    routeCalculation.LatestVisit = routeResults.Max(rr => new DateTime().Add(rr.StartingTime.AddSeconds(rr.Route.Waypoints.Cast<Waypoint>().Max(wp => wp.StartTime) * routeCalculation.TimeSliceDuration).TimeOfDay));
 
                     #endregion
 
