@@ -28,7 +28,7 @@ namespace IRuettae.WebApp.Models
         [DisplayName("Anzahl Chläuse")]
         public virtual int NumberOfSantas { get; set; }
         [DisplayName("Anzahl Besuche")]
-        public virtual int NumberOfVisits{ get; set; }
+        public virtual int NumberOfVisits { get; set; }
         [DisplayName("")]
         public virtual string SantaJson { get; set; }
         [DisplayName("")]
@@ -46,7 +46,7 @@ namespace IRuettae.WebApp.Models
         [DisplayName("Zeitgenauigkeit [s]")]
         public virtual int TimeSliceDuration { get; set; }
         [DisplayName("Scheduling MIP GAP")]
-        public virtual double SchedulingMipGap{ get; set; }
+        public virtual double SchedulingMipGap { get; set; }
         [DisplayName("Scheduling Resultat")]
         public virtual string SchedulingResult { get; set; }
 
@@ -68,7 +68,7 @@ namespace IRuettae.WebApp.Models
         public virtual double WaytimePerSanta { get; set; }
         [DisplayName("Wunschzeit erfüllt")]
         public virtual double DesiredSeconds { get; set; }
-        [DisplayName("Längste Route (Zeitlich [s])")]
+        [DisplayName("Längste Route (Zeitlich [m])")]
         public virtual double LongestRouteTime { get; set; }
         [DisplayName("Längste Route (Distanz [m])")]
         public virtual double LongestRouteDistance { get; set; }
@@ -85,7 +85,6 @@ namespace IRuettae.WebApp.Models
             RunningPhase3,
             Cancelled,
             Finished,
-            
         }
 
     }

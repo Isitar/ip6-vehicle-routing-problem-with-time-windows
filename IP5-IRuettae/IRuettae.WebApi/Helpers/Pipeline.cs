@@ -249,26 +249,26 @@ namespace IRuettae.WebApi.Helpers
 
                                     foreach (var desired in visit.Desired)
                                     {
-                                        // inside
+                                        // outside
                                         if (visitStart <= desired.Start && visitEnd >= desired.End)
                                         {
                                             routeCalculation.DesiredSeconds += (desired.End - desired.Start).Value.TotalSeconds;
                                         }
 
-                                        // outside
+                                        // inside
                                         else if (visitStart > desired.Start && visitEnd < desired.End)
                                         {
                                             routeCalculation.DesiredSeconds += (visitEnd - visitStart).TotalSeconds;
                                         }
 
-                                        // left
-                                        else if (visitStart > desired.Start && visitEnd >= desired.End)
+                                        // right
+                                        else if (visitStart > desired.Start && visitEnd >= desired.End && visitStart < desired.End)
                                         {
                                             routeCalculation.DesiredSeconds += (desired.End - visitStart).Value.TotalSeconds;
                                         }
 
-                                        // right
-                                        else if (visitStart <= desired.Start && visitEnd < desired.End)
+                                        // left
+                                        else if (visitStart <= desired.Start && visitEnd < desired.End && visitEnd > desired.Start)
                                         {
                                             routeCalculation.DesiredSeconds += (visitEnd - desired.Start).Value.TotalSeconds;
                                         }
