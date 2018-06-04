@@ -29,7 +29,7 @@ namespace IRuettae.WebApp.Models
         [DisplayName("Timeslice Dauer [s]")]
         public int TimeSliceDuration { get; set; }
         [Required]
-        [DisplayName("Zeit pro weiteres Kind [min]")]
+        [DisplayName("Zeit für jedes weitere Kind [min]")]
         [Range(1, int.MaxValue)]
         public int TimePerChild { get; set; }
         [Range(1, int.MaxValue)]
