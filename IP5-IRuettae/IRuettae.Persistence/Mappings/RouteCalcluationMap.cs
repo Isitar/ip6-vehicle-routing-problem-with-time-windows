@@ -29,7 +29,14 @@ namespace IRuettae.Persistence.Mappings
             Map(x => x.SchedulingResult).CustomSqlType("LONGTEXT"); ;
 
             Map(x => x.Result).CustomSqlType("LONGTEXT"); ;
-            
+
+            Map(x => x.TotalWaytime);
+            Map(x => x.WaytimePerSanta);
+            Map(x => x.DesiredSeconds);
+            Map(x => x.LongestRouteTime);
+            Map(x => x.LongestRouteDistance);
+            Map(x => x.LatestVisit);
+
             Map(x => x.State);
             Map(x => x.StateText);
             Map(x => x.EndTime);

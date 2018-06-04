@@ -10,7 +10,7 @@ using SolverInputData = IRuettae.Core.Algorithm.Clustering.SolverInputData;
 namespace IRuettae.Core.Tests.Algorithm
 {
     [TestClass]
-    public class MSTTests
+    public class ATSPTests
     {
         [TestMethod]
         public void TestConnectedGraph()

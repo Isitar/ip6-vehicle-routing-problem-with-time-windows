@@ -50,9 +50,6 @@ namespace IRuettae.WebApp.Models
         [DisplayName("Scheduling Resultat")]
         public virtual string SchedulingResult { get; set; }
 
-        // Phase 3
-
-
 
         // Running & Result
         [DisplayName("Resultat")]
@@ -64,6 +61,21 @@ namespace IRuettae.WebApp.Models
         [DisplayName("Endzeit")]
         public virtual DateTime EndTime { get; set; }
 
+        // Metrics
+        [DisplayName("Totale Wegzeit")]
+        public virtual double TotalWaytime { get; set; }
+        [DisplayName("Wegzeit pro Chlaus")]
+        public virtual double WaytimePerSanta { get; set; }
+        [DisplayName("Wunschzeit erfüllt")]
+        public virtual double DesiredSeconds { get; set; }
+        [DisplayName("Längste Route (Zeitlich [s])")]
+        public virtual double LongestRouteTime { get; set; }
+        [DisplayName("Längste Route (Distanz [m])")]
+        public virtual double LongestRouteDistance { get; set; }
+        [DisplayName("Spätester Besuch")]
+        public virtual DateTime LatestVisit { get; set; }
+
+
         public enum RouteCalculationState
         {
             Creating,
@@ -72,7 +84,8 @@ namespace IRuettae.WebApp.Models
             RunningPhase2,
             RunningPhase3,
             Cancelled,
-            Finished
+            Finished,
+            
         }
 
     }
