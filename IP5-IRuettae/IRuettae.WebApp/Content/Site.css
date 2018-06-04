@@ -1,8 +1,14 @@
 ﻿body {
     padding-top: 60px;
     padding-bottom: 20px;
+    background: linear-gradient(to bottom, whitesmoke, white);
+    background-repeat: no-repeat;
+    height: 100%;
+    /*background-image: url('/Content/Christmas_background.jpg');*/
 }
-
+html {
+    height: 100%;
+}
 
 /* Set padding to keep content from hitting the edges */
 .body-content {
@@ -97,12 +103,15 @@
 }
 
 
-.tr-orange {
+.td-orange {
     background: rgba(255, 128, 0, 0.5);
+    border: white solid;
 }
-.tr-red {
+.td-red {
     background: rgba(255, 0, 0, 0.5);
+    border: white solid;
 }
-.tr-green {
+.td-green {
     background: rgba(0, 255, 0, 0.5);
+    border: white solid;
 }

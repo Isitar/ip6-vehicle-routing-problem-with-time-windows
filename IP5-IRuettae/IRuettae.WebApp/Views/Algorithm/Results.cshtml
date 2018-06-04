@@ -2,23 +2,12 @@
 @model IEnumerable<IRuettae.WebApp.Models.RouteCalculationVM>
 
 <h1>Algorithmus Resultate</h1>
-<button id="btnRefresher" style="float:right" class="btn btn-primary" onclick="btnRefreshClick()">Automatisches Aktualisieren einschalten</button>
+<button id="btnRefresher" style="float:right" class="btn btn-primary" onclick="btnRefreshClick()"><i class="fas fa-sync"></i> Automatisches Aktualisieren einschalten</button>
 <table class="table">
     <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.StartTime)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.EndTime)
-        </th>
+        <th></th>
         <th>
             @Html.DisplayNameFor(model => model.Year)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ClusteringResult)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.SchedulingResult)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.State)
@@ -34,67 +23,62 @@
 
     @foreach (var item in Model)
     {
-        <tr class="@(item.State == RouteCalculationVM.RouteCalculationState.Finished ? "tr-green" :
-   (new []{RouteCalculationVM.RouteCalculationState.RunningPhase1,
-                RouteCalculationVM.RouteCalculationState.RunningPhase2,
-                RouteCalculationVM.RouteCalculationState.RunningPhase3,
-                RouteCalculationVM.RouteCalculationState.Ready
-        }).Contains(item.State) ? "tr-orange" : "tr-red")">
-            <td>
-                @Html.DisplayFor(modelItem => item.StartTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Year)
-            </td>
-            <td>
-                @if (!string.IsNullOrEmpty(item.ClusteringResult))
-                {
-                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-cl-@item.Id" aria-expanded="False" aria-controls="collapse-cl-@item.Id">Anzeigen</button>
+    <tr>
+        <td class="@(item.State == RouteCalculationVM.RouteCalculationState.Finished ? "td-green" :
+                             (new []{RouteCalculationVM.RouteCalculationState.RunningPhase1,
+                                 RouteCalculationVM.RouteCalculationState.RunningPhase2,
+                                 RouteCalculationVM.RouteCalculationState.RunningPhase3,
+                                 RouteCalculationVM.RouteCalculationState.Ready
+                             }).Contains(item.State) ? "td-orange" : "td-red")"></td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Year)
+        </td>
+        @*<td>
+            @if (!string.IsNullOrEmpty(item.ClusteringResult))
+            {
+                <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-cl-@item.Id" aria-expanded="False" aria-controls="collapse-cl-@item.Id">Anzeigen</button>
 
-                    <div class="collapse" id="collapse-cl-@item.Id" style="min-width: 400px">
-                        <div class="card card-body">
-                            @foreach (var line in item.ClusteringResult?.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
-                            {
-                                <p>@line</p>
-                            }
-                        </div>
+                <div class="collapse" id="collapse-cl-@item.Id" style="min-width: 400px">
+                    <div class="card card-body">
+                        @foreach (var line in item.ClusteringResult?.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
+                        {
+                            <p>@line</p>
+                        }
                     </div>
-                }
-            </td>
-            <td>
-                @if (!string.IsNullOrEmpty(item.SchedulingResult))
-                {
-                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-sr-@item.Id" aria-expanded="False" aria-controls="collapse-sr-@item.Id">Anzeigen</button>
+                </div>
+            }
+        </td>
+        <td>
+            @if (!string.IsNullOrEmpty(item.SchedulingResult))
+            {
+                <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-sr-@item.Id" aria-expanded="False" aria-controls="collapse-sr-@item.Id">Anzeigen</button>
 
-                    <div class="collapse" id="collapse-sr-@item.Id">
-                        <div class="card card-body">
-                            @foreach (var line in item.SchedulingResult?.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
-                            {
-                                <p>@line</p>
-                            }
-                        </div>
+                <div class="collapse" id="collapse-sr-@item.Id">
+                    <div class="card card-body">
+                        @foreach (var line in item.SchedulingResult?.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
+                        {
+                            <p>@line</p>
+                        }
                     </div>
-                }
-            </td>
-            <td style="white-space: nowrap;">
+                </div>
+            }
+        </td>*@
+        <td style="white-space: nowrap;">
 
-                @if ((new[] { RouteCalculationVM.RouteCalculationState.Ready, RouteCalculationVM.RouteCalculationState.RunningPhase1, RouteCalculationVM.RouteCalculationState.RunningPhase2, RouteCalculationVM.RouteCalculationState.RunningPhase3 }).Contains(item.State))
-                {
-                    <i class="fas fa-spinner fa-pulse"></i>
-                }
-                &nbsp;
-                @Html.DisplayFor(modelItem => item.State)
+            @if ((new[] { RouteCalculationVM.RouteCalculationState.Ready, RouteCalculationVM.RouteCalculationState.RunningPhase1, RouteCalculationVM.RouteCalculationState.RunningPhase2, RouteCalculationVM.RouteCalculationState.RunningPhase3 }).Contains(item.State))
+            {
+                <i class="fas fa-spinner fa-pulse"></i>
+            }
+            &nbsp;
+            @Html.DisplayFor(modelItem => item.State)
 
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StateText)
-            </td>
-            <td style="min-width: 200px; font-size: 12px">
-                @if (!string.IsNullOrEmpty(item.Result))
-                {
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StateText)
+        </td>
+        <td style="min-width: 200px; font-size: 12px">
+            @if (!string.IsNullOrEmpty(item.Result))
+            {
                 <dl>
                     <dt>@Html.DisplayNameFor(m => m.NumberOfSantas)</dt>
                     <dd>@item.NumberOfSantas</dd>
@@ -127,19 +111,19 @@
                     <dd>@item.LatestVisit</dd>
                 </dl>
 
-                }
-            </td>
-            <td>
-                @if (!string.IsNullOrEmpty(item.Result))
-                {
-                    <a href="@Url.Action("Result", new {id = item.Id})" class="btn btn-lg btn-info">
+            }
+        </td>
+        <td>
+            @if (!string.IsNullOrEmpty(item.Result))
+            {
+                <a href="@Url.Action("Result", new {id = item.Id})" class="btn btn-lg btn-info">
 
-                        <i class="fa fa-eye"></i>
-                        Resultat
-                    </a>
-                }
-            </td>
-        </tr>
+                    <i class="fa fa-eye"></i>
+                    Resultat
+                </a>
+            }
+        </td>
+    </tr>
     }
 
 </table>
@@ -155,7 +139,7 @@
             if (localStorage.getItem(itemName) === '1') {
                 localStorage.setItem(itemName, 0);
                 clearTimeout(timeout);
-                button.innerHTML = 'Automatisches Aktualisieren einschalten';
+                button.innerHTML = '<i class="fas fa-sync"></i> Automatisches Aktualisieren einschalten';
             } else {
                 localStorage.setItem(itemName, 1);
                 onRefresh();
@@ -164,10 +148,10 @@
 
         $(document).ready(() => {
             if (localStorage.getItem(itemName) === '1') {
-                button.innerHTML = 'Automatisches Aktualisieren abschalten';
+                button.innerHTML = '<i class="fas fa-sync"></i> Automatisches Aktualisieren abschalten';
                 timeout = setTimeout(onRefresh, refreshIntervalInSeconds * 1000)
             } else {
-                button.innerHTML = 'Automatisches Aktualisieren einschalten';
+                button.innerHTML = '<i class="fas fa-sync"></i> Automatisches Aktualisieren einschalten';
             }
         })
         function onRefresh() {
