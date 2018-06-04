@@ -95,31 +95,37 @@
             <td style="min-width: 200px; font-size: 12px">
                 @if (!string.IsNullOrEmpty(item.Result))
                 {
-                    <dl>
-                        <dt>@Html.DisplayNameFor(m => m.NumberOfSantas)</dt>
-                        <dd>@item.NumberOfSantas</dd>
+                <dl>
+                    <dt>@Html.DisplayNameFor(m => m.NumberOfSantas)</dt>
+                    <dd>@item.NumberOfSantas</dd>
 
-                        <dt>@Html.DisplayNameFor(m => m.NumberOfVisits)</dt>
-                        <dd>@item.NumberOfVisits</dd>
+                    <dt>@Html.DisplayNameFor(m => m.NumberOfVisits)</dt>
+                    <dd>@item.NumberOfVisits</dd>
 
-                        <dt>@Html.DisplayNameFor(m => m.TotalWaytime)</dt>
-                        <dd>@(Math.Round(item.TotalWaytime / 60)) Minuten</dd>
+                    <dt>@Html.DisplayNameFor(m => m.TotalVisitTime)</dt>
+                    <dd>@(Math.Round(item.TotalVisitTime / 60)) Minuten</dd>
 
-                        <dt>@Html.DisplayNameFor(m => m.WaytimePerSanta)</dt>
-                        <dd>@(Math.Round(item.WaytimePerSanta / 60)) Minuten</dd>
+                    <dt>@Html.DisplayNameFor(m => m.TotalWaytime)</dt>
+                    <dd>@(Math.Round(item.TotalWaytime / 60)) Minuten</dd>
 
-                        <dt>@Html.DisplayNameFor(m => m.DesiredSeconds)</dt>
-                        <dd>@(Math.Round(item.DesiredSeconds / 60)) Minuten</dd>
+                    <dt>@Html.DisplayNameFor(m => m.WaytimePerSanta)</dt>
+                    <dd>@(Math.Round(item.WaytimePerSanta / 60)) Minuten</dd>
 
-                        <dt>@Html.DisplayNameFor(m => m.LongestRouteDistance)</dt>
-                        <dd>@(item.LongestRouteDistance) Meter</dd>
+                    <dt>@Html.DisplayNameFor(m => m.DesiredSeconds)</dt>
+                    <dd>@(Math.Round(item.DesiredSeconds / 60)) Minuten</dd>
 
-                        <dt>@Html.DisplayNameFor(m => m.LongestRouteTime)</dt>
-                        <dd>@(Math.Round(item.LongestRouteTime / 60)) Minuten </dd>
+                    <dt>@Html.DisplayNameFor(m => m.LongestDay)</dt>
+                    <dd>@(Math.Round(item.LongestDay / 60)) Minuten </dd>
 
-                        <dt>@Html.DisplayNameFor(m => m.LatestVisit)</dt>
-                        <dd>@item.LatestVisit</dd>
-                    </dl>
+                    <dt>@Html.DisplayNameFor(m => m.LongestRouteDistance)</dt>
+                    <dd>@(item.LongestRouteDistance) Meter</dd>
+
+                    <dt>@Html.DisplayNameFor(m => m.LongestRouteTime)</dt>
+                    <dd>@(Math.Round(item.LongestRouteTime / 60)) Minuten </dd>
+
+                    <dt>@Html.DisplayNameFor(m => m.LatestVisit)</dt>
+                    <dd>@item.LatestVisit</dd>
+                </dl>
 
                 }
             </td>
@@ -143,6 +149,7 @@
         var timeout = null;
         var itemName = 'refresh';
         var button = $('#btnRefresher')[0];
+        var refreshIntervalInSeconds = 30;
 
         function btnRefreshClick() {
             if (localStorage.getItem(itemName) === '1') {
@@ -158,7 +165,7 @@
         $(document).ready(() => {
             if (localStorage.getItem(itemName) === '1') {
                 button.innerHTML = 'Automatisches Aktualisieren abschalten';
-                timeout = setTimeout(onRefresh, 5000)
+                timeout = setTimeout(onRefresh, refreshIntervalInSeconds * 1000)
             } else {
                 button.innerHTML = 'Automatisches Aktualisieren einschalten';
             }
