@@ -343,13 +343,15 @@ namespace IRuettae.WebApi.Helpers
                     routeCalculation.LongestDay = routeResults.Max(rr =>
                         rr.Route.Waypoints.Cast<List<Waypoint>>().Max(wpl =>
                         {
-                            var totalDuration = 0;
+                            var totalDuration = 0d;
+                            
                             var lastwp = wpl.First();
                             foreach (var wp in wpl)
                             {
                                 totalDuration += dbSession
                                     .Query<Way>()
                                     .Single(w => w.From.Id.Equals(lastwp.RealVisitId) && w.To.Id.Equals(wp.RealVisitId)).Duration;
+                                totalDuration += visits.Single(v => v.Id.Equals(wp.RealVisitId)).Duration;
                             }
                             return totalDuration;
                         }));
