@@ -221,7 +221,7 @@ namespace IRuettae.WebApi.Helpers
                                     routeCalculation.SchedulingMipGap),
                                 StartingTime = schedulingInputdata.DayStartingTimes[0]
                             };
-                            retVal.Route.StartingTime = new[] {  retVal.StartingTime };
+                            retVal.Route.StartingTime = new[] { retVal.StartingTime };
                             return retVal;
 
                         }).ToList();
