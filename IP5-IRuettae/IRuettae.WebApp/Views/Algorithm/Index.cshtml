@@ -34,24 +34,48 @@
     <div class="form-group">
         @Html.LabelFor(m => m.DaysPeriod, new { @class = "col-form-label" })
         <button type="button" id="AddDay" class="btn btn-sm btn-success"><i class="fa fa-plus"></i></button>
-
-        <div class="days">
-            <div class="form-group row">
-                <label class="col-md-2 col-form-label">Von</label>
-                <div class="col-md-10">
-                    <div class="input-group date">
-                        <input type="datetime" name="DaysPeriod[0].Start" id="DaysPeriod_0__Start" class="form-control" placeholder="DD.MM.YYYY HH:mm" />
+        @if (Model.DaysPeriod.Count == 0)
+        {
+            <div class="days">
+                <div class="form-group row">
+                    <label class="col-md-2 col-form-label">Von</label>
+                    <div class="col-md-10">
+                        <div class="input-group date">
+                            <input type="datetime" name="DaysPeriod[0].Start" id="DaysPeriod_0__Start" class="form-control" placeholder="DD.MM.YYYY HH:mm" />
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-md-2 col-form-label">Bis</label>
-                <div class="col-md-10">
-                    <input type="datetime" name="DaysPeriod[0].End" id="DaysPeriod_0__End form-control" class="form-control" placeholder="DD.MM.YYYY HH:mm" />
+                <div class="form-group row">
+                    <label class="col-md-2 col-form-label">Bis</label>
+                    <div class="col-md-10">
+                    
+                        <input type="datetime" name="DaysPeriod[0].End" id="DaysPeriod_0__End form-control" class="form-control" placeholder="DD.MM.YYYY HH:mm"/>
+                    </div>
                 </div>
+                <div class="p-1"></div>
             </div>
-            <div class="p-1"></div>
-        </div>
+        }
+        @for (int i = 0; i < Model.DaysPeriod.Count; i++)
+        {
+            <div class="days">
+                <div class="form-group row">
+                    <label class="col-md-2 col-form-label">Von</label>
+                    <div class="col-md-10">
+                        <div class="input-group date">
+                            <input type="datetime" name="DaysPeriod[@i].Start" id="DaysPeriod_@(i)__Start" class="form-control" placeholder="DD.MM.YYYY HH:mm" value="@Model.DaysPeriod[i].Start"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-2 col-form-label">Bis</label>
+                    <div class="col-md-10">
+                        <input type="datetime" name="DaysPeriod[@i].End" id="DaysPeriod_@(i)__End form-control" class="form-control" placeholder="DD.MM.YYYY HH:mm" value="@Model.DaysPeriod[i].End"/>
+                    </div>
+                </div>
+                <div class="p-1"></div>
+            </div>
+        }
+        
     </div>
 
     <div class="form-group row">
