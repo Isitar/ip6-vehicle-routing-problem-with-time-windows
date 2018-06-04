@@ -10,7 +10,7 @@ using SolverInputData = IRuettae.Core.Algorithm.Clustering.SolverInputData;
 namespace IRuettae.Core.Tests.Algorithm
 {
     [TestClass]
-    public class MSTTests
+    public class ATSPTests
     {
         [TestMethod]
         public void TestConnectedGraph()
@@ -43,8 +43,10 @@ namespace IRuettae.Core.Tests.Algorithm
 
             int[] dayDuration = new int[1] { 17 };
 
-            var solverInputData = new SolverInputData(santas, visitsDuration, visitStates, distances, dayDuration, null,
-                new[] {DateTime.Now}) {VisitIds = new long[] {0, 1, 2, 3, 4, 5}};
+            var solverInputData = new SolverInputData(santas, visitsDuration, visitStates, distances, dayDuration, null, new[] { DateTime.Now })
+            {
+                VisitIds = new long[] { 0, 1, 2, 3, 4, 5 }
+            };
             var result = Starter.Optimise(solverInputData);
             Assert.IsNotNull(result);
             Assert.AreEqual(5, result.Waypoints[0, 0].Count);
@@ -96,8 +98,10 @@ namespace IRuettae.Core.Tests.Algorithm
 
             int[] dayDuration = new int[numberOfDays] { 17, 17 };
 
-            var solverInputData = new SolverInputData(santas, visitsDuration, visitStates, distances, dayDuration, null,
-                new[] {DateTime.Now, DateTime.Now}) {VisitIds = new long[] {0, 1, 2, 3, 4, 5, 6, 7, 8}};
+            var solverInputData = new SolverInputData(santas, visitsDuration, visitStates, distances, dayDuration, null, new[] { DateTime.Now, DateTime.Now })
+            {
+                VisitIds = new long[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }
+            };
             var result = Starter.Optimise(solverInputData);
             Assert.IsNotNull(result);
             var possibleRoutes = new[] { "0 | 0;5 | 0;6 | 0;7 | 0;8 | 0", "0 | 0;1 | 0;2 | 0;3 | 0;4 | 0" };
