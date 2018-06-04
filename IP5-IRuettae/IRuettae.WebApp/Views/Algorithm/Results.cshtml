@@ -2,6 +2,7 @@
 @model IEnumerable<IRuettae.WebApp.Models.RouteCalculationVM>
 
 <h1>Algorithmus Resultate</h1>
+<button id="btnRefresher" style="float:right" class="btn btn-primary" onclick="btnRefreshClick()">Automatisches Aktualisieren einschalten</button>
 <table class="table">
     <tr>
         <th>
@@ -101,6 +102,9 @@
                     <dt>@Html.DisplayNameFor(m => m.NumberOfVisits)</dt>
                     <dd>@item.NumberOfVisits</dd>
 
+                    <dt>@Html.DisplayNameFor(m => m.TotalVisitTime)</dt>
+                    <dd>@(Math.Round(item.TotalVisitTime / 60)) Minuten</dd>
+
                     <dt>@Html.DisplayNameFor(m => m.TotalWaytime)</dt>
                     <dd>@(Math.Round(item.TotalWaytime / 60)) Minuten</dd>
 
@@ -109,6 +113,9 @@
 
                     <dt>@Html.DisplayNameFor(m => m.DesiredSeconds)</dt>
                     <dd>@(Math.Round(item.DesiredSeconds / 60)) Minuten</dd>
+
+                    <dt>@Html.DisplayNameFor(m => m.LongestDay)</dt>
+                    <dd>@(Math.Round(item.LongestDay / 60)) Minuten </dd>
 
                     <dt>@Html.DisplayNameFor(m => m.LongestRouteDistance)</dt>
                     <dd>@(item.LongestRouteDistance) Meter</dd>
@@ -136,3 +143,35 @@
     }
 
 </table>
+
+@section scripts {
+    <script>
+        var timeout = null;
+        var itemName = 'refresh';
+        var button = $('#btnRefresher')[0];
+        var refreshIntervalInSeconds = 30;
+
+        function btnRefreshClick() {
+            if (localStorage.getItem(itemName) === '1') {
+                localStorage.setItem(itemName, 0);
+                clearTimeout(timeout);
+                button.innerHTML = 'Automatisches Aktualisieren einschalten';
+            } else {
+                localStorage.setItem(itemName, 1);
+                onRefresh();
+            }
+        }
+
+        $(document).ready(() => {
+            if (localStorage.getItem(itemName) === '1') {
+                button.innerHTML = 'Automatisches Aktualisieren abschalten';
+                timeout = setTimeout(onRefresh, refreshIntervalInSeconds * 1000)
+            } else {
+                button.innerHTML = 'Automatisches Aktualisieren einschalten';
+            }
+        })
+        function onRefresh() {
+            location.reload(true);
+        }
+    </script>
+}
