@@ -33,7 +33,7 @@ namespace IRuettae.WebApp.Models
         [Range(1, int.MaxValue)]
         public int TimePerChild { get; set; }
         [Range(0, int.MaxValue)]
-        [DisplayName("+ Zeit für erstes Kind [min]")]
+        [DisplayName("Zeit für erstes Kind [min]")]
         public int Beta0 { get; set; }
 
         [Required]
