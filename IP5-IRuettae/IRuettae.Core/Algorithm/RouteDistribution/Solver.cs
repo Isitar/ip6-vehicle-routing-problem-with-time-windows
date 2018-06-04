@@ -154,7 +154,7 @@ namespace IRuettae.Core.Algorithm.RouteDistribution
 
             solver.Objective().SetMinimization();
             //solver.EnableOutput();
-            solver.SetTimeLimit(5 * 60 * 1000);
+            //solver.SetTimeLimit(5 * 60 * 1000);
             resultState = FromGoogleResultState(solver.Solve(param));
 
             PrintDebugRessourcesAfter();
