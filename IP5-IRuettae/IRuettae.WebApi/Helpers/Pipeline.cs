@@ -230,7 +230,49 @@ namespace IRuettae.WebApi.Helpers
 
                     #region metrics
 
-                    routeCalculation.DesiredSeconds = 0;
+                    foreach (var routeResult in routeResults)
+                    {
+                        for (int day = 0; day < routeResult.Route.StartingTime.Length; day++)
+                        {
+                            for (int santa = 0; santa < routeResult.Route.Waypoints.GetLength(0); santa++)
+                            {
+                                var waypoints = routeResult.Route.Waypoints[santa, day];
+                                foreach (var waypoint in waypoints)
+                                {
+                                    var visit = visits.Where(v => v.Id == waypoint.RealVisitId).First();
+                                    var visitStart = routeResult.Route.StartingTime[day].AddSeconds(waypoint.StartTime * routeCalculation.TimeSliceDuration);
+                                    var visitEnd = visitStart.AddSeconds(visit.Duration);
+
+                                    foreach (var desired in visit.Desired)
+                                    {
+                                        // inside
+                                        if (visitStart <= desired.Start && visitEnd >= desired.End)
+                                        {
+                                            routeCalculation.DesiredSeconds += (desired.End - desired.Start).Value.TotalSeconds;
+                                        }
+
+                                        // outside
+                                        else if (visitStart > desired.Start && visitEnd < desired.End)
+                                        {
+                                            routeCalculation.DesiredSeconds += (visitEnd - visitStart).TotalSeconds;
+                                        }
+
+                                        // left
+                                        else if (visitStart > desired.Start && visitEnd >= desired.End)
+                                        {
+                                            routeCalculation.DesiredSeconds += (desired.End - visitStart).Value.TotalSeconds;
+                                        }
+
+                                        // right
+                                        else if (visitStart <= desired.Start && visitEnd < desired.End)
+                                        {
+                                            routeCalculation.DesiredSeconds += (visitEnd - desired.Start).Value.TotalSeconds;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                     foreach (var routeResult in routeResults)
                     {
