@@ -21,7 +21,6 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
             CreateVisitsPerSanta();
             CreateVisits();
             CreateSantaVisits();
-            CreateSantas();
             CreateUsesSanta();
             CreateVisitStart();
             CreateSantaEnRoute();
@@ -58,18 +57,6 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
                 {
                     solverData.Variables.VisitsPerSanta[i][j] = solverData.Solver.MakeBoolVarMatrix(rows, cols, $"VisitsPerSanta_Day_{i}_Santa_{j}");
                 }
-            }
-        }
-
-        private void CreateSantas()
-        {
-            solverData.Variables.Santas = new GLS.Variable[solverData.NumberOfDays][,];
-
-            for (int i = 0; i < solverData.NumberOfDays; i++)
-            {
-                var rows = solverData.NumberOfSantas;
-                var cols = solverData.SlicesPerDay[i];
-                solverData.Variables.Santas[i] = solverData.Solver.MakeBoolVarMatrix(rows, cols, $"Santas_Day_{i}");
             }
         }
 

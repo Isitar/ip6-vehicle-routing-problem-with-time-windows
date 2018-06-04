@@ -267,16 +267,16 @@ namespace IRuettae.WebApi.Helpers
                     routeCalculation.LongestRouteTime = routeResults.Max(rr =>
                         rr.Route.Waypoints.Cast<List<Waypoint>>().Max(wpl =>
                         {
-                            var totalDistance = 0;
+                            var totalDuration = 0;
                             var lastwp = wpl.First();
                             foreach (var wp in wpl)
                             {
-                                totalDistance += dbSession
+                                totalDuration += dbSession
                                     .Query<Way>()
                                     .Single(w => w.From.Id.Equals(lastwp.RealVisitId) && w.To.Id.Equals(wp.RealVisitId)).Duration;
                             }
 
-                            return totalDistance;
+                            return totalDuration;
 
                         }));
                     #endregion
