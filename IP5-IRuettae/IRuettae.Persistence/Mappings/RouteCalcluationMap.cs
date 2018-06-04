@@ -36,6 +36,7 @@ namespace IRuettae.Persistence.Mappings
             Map(x => x.DesiredSeconds);
             Map(x => x.LongestRouteTime);
             Map(x => x.LongestRouteDistance);
+            Map(x => x.LongestDay);
             Map(x => x.LatestVisit);
 
             Map(x => x.State);

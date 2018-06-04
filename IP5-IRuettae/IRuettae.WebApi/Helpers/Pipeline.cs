@@ -338,6 +338,21 @@ namespace IRuettae.WebApi.Helpers
 
                     routeCalculation.WaytimePerSanta = routeCalculation.TotalWaytime / routeResults.Sum(rr => rr.Route.Waypoints.Length);
                     routeCalculation.TotalVisitTime = visits.Sum(v => v.Duration);
+
+
+                    routeCalculation.LongestDay = routeResults.Max(rr =>
+                        rr.Route.Waypoints.Cast<List<Waypoint>>().Max(wpl =>
+                        {
+                            var totalDuration = 0;
+                            var lastwp = wpl.First();
+                            foreach (var wp in wpl)
+                            {
+                                totalDuration += dbSession
+                                    .Query<Way>()
+                                    .Single(w => w.From.Id.Equals(lastwp.RealVisitId) && w.To.Id.Equals(wp.RealVisitId)).Duration;
+                            }
+                            return totalDuration;
+                        }));
                     #endregion metrics
 
                     dbSession.Update(routeCalculation);

@@ -76,6 +76,10 @@ namespace IRuettae.WebApp.Models
         public virtual double LongestRouteTime { get; set; }
         [DisplayName("Längste Route (Distanz [m])")]
         public virtual double LongestRouteDistance { get; set; }
+        
+        [DisplayName("Längster Tag")]
+        public virtual double LongestDay { get; set; }
+
         [DisplayName("Spätester Besuch")]
         public virtual DateTime LatestVisit { get; set; }
 
