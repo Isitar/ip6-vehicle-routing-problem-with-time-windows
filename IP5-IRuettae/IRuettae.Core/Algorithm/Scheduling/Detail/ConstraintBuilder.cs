@@ -20,8 +20,6 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
 
         public void CreateConstraints()
         {
-            //TODO: organize methods properly
-
             //variables
             CreateVisitsConstraint();
             CreateSantaVisitsConstraint();
