@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -47,6 +48,7 @@ namespace IRuettae.Persistence.Entities
         public virtual double DesiredSeconds { get; set; }
         public virtual double LongestRouteTime { get; set; }
         public virtual double LongestRouteDistance { get; set; }
+        public virtual double LongestDay { get; set; }
         public virtual DateTime LatestVisit { get; set; }
 
     }
