@@ -35,7 +35,7 @@ namespace IRuettae.WebApp.Controllers
         public async System.Threading.Tasks.Task<ActionResult> CalculateRouteAsync(AlgorithmStarterVM asvm)
         {
             asvm.Days = asvm.DaysPeriod.Select(p => (p.Start.Value, p.End.Value)).ToList();
-            
+            asvm.Beta0 -= asvm.TimePerChild;
             //            Client.Timeout = TimeSpan.FromHours(10);
             var result = await Client.PostAsJsonAsync("api/algorithm/StartRouteCalculation", asvm);
             return RedirectToAction("Results");
@@ -45,12 +45,6 @@ namespace IRuettae.WebApp.Controllers
         {
             var result = await Client.GetAsync("api/algorithm/RouteCalculations");
             var routeCalculations = JArray.Parse(result.Content.ReadAsStringAsync().Result).ToObject<RouteCalculationVM[]>().OrderByDescending(rc => rc.StartTime);
-            //foreach (var routeCalculationVM in routeCalculations)
-            //{
-            //    routeCalculationVM.ClusteringResult = "<p>" + routeCalculationVM.ClusteringResult?.Replace(Environment.NewLine, "</p><p>") + "</p>";
-            //    routeCalculationVM.SchedulingResult ="<p>" + routeCalculationVM.SchedulingResult?.Replace(Environment.NewLine, "</p><p>") + "</p>";
-            //    routeCalculationVM.Result = "<p>" + routeCalculationVM.Result?.Replace(Environment.NewLine, "</p><p>") + "</p>";
-            //}
             return View(routeCalculations);
         }
 
