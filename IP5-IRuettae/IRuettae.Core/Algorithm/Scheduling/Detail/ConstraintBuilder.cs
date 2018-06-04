@@ -20,7 +20,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
 
         public void CreateConstraints()
         {
-            //variables
+            // variables
             CreateVisitsConstraint();
             CreateSantaVisitsConstraint();
             CreateUsesSantaConstraint();
@@ -33,7 +33,6 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
 
             // santa
             CreateSantaAvailableConstraint();
-            CreateSantaOnlyOnePlaceConstraint();
 
             // waytimes
             CreateSantaNeedTimeToFirstVisitConstraint();
@@ -46,7 +45,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
         }
 
         /// <summary>
-        /// Create all constraint that should benefit the performance
+        /// Create all constraints that should benefit the performance
         /// </summary>
         private void CreatePerformanceConstraints()
         {
@@ -408,6 +407,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
 
         /// <summary>
         /// Santa is only available, when the inputs says so
+        /// Futhermore, Santa can only be used mostly once per timeslice
         /// </summary>
         private void CreateSantaAvailableConstraint()
         {
@@ -417,32 +417,15 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
                 {
                     for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                     {
-                        // Z == (int)availble
-                        var expr = solverData.Variables.Santas[day][santa, timeslice] <= Convert.ToInt32(solverData.Input.Santas[day][santa, timeslice]);
-                        solverData.Solver.Add(expr);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Santa can only be at once play at a time, and only if he's available
-        /// </summary>
-        private void CreateSantaOnlyOnePlaceConstraint()
-        {
-            for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
-            {
-                for (int day = 0; day < solverData.NumberOfDays; day++)
-                {
-                    for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
-                    {
-                        // Z >= Z1 + Z2 + ...
                         var sum = new LinearExpr();
                         for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
                         {
                             sum += solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice];
                         }
-                        solverData.Solver.Add(solverData.Variables.Santas[day][santa, timeslice] >= sum);
+
+                        // (int)available >= Z1 + Z2 + ...
+                        var available = Convert.ToInt32(solverData.Input.Santas[day][santa, timeslice]);
+                        solverData.Solver.Add(sum <= available);
                     }
                 }
             }
