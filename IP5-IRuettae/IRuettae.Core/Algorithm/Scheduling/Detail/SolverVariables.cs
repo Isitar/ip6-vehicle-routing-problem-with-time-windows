@@ -25,11 +25,6 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
         public GLS.Variable[,] SantaVisits { get; set; }
 
         /// <summary>
-        /// [day][santa,timeslice] is available
-        /// </summary>
-        public GLS.Variable[][,] Santas { get; set; }
-
-        /// <summary>
         /// [day][Visit,timeslice] is this the time when the Visit starts
         /// </summary>
         public GLS.Variable[][,] VisitStart { get; set; }

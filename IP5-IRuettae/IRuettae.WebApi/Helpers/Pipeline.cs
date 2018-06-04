@@ -230,15 +230,55 @@ namespace IRuettae.WebApi.Helpers
 
                     #region metrics
 
-                    //{
-                    //    (int, DateTime, DateTime) visitTimes = routeResults.SelectMany(sr => sr.Route.Waypoints.Cast<Waypoint>().Select(wp => (wp.RealVisitId, sr.wp.StartTime)).Select((v, s) => (;
-                    //}
-                    //routeCalculation.DesiredSeconds = routeResults.Sum(sr =>
-                    //{
-                    //    sr.Route.
-                    //});
-                    routeCalculation.LatestVisit = routeResults.Max(rr => new DateTime().Add(rr.StartingTime.AddSeconds(rr.Route.Waypoints.Cast<Waypoint>().Max(wp => wp.StartTime) * routeCalculation.TimeSliceDuration).TimeOfDay));
+                    routeCalculation.DesiredSeconds = 0;
 
+                    foreach (var routeResult in routeResults)
+                    {
+                        for (int day = 0; day < routeResult.Route.StartingTime.Length; day++)
+                        {
+                            for (int santa = 0; santa < routeResult.Route.Waypoints.GetLength(0); santa++)
+                            {
+                                var waypoints = routeResult.Route.Waypoints[santa, day];
+                                var latestVisit = new DateTime().Add(routeResult.Route.StartingTime[day].AddSeconds(waypoints.Max(wp => wp.StartTime) * routeCalculation.TimeSliceDuration).TimeOfDay);
+                                if (latestVisit > routeCalculation.LatestVisit)
+                                {
+                                    routeCalculation.LatestVisit = latestVisit;
+                                }
+                            }
+                        }
+                    }
+
+                    routeCalculation.LongestRouteDistance = routeResults.Max(rr =>
+                        rr.Route.Waypoints.Cast<List<Waypoint>>().Max(wpl =>
+                        {
+                            var totalDistance = 0;
+                            var lastwp = wpl.First();
+                            foreach (var wp in wpl)
+                            {
+                                totalDistance += dbSession
+                                    .Query<Way>()
+                                    .Single(w => w.From.Id.Equals(lastwp.RealVisitId) && w.To.Id.Equals(wp.RealVisitId)).Distance;
+                            }
+
+                            return totalDistance;
+
+                        }));
+
+                    routeCalculation.LongestRouteTime = routeResults.Max(rr =>
+                        rr.Route.Waypoints.Cast<List<Waypoint>>().Max(wpl =>
+                        {
+                            var totalDuration = 0;
+                            var lastwp = wpl.First();
+                            foreach (var wp in wpl)
+                            {
+                                totalDuration += dbSession
+                                    .Query<Way>()
+                                    .Single(w => w.From.Id.Equals(lastwp.RealVisitId) && w.To.Id.Equals(wp.RealVisitId)).Duration;
+                            }
+
+                            return totalDuration;
+
+                        }));
                     #endregion metrics
 
                     dbSession.Update(routeCalculation);
