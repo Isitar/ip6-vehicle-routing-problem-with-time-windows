@@ -172,7 +172,7 @@ namespace IRuettae.WebApi.Helpers
 
                     routeCalculation.ClusteringResult = clusteredRoutesSb.ToString();
 
-                    #endregion
+                    #endregion Clustering
 
                     dbSession.Update(routeCalculation);
                     dbSession.Flush();
@@ -226,14 +226,20 @@ namespace IRuettae.WebApi.Helpers
                     // gets captured by eventwriter
                     routeCalculation.StateText += $"{DateTime.Now}: Scheduling done{Environment.NewLine}";
 
-                    #endregion
+                    #endregion Scheduling
 
                     #region metrics
 
-                    routeCalculation.DesiredSeconds = 0;
+                    //{
+                    //    (int, DateTime, DateTime) visitTimes = routeResults.SelectMany(sr => sr.Route.Waypoints.Cast<Waypoint>().Select(wp => (wp.RealVisitId, sr.wp.StartTime)).Select((v, s) => (;
+                    //}
+                    //routeCalculation.DesiredSeconds = routeResults.Sum(sr =>
+                    //{
+                    //    sr.Route.
+                    //});
                     routeCalculation.LatestVisit = routeResults.Max(rr => new DateTime().Add(rr.StartingTime.AddSeconds(rr.Route.Waypoints.Cast<Waypoint>().Max(wp => wp.StartTime) * routeCalculation.TimeSliceDuration).TimeOfDay));
 
-                    #endregion
+                    #endregion metrics
 
                     dbSession.Update(routeCalculation);
                     dbSession.Flush();
