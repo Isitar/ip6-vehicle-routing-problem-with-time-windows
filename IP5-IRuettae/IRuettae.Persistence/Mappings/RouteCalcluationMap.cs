@@ -31,6 +31,7 @@ namespace IRuettae.Persistence.Mappings
             Map(x => x.Result).CustomSqlType("LONGTEXT"); ;
 
             Map(x => x.TotalWaytime);
+            Map(x => x.TotalVisitTime);
             Map(x => x.WaytimePerSanta);
             Map(x => x.DesiredSeconds);
             Map(x => x.LongestRouteTime);

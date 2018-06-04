@@ -337,6 +337,7 @@ namespace IRuettae.WebApi.Helpers
                         }));
 
                     routeCalculation.WaytimePerSanta = routeCalculation.TotalWaytime / routeResults.Sum(rr => rr.Route.Waypoints.Length);
+                    routeCalculation.TotalVisitTime = visits.Sum(v => v.Duration);
                     #endregion metrics
 
                     dbSession.Update(routeCalculation);

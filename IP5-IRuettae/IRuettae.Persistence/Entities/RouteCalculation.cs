@@ -42,6 +42,7 @@ namespace IRuettae.Persistence.Entities
 
         // Metrics
         public virtual double TotalWaytime { get; set; }
+        public virtual double TotalVisitTime { get; set; }
         public virtual double WaytimePerSanta { get; set; }
         public virtual double DesiredSeconds { get; set; }
         public virtual double LongestRouteTime { get; set; }

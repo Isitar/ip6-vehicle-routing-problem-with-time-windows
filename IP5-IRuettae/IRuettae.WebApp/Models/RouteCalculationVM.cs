@@ -64,6 +64,10 @@ namespace IRuettae.WebApp.Models
         // Metrics
         [DisplayName("Totale Wegzeit")]
         public virtual double TotalWaytime { get; set; }
+
+        [DisplayName("Totale Besuchszeit")]
+        public virtual double TotalVisitTime { get; set; }
+
         [DisplayName("Wegzeit pro Chlaus")]
         public virtual double WaytimePerSanta { get; set; }
         [DisplayName("Wunschzeit erfüllt")]
