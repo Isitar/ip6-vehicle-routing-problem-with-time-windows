@@ -14,12 +14,6 @@
             @Html.DisplayNameFor(model => model.Year)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.TimePerChild)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TimePerChildOffset)
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.NumberOfSantas)
         </th>
         <th>
@@ -36,6 +30,9 @@
         </th>
         <th>
             @Html.DisplayNameFor(model => model.StateText)
+        </th>
+        <th>
+            Metriken
         </th>
         <th></th>
     </tr>
@@ -56,12 +53,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Year)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TimePerChild)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TimePerChildOffset)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.NumberOfSantas)
@@ -111,6 +102,26 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StateText)
+            </td>
+            <td>
+                @if (!string.IsNullOrEmpty(item.Result))
+                {
+                    <div>
+                        <dt>@Html.DisplayNameFor(m => m.TotalWaytime)</dt>
+                        <dd>@(Math.Round(item.TotalWaytime / 60)) Minuten</dd>
+                    </div>
+
+                    <div>
+                        <dt>@Html.DisplayNameFor(m => m.WaytimePerSanta)</dt>
+                        <dd>@(Math.Round(item.WaytimePerSanta / 60)) Minuten</dd>
+                    </div>
+
+                    <div>
+                        <dt>@Html.DisplayNameFor(m => m.LongestRouteDistance)</dt>
+                        <dd>@(item.LongestRouteDistance) Meter</dd>
+                    </div>
+
+                }
             </td>
             <td>
                 @if (!string.IsNullOrEmpty(item.Result))
