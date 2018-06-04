@@ -61,7 +61,7 @@ namespace IRuettae.Preprocessing.Mapping
 
             for (int day = 0; day < Days.Count; day++)
             {
-                (var starttime, var endtime) = Days[day];
+                var (starttime, endtime) = Days[day];
                 var numberOfTimeslots = Convert.ToInt32(Math.Ceiling((endtime - starttime).TotalSeconds / timeslotLength));
                 santasVar[day] = new bool[Santas.Count, numberOfTimeslots];
                 // set all santas available

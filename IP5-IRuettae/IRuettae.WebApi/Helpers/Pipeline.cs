@@ -212,14 +212,18 @@ namespace IRuettae.WebApi.Helpers
                         .AsParallel()
                         .Select(schedulingInputdata =>
                         {
-                            var mpsPathScheduling = HostingEnvironment.MapPath($"~/App_Data/Scheduling_{routeCalculation.Id}_{ctr++}.mps");
+                            var mpsPathScheduling =
+                                HostingEnvironment.MapPath($"~/App_Data/Scheduling_{routeCalculation.Id}_{ctr++}.mps");
                             Starter.SaveMps(mpsPathScheduling, schedulingInputdata, TargetBuilderType.Default);
-                            return new SchedulingResult
+                            var retVal = new SchedulingResult
                             {
                                 Route = Starter.Optimise(schedulingInputdata, TargetBuilderType.Default,
                                     routeCalculation.SchedulingMipGap),
                                 StartingTime = schedulingInputdata.DayStartingTimes[0]
                             };
+                            retVal.Route.StartingTime = new[] {  retVal.StartingTime };
+                            return retVal;
+
                         }).ToList();
 
                     routeCalculation.SchedulingResult = JsonConvert.SerializeObject(routeResults);
@@ -301,9 +305,7 @@ namespace IRuettae.WebApi.Helpers
                                     .Query<Way>()
                                     .Single(w => w.From.Id.Equals(lastwp.RealVisitId) && w.To.Id.Equals(wp.RealVisitId)).Distance;
                             }
-
                             return totalDistance;
-
                         }));
 
                     routeCalculation.LongestRouteTime = routeResults.Max(rr =>
@@ -317,10 +319,24 @@ namespace IRuettae.WebApi.Helpers
                                     .Query<Way>()
                                     .Single(w => w.From.Id.Equals(lastwp.RealVisitId) && w.To.Id.Equals(wp.RealVisitId)).Duration;
                             }
-
                             return totalDuration;
-
                         }));
+
+                    routeCalculation.TotalWaytime = routeResults.Sum(rr =>
+                        rr.Route.Waypoints.Cast<List<Waypoint>>().Max(wpl =>
+                        {
+                            var totalDuration = 0;
+                            var lastwp = wpl.First();
+                            foreach (var wp in wpl)
+                            {
+                                totalDuration += dbSession
+                                    .Query<Way>()
+                                    .Single(w => w.From.Id.Equals(lastwp.RealVisitId) && w.To.Id.Equals(wp.RealVisitId)).Duration;
+                            }
+                            return totalDuration;
+                        }));
+
+                    routeCalculation.WaytimePerSanta = routeCalculation.TotalWaytime / routeResults.Sum(rr => rr.Route.Waypoints.Length);
                     #endregion metrics
 
                     dbSession.Update(routeCalculation);
