@@ -68,7 +68,7 @@ namespace IRuettae.WebApp.Models
         [DisplayName("Totale Besuchszeit")]
         public virtual double TotalVisitTime { get; set; }
 
-        [DisplayName("Wegzeit pro Chlaus")]
+        [DisplayName("Durchschnittliche Wegzeit pro Chlaus")]
         public virtual double WaytimePerSanta { get; set; }
         [DisplayName("Wunschzeit erfüllt")]
         public virtual double DesiredSeconds { get; set; }
@@ -76,7 +76,7 @@ namespace IRuettae.WebApp.Models
         public virtual double LongestRouteTime { get; set; }
         [DisplayName("Längste Route (Distanz [m])")]
         public virtual double LongestRouteDistance { get; set; }
-        
+
         [DisplayName("Längster Tag")]
         public virtual double LongestDay { get; set; }
 
