@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -22,6 +23,8 @@ namespace IRuettae.WebApi.Helpers
 {
     public class Pipeline
     {
+        public static ConcurrentBag<BackgroundWorker> BackgroundWorkers = new ConcurrentBag<BackgroundWorker>();
+
         private RouteCalculation routeCalculation;
         private readonly ISession dbSession;
         private BackgroundWorker bgWorker;
@@ -41,6 +44,19 @@ namespace IRuettae.WebApi.Helpers
         private void SetupBgWorker()
         {
             bgWorker = new BackgroundWorker();
+            BackgroundWorkers.Add(bgWorker);
+            bgWorker.Disposed += (sender, args) =>
+            {
+                if (string.IsNullOrEmpty(routeCalculation.Result))
+                {
+                    routeCalculation.State = RouteCalculationState.Cancelled;
+                    routeCalculation.StateText += $"{Environment.NewLine} {DateTime.Now} Background worker stopped";
+                }
+
+                dbSession.Update(routeCalculation);
+                dbSession.Flush();
+            };
+
             routeCalculation = dbSession.Merge(routeCalculation);
             bgWorker.DoWork += (sender, args) =>
             {
@@ -72,6 +88,7 @@ namespace IRuettae.WebApi.Helpers
                         return a.Id.CompareTo(b.Id);
                     });
 
+                    visits[0].Duration = 0;
 
                     routeCalculation.NumberOfSantas = santas.Count;
                     routeCalculation.NumberOfVisits = visits.Count;
@@ -138,11 +155,11 @@ namespace IRuettae.WebApi.Helpers
                             new BinaryFormatter().Serialize(stream, clusteringSolverInputData);
                         }
                     }
-
-                    var mpsPath =
+#endif
+                var mpsPath =
                         HostingEnvironment.MapPath($"~/App_Data/Clustering_{routeCalculation.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}.mps");
                     Starter.SaveMps(mpsPath, clusteringSolverInputData, targetType);
-#endif
+
 
                     var phase1Result = Starter.Optimise(clusteringSolverInputData, targetType,
                         routeCalculation.ClustringMipGap);

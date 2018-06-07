@@ -37,7 +37,7 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
                     solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfVisits, solverData.NumberOfVisits, $"Santa_{santa}_usesWay");
 
                 solverData.Variables.SantaWayFlow[santa] =
-                    solverData.Solver.MakeNumVarMatrix(solverData.NumberOfVisits, solverData.NumberOfVisits, 0, double.MaxValue, $"Santa_{santa}_wayFlow");
+                    solverData.Solver.MakeNumVarMatrix(solverData.NumberOfVisits, solverData.NumberOfVisits, 0, solverData.NumberOfVisits, $"Santa_{santa}_wayFlow");
                 solverData.Variables.SantaWayHasFlow[santa] =
                     solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfVisits, solverData.NumberOfVisits, $"Santa_{santa}_wayHasFlow");
             }
