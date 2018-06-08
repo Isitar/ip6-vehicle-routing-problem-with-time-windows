@@ -147,7 +147,7 @@ namespace IRuettae.WebApi.Helpers
 #if DEBUG
                     var serialPath =
                         HostingEnvironment.MapPath(
-                            $"~/App_Data/ClusteringSolverInput{routeCalculation.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}Visits.serial");
+                            $"~/App_Data/{routeCalculation.Id}_ClusteringSolverInput{routeCalculation.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}Visits.serial");
                     if (serialPath != null)
                     {
                         using (var stream = File.Open(serialPath, FileMode.Create))
@@ -156,8 +156,8 @@ namespace IRuettae.WebApi.Helpers
                         }
                     }
 #endif
-                var mpsPath =
-                        HostingEnvironment.MapPath($"~/App_Data/Clustering_{routeCalculation.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}.mps");
+                    var mpsPath =
+                            HostingEnvironment.MapPath($"~/App_Data/Clustering_{routeCalculation.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}.mps");
                     Starter.SaveMps(mpsPath, clusteringSolverInputData, targetType);
 
 
@@ -238,7 +238,10 @@ namespace IRuettae.WebApi.Helpers
                                     routeCalculation.SchedulingMipGap),
                                 StartingTime = schedulingInputdata.DayStartingTimes[0]
                             };
-                            retVal.Route.StartingTime = new[] { retVal.StartingTime };
+                            if (retVal.Route != null)
+                            {
+                                retVal.Route.StartingTime = new[] { retVal.StartingTime };
+                            }
                             return retVal;
 
                         }).ToList();
