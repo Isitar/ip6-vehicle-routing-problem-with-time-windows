@@ -145,9 +145,7 @@ namespace IRuettae.WebApi.Helpers
                             ? TargetBuilderType.Default
                             : TargetBuilderType.MinTimeOnly;
 #if DEBUG
-                    var serialPath =
-                        HostingEnvironment.MapPath(
-                            $"~/App_Data/{routeCalculation.Id}_ClusteringSolverInput{routeCalculation.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}Visits.serial");
+                    var serialPath = HostingEnvironment.MapPath($"~/App_Data/{routeCalculation.Id}_ClusteringSolverInput{routeCalculation.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}Visits.serial");
                     if (serialPath != null)
                     {
                         using (var stream = File.Open(serialPath, FileMode.Create))
@@ -157,7 +155,7 @@ namespace IRuettae.WebApi.Helpers
                     }
 #endif
                     var mpsPath =
-                            HostingEnvironment.MapPath($"~/App_Data/Clustering_{routeCalculation.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}.mps");
+                            HostingEnvironment.MapPath($"~/App_Data/{routeCalculation.Id}_Clustering_{routeCalculation.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}.mps");
                     Starter.SaveMps(mpsPath, clusteringSolverInputData, targetType);
 
 
