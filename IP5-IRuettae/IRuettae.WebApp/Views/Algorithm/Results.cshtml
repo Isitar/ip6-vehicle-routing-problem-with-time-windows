@@ -1,8 +1,8 @@
 ﻿@using IRuettae.WebApp.Models
 @model IEnumerable<IRuettae.WebApp.Models.RouteCalculationVM>
 
-<h1>Algorithmus Resultate</h1>
-<button id="btnRefresher" style="float:right" class="btn btn-primary" onclick="btnRefreshClick()"><i class="fas fa-sync"></i> Automatisches Aktualisieren einschalten</button>
+<h1>Algorithmus Resultate<button id="btnRefresher" class="btn btn-sm btn-default mb-1 mt-1 float-right" onclick="btnRefreshClick()"><i class="fas fa-sync"></i> Automatisches Aktualisieren einschalten</button></h1>
+
 <table class="table">
     <tr>
         <th></th>
@@ -108,7 +108,7 @@
                     <dd>@(Math.Round(item.LongestRouteTime / 60)) Minuten </dd>
 
                     <dt>@Html.DisplayNameFor(m => m.LatestVisit)</dt>
-                    <dd>@item.LatestVisit</dd>
+                    <dd>@item.LatestVisit.TimeOfDay</dd>
                 </dl>
 
             }
@@ -148,8 +148,8 @@
 
         $(document).ready(() => {
             if (localStorage.getItem(itemName) === '1') {
-                button.innerHTML = '<i class="fas fa-sync"></i> Automatisches Aktualisieren abschalten';
-                timeout = setTimeout(onRefresh, refreshIntervalInSeconds * 1000)
+                button.innerHTML = '<i class="fas fa-sync fa-pulse"></i> Automatisches Aktualisieren abschalten';
+                timeout = setTimeout(onRefresh, refreshIntervalInSeconds * 1000);
             } else {
                 button.innerHTML = '<i class="fas fa-sync"></i> Automatisches Aktualisieren einschalten';
             }
