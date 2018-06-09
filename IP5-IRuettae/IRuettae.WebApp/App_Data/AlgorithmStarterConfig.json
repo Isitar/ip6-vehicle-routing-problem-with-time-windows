@@ -1,1 +1,1 @@
-{"StarterIds":null,"StarterId":12,"DaysPeriod":[{"Start":"2017-12-08T17:00:00","End":"2017-12-08T22:00:00"},{"Start":"2017-12-09T17:00:00","End":"2017-12-09T22:00:00"}],"Days":null,"NumberOfDays":0,"TimeSliceDuration":300,"TimePerChild":5,"Beta0":20,"Year":2018}
+{"StarterIds":null,"StarterId":12,"DaysPeriod":[{"Start":"2017-12-08T17:00:00","End":"2017-12-08T22:00:00"},{"Start":"2017-12-09T17:00:00","End":"2017-12-09T22:00:00"}],"Days":null,"NumberOfDays":0,"TimeSliceDuration":300,"TimePerChild":5,"Beta0":20,"Year":2017}

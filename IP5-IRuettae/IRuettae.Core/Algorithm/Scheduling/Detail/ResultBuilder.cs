@@ -15,7 +15,10 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
 
         public Route CreateResult()
         {
-            var route = new Route(solverData.NumberOfSantas, solverData.NumberOfDays);
+            var route = new Route(solverData.NumberOfSantas, solverData.NumberOfDays)
+            {
+                SantaIds = solverData.Input.SantaIds
+            };
 
             for (int day = 0; day < solverData.NumberOfDays; day++)
             {

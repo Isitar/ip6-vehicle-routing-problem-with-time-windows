@@ -174,7 +174,7 @@ namespace IRuettae.WebApi.Helpers
                                 (carry, n) =>
                                     carry + Environment.NewLine +
                                     $"[{n.RealVisitId} {clusteringSolverInputData.VisitNames[n.Visit]}]");
-                            clusteredRoutesSb.Append($"Route Santa {santa} on {phase1Result.StartingTime[day]}");
+                            clusteredRoutesSb.Append($"Route Santa {santas[santa]} on {phase1Result.StartingTime[day]}");
                             clusteredRoutesSb.AppendLine(wp);
                             clusteredRoutesSb.AppendLine(new string('-', 20));
                         }
@@ -361,7 +361,7 @@ namespace IRuettae.WebApi.Helpers
                     routeCalculation.LongestDay = routeResults.Max(rr =>
                         rr.Route.Waypoints.Cast<List<Waypoint>>().Max(wpl => (wpl.Last().StartTime - wpl.First().StartTime) * routeCalculation.TimeSliceDuration));
 
-                    routeCalculation.NumberOfSantas = routeResults.Count;
+                    routeCalculation.NumberOfRoutes = routeResults.Count;
                     #endregion metrics
 
                     dbSession.Update(routeCalculation);

@@ -1,18 +1,21 @@
-﻿@model IEnumerable<IRuettae.WebApp.Models.RouteCalculationWaypointVM[]>
+﻿@using System.Drawing
+@model IEnumerable<IRuettae.WebApp.Models.RouteCalculationWaypointVM[]>
 
 
 
 @{
 
     int counter = 0;
-    char letterMap = 'A';
+
     <h1>Routen</h1>
+    <div id="allMap" style="min-height: 300px;"></div>
+
     foreach (var route in Model)
     {
         counter = counter + 1;
-        letterMap = 'A';
+        var letterMap = 'A';
 
-        <h2>Route @route[0].VisitStartTime.Date.ToShortDateString()</h2>
+        <h2>Route @route[0].SantaName @route[0].VisitStartTime.Date.ToShortDateString()</h2>
         <div id="map-@counter" style="min-height: 300px"></div>
         <table class="table">
             <tr>
@@ -69,10 +72,7 @@
                 var waypts = [];
                 @foreach (var wp in route.Skip(1).Take(route.Length - 2).Select(r => r.Visit.ToString()))
                  {
-                     @Html.Raw(@"waypts.push({
-                         location:'"+ wp+@"',
-                         stopover: true
-                        });")
+                     @:waypts.push({location:'@(wp)',stopover: true});
                  }
 
                 directionsService.route({
@@ -100,6 +100,36 @@
         @for (var i = 1; i <= counter; i++)
         {
             @Html.Raw($"initMap{i}();{Environment.NewLine}");
+        }
+
+        renderAllMap();
+
+    }
+
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    function renderAllMap() {
+
+            var directionsService = new google.maps.DirectionsService;
+            var directionsDisplay = [];
+            var map = new google.maps.Map(document.getElementById('allMap'),
+                {
+                    zoom: 20,
+                    center: { lat: 41.85, lng: -87.65 }
+                });
+
+        @for (int idx = 1; idx <= Model.Count(); idx++)
+        {
+            @:directionsDisplay[@(idx)] = new google.maps.DirectionsRenderer({ markerOptions: {visible: false}, polylineOptions: { strokeColor: getRandomColor()}});
+            @:directionsDisplay[@(idx)].setMap(map);
+            @:calculateAndDisplayRoute@(idx)(directionsService, directionsDisplay[@(idx)]);
         }
     }
 </script>

@@ -55,6 +55,7 @@
         <div class="item-group-head">&nbsp;@Html.ActionLink("Zurück", "Results")</div>
         <div class="item-group">@Html.DisplayNameFor(m => m.NumberOfSantas)</div>
         <div class="item-group">@Html.DisplayNameFor(m => m.NumberOfVisits)</div>
+        <div class="item-group">@Html.DisplayNameFor(m => m.NumberOfRoutes)</div>
         <div class="item-group">@Html.DisplayNameFor(m => m.TotalVisitTime)</div>
         <div class="item-group">@Html.DisplayNameFor(m => m.TotalWaytime)</div>
         <div class="item-group">@Html.DisplayNameFor(m => m.WaytimePerSanta)</div>
@@ -68,9 +69,10 @@
     @foreach (var routeCalculationVM in Model)
     {
         <li class="item-column">
-            <div class="item-group-head">Berechnung #@routeCalculationVM.Id</div>
+            <div class="item-group-head">Berechnung #@routeCalculationVM.Id <small>@routeCalculationVM.ClusteringOptimisationFunction</small></div>
             <div class="item-group @(routeCalculationVM.NumberOfSantas == Model.Min(m => m.NumberOfSantas) ? "best-val" : "")">@routeCalculationVM.NumberOfSantas</div>
             <div class="item-group @(routeCalculationVM.NumberOfVisits == Model.Min(m => m.NumberOfVisits) ? "best-val" : "")">@routeCalculationVM.NumberOfVisits</div>
+            <div class="item-group @(routeCalculationVM.NumberOfRoutes == Model.Min(m => m.NumberOfRoutes) ? "best-val" : "")">@routeCalculationVM.NumberOfRoutes</div>
             <div class="item-group @(routeCalculationVM.TotalVisitTime == Model.Min(m => m.TotalVisitTime) ? "best-val" : "")">@(Math.Round(routeCalculationVM.TotalVisitTime / 60)) Minuten</div>
             <div class="item-group @(routeCalculationVM.TotalWaytime == Model.Min(m => m.TotalWaytime) ? "best-val" : "")">@(Math.Round(routeCalculationVM.TotalWaytime / 60)) Minuten</div>
             <div class="item-group @(routeCalculationVM.WaytimePerSanta == Model.Min(m => m.WaytimePerSanta) ? "best-val" : "")">@(Math.Round(routeCalculationVM.WaytimePerSanta / 60)) Minuten</div>

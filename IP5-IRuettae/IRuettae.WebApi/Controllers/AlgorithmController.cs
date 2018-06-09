@@ -262,6 +262,7 @@ namespace IRuettae.WebApi.Controllers
                     Visit = (VisitDTO)dbSession.Get<Visit>(wp.RealVisitId),
                     VisitStartTime = sr.StartingTime.AddSeconds(wp.StartTime * routeCalculation.TimeSliceDuration),
                     VisitEndtime = sr.StartingTime.AddSeconds(wp.StartTime * routeCalculation.TimeSliceDuration).AddSeconds(dbSession.Get<Visit>(wp.RealVisitId).Duration),
+                    SantaName = dbSession.Get<Santa>(sr.Route.SantaIds[0])?.Name,
                 }).ToList()).ToList();
             }
         }

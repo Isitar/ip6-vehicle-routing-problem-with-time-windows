@@ -28,15 +28,17 @@ namespace IRuettae.Core.Algorithm.Scheduling
 
 
         public long[] VisitIds { get; }
+        public long[] SantaIds { get; }
         public DateTime[] DayStartingTimes { get; }
 
-        public SolverInputData(bool[][,] santas, int[] visitsDuration, VisitState[][,] visits, int[,] distances, long[] visitIds, DateTime[] dayStartingTimes)
+        public SolverInputData(bool[][,] santas, int[] visitsDuration, VisitState[][,] visits, int[,] distances, long[] visitIds, long[] santaIds, DateTime[] dayStartingTimes)
         {
             Santas = santas;
             VisitsDuration = visitsDuration;
             Visits = visits;
             Distances = distances;
             VisitIds = visitIds;
+            SantaIds = santaIds;
             DayStartingTimes = dayStartingTimes;
         }
 

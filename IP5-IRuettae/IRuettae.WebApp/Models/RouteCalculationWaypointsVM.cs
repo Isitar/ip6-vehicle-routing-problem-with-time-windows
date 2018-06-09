@@ -17,5 +17,8 @@ namespace IRuettae.WebApp.Models
 
         [DisplayName("Besuchs Endzeit")]
         public DateTime VisitEndTime { get; set; }
+
+        [DisplayName("Chlausname")]
+        public string SantaName { get; set; }
     }
 }
