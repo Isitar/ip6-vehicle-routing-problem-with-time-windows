@@ -72,9 +72,9 @@ namespace IRuettae.WebApp.Models
         public virtual double WaytimePerSanta { get; set; }
         [DisplayName("Wunschzeit erfüllt")]
         public virtual double DesiredSeconds { get; set; }
-        [DisplayName("Längste Route (Zeitlich [m])")]
+        [DisplayName("Längste Route (Zeitlich)")]
         public virtual double LongestRouteTime { get; set; }
-        [DisplayName("Längste Route (Distanz [m])")]
+        [DisplayName("Längste Route (Distanz)")]
         public virtual double LongestRouteDistance { get; set; }
 
         [DisplayName("Längster Tag")]

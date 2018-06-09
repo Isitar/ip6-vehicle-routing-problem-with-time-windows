@@ -69,5 +69,12 @@ namespace IRuettae.WebApp.Controllers
             var routeCalculationWaypointVms = JsonConvert.DeserializeObject<List<RouteCalculationWaypointVM[]>>(result.Content.ReadAsStringAsync().Result);
             return View(routeCalculationWaypointVms);
         }
+
+        public async Task<ViewResult> Compare(long[] ids)
+        {
+            var result = await Client.GetAsync("api/algorithm/RouteCalculations");
+            var routeCalculations = JArray.Parse(result.Content.ReadAsStringAsync().Result).ToObject<RouteCalculationVM[]>().Where(rcvm => ids.Contains(rcvm.Id)).OrderByDescending(rc => rc.StartTime);
+            return View(routeCalculations);
+        }
     }
 }

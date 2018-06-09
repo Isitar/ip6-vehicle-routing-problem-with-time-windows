@@ -6,6 +6,7 @@
 <table class="table">
     <tr>
         <th></th>
+        <th>Vergleichen</th>
         <th>
             @Html.DisplayNameFor(model => model.Year)
         </th>
@@ -23,110 +24,113 @@
 
     @foreach (var item in Model)
     {
-    <tr>
-        <td class="@(item.State == RouteCalculationVM.RouteCalculationState.Finished ? "td-green" :
-                             (new []{RouteCalculationVM.RouteCalculationState.RunningPhase1,
-                                 RouteCalculationVM.RouteCalculationState.RunningPhase2,
-                                 RouteCalculationVM.RouteCalculationState.RunningPhase3,
-                                 RouteCalculationVM.RouteCalculationState.Ready
-                             }).Contains(item.State) ? "td-orange" : "td-red")"></td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Year)
-        </td>
-        @*<td>
-            @if (!string.IsNullOrEmpty(item.ClusteringResult))
-            {
-                <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-cl-@item.Id" aria-expanded="False" aria-controls="collapse-cl-@item.Id">Anzeigen</button>
+        <tr>
+            <td class="@(item.State == RouteCalculationVM.RouteCalculationState.Finished ? "td-green" :
+                         (new []{RouteCalculationVM.RouteCalculationState.RunningPhase1,
+                             RouteCalculationVM.RouteCalculationState.RunningPhase2,
+                             RouteCalculationVM.RouteCalculationState.RunningPhase3,
+                             RouteCalculationVM.RouteCalculationState.Ready
+                         }).Contains(item.State) ? "td-orange" : "td-red")"></td>
+            <td><input type="checkbox" class="form-control" name="compare[@item.Id]" data-id="@item.Id"/></td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Year)
+            </td>
+            @*<td>
+                    @if (!string.IsNullOrEmpty(item.ClusteringResult))
+                    {
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-cl-@item.Id" aria-expanded="False" aria-controls="collapse-cl-@item.Id">Anzeigen</button>
 
-                <div class="collapse" id="collapse-cl-@item.Id" style="min-width: 400px">
-                    <div class="card card-body">
-                        @foreach (var line in item.ClusteringResult?.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
-                        {
-                            <p>@line</p>
-                        }
-                    </div>
-                </div>
-            }
-        </td>
-        <td>
-            @if (!string.IsNullOrEmpty(item.SchedulingResult))
-            {
-                <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-sr-@item.Id" aria-expanded="False" aria-controls="collapse-sr-@item.Id">Anzeigen</button>
+                        <div class="collapse" id="collapse-cl-@item.Id" style="min-width: 400px">
+                            <div class="card card-body">
+                                @foreach (var line in item.ClusteringResult?.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
+                                {
+                                    <p>@line</p>
+                                }
+                            </div>
+                        </div>
+                    }
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.SchedulingResult))
+                    {
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-sr-@item.Id" aria-expanded="False" aria-controls="collapse-sr-@item.Id">Anzeigen</button>
 
-                <div class="collapse" id="collapse-sr-@item.Id">
-                    <div class="card card-body">
-                        @foreach (var line in item.SchedulingResult?.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
-                        {
-                            <p>@line</p>
-                        }
-                    </div>
-                </div>
-            }
-        </td>*@
-        <td style="white-space: nowrap;">
+                        <div class="collapse" id="collapse-sr-@item.Id">
+                            <div class="card card-body">
+                                @foreach (var line in item.SchedulingResult?.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
+                                {
+                                    <p>@line</p>
+                                }
+                            </div>
+                        </div>
+                    }
+                </td>*@
+            <td style="white-space: nowrap;">
 
-            @if ((new[] { RouteCalculationVM.RouteCalculationState.Ready, RouteCalculationVM.RouteCalculationState.RunningPhase1, RouteCalculationVM.RouteCalculationState.RunningPhase2, RouteCalculationVM.RouteCalculationState.RunningPhase3 }).Contains(item.State))
-            {
-                <i class="fas fa-spinner fa-pulse"></i>
-            }
-            &nbsp;
-            @Html.DisplayFor(modelItem => item.State)
+                @if ((new[] { RouteCalculationVM.RouteCalculationState.Ready, RouteCalculationVM.RouteCalculationState.RunningPhase1, RouteCalculationVM.RouteCalculationState.RunningPhase2, RouteCalculationVM.RouteCalculationState.RunningPhase3 }).Contains(item.State))
+                {
+                    <i class="fas fa-spinner fa-pulse"></i>
+                }
+                &nbsp;
+                @Html.DisplayFor(modelItem => item.State)
 
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StateText)
-        </td>
-        <td style="min-width: 200px; font-size: 12px">
-            @if (!string.IsNullOrEmpty(item.Result))
-            {
-                <dl>
-                    <dt>@Html.DisplayNameFor(m => m.NumberOfSantas)</dt>
-                    <dd>@item.NumberOfSantas</dd>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StateText)
+            </td>
+            <td style="min-width: 200px; font-size: 12px">
+                @if (!string.IsNullOrEmpty(item.Result))
+                {
+                    <dl>
+                        <dt>@Html.DisplayNameFor(m => m.NumberOfSantas)</dt>
+                        <dd>@item.NumberOfSantas</dd>
 
-                    <dt>@Html.DisplayNameFor(m => m.NumberOfVisits)</dt>
-                    <dd>@item.NumberOfVisits</dd>
+                        <dt>@Html.DisplayNameFor(m => m.NumberOfVisits)</dt>
+                        <dd>@item.NumberOfVisits</dd>
 
-                    <dt>@Html.DisplayNameFor(m => m.TotalVisitTime)</dt>
-                    <dd>@(Math.Round(item.TotalVisitTime / 60)) Minuten</dd>
+                        <dt>@Html.DisplayNameFor(m => m.TotalVisitTime)</dt>
+                        <dd>@(Math.Round(item.TotalVisitTime / 60)) Minuten</dd>
 
-                    <dt>@Html.DisplayNameFor(m => m.TotalWaytime)</dt>
-                    <dd>@(Math.Round(item.TotalWaytime / 60)) Minuten</dd>
+                        <dt>@Html.DisplayNameFor(m => m.TotalWaytime)</dt>
+                        <dd>@(Math.Round(item.TotalWaytime / 60)) Minuten</dd>
 
-                    <dt>@Html.DisplayNameFor(m => m.WaytimePerSanta)</dt>
-                    <dd>@(Math.Round(item.WaytimePerSanta / 60)) Minuten</dd>
+                        <dt>@Html.DisplayNameFor(m => m.WaytimePerSanta)</dt>
+                        <dd>@(Math.Round(item.WaytimePerSanta / 60)) Minuten</dd>
 
-                    <dt>@Html.DisplayNameFor(m => m.DesiredSeconds)</dt>
-                    <dd>@(Math.Round(item.DesiredSeconds / 60)) Minuten</dd>
+                        <dt>@Html.DisplayNameFor(m => m.DesiredSeconds)</dt>
+                        <dd>@(Math.Round(item.DesiredSeconds / 60)) Minuten</dd>
 
-                    <dt>@Html.DisplayNameFor(m => m.LongestDay)</dt>
-                    <dd>@(Math.Round(item.LongestDay / 60)) Minuten </dd>
+                        <dt>@Html.DisplayNameFor(m => m.LongestDay)</dt>
+                        <dd>@(Math.Round(item.LongestDay / 60)) Minuten </dd>
 
-                    <dt>@Html.DisplayNameFor(m => m.LongestRouteDistance)</dt>
-                    <dd>@(item.LongestRouteDistance) Meter</dd>
+                        <dt>@Html.DisplayNameFor(m => m.LongestRouteDistance)</dt>
+                        <dd>@(item.LongestRouteDistance) Meter</dd>
 
-                    <dt>@Html.DisplayNameFor(m => m.LongestRouteTime)</dt>
-                    <dd>@(Math.Round(item.LongestRouteTime / 60)) Minuten </dd>
+                        <dt>@Html.DisplayNameFor(m => m.LongestRouteTime)</dt>
+                        <dd>@(Math.Round(item.LongestRouteTime / 60)) Minuten </dd>
 
-                    <dt>@Html.DisplayNameFor(m => m.LatestVisit)</dt>
-                    <dd>@item.LatestVisit.TimeOfDay</dd>
-                </dl>
+                        <dt>@Html.DisplayNameFor(m => m.LatestVisit)</dt>
+                        <dd>@item.LatestVisit.TimeOfDay</dd>
+                    </dl>
 
-            }
-        </td>
-        <td>
-            @if (!string.IsNullOrEmpty(item.Result))
-            {
-                <a href="@Url.Action("Result", new {id = item.Id})" class="btn btn-lg btn-info">
+                }
+            </td>
+            <td>
+                @if (!string.IsNullOrEmpty(item.Result))
+                {
+                    <a href="@Url.Action("Result", new {id = item.Id})" class="btn btn-lg btn-info">
 
-                    <i class="fa fa-eye"></i>
-                    Resultat
-                </a>
-            }
-        </td>
-    </tr>
+                        <i class="fa fa-eye"></i>
+                        Resultat
+                    </a>
+                }
+            </td>
+        </tr>
     }
 
 </table>
+
+<button class="btn btn-dark float-right mt-3" id="btn-compare">Vergleichen</button>
 
 @section scripts {
     <script>
@@ -153,7 +157,13 @@
             } else {
                 button.innerHTML = '<i class="fas fa-sync"></i> Automatisches Aktualisieren einschalten';
             }
-        })
+
+            $('#btn-compare').click(() => {
+                var idParam = Array.from(document.querySelectorAll('.table tr td input[type="checkbox"]')).filter(e => e.checked).map((e,idx) => 'ids['+idx+']='+e.getAttribute('data-id'));
+                location.href = '@Url.Action("Compare")?' + idParam.join('&');
+            });
+        });
+
         function onRefresh() {
             location.reload(true);
         }
