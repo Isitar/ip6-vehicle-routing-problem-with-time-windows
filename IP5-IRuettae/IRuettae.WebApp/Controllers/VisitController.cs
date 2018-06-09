@@ -22,8 +22,13 @@ namespace IRuettae.WebApp.Controllers
         public ActionResult AddVisit(VisitVM v)
         {
             v.Desired.RemoveAll(periodVM => periodVM.Start == null && periodVM.End == null);
-            v.Unavailable.RemoveAll(periodVM => periodVM.Start == null && periodVM.End == null);
+            v.Unavailable.RemoveAll(periodVM => periodVM.Start == null);
 
+            v.Unavailable = v.Unavailable.Select(u => new PeriodVM
+            {
+                Start = u.Start.Value.Date,
+                End = u.Start.Value.Date.AddDays(1).AddSeconds(-1)
+            }).ToList();
 
             var response = Client.PostAsJsonAsync("api/address/CheckAddress", v).Result;
             if (!response.IsSuccessStatusCode)
