@@ -31,5 +31,14 @@ namespace IRuettae.WebApp.Properties {
                 return ((string)(this["WebAPIBaseUrl"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("AIzaSyDQKw_peFfQoSnd62jx7rW3SxmivD1hjSU")]
+        public string GoogleMapsApiKey {
+            get {
+                return ((string)(this["GoogleMapsApiKey"]));
+            }
+        }
     }
 }

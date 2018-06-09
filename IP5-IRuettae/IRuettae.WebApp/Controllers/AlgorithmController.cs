@@ -67,6 +67,7 @@ namespace IRuettae.WebApp.Controllers
         {
             var result = await Client.GetAsync("api/algorithm/RouteCalculationWaypoints?id=" + id);
             var routeCalculationWaypointVms = JsonConvert.DeserializeObject<List<RouteCalculationWaypointVM[]>>(result.Content.ReadAsStringAsync().Result);
+            ViewBag.apiKey = Properties.Settings.Default.GoogleMapsApiKey;
             return View(routeCalculationWaypointVms);
         }
 

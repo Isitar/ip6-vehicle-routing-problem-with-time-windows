@@ -359,10 +359,9 @@ namespace IRuettae.WebApi.Helpers
 
 
                     routeCalculation.LongestDay = routeResults.Max(rr =>
-                        rr.Route.Waypoints.Cast<List<Waypoint>>().Max(wpl =>
-                        {
-                            return (wpl.Last().StartTime - wpl.First().StartTime) * routeCalculation.TimeSliceDuration;
-                        }));
+                        rr.Route.Waypoints.Cast<List<Waypoint>>().Max(wpl => (wpl.Last().StartTime - wpl.First().StartTime) * routeCalculation.TimeSliceDuration));
+
+                    routeCalculation.NumberOfSantas = routeResults.Count;
                     #endregion metrics
 
                     dbSession.Update(routeCalculation);
