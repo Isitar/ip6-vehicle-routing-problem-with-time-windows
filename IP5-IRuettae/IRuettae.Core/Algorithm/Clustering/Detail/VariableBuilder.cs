@@ -25,14 +25,10 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
         {
             solverData.Variables.SantaUsesWay = new GLS.Variable[solverData.NumberOfSantas][,];
 
-            solverData.Variables.SantaGraphEdge = new GLS.Variable[solverData.NumberOfSantas][,];
             solverData.Variables.SantaWayFlow = new GLS.Variable[solverData.NumberOfSantas][,];
             solverData.Variables.SantaWayHasFlow = new GLS.Variable[solverData.NumberOfSantas][,];
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
-                solverData.Variables.SantaGraphEdge[santa] =
-                    solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfVisits, solverData.NumberOfVisits, $"Santa_{santa}_graphEdge");
-
                 solverData.Variables.SantaUsesWay[santa] =
                     solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfVisits, solverData.NumberOfVisits, $"Santa_{santa}_usesWay");
 
