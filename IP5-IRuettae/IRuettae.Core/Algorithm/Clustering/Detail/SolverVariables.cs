@@ -19,13 +19,7 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
         /// floating [Santa] = RouteTime
         /// </summary>
         public GLS.Variable[] SantaRouteCost { get; set; }
-
-        /// <summary>
-        /// [santa][source,destination] if santa visits both, source & dest
-        /// Used for spanningTree Constraint
-        /// </summary>
-        public GLS.Variable[][,] SantaGraphEdge { get; set; }
-
+        
         /// <summary>
         /// [santa][source,destination] if santa uses this way (calculated by spanningTree)
         /// </summary>

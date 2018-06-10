@@ -40,8 +40,9 @@ namespace IRuettae.Persistence.Entities
         public virtual RouteCalculationState State { get; set; }
         public virtual string StateText { get; set; }
         public virtual DateTime EndTime { get; set; }
-
+        
         // Metrics
+        public virtual int NumberOfRoutes { get; set; }
         public virtual double TotalWaytime { get; set; }
         public virtual double TotalVisitTime { get; set; }
         public virtual double WaytimePerSanta { get; set; }

@@ -20,7 +20,7 @@
     <dd>@Model.NumberOfChildren</dd>
     @if (Model.Desired != null)
     {
-    <dt>@Html.DisplayNameFor(m => m.Desired)</dt>
+        <dt>@Html.DisplayNameFor(m => m.Desired)</dt>
         <dd>
             <table class="table">
                 <thead class="thead-dark">
@@ -45,24 +45,10 @@
     @if (Model.Desired != null)
     {
         <dt>@Html.DisplayNameFor(m => m.Unavailable)</dt>
-        <dd>
-            <table class="table">
-                <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">@Html.DisplayNameFor(m => new PeriodVM().Start)</th>
-                        <th scope="col">@Html.DisplayNameFor(m => new PeriodVM().End)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var unavailable in Model.Unavailable)
-                    {
-                        <tr>
-                            <td>@unavailable.Start</td>
-                            <td>@unavailable.End</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </dd>
+
+        foreach (var unavailable in Model.Unavailable)
+        {
+            <dd>@unavailable.Start.Value.Date.ToShortDateString()</dd>
+        }
     }
 </dl>

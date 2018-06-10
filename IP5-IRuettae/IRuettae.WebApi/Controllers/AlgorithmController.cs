@@ -229,6 +229,19 @@ namespace IRuettae.WebApi.Controllers
         {
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
+                if (Pipeline.BackgroundWorkers.IsEmpty)
+                {
+                    dbSession.Query<RouteCalculation>()
+                        .Where(rc => new[] { RouteCalculationState.Ready, RouteCalculationState.RunningPhase1, RouteCalculationState.RunningPhase2, RouteCalculationState.RunningPhase3 }.Contains(rc.State))
+                        .ToList()
+                        .ForEach(rc =>
+                        {
+                            rc.State = RouteCalculationState.Cancelled;
+                            dbSession.Update(rc);
+                        });
+                    dbSession.Flush();
+                }
+
                 var routeCalculations = dbSession.Query<RouteCalculation>().ToList();
                 return routeCalculations;
             }
@@ -247,7 +260,9 @@ namespace IRuettae.WebApi.Controllers
                 return schedulingResults.Select(sr => sr.Route.Waypoints[0, 0].Select(wp => new
                 {
                     Visit = (VisitDTO)dbSession.Get<Visit>(wp.RealVisitId),
-                    StartTime = sr.StartingTime.AddSeconds(wp.StartTime * routeCalculation.TimeSliceDuration)
+                    VisitStartTime = sr.StartingTime.AddSeconds(wp.StartTime * routeCalculation.TimeSliceDuration),
+                    VisitEndtime = sr.StartingTime.AddSeconds(wp.StartTime * routeCalculation.TimeSliceDuration).AddSeconds(dbSession.Get<Visit>(wp.RealVisitId).Duration),
+                    SantaName = dbSession.Get<Santa>(sr.Route.SantaIds[0])?.Name,
                 }).ToList()).ToList();
             }
         }

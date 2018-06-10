@@ -47,7 +47,7 @@ namespace IRuettae.Core.Tests.Algorithm
                 0, 1, 1,
             };
 
-            return new SolverInputData(santas, visitLength, visits, distances, new long[] { 0, 1, 2 }, new[] { DateTime.Now });
+            return new SolverInputData(santas, visitLength, visits, distances, new long[] { 0, 1, 2 }, new[] { 0L, 1L }, new[] { DateTime.Now });
         }
 
 

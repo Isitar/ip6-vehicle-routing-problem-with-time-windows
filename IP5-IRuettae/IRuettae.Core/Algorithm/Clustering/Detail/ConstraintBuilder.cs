@@ -20,7 +20,7 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
         {
             // Variables
             SantaVisitDuration();
-            SantaGraphEdge();
+            SantaWayInCluster();
             SantaRouteCost();
 
 
@@ -73,8 +73,6 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
 
         private void ATSPConstraints()
         {
-            ATSP_OnlyAvailableEdges();
-
             ATSP_NumberOfEdgesConstraint();
             ATSP_NumDestinationOfOnce();
             ATSP_NumSourceOfOnce();
@@ -87,6 +85,7 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
 
         private void ATSP_Flow()
         {
+            var M = solverData.NumberOfVisits;
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
                 var santaWayFlow = solverData.Variables.SantaWayFlow[santa];
@@ -94,9 +93,9 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
                 var santaUsesWay = solverData.Variables.SantaUsesWay[santa];
                 var numberOfVisitsInCluster = NumberOfSantaVisit(santa);
                 // flow for start location if santa is in use
-                foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
+                foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                 {
-                    Solver.Add(santaWayFlow[0, source] == santaUsesWay[0, source] * solverData.NumberOfVisits);
+                    Solver.Add(santaWayFlow[0, destination] == santaUsesWay[0, destination] * M);
                 }
 
                 //flow only possible if santa uses way
@@ -104,9 +103,8 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
                 {
                     foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
-                        Solver.Add(santaWayFlow[source, destination] <= santaUsesWay[source, destination] * solverData.NumberOfVisits);
-                        //Solver.Add(santaWayFlow[source, destination] <= solverData.Variables.SantaVisit[santa, source] * solverData.NumberOfVisits);
-                        //Solver.Add(santaWayFlow[source, destination] <= solverData.Variables.SantaVisit[santa, destination] * solverData.NumberOfVisits);
+                        Solver.Add(santaWayFlow[source, destination] <= santaUsesWay[source, destination] * M);
+                        //Solver.Add(santaWayFlow[source, destination] >= santaUsesWay[source, destination]);
                     }
                 }
 
@@ -141,6 +139,7 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
                     foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
                         Solver.Add(santaWayHasFlow[source, destination] <= santaWayFlow[source, destination]);
+                        //Solver.Add(santaWayFlow[source, destination] <= santaWayHasFlow[source, destination] * M); // this constraint makes it terrible slow
                     }
                 }
 
@@ -158,21 +157,6 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
             }
         }
 
-        private void ATSP_OnlyAvailableEdges()
-        {
-            foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
-            {
-                foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
-                {
-                    foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
-                    {
-                        Solver.Add(solverData.Variables.SantaUsesWay[santa][source, destination] <=
-                                   solverData.Variables.SantaGraphEdge[santa][source, destination]
-                                   );
-                    }
-                }
-            }
-        }
         private void ATSP_NoBackAndFourth()
         {
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
@@ -186,25 +170,6 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
                 }
             }
         }
-
-        //private void ATSP_SourceAndDestExactlyTwice()
-        //{
-        //    foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
-        //    {
-        //        var sumUsedAsSourceOrDest = new LinearExpr();
-        //        foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
-        //        {
-
-        //            foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
-        //            {
-        //                sumUsedAsSourceOrDest += solverData.Variables.SantaUsesWay[santa][source, destination];
-        //                sumUsedAsSourceOrDest += solverData.Variables.SantaUsesWay[santa][destination, source];
-        //            }
-        //        }
-
-        //        Solver.Add(sumUsedAsSourceOrDest == 2);
-        //    }
-        //}
 
         private void ATSP_NoSelfie()
         {
@@ -229,7 +194,7 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
                         numOfSources += solverData.Variables.SantaUsesWay[santa][source, destination];
                     }
 
-                    Solver.Add(numOfSources == 1 * solverData.Variables.SantaVisit[santa,source]);
+                    Solver.Add(numOfSources == 1 * solverData.Variables.SantaVisit[santa, source]);
                 }
             }
         }
@@ -361,7 +326,7 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
             }
         }
 
-        private void SantaGraphEdge()
+        private void SantaWayInCluster()
         {
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
@@ -372,13 +337,11 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
                     {
                         var destinationVisitedBySanta = solverData.Variables.SantaVisit[santa, destination];
 
-                        Solver.Add(solverData.Variables.SantaGraphEdge[santa][source, destination] <= sourceVisitedBySanta);
-                        Solver.Add(solverData.Variables.SantaGraphEdge[santa][source, destination] <= destinationVisitedBySanta);
-                        Solver.Add(solverData.Variables.SantaGraphEdge[santa][source, destination] >= sourceVisitedBySanta + destinationVisitedBySanta - 1);
+                        Solver.Add(solverData.Variables.SantaUsesWay[santa][source, destination] <= sourceVisitedBySanta);
+                        Solver.Add(solverData.Variables.SantaUsesWay[santa][source, destination] <= destinationVisitedBySanta);
 
-                        Solver.Add(solverData.Variables.SantaGraphEdge[santa][destination, source] <= sourceVisitedBySanta);
-                        Solver.Add(solverData.Variables.SantaGraphEdge[santa][destination, source] <= destinationVisitedBySanta);
-                        Solver.Add(solverData.Variables.SantaGraphEdge[santa][destination, source] >= sourceVisitedBySanta + destinationVisitedBySanta - 1);
+                        Solver.Add(solverData.Variables.SantaUsesWay[santa][destination, source] <= sourceVisitedBySanta);
+                        Solver.Add(solverData.Variables.SantaUsesWay[santa][destination, source] <= destinationVisitedBySanta);
                     }
                 }
             }

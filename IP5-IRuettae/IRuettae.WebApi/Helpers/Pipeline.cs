@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -22,6 +23,8 @@ namespace IRuettae.WebApi.Helpers
 {
     public class Pipeline
     {
+        public static ConcurrentBag<BackgroundWorker> BackgroundWorkers = new ConcurrentBag<BackgroundWorker>();
+
         private RouteCalculation routeCalculation;
         private readonly ISession dbSession;
         private BackgroundWorker bgWorker;
@@ -41,6 +44,19 @@ namespace IRuettae.WebApi.Helpers
         private void SetupBgWorker()
         {
             bgWorker = new BackgroundWorker();
+            BackgroundWorkers.Add(bgWorker);
+            bgWorker.Disposed += (sender, args) =>
+            {
+                if (string.IsNullOrEmpty(routeCalculation.Result))
+                {
+                    routeCalculation.State = RouteCalculationState.Cancelled;
+                    routeCalculation.StateText += $"{Environment.NewLine} {DateTime.Now} Background worker stopped";
+                }
+
+                dbSession.Update(routeCalculation);
+                dbSession.Flush();
+            };
+
             routeCalculation = dbSession.Merge(routeCalculation);
             bgWorker.DoWork += (sender, args) =>
             {
@@ -72,6 +88,7 @@ namespace IRuettae.WebApi.Helpers
                         return a.Id.CompareTo(b.Id);
                     });
 
+                    visits[0].Duration = 0;
 
                     routeCalculation.NumberOfSantas = santas.Count;
                     routeCalculation.NumberOfVisits = visits.Count;
@@ -128,9 +145,7 @@ namespace IRuettae.WebApi.Helpers
                             ? TargetBuilderType.Default
                             : TargetBuilderType.MinTimeOnly;
 #if DEBUG
-                    var serialPath =
-                        HostingEnvironment.MapPath(
-                            $"~/App_Data/ClusteringSolverInput{routeCalculation.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}Visits.serial");
+                    var serialPath = HostingEnvironment.MapPath($"~/App_Data/Clustering{routeCalculation.Id}_{routeCalculation.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}.serial");
                     if (serialPath != null)
                     {
                         using (var stream = File.Open(serialPath, FileMode.Create))
@@ -138,11 +153,11 @@ namespace IRuettae.WebApi.Helpers
                             new BinaryFormatter().Serialize(stream, clusteringSolverInputData);
                         }
                     }
-
-                    var mpsPath =
-                        HostingEnvironment.MapPath($"~/App_Data/Clustering_{routeCalculation.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}.mps");
-                    Starter.SaveMps(mpsPath, clusteringSolverInputData, targetType);
 #endif
+                    var mpsPath =
+                            HostingEnvironment.MapPath($"~/App_Data/Clustering_{routeCalculation.Id}_{routeCalculation.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}.mps");
+                    Starter.SaveMps(mpsPath, clusteringSolverInputData, targetType);
+
 
                     var phase1Result = Starter.Optimise(clusteringSolverInputData, targetType,
                         routeCalculation.ClustringMipGap);
@@ -159,7 +174,7 @@ namespace IRuettae.WebApi.Helpers
                                 (carry, n) =>
                                     carry + Environment.NewLine +
                                     $"[{n.RealVisitId} {clusteringSolverInputData.VisitNames[n.Visit]}]");
-                            clusteredRoutesSb.Append($"Route Santa {santa} on {phase1Result.StartingTime[day]}");
+                            clusteredRoutesSb.Append($"Route Santa {santas[santa]} on {phase1Result.StartingTime[day]}");
                             clusteredRoutesSb.AppendLine(wp);
                             clusteredRoutesSb.AppendLine(new string('-', 20));
                         }
@@ -221,7 +236,10 @@ namespace IRuettae.WebApi.Helpers
                                     routeCalculation.SchedulingMipGap),
                                 StartingTime = schedulingInputdata.DayStartingTimes[0]
                             };
-                            retVal.Route.StartingTime = new[] { retVal.StartingTime };
+                            if (retVal.Route != null)
+                            {
+                                retVal.Route.StartingTime = new[] { retVal.StartingTime };
+                            }
                             return retVal;
 
                         }).ToList();
@@ -341,10 +359,9 @@ namespace IRuettae.WebApi.Helpers
 
 
                     routeCalculation.LongestDay = routeResults.Max(rr =>
-                        rr.Route.Waypoints.Cast<List<Waypoint>>().Max(wpl =>
-                        {
-                            return (wpl.Last().StartTime - wpl.First().StartTime) * routeCalculation.TimeSliceDuration;
-                        }));
+                        rr.Route.Waypoints.Cast<List<Waypoint>>().Max(wpl => (wpl.Last().StartTime - wpl.First().StartTime) * routeCalculation.TimeSliceDuration));
+
+                    routeCalculation.NumberOfRoutes = routeResults.Count;
                     #endregion metrics
 
                     dbSession.Update(routeCalculation);

@@ -25,8 +25,11 @@ namespace IRuettae.WebApp.Models
         public virtual int StarterVisitId { get; set; }
 
 
-        [DisplayName("Anzahl Chläuse")]
+        [DisplayName("Anzahl benötigte Chläuse")]
         public virtual int NumberOfSantas { get; set; }
+
+        [DisplayName("Anzahl Routen")]
+        public virtual int NumberOfRoutes { get; set; }
         [DisplayName("Anzahl Besuche")]
         public virtual int NumberOfVisits { get; set; }
         [DisplayName("")]
@@ -36,7 +39,7 @@ namespace IRuettae.WebApp.Models
 
         // Phase 1
         [DisplayName("Clustering Zielfunktion")]
-        public virtual int ClusteringOptimisationFunction { get; set; }
+        public virtual ClusteringOptimisationGoals ClusteringOptimisationFunction { get; set; }
         [DisplayName("Clustering MIP GAP")]
         public virtual double ClustringMipGap { get; set; }
         [DisplayName("Clustering Resultat")]
@@ -68,13 +71,13 @@ namespace IRuettae.WebApp.Models
         [DisplayName("Totale Besuchszeit")]
         public virtual double TotalVisitTime { get; set; }
 
-        [DisplayName("Durchschnittliche Wegzeit pro Chlaus")]
+        [DisplayName("Ø Wegzeit pro Chlaus")]
         public virtual double WaytimePerSanta { get; set; }
         [DisplayName("Wunschzeit erfüllt")]
         public virtual double DesiredSeconds { get; set; }
-        [DisplayName("Längste Route (Zeitlich [m])")]
+        [DisplayName("Längste Route (Zeitlich)")]
         public virtual double LongestRouteTime { get; set; }
-        [DisplayName("Längste Route (Distanz [m])")]
+        [DisplayName("Längste Route (Distanz)")]
         public virtual double LongestRouteDistance { get; set; }
 
         [DisplayName("Längster Tag")]
@@ -93,6 +96,12 @@ namespace IRuettae.WebApp.Models
             RunningPhase3,
             Cancelled,
             Finished,
+        }
+
+        public enum ClusteringOptimisationGoals
+        {
+            OverallMinTime,
+            MinTimePerSanta
         }
 
     }

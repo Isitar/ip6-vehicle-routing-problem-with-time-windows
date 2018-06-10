@@ -46,6 +46,8 @@ namespace IRuettae.Core.Algorithm
         /// </summary>
         public DateTime[] StartingTime { get; set; }
 
+        public long[] SantaIds { get; set; }
+
         public Route(int numberOfSantas, int numberOfDays)
         {
             Waypoints = new List<Waypoint>[numberOfSantas, numberOfDays];
