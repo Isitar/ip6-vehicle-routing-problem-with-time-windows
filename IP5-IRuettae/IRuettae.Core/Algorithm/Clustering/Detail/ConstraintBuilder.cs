@@ -93,9 +93,9 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
                 var santaUsesWay = solverData.Variables.SantaUsesWay[santa];
                 var numberOfVisitsInCluster = NumberOfSantaVisit(santa);
                 // flow for start location if santa is in use
-                foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
+                foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                 {
-                    Solver.Add(santaWayFlow[0, source] == santaUsesWay[0, source] * M);
+                    Solver.Add(santaWayFlow[0, destination] == santaUsesWay[0, destination] * M);
                 }
 
                 //flow only possible if santa uses way
