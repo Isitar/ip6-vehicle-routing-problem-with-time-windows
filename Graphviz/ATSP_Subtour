@@ -1,0 +1,17 @@
+graph {
+A--B [label="1", len=1, color=red, penwidth=3]
+A--C[label="1",len=1, color=red, penwidth=3]
+A--D[label="6",len=6, color=gray, penwidth=0.5]
+A--E[label="7",len=7, color=gray, penwidth=0.5]
+A--F[label="7",len=7, color=gray, penwidth=0.5]
+B--C[label="1",len=1, color=red, penwidth=3]
+B--D[label="6",len=6, color=gray, penwidth=0.5]
+B--E[label="7",len=7, color=gray, penwidth=0.5]
+B--F[label="7",len=7, color=gray, penwidth=0.5]
+C--D[label="5",len=5, color=gray, penwidth=0.5]
+C--E[label="6",len=6, color=gray, penwidth=0.5]
+C--F[label="6",len=6, color=gray, penwidth=0.5]
+D--E[label="1",len=1, color=red, penwidth=3]
+D--F[label="1",len=1, color=red, penwidth=3]
+E--F[label="1",len=1, color=red, penwidth=3]
+}
