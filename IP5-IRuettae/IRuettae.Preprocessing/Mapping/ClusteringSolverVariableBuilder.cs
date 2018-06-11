@@ -76,7 +76,7 @@ namespace IRuettae.Preprocessing.Mapping
             {
                 for (int d = 0; d < Visits.Count; d++)
                 {
-                    distances[v, d] = Visits[v].FromWays.First(w => w.To.Equals(Visits[d])).Duration + TimeSliceDuration;
+                    distances[v, d] = (int)(Math.Ceiling(Visits[v].FromWays.First(w => w.To.Equals(Visits[d])).Duration / (double)TimeSliceDuration) * TimeSliceDuration);
                 }
             }
 
