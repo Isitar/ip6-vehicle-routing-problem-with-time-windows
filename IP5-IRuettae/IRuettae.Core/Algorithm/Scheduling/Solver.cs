@@ -131,6 +131,7 @@ namespace IRuettae.Core.Algorithm.Scheduling
             Debug.WriteLine($"Iterations: {solverData.Solver.Iterations()}");
             Debug.WriteLine($"Nodes: {solverData.Solver.Nodes()}");
             Debug.WriteLine($"Objective Minimization: {solverData.Solver.Objective().Minimization()}");
+            Debug.WriteLine($"Best Bound: {solverData.Solver.Objective().BestBound()}");
             Debug.WriteLine(string.Empty);
         }
 
