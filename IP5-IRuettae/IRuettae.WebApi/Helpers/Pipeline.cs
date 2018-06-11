@@ -141,10 +141,23 @@ namespace IRuettae.WebApi.Helpers
                     dbSession.Update(routeCalculation);
                     dbSession.Flush();
 
-                    var targetType =
-                        routeCalculation.ClusteringOptimisationFunction == ClusteringOptimisationGoals.MinTimePerSanta
-                            ? TargetBuilderType.Default
-                            : TargetBuilderType.MinTimeOnly;
+                    TargetBuilderType targetType = TargetBuilderType.Default;
+                    switch (routeCalculation.ClusteringOptimisationFunction)
+                    {
+                        case ClusteringOptimisationGoals.OverallMinTime:
+                            targetType = TargetBuilderType.Default;
+                            break;
+                        case ClusteringOptimisationGoals.MinTimePerSanta:
+                            targetType = TargetBuilderType.MinTimeOnly;
+                            break;
+                        case ClusteringOptimisationGoals.MinAvgTimePerSanta:
+                            targetType = TargetBuilderType.MinAvgTimeOnly;
+                            break;
+                        default:
+                            targetType = TargetBuilderType.Default;
+                            break;
+                    }
+                        
 #if DEBUG
                     var serialPath = HostingEnvironment.MapPath($"~/App_Data/Clustering{routeCalculation.Id}_{routeCalculation.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}.serial");
                     if (serialPath != null)
@@ -305,7 +318,7 @@ namespace IRuettae.WebApi.Helpers
                             for (int santa = 0; santa < routeResult.Route.Waypoints.GetLength(0); santa++)
                             {
                                 var waypoints = routeResult.Route.Waypoints[santa, day];
-                                var latestVisit = new DateTime().Add(routeResult.Route.StartingTime[day].AddSeconds(waypoints.Max(wp => wp.StartTime) * routeCalculation.TimeSliceDuration).TimeOfDay);
+                                var latestVisit = new DateTime().Add(routeResult.Route.StartingTime[day].AddSeconds(waypoints.Take(waypoints.Count - 1).Max(wp => wp.StartTime) * routeCalculation.TimeSliceDuration).TimeOfDay);
                                 if (latestVisit > routeCalculation.LatestVisit)
                                 {
                                     routeCalculation.LatestVisit = latestVisit;

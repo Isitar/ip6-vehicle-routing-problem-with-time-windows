@@ -35,12 +35,20 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
                 var rows = solverData.NumberOfVisits;
                 var cols = solverData.SlicesPerDay[day];
                 solverData.Variables.Visits[day] = solverData.Solver.MakeBoolVarMatrix(rows, cols, $"Visit_Day_{day}");
+                for (var col = 0; col < cols; col++)
+                {
+                    solverData.Solver.Add(solverData.Variables.Visits[day][0, col] == 0);
+                }
             }
         }
 
         private void CreateSantaVisits()
         {
             solverData.Variables.SantaVisits = solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfSantas, solverData.NumberOfVisits, "SantaVisits");
+            for (var row = 0; row < solverData.NumberOfSantas; row++)
+            {
+                solverData.Solver.Add(solverData.Variables.SantaVisits[row, 0] == 0);
+            }
         }
 
         private void CreateVisitsPerSanta()
@@ -55,7 +63,14 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
                 var cols = solverData.SlicesPerDay[i];
                 for (int j = 0; j < solverData.NumberOfSantas; j++)
                 {
-                    solverData.Variables.VisitsPerSanta[i][j] = solverData.Solver.MakeBoolVarMatrix(rows, cols, $"VisitsPerSanta_Day_{i}_Santa_{j}");
+                    solverData.Variables.VisitsPerSanta[i][j] =
+                        solverData.Solver.MakeBoolVarMatrix(rows, cols, $"VisitsPerSanta_Day_{i}_Santa_{j}");
+
+                    for (var col = 0; col < cols; col++)
+                    {
+                        solverData.Solver.Add(solverData.Variables.VisitsPerSanta[i][j][0, col] == 0);
+                    }
+
                 }
             }
         }
@@ -72,6 +87,10 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
             for (int day = 0; day < solverData.NumberOfDays; day++)
             {
                 solverData.Variables.VisitStart[day] = solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfVisits, solverData.SlicesPerDay[day], $"VisitStart_Day{day}");
+                for (var col = 0; col < solverData.SlicesPerDay[day]; col++)
+                {
+                    solverData.Solver.Add(solverData.Variables.VisitStart[day][0, col] == 0);
+                }
             }
         }
 

@@ -9,6 +9,7 @@ namespace IRuettae.Persistence.Entities
     public enum ClusteringOptimisationGoals
     {
         OverallMinTime,
-        MinTimePerSanta
+        MinTimePerSanta,
+        MinAvgTimePerSanta
     }
 }

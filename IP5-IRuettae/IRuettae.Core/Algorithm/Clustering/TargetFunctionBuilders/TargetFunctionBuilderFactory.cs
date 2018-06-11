@@ -12,6 +12,8 @@ namespace IRuettae.Core.Algorithm.Clustering.TargetFunctionBuilders
                     return new DefaultTargetFunctionBuilder();
                 case TargetBuilderType.MinTimeOnly:
                     return new MinTimeOnlyTargetFunctionBuilder();
+                case TargetBuilderType.MinAvgTimeOnly:
+                    return new MinAvgTimeTargetFunctionBuilder();
                 default:
                     break;
             }

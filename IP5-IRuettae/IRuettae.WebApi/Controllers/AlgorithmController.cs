@@ -144,6 +144,7 @@ namespace IRuettae.WebApi.Controllers
 
             RouteCalculation rc;
             RouteCalculation rc2;
+            RouteCalculation rc3;
 
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
@@ -180,10 +181,27 @@ namespace IRuettae.WebApi.Controllers
                     SchedulingMipGap = Properties.Settings.Default.MIPGapScheduling,
                 };
                 rc2 = dbSession.Merge(rc2);
+                rc3 = new RouteCalculation
+                {
+                    Days = algorithmStarter.Days,
+                    SantaJson = "",
+                    VisitsJson = "",
+                    StarterVisitId = algorithmStarter.StarterId,
+                    State = RouteCalculationState.Creating,
+                    TimePerChild = algorithmStarter.TimePerChild,
+                    TimePerChildOffset = algorithmStarter.Beta0,
+                    TimeSliceDuration = algorithmStarter.TimeSliceDuration,
+                    Year = algorithmStarter.Year,
+                    ClusteringOptimisationFunction = ClusteringOptimisationGoals.MinAvgTimePerSanta,
+                    ClustringMipGap = Properties.Settings.Default.MIPGapClustering,
+                    SchedulingMipGap = Properties.Settings.Default.MIPGapScheduling,
+                };
+                rc3 = dbSession.Merge(rc3);
             }
 
             Task.Run(() => new Pipeline(rc).StartWorker());
             Task.Run(() => new Pipeline(rc2).StartWorker());
+            Task.Run(() => new Pipeline(rc3).StartWorker());
 
             return rc.Id;
 
