@@ -2,8 +2,9 @@
 {
     internal enum TargetType
     {
-        MinTime, // minimum time used overall
+        OverallMinTime, // minimum time used overall
         MinTimePerSanta,
         RealMinTimePerSanta,
+        Bonus,
     }
 }

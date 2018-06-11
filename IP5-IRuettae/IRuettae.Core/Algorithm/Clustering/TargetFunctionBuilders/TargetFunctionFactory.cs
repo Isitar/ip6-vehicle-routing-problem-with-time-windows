@@ -24,12 +24,14 @@ namespace IRuettae.Core.Algorithm.Clustering.TargetFunctionBuilders
         {
             switch (target)
             {
-                case TargetType.MinTime:
+                case TargetType.OverallMinTime:
                     return MinTimeTargetfunction(weight);
                 case TargetType.MinTimePerSanta:
                     return MinAvgTimeTargetFunction(weight);
                 case TargetType.RealMinTimePerSanta:
                     return MinTimePerSantaTargetfunction(weight);
+                case TargetType.Bonus:
+                    return Bonus(weight);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
@@ -81,6 +83,22 @@ namespace IRuettae.Core.Algorithm.Clustering.TargetFunctionBuilders
             }
 
             return sum2.Sum();
+        }
+
+        private LinearExpr Bonus(double? weight = 1)
+        {
+            var sum = new LinearExpr[solverData.NumberOfSantas];
+            foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
+            {
+                sum[santa] = new LinearExpr();
+                foreach (var visit in Enumerable.Range(0,solverData.NumberOfVisits))
+                {
+                    sum[santa] += solverData.Variables.SantaVisitBonus[santa, visit];
+                }
+                
+            }
+
+            return sum.Sum();
         }
 
     }

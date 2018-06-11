@@ -63,7 +63,7 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
             var rows = solverData.SolverInputData.Santas.Length;
             var cols = solverData.SolverInputData.Visits.GetLength(1);
             solverData.Variables.SantaVisit = solverData.Solver.MakeBoolVarMatrix(rows, cols, "SantaVisit");
-
+            solverData.Variables.SantaVisitBonus = solverData.Solver.MakeBoolVarMatrix(rows, cols, "SantaVisitBonus");
             //solverData.Variables.SantaVisitFlow = solverData.Solver.MakeNumVarMatrix(rows, cols, 0, solverData.NumberOfVisits, "SantaVisitFlow");
         }
 

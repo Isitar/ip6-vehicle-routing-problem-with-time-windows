@@ -11,7 +11,7 @@ namespace IRuettae.Core.Algorithm.Clustering.TargetFunctionBuilders
         {
             var factory = new TargetFunctionFactory(solverData);
 
-            targetFunction += factory.CreateTargetFunction(TargetType.RealMinTimePerSanta, null);
+            targetFunction += factory.CreateTargetFunction(TargetType.RealMinTimePerSanta, null) - factory.CreateTargetFunction(TargetType.Bonus, null) * 20 * 60; ;
 
             solverData.Solver.Minimize(targetFunction);
         }

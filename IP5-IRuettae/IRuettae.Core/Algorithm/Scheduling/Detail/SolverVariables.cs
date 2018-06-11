@@ -37,7 +37,7 @@ namespace IRuettae.Core.Algorithm.Scheduling.Detail
         /// <summary>
         /// [day][santa,timeslice] is on his way (visiting or walking around)
         /// warning: those values may be too high,
-        /// if TargetType.MinTime is not part of the target function
+        /// if TargetType.OverallMinTime is not part of the target function
         /// </summary>
         public GLS.Variable[][,] SantaEnRoute { get; set; }
     }

@@ -26,6 +26,7 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
 
             // Real Constraints
             VisitUnavailable();
+            VisitDesired();
             VisitUsedExactlyOnce();
             StartVisitVistedByEveryUsedSanta();
 
@@ -37,6 +38,20 @@ namespace IRuettae.Core.Algorithm.Clustering.Detail
 
             //Performance
             PerformanceConstraints();
+        }
+
+        private void VisitDesired()
+        {
+            var realSantaCount = solverData.SolverInputData.Santas.GetLength(1);
+            foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
+            {
+                var day = santa / realSantaCount;
+                for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
+                {
+                    var desired = Convert.ToInt32(solverData.SolverInputData.Visits[day, visit] == VisitState.Desired);
+                    Solver.Add(solverData.Variables.SantaVisitBonus[santa, visit] == desired * solverData.Variables.SantaVisit[santa,visit]);
+                }
+            }
         }
 
         private void SantaBreaks()

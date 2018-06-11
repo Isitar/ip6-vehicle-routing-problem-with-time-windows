@@ -9,9 +9,9 @@ namespace IRuettae.Core.Algorithm.Clustering.TargetFunctionBuilders
             switch (type)
             {
                 case TargetBuilderType.Default:
-                    return new DefaultTargetFunctionBuilder();
+                    return new MinTimePerSantaTargetFunctionBuilder();
                 case TargetBuilderType.MinTimeOnly:
-                    return new MinTimeOnlyTargetFunctionBuilder();
+                    return new OverallMinTimeTargetFunctionBuilder();
                 case TargetBuilderType.MinAvgTimeOnly:
                     return new MinAvgTimeTargetFunctionBuilder();
                 default:

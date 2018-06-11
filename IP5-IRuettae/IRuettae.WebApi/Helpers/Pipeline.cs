@@ -145,10 +145,10 @@ namespace IRuettae.WebApi.Helpers
                     switch (routeCalculation.ClusteringOptimisationFunction)
                     {
                         case ClusteringOptimisationGoals.OverallMinTime:
-                            targetType = TargetBuilderType.Default;
+                            targetType = TargetBuilderType.MinTimeOnly;
                             break;
                         case ClusteringOptimisationGoals.MinTimePerSanta:
-                            targetType = TargetBuilderType.MinTimeOnly;
+                            targetType = TargetBuilderType.Default;
                             break;
                         case ClusteringOptimisationGoals.MinAvgTimePerSanta:
                             targetType = TargetBuilderType.MinAvgTimeOnly;
