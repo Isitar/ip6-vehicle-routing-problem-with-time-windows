@@ -9,6 +9,7 @@
     flex-direction: column;
     /*background-image: url('/Content/Christmas_background.jpg');*/
 }
+
 html {
     height: 100%;
 }
@@ -97,6 +98,7 @@ main {
         text-align: right;
     }
 }
+
 @media (min-width: 992px) {
     .text-right-lg {
         text-align: right;
@@ -114,11 +116,22 @@ main {
     background: rgba(255, 128, 0, 0.5);
     border: white solid;
 }
+
 .td-red {
     background: rgba(255, 0, 0, 0.5);
     border: white solid;
 }
+
 .td-green {
     background: rgba(0, 255, 0, 0.5);
     border: white solid;
+}
+
+#btn\[0\]remove_desired {
+    display: none;
+}
+
+#btn\[0\]remove_unavailable
+{
+    display: none;
 }
