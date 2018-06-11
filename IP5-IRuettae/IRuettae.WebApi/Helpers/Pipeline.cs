@@ -305,7 +305,7 @@ namespace IRuettae.WebApi.Helpers
                             for (int santa = 0; santa < routeResult.Route.Waypoints.GetLength(0); santa++)
                             {
                                 var waypoints = routeResult.Route.Waypoints[santa, day];
-                                var latestVisit = new DateTime().Add(routeResult.Route.StartingTime[day].AddSeconds(waypoints.Max(wp => wp.StartTime) * routeCalculation.TimeSliceDuration).TimeOfDay);
+                                var latestVisit = new DateTime().Add(routeResult.Route.StartingTime[day].AddSeconds(waypoints.Take(waypoints.Count - 1).Max(wp => wp.StartTime) * routeCalculation.TimeSliceDuration).TimeOfDay);
                                 if (latestVisit > routeCalculation.LatestVisit)
                                 {
                                     routeCalculation.LatestVisit = latestVisit;

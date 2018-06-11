@@ -15,6 +15,7 @@
 
     .item-labels {
         text-align: right;
+        white-space: nowrap;
     }
 
 
@@ -25,9 +26,11 @@
 
     .item-group-head {
         padding: 15px;
-        min-height: 50px;
+        min-height: 78px;
+        max-height: 78px;
         border-bottom: 1px solid gray;
-        text-align: left
+        text-align: center;
+        
     }
 
     .item-group {
@@ -47,12 +50,12 @@
     }
 </style>
 
-
+@Html.ActionLink("Zurück", "Results")
 <h1><i class="fa fa-arrows-alt-h"></i> Routen Vergleich</h1>
 
 <ul class="compare-container">
     <li class="item-labels">
-        <div class="item-group-head">&nbsp;@Html.ActionLink("Zurück", "Results")</div>
+        <div class="item-group-head">&nbsp;</div>
         <div class="item-group">@Html.DisplayNameFor(m => m.NumberOfSantas)</div>
         <div class="item-group">@Html.DisplayNameFor(m => m.NumberOfVisits)</div>
         <div class="item-group">@Html.DisplayNameFor(m => m.NumberOfRoutes)</div>
@@ -69,7 +72,8 @@
     @foreach (var routeCalculationVM in Model)
     {
         <li class="item-column">
-            <div class="item-group-head">Berechnung #@routeCalculationVM.Id <small>@routeCalculationVM.ClusteringOptimisationFunction</small></div>
+            <div class="item-group-head">Berechnung #@routeCalculationVM.Id <small>@routeCalculationVM.ClusteringOptimisationFunction</small>
+                                                                            <a href="@Url.Action("Result",new {id=routeCalculationVM.Id})" class="btn btn-dark btn-sm"><i class="fa fa-eye"></i> Details</a></div>
             <div class="item-group @(routeCalculationVM.NumberOfSantas == Model.Min(m => m.NumberOfSantas) ? "best-val" : "")">@routeCalculationVM.NumberOfSantas</div>
             <div class="item-group @(routeCalculationVM.NumberOfVisits == Model.Min(m => m.NumberOfVisits) ? "best-val" : "")">@routeCalculationVM.NumberOfVisits</div>
             <div class="item-group @(routeCalculationVM.NumberOfRoutes == Model.Min(m => m.NumberOfRoutes) ? "best-val" : "")">@routeCalculationVM.NumberOfRoutes</div>
@@ -81,7 +85,7 @@
             <div class="item-group @(routeCalculationVM.LongestRouteDistance == Model.Min(m => m.LongestRouteDistance) ? "best-val" : "")">@routeCalculationVM.LongestRouteDistance Meter</div>
             <div class="item-group @(routeCalculationVM.LongestRouteTime == Model.Min(m => m.LongestRouteTime) ? "best-val" : "")">@(Math.Round(routeCalculationVM.LongestRouteTime / 60)) Minuten</div>
             <div class="item-group @(routeCalculationVM.LatestVisit == Model.Min(m => m.LatestVisit) ? "best-val" : "")">@routeCalculationVM.LatestVisit.TimeOfDay</div>
-            <div class="item-group-footer"><a href="@Url.Action("Result",new {id=routeCalculationVM.Id})" class="btn btn-dark btn-sm"><i class="fa fa-eye"></i> Details</a></div>
+            @*<div class="item-group-footer"><a href="@Url.Action("Result",new {id=routeCalculationVM.Id})" class="btn btn-dark btn-sm"><i class="fa fa-eye"></i> Details</a></div>*@
         </li>
     }
 </ul>
