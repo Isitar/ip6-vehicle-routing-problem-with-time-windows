@@ -247,7 +247,8 @@ namespace IRuettae.WebApi.Helpers
                     routeCalculation.SchedulingResult = JsonConvert.SerializeObject(routeResults);
                     // gets captured by eventwriter
                     routeCalculation.StateText += $"{DateTime.Now}: Scheduling done{Environment.NewLine}";
-
+                    dbSession.Update(routeCalculation);
+                    dbSession.Flush();
                     #endregion Scheduling
 
                     #region metrics
