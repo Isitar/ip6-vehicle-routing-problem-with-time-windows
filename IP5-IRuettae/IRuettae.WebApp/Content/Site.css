@@ -4,12 +4,19 @@
     background: linear-gradient(to bottom, whitesmoke, white);
     background-repeat: no-repeat;
     height: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     /*background-image: url('/Content/Christmas_background.jpg');*/
 }
 html {
     height: 100%;
 }
 
+main {
+    flex-grow: 1;
+    padding-top: 20px;
+}
 /* Set padding to keep content from hitting the edges */
 .body-content {
     padding-left: 15px;
