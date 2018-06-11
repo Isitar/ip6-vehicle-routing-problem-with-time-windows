@@ -95,7 +95,7 @@ namespace IRuettae.Core.Algorithm.Clustering
 
             param.SetDoubleParam(GLS.MPSolverParameters.RELATIVE_MIP_GAP, MIP_GAP);
             
-            //solver.SetTimeLimit(5*60 * 1000);
+            solver.SetTimeLimit(3*60 * 1000);
             solver.EnableOutput();
             resultState = FromGoogleResultState(solver.Solve(param));
 

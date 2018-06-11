@@ -141,10 +141,23 @@ namespace IRuettae.WebApi.Helpers
                     dbSession.Update(routeCalculation);
                     dbSession.Flush();
 
-                    var targetType =
-                        routeCalculation.ClusteringOptimisationFunction == ClusteringOptimisationGoals.MinTimePerSanta
-                            ? TargetBuilderType.Default
-                            : TargetBuilderType.MinTimeOnly;
+                    TargetBuilderType targetType = TargetBuilderType.Default;
+                    switch (routeCalculation.ClusteringOptimisationFunction)
+                    {
+                        case ClusteringOptimisationGoals.OverallMinTime:
+                            targetType = TargetBuilderType.Default;
+                            break;
+                        case ClusteringOptimisationGoals.MinTimePerSanta:
+                            targetType = TargetBuilderType.MinTimeOnly;
+                            break;
+                        case ClusteringOptimisationGoals.MinAvgTimePerSanta:
+                            targetType = TargetBuilderType.MinAvgTimeOnly;
+                            break;
+                        default:
+                            targetType = TargetBuilderType.Default;
+                            break;
+                    }
+                        
 #if DEBUG
                     var serialPath = HostingEnvironment.MapPath($"~/App_Data/Clustering{routeCalculation.Id}_{routeCalculation.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}.serial");
                     if (serialPath != null)

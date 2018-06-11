@@ -3,7 +3,7 @@ using GLS = Google.OrTools.LinearSolver;
 
 namespace IRuettae.Core.Algorithm.Clustering.TargetFunctionBuilders
 {
-    internal class DefaultTargetFunctionBuilder : AbstractTargetFunctionBuilder
+    internal class MinAvgTimeTargetFunctionBuilder : AbstractTargetFunctionBuilder
     {
         private GLS.LinearExpr targetFunction = new GLS.LinearExpr();
 

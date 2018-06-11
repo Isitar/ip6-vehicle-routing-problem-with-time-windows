@@ -67,6 +67,7 @@
     <Compile Include="Algorithm\Clustering\Solver.cs" />
     <Compile Include="Algorithm\Clustering\TargetFunctionBuilders\AbstractTargetFunctionBuilder.cs" />
     <Compile Include="Algorithm\Clustering\TargetFunctionBuilders\DefaultTargetFunctionBuilder.cs" />
+    <Compile Include="Algorithm\Clustering\TargetFunctionBuilders\MinAvgTimeTargetFunctionBuilder.cs" />
     <Compile Include="Algorithm\Clustering\TargetFunctionBuilders\MinTimeOnlyTargetFunctionBuilder.cs" />
     <Compile Include="Algorithm\Clustering\TargetFunctionBuilders\TargetFunctionBuilderFactory.cs" />
     <Compile Include="Algorithm\Clustering\TargetFunctionBuilders\TargetFunctionFactory.cs" />

@@ -31,7 +31,12 @@
                              RouteCalculationVM.RouteCalculationState.RunningPhase3,
                              RouteCalculationVM.RouteCalculationState.Ready
                          }).Contains(item.State) ? "td-orange" : "td-red")"></td>
-            <td><input type="checkbox" class="form-control" name="compare[@item.Id]" data-id="@item.Id"/></td>
+            <td>
+                @if (!string.IsNullOrEmpty(item.Result))
+                {
+                    <input type="checkbox" class="form-control" name="compare[@item.Id]" data-id="@item.Id" style="height: 20px"/>
+                }
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Year)
             </td>
@@ -76,7 +81,10 @@
 
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.StateText)
+                @if (!string.IsNullOrEmpty(item.StateText))
+                {
+                    @Html.Raw(item.StateText.Replace(Environment.NewLine, "<br />"))
+                }
             </td>
             <td style="min-width: 200px; font-size: 12px">
                 @if (!string.IsNullOrEmpty(item.Result))
