@@ -4,5 +4,6 @@
     {
         MinTime, // minimum time used overall
         MinTimePerSanta,
+        RealMinTimePerSanta,
     }
 }

@@ -28,6 +28,8 @@ namespace IRuettae.Core.Algorithm.Clustering.TargetFunctionBuilders
                     return MinTimeTargetfunction(weight);
                 case TargetType.MinTimePerSanta:
                     return MinAvgTimeTargetFunction(weight);
+                case TargetType.RealMinTimePerSanta:
+                    return MinTimePerSantaTargetfunction(weight);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
@@ -38,7 +40,7 @@ namespace IRuettae.Core.Algorithm.Clustering.TargetFunctionBuilders
             var sum = new LinearExpr[solverData.NumberOfSantas];
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
-                sum[santa] = solverData.Variables.SantaVisitTime[santa] + solverData.Variables.SantaRouteCost[santa];
+                sum[santa] = /*solverData.Variables.SantaVisitTime[santa] +*/ solverData.Variables.SantaRouteCost[santa];
             }
 
             return sum.Sum();
@@ -50,7 +52,7 @@ namespace IRuettae.Core.Algorithm.Clustering.TargetFunctionBuilders
             var sumSantaTotalTimePossible = new LinearExpr();
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
-                sum[santa] = solverData.Variables.SantaVisitTime[santa] + solverData.Variables.SantaRouteCost[santa];
+                sum[santa] = /*solverData.Variables.SantaVisitTime[santa] +*/ solverData.Variables.SantaRouteCost[santa];
                 sumSantaTotalTimePossible += solverData.Variables.SantaVisit[santa, 0] * solverData.SolverInputData.DayDuration[santa / solverData.SolverInputData.Santas.GetLength(1)];
             }
 
