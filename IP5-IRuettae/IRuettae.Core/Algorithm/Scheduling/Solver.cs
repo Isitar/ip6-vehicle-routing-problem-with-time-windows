@@ -95,6 +95,8 @@ namespace IRuettae.Core.Algorithm.Scheduling
             var param = new GLS.MPSolverParameters();
             param.SetDoubleParam(GLS.MPSolverParameters.RELATIVE_MIP_GAP, MIP_GAP);
 
+            // 5 h, should not be reached
+            solver.SetTimeLimit(5 * 60 * 60 * 1000);
             solver.EnableOutput();
             resultState = FromGoogleResultState(solver.Solve(param));
 
