@@ -129,7 +129,8 @@ namespace IRuettae.WebApi.Helpers
                     {
                         Visits = visits,
                         Santas = santas,
-                        Days = routeCalculation.Days
+                        Days = routeCalculation.Days,
+                        TimeSliceDuration = routeCalculation.TimeSliceDuration,
                     };
 
                     var clusteringSolverInputData = clusteringSolverVariableBuilder.Build();

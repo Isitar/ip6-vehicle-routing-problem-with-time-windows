@@ -13,17 +13,20 @@ namespace IRuettae.Preprocessing.Mapping
 
         public List<Visit> Visits { get; set; }
 
+        public int TimeSliceDuration { get; set; }
 
         /// <summary>
         /// List of days(StartTime, EndTime)
         /// </summary>
         public List<(DateTime, DateTime)> Days { get; set; }
 
-        public ClusteringSolverVariableBuilder(List<Santa> santas = null, List<Visit> visits = null, List<(DateTime, DateTime)> days = null)
+        public ClusteringSolverVariableBuilder(List<Santa> santas = null, List<Visit> visits = null,
+            List<(DateTime, DateTime)> days = null, int timeSliceDuration = 0)
         {
             Santas = santas;
             Visits = visits;
             Days = days;
+            TimeSliceDuration = timeSliceDuration;
         }
 
 
@@ -77,7 +80,7 @@ namespace IRuettae.Preprocessing.Mapping
                 }
             }
 
-            int[] dayDuration = Days.Select((startEnd) => (int)Math.Ceiling((startEnd.Item2 - startEnd.Item1).TotalSeconds)).ToArray();
+            int[] dayDuration = Days.Select(startEnd => (int)Math.Ceiling((startEnd.Item2 - startEnd.Item1).TotalSeconds) + TimeSliceDuration).ToArray();
             int[][] santaBreaks = new int[Santas.Count][];
             for (int santaIdx = 0; santaIdx < Santas.Count; santaIdx++)
             {

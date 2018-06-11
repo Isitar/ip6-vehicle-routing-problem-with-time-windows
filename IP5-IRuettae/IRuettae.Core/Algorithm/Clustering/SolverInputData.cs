@@ -59,5 +59,6 @@ namespace IRuettae.Core.Algorithm.Clustering
         public long[] VisitIds{ get; set; }
 
         public DateTime[] DayStartingTime { get; set; }
+
     }
 }
