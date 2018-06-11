@@ -76,11 +76,11 @@ namespace IRuettae.Preprocessing.Mapping
             {
                 for (int d = 0; d < Visits.Count; d++)
                 {
-                    distances[v, d] = Visits[v].FromWays.First(w => w.To.Equals(Visits[d])).Duration;
+                    distances[v, d] = Visits[v].FromWays.First(w => w.To.Equals(Visits[d])).Duration + TimeSliceDuration;
                 }
             }
 
-            int[] dayDuration = Days.Select(startEnd => (int)Math.Ceiling((startEnd.Item2 - startEnd.Item1).TotalSeconds) + TimeSliceDuration).ToArray();
+            int[] dayDuration = Days.Select(startEnd => (int)Math.Ceiling((startEnd.Item2 - startEnd.Item1).TotalSeconds)).ToArray();
             int[][] santaBreaks = new int[Santas.Count][];
             for (int santaIdx = 0; santaIdx < Santas.Count; santaIdx++)
             {
