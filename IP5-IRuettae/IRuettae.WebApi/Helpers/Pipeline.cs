@@ -174,7 +174,7 @@ namespace IRuettae.WebApi.Helpers
                                 (carry, n) =>
                                     carry + Environment.NewLine +
                                     $"[{n.RealVisitId} {clusteringSolverInputData.VisitNames[n.Visit]}]");
-                            clusteredRoutesSb.Append($"Route Santa {santas[santa]} on {phase1Result.StartingTime[day]}");
+                            clusteredRoutesSb.Append($"Route Santa {santas[santa].Name} on {phase1Result.StartingTime[day]}");
                             clusteredRoutesSb.AppendLine(wp);
                             clusteredRoutesSb.AppendLine(new string('-', 20));
                         }
