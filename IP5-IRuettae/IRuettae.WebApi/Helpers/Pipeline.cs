@@ -342,7 +342,7 @@ namespace IRuettae.WebApi.Helpers
                         }));
 
                     routeCalculation.LongestRouteTime = routeResults.Max(rr =>
-                        rr.Route.Waypoints.Cast<List<Waypoint>>().Max(wpl =>
+                        rr.Route.Waypoints.Cast<List<Waypoint>>().Sum(wpl =>
                         {
                             var totalDuration = 0;
                             var lastwp = wpl.First();
@@ -351,12 +351,13 @@ namespace IRuettae.WebApi.Helpers
                                 totalDuration += dbSession
                                     .Query<Way>()
                                     .Single(w => w.From.Id.Equals(lastwp.RealVisitId) && w.To.Id.Equals(wp.RealVisitId)).Duration;
+                                lastwp = wp;
                             }
                             return totalDuration;
                         }));
 
                     routeCalculation.TotalWaytime = routeResults.Sum(rr =>
-                        rr.Route.Waypoints.Cast<List<Waypoint>>().Max(wpl =>
+                        rr.Route.Waypoints.Cast<List<Waypoint>>().Sum(wpl =>
                         {
                             var totalDuration = 0;
                             var lastwp = wpl.First();
@@ -365,6 +366,7 @@ namespace IRuettae.WebApi.Helpers
                                 totalDuration += dbSession
                                     .Query<Way>()
                                     .Single(w => w.From.Id.Equals(lastwp.RealVisitId) && w.To.Id.Equals(wp.RealVisitId)).Duration;
+                                lastwp = wp;
                             }
                             return totalDuration;
                         }));
