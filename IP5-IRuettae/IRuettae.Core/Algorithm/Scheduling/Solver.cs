@@ -17,6 +17,7 @@ namespace IRuettae.Core.Algorithm.Scheduling
 
         private readonly GLS.Solver solver = new GLS.Solver("SantaProblem", GLS.Solver.SCIP_MIXED_INTEGER_PROGRAMMING);
         private readonly AbstractTargetFunctionBuilder targetFunctionBuilder;
+        private long timelimit = 0;
 
         /// <summary>
         ///
@@ -33,9 +34,10 @@ namespace IRuettae.Core.Algorithm.Scheduling
             return SolveInternal();
         }
 
-        public ResultState Solve(double MIP_GAP)
+        public ResultState Solve(double MIP_GAP, long timelimit)
         {
             this.MIP_GAP = MIP_GAP;
+            this.timelimit = timelimit;
             return Solve();
         }
 
@@ -94,9 +96,10 @@ namespace IRuettae.Core.Algorithm.Scheduling
 
             var param = new GLS.MPSolverParameters();
             param.SetDoubleParam(GLS.MPSolverParameters.RELATIVE_MIP_GAP, MIP_GAP);
-
-            // 5 h, should not be reached
-            solver.SetTimeLimit(5 * 60 * 60 * 1000);
+            if (timelimit != 0)
+            {
+                solver.SetTimeLimit(timelimit);
+            }
             solver.EnableOutput();
             resultState = FromGoogleResultState(solver.Solve(param));
 

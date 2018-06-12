@@ -20,18 +20,20 @@ namespace IRuettae.Persistence.Entities
 
         // info for history purpuse
         public virtual int NumberOfSantas { get; set; }
-        public virtual int NumberOfVisits{ get; set; }
+        public virtual int NumberOfVisits { get; set; }
         public virtual string SantaJson { get; set; }
         public virtual string VisitsJson { get; set; }
-        
+
         // Phase 1
         public virtual ClusteringOptimisationGoals ClusteringOptimisationFunction { get; set; }
         public virtual double ClustringMipGap { get; set; }
+        public virtual long ClusteringTimeLimit { get; set; }
         public virtual string ClusteringResult { get; set; }
 
         // Phase 2
         public virtual int TimeSliceDuration { get; set; }
-        public virtual double SchedulingMipGap{ get; set; }
+        public virtual double SchedulingMipGap { get; set; }
+        public virtual long SchedulingTimeLimit { get; set; }
         public virtual string SchedulingResult { get; set; }
 
 
@@ -40,7 +42,7 @@ namespace IRuettae.Persistence.Entities
         public virtual RouteCalculationState State { get; set; }
         public virtual string StateText { get; set; }
         public virtual DateTime EndTime { get; set; }
-        
+
         // Metrics
         public virtual int NumberOfRoutes { get; set; }
         public virtual double TotalWaytime { get; set; }

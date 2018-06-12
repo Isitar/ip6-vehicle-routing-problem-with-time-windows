@@ -22,10 +22,12 @@ namespace IRuettae.Persistence.Mappings
 
             Map(x => x.ClusteringOptimisationFunction);
             Map(x => x.ClustringMipGap);
+            Map(x => x.ClusteringTimeLimit);
             Map(x => x.ClusteringResult).CustomSqlType("LONGTEXT"); ;
 
             Map(x => x.TimeSliceDuration);
             Map(x => x.SchedulingMipGap);
+            Map(x => x.SchedulingTimeLimit);
             Map(x => x.SchedulingResult).CustomSqlType("LONGTEXT"); ;
 
             Map(x => x.Result).CustomSqlType("LONGTEXT"); ;

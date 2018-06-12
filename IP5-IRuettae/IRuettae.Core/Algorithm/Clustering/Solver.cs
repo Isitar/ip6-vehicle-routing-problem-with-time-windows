@@ -15,6 +15,7 @@ namespace IRuettae.Core.Algorithm.Clustering
         private bool hasModel = false;
         private ResultState resultState = ResultState.NotSolved;
         private double MIP_GAP = 0;
+        private long timelimit = 0;
 
         private readonly GLS.Solver solver = new GLS.Solver("Santa Problem", GLS.Solver.SCIP_MIXED_INTEGER_PROGRAMMING);
         //new GLS.Solver("SantaProblem", GLS.Solver.CBC_MIXED_INTEGER_PROGRAMMING);
@@ -32,9 +33,10 @@ namespace IRuettae.Core.Algorithm.Clustering
             return SolveInternal();
         }
 
-        public ResultState Solve(double MIP_GAP)
+        public ResultState Solve(double MIP_GAP, long timelimit)
         {
             this.MIP_GAP = MIP_GAP;
+            this.timelimit = timelimit;
             return Solve();
         }
 
@@ -94,9 +96,11 @@ namespace IRuettae.Core.Algorithm.Clustering
             var param = new GLS.MPSolverParameters();
 
             param.SetDoubleParam(GLS.MPSolverParameters.RELATIVE_MIP_GAP, MIP_GAP);
+            if (timelimit != 0)
+            {
+                solver.SetTimeLimit(timelimit);
+            }
 
-            // 11 h
-            solver.SetTimeLimit(11 * 60 * 60 * 1000);
             solver.EnableOutput();
             resultState = FromGoogleResultState(solver.Solve(param));
 

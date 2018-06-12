@@ -11,7 +11,8 @@ namespace IRuettae.Core.Algorithm
 {
     public class Starter
     {
-        public static Route Optimise(object solverInputData, TargetBuilderType builderType = TargetBuilderType.Default, double MIP_GAP = 0)
+        public static Route Optimise(object solverInputData, TargetBuilderType builderType = TargetBuilderType.Default,
+            double MIP_GAP = 0, long timelimit = 0)
         {
             ISolver solver;
             switch (solverInputData)
@@ -27,8 +28,8 @@ namespace IRuettae.Core.Algorithm
             }
 
 
-            var resultState = solver.Solve(MIP_GAP);
-             switch (resultState)
+            var resultState = solver.Solve(MIP_GAP, timelimit);
+            switch (resultState)
             {
                 case ResultState.Optimal:
                 case ResultState.Feasible:
