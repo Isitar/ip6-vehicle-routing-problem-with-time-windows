@@ -101,7 +101,8 @@ namespace IRuettae.WebApp.Models
         public enum ClusteringOptimisationGoals
         {
             OverallMinTime,
-            MinTimePerSanta
+            MinTimePerSanta,
+            MinAvgTimePerSanta
         }
 
     }

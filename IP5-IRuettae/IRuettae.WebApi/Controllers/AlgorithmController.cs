@@ -62,76 +62,6 @@ namespace IRuettae.WebApi.Controllers
                 return Starter.Optimise(solverInputData);
             }
         }
-
-
-        //[HttpGet]
-        //[Route("Benchmark")]
-        //public IEnumerable<TimeSpan> Benchmark(int n_visits)
-        //{
-        //    var algorithmStarter = new AlgorithmStarter
-        //    {
-        //        Year = 2017,
-        //        Beta0 = 15,
-        //        Days = new List<(DateTime, DateTime)>()
-        //        {
-        //            (new DateTime(2017,12,8,17,0,0), new DateTime(2017,12,8,22,0,0)),
-        //          //  (new DateTime(2017,12,9,17,0,0), new DateTime(2017,12,9,22,0,0))
-        //        },
-        //        StarterId = 12,
-        //        TimePerChild = 5,
-        //        TimeSliceDuration = 5 * 60
-        //    };
-        //    SolverInputData solverInputData;
-
-
-
-        //    var retVal = new List<TimeSpan>();
-        //    using (var dbSession = SessionFactory.Instance.OpenSession())
-        //    {
-        //        var visits = dbSession.Query<Visit>().Take(n_visits).ToList();
-        //        visits.ForEach(v => v.Duration = 60 * (v.NumberOfChildren * algorithmStarter.TimePerChild + algorithmStarter.Beta0));
-        //        visits.Sort((a, b) =>
-        //        {
-        //            if (a.Id == algorithmStarter.StarterId)
-        //            {
-        //                return -1;
-        //            }
-        //            if (b.Id == algorithmStarter.StarterId)
-        //            {
-        //                return 1;
-        //            }
-        //            return a.Id.CompareTo(b.Id);
-        //        });
-
-        //        var solverVariableBuilder = new SchedulingSolverVariableBuilder(algorithmStarter.TimeSliceDuration)
-        //        {
-        //            Visits = visits,
-        //            Santas = dbSession.Query<Santa>().ToList(),
-        //            Days = algorithmStarter.Days
-        //        };
-
-        //        solverInputData = solverVariableBuilder.Build();
-        //    }
-
-        //    var path = HostingEnvironment.MapPath($"~/App_Data/SolverInput{n_visits}Visits.serial");
-        //    using (var stream = File.Open(path, FileMode.Create))
-        //    {
-        //        new BinaryFormatter().Serialize(stream, solverInputData);
-        //    }
-
-        //    //for (int i = 0; i < 1; ++i)
-        //    //{
-        //    //    var sw = Stopwatch.StartNew();
-        //    //    Starter.Optimise(solverInputData);
-        //    //    sw.Stop();
-        //    //    Console.WriteLine("Elapsed ms: " + sw.ElapsedMilliseconds);
-        //    //    retVal.Add(sw.Elapsed);
-        //    //}
-
-        //    //return retVal;
-        //    return null;
-        //}
-
         /// <summary>
         /// Starts a new route calculation job
         /// </summary>
@@ -161,7 +91,9 @@ namespace IRuettae.WebApi.Controllers
                     Year = algorithmStarter.Year,
                     ClusteringOptimisationFunction = ClusteringOptimisationGoals.OverallMinTime,
                     ClustringMipGap = Properties.Settings.Default.MIPGapClustering,
+                    ClusteringTimeLimit =  Properties.Settings.Default.TimelimitClustering,
                     SchedulingMipGap = Properties.Settings.Default.MIPGapScheduling,
+                    SchedulingTimeLimit = Properties.Settings.Default.TimelimitScheduling,
                 };
                 rc = dbSession.Merge(rc);
 
@@ -178,7 +110,9 @@ namespace IRuettae.WebApi.Controllers
                     Year = algorithmStarter.Year,
                     ClusteringOptimisationFunction = ClusteringOptimisationGoals.MinTimePerSanta,
                     ClustringMipGap = Properties.Settings.Default.MIPGapClustering,
+                    ClusteringTimeLimit = Properties.Settings.Default.TimelimitClustering,
                     SchedulingMipGap = Properties.Settings.Default.MIPGapScheduling,
+                    SchedulingTimeLimit = Properties.Settings.Default.TimelimitScheduling,
                 };
                 rc2 = dbSession.Merge(rc2);
                 rc3 = new RouteCalculation
@@ -194,7 +128,9 @@ namespace IRuettae.WebApi.Controllers
                     Year = algorithmStarter.Year,
                     ClusteringOptimisationFunction = ClusteringOptimisationGoals.MinAvgTimePerSanta,
                     ClustringMipGap = Properties.Settings.Default.MIPGapClustering,
+                    ClusteringTimeLimit = Properties.Settings.Default.TimelimitClustering,
                     SchedulingMipGap = Properties.Settings.Default.MIPGapScheduling,
+                    SchedulingTimeLimit = Properties.Settings.Default.TimelimitScheduling,
                 };
                 rc3 = dbSession.Merge(rc3);
             }
