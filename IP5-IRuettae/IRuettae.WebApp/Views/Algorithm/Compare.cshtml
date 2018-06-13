@@ -82,8 +82,12 @@
     @foreach (var routeCalculationVM in Model)
     {
         <li class="item-column">
-            <div class="item-group-head">Berechnung #@routeCalculationVM.Id <small>@routeCalculationVM.ClusteringOptimisationFunction</small>
-                <a href="@Url.Action("Result",new {id=routeCalculationVM.Id})" class="btn btn-dark btn-sm"><i class="fa fa-eye"></i> Details</a></div>
+            <div class="item-group-head">
+
+                @*Berechnung #@routeCalculationVM.Id <small>@routeCalculationVM.ClusteringOptimisationFunction</small>*@
+
+                <a href="@Url.Action("Result", new {id = routeCalculationVM.Id})" class="btn btn-dark btn-sm"><i class="fa fa-eye"></i> Details</a>
+            </div>
             <div class="item-group @(routeCalculationVM.NumberOfSantas == Model.Min(m => m.NumberOfSantas) ? "best-val" : "")">@routeCalculationVM.NumberOfSantas</div>
             <div class="item-group @(routeCalculationVM.NumberOfVisits == Model.Min(m => m.NumberOfVisits) ? "best-val" : "")">@routeCalculationVM.NumberOfVisits</div>
             <div class="item-group @(routeCalculationVM.NumberOfRoutes == Model.Min(m => m.NumberOfRoutes) ? "best-val" : "")">@routeCalculationVM.NumberOfRoutes</div>

@@ -8,7 +8,7 @@
     int counter = 0;
 
     <h1>Routen</h1>
-    <div id="allMap" style="min-height: 300px;"></div>
+    @*<div id="allMap" style="min-height: 300px;"></div>*@
 
     foreach (var route in Model)
     {
@@ -102,7 +102,7 @@
             @Html.Raw($"initMap{i}();{Environment.NewLine}");
         }
 
-        renderAllMap();
+        // renderAllMap();
 
     }
 
