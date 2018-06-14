@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using IRuettae.Core.Algorithm.Clustering.Detail;
 using IRuettae.Core.Algorithm.Clustering.TargetFunctionBuilders;
@@ -117,7 +118,7 @@ namespace IRuettae.Core.Algorithm.Clustering
             Debug.WriteLine(string.Empty);
             Debug.WriteLine("DEBUG OUTPUT");
             Debug.WriteLine(string.Empty);
-
+            
 
             PrintMeta();
             PrintVariables();

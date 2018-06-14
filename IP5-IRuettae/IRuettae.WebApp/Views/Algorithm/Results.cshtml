@@ -34,7 +34,7 @@
             <td>
                 @if (!string.IsNullOrEmpty(item.Result))
                 {
-                    <input type="checkbox" class="form-control" name="compare[@item.Id]" data-id="@item.Id" style="height: 20px"/>
+                    <input type="checkbox" class="form-control" name="compare[@item.Id]" data-id="@item.Id" style="height: 20px" />
                 }
             </td>
             <td>
@@ -89,44 +89,47 @@
             <td style="min-width: 200px; font-size: 12px">
                 @if (!string.IsNullOrEmpty(item.Result))
                 {
-                <dl>
-                    <dt>@Html.DisplayNameFor(m => m.NumberOfSantas)</dt>
-                    <dd>@item.NumberOfSantas</dd>
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-cl-@item.Id" aria-expanded="False" aria-controls="collapse-cl-@item.Id">Metriken anzeigen</button>
 
-                    <dt>@Html.DisplayNameFor(m => m.NumberOfRoutes)</dt>
-                    <dd>@item.NumberOfRoutes</dd>
+                    <div class="collapse" id="collapse-cl-@item.Id">
+                        <div class="card card-body">
+                            <dl>
+                                <dt>@Html.DisplayNameFor(m => m.NumberOfSantas)</dt>
+                                <dd>@item.NumberOfSantas</dd>
 
-                    <dt>@Html.DisplayNameFor(m => m.NumberOfVisits)</dt>
-                    <dd>@item.NumberOfVisits</dd>
+                                <dt>@Html.DisplayNameFor(m => m.NumberOfRoutes)</dt>
+                                <dd>@item.NumberOfRoutes</dd>
 
+                                <dt>@Html.DisplayNameFor(m => m.NumberOfVisits)</dt>
+                                <dd>@item.NumberOfVisits</dd>
 
-                    <dt>@Html.DisplayNameFor(m => m.TotalWaytime)</dt>
-                    <dd>@(Math.Round(item.TotalWaytime / 60)) Minuten</dd>
+                                <dt>@Html.DisplayNameFor(m => m.TotalWaytime)</dt>
+                                <dd>@(Math.Round(item.TotalWaytime / 60)) Minuten</dd>
 
-                    <dt>@Html.DisplayNameFor(m => m.WaytimePerSanta)</dt>
-                    <dd>@(Math.Round(item.WaytimePerSanta / 60)) Minuten</dd>
+                                <dt>@Html.DisplayNameFor(m => m.WaytimePerSanta)</dt>
+                                <dd>@(Math.Round(item.WaytimePerSanta / 60)) Minuten</dd>
 
-                    @*
-        <dt>@Html.DisplayNameFor(m => m.TotalVisitTime)</dt>
-        <dd>@(Math.Round(item.TotalVisitTime / 60)) Minuten</dd>
+                                <dt>@Html.DisplayNameFor(m => m.TotalVisitTime)</dt>
+                                <dd>@(Math.Round(item.TotalVisitTime / 60)) Minuten</dd>
 
-        <dt>@Html.DisplayNameFor(m => m.DesiredSeconds)</dt>
-        <dd>@(Math.Round(item.DesiredSeconds / 60)) Minuten</dd>
+                                <dt>@Html.DisplayNameFor(m => m.DesiredSeconds)</dt>
+                                <dd>@(Math.Round(item.DesiredSeconds / 60)) Minuten</dd>
 
-        <dt>@Html.DisplayNameFor(m => m.LongestDay)</dt>
-        <dd>@(Math.Round(item.LongestDay / 60)) Minuten </dd>
+                                <dt>@Html.DisplayNameFor(m => m.LongestDay)</dt>
+                                <dd>@(Math.Round(item.LongestDay / 60)) Minuten </dd>
 
-        <dt>@Html.DisplayNameFor(m => m.LongestRouteDistance)</dt>
-        <dd>@(item.LongestRouteDistance) Meter</dd>
+                                <dt>@Html.DisplayNameFor(m => m.LongestRouteDistance)</dt>
+                                <dd>@(item.LongestRouteDistance) Meter</dd>
 
-        <dt>@Html.DisplayNameFor(m => m.LongestRouteTime)</dt>
-        <dd>@(Math.Round(item.LongestRouteTime / 60)) Minuten </dd>
+                                <dt>@Html.DisplayNameFor(m => m.LongestRouteTime)</dt>
+                                <dd>@(Math.Round(item.LongestRouteTime / 60)) Minuten </dd>
 
-        <dt>@Html.DisplayNameFor(m => m.LatestVisit)</dt>
-        <dd>@item.LatestVisit.TimeOfDay</dd>
-                    *@
-                </dl>
+                                <dt>@Html.DisplayNameFor(m => m.LatestVisit)</dt>
+                                <dd>@item.LatestVisit.TimeOfDay</dd>
 
+                            </dl>
+                        </div>
+                    </div>
                 }
             </td>
             <td>
@@ -175,6 +178,27 @@
             $('#btn-compare').click(() => {
                 var idParam = Array.from(document.querySelectorAll('.table tr td input[type="checkbox"]')).filter(e => e.checked).map((e,idx) => 'ids['+idx+']='+e.getAttribute('data-id'));
                 location.href = '@Url.Action("Compare")?' + idParam.join('&');
+            });
+
+            $('.view-more').live('click', function(){
+                var btnShowMore = $(this); 
+                if(btnShowMore.text() === "Mehr anzeigen"){
+                    btnShowMore.closest("dt").each(function(k,v){
+                        var dObj = $(this);
+                        dObj.nextUntil("dt").filter(function(index){
+                            $(this).show();
+                        });        
+                    });
+                    btnShowMore.text("Weniger anzeigen");
+                }else{
+                    btnShowMore.closest("dt").each(function(k,v){
+                        var dObj = $(this);            
+                        dObj.nextUntil("dt").filter(function(index){
+                            if(index > 2){ $(this).hide(); }
+                        });        
+                    });
+                    btnShowMore.text("Mehr anzeigen");
+                }
             });
         });
 
