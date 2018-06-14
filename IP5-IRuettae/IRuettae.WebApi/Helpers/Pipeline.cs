@@ -214,7 +214,7 @@ namespace IRuettae.WebApi.Helpers
                     foreach (var day in Enumerable.Range(0, phase1Result.Waypoints.GetLength(1)))
                     {
                         var cluster = phase1Result.Waypoints[santa, day];
-                        schedulingSovlerVariableBuilders.Add(new SchedulingSolverVariableBuilder(routeCalculation.TimeSliceDuration, new List<Santa> {santas[santa]}, visits.Where(v => cluster.Select(w => w.RealVisitId).Contains(v.Id)).ToList(), new List<(DateTime, DateTime)> {routeCalculation.Days[day]}));
+                        schedulingSovlerVariableBuilders.Add(new SchedulingSolverVariableBuilder(routeCalculation.TimeSliceDuration, new List<Santa> { santas[santa] }, visits.Where(v => cluster.Select(w => w.RealVisitId).Contains(v.Id)).ToList(), new List<(DateTime, DateTime)> { routeCalculation.Days[day] }));
                     }
                 }
 
@@ -239,7 +239,7 @@ namespace IRuettae.WebApi.Helpers
                         };
                         if (retVal.Route != null)
                         {
-                            retVal.Route.StartingTime = new[] {retVal.StartingTime};
+                            retVal.Route.StartingTime = new[] { retVal.StartingTime };
                         }
 
                         return retVal;
@@ -326,6 +326,7 @@ namespace IRuettae.WebApi.Helpers
                             totalDistance += dbSession.Query<Way>()
                                 .Single(w => w.From.Id.Equals(lastwp.RealVisitId) && w.To.Id.Equals(wp.RealVisitId))
                                 .Distance;
+                            lastwp = wp;
                         }
 
                         return totalDistance;
