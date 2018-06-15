@@ -1,0 +1,152 @@
+﻿@model IRuettae.WebApp.Models.AlgorithmStarterVM
+
+
+<h1><i class="fa fa-terminal"></i> Algorithmus starter</h1>
+@Html.ActionLink("Resultate", "Results", null, new { @class = "btn btn-success" })
+
+<hr />
+
+
+@using (Html.BeginForm("CalculateRouteAsync", "Algorithm", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Year, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Year, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Year, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.StarterId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.StarterId, Model.StarterIds, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.StarterId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.DaysPeriod, new { @class = "col-form-label" })
+            <button type="button" id="AddDay" class="btn btn-sm btn-success">
+                <i class="fa fa-plus"></i>
+            </button>
+            @if (Model.DaysPeriod.Count == 0)
+            {
+                <div class="days">
+                    <div class="form-group row">
+                        <label class="col-md-2 col-form-label">Von</label>
+                        <div class="col-md-10">
+                            <div class="input-group date">
+                                <input type="datetime" name="DaysPeriod[0].Start" id="DaysPeriod_0__Start" class="form-control" placeholder="DD.MM.YYYY HH:mm" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2 col-form-label">Bis</label>
+                        <div class="col-md-10">
+
+                            <input type="datetime" name="DaysPeriod[0].End" id="DaysPeriod_0__End form-control" class="form-control" placeholder="DD.MM.YYYY HH:mm" />
+                        </div>
+                    </div>
+                    <div class="p-1"></div>
+                </div>
+            }
+            @for (int i = 0; i < Model.DaysPeriod.Count; i++)
+            {
+                <div class="days">
+                    <div class="form-group row">
+                        <label class="col-md-2 col-form-label">Von</label>
+                        <div class="col-md-10">
+                            <div class="input-group date">
+                                <input type="datetime" name="DaysPeriod[@i].Start" id="DaysPeriod_@(i)__Start" class="form-control" placeholder="DD.MM.YYYY HH:mm" value="@Model.DaysPeriod[i].Start" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2 col-form-label">Bis</label>
+                        <div class="col-md-10">
+                            <input type="datetime" name="DaysPeriod[@i].End" id="DaysPeriod_@(i)__End form-control" class="form-control" placeholder="DD.MM.YYYY HH:mm" value="@Model.DaysPeriod[i].End" />
+                        </div>
+                    </div>
+                    <div class="p-1"></div>
+                </div>
+            }
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-light float-right mb-1" type="button" id="btn-advanced-settings" onclick="toggleAdvancedSettings()">Mehr anzeigen</button>
+            </div>
+        </div>
+
+        <div id="advanced-settings">
+            <div class="form-group row">
+                @Html.LabelFor(model => model.TimeSliceDuration, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.TimeSliceDuration, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.TimeSliceDuration, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.Beta0, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Beta0, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Beta0, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.TimePerChild, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.TimePerChild, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.TimePerChild, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-12 text-center">
+                <button class="btn btn-lg btn-dark btn-block" type="submit"><i class="fa fa-play"></i> Berechnen</button>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#advanced-settings').hide();
+
+            $('#AddDay').click(function() {
+                var day = $('.days');
+                var count = day.length;
+                var clone = day.first().clone();
+                clone.html($(clone).html().replace(/\[0\]/g, '[' + count + ']'));
+                clone.html($(clone).html().replace(/"_0__"/g, '_' + count + '__'));
+                clone.find('input').each(function(ind) { $(this).val(''); });
+
+                day.last().after(clone);
+            });
+        });
+
+
+        function toggleAdvancedSettings() {
+            if ($('#advanced-settings').is(':visible')) {
+                $('#advanced-settings').hide();
+            } else {
+                $('#advanced-settings').show();
+            }
+        }
+
+    </script>
+}

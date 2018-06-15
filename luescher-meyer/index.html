@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" >
+
+<head>
+<title>Fachhochschule Nordwestschweiz FHNW</title>
+<meta name="copyright" content="FHNW" />
+<meta name="author" content="webmaster&#0064;fhnw.ch" />
+<meta name="Description" content="FHNW - Fachhochschule Nordwestschweiz" />
+<meta name="Keywords" content="fhnw,fachhochschule,nordwestschweiz,hochschulen,hochschule f&uuml;r technik,studiengang,informatik,bachelor thesis" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#2b5797">
+<meta name="theme-color" content="#ffffff">
+
+<meta name="robots" content="INDEX,FOLLOW" />
+<meta name="Expires" content="0" />
+<meta name="Revisit" content="7 days" />
+<meta name="Language" content="Deutsch" />
+<meta name="distribution" content="global" />
+<link rel="stylesheet" type="text/css" media="screen" href="../_css/nw_screen.css" />
+</head>
+<body>
+<div id="Header_FHNW">
+  <div id="Logo_FHNW">
+  		<a href="http://www.fhnw.ch/">
+  		 <img src="../_img/nw_logo.png" alt="nw" />
+  		</a>
+  		<a name="top">&nbsp;</a>
+  </div>
+ <div id="Titel_ohne_menu">
+  <div id="Otitel_FHNW">
+	<a href="http://www.fhnw.ch/technik/" style="text-decoration: none;"><h1>Hochschule f&uuml;r Technik</h1></a>
+  </div>
+  <div id="Utitel_FHNW">
+	<a href="http://www.fhnw.ch/technik/i/" style="text-decoration: none;"><h1>Studierendenprojekte im Studiengang Informatik</h1>
+	</a>
+  </div>
+ </div>
+</div>
+<div id="Content_FHNW">
+<div id="lmenu_wrap">
+ <div id="lmenu">
+	<!-- Der Link zur aktiven Seite hat jeweils die Klasse "navactive", alle anderen haben die Klase "nav" -->
+	<!-- <br /> als Abschluss nicht vergessen! -->
+    <a href="../index.php" class="navactive">Startseite</a><br />
+		<!-- <a href="./index.html" class="nav">Link 2</a><br />
+		<a href="./index.html" class="nav">Link 3</a>
+		-->
+ </div>
+</div>
+
+<!-- Inhalt -->
+<div id="content_mit_menu">
+<!-- _______________________________________________________________________ -->
+
+<!-- Und hier kommt der Content rein. er beginnt IMMER mit einem <h4> Tag. -->
+
+<h4>iRuett&auml;</h4>
+<img alt="santa route" src="Santa_route.png" style="max-width: 500px;" />
+<h5>Zusammenfassung</h5>
+<p>
+	Unser Projekt befasst sich mit Chl&auml;usen, die Familien besuchen. Familien haben gewisse Tage, an denen sie nicht besucht werden k&ouml;nnen und gewisse Wunschzeiten, an denen sie bevorzugt besucht werden wollen. Es kommen mehrere Chl&auml;use zum Einsatz. Jeder Chlaus hat pro Tag nur eine beschr&auml;nkte Kapazit&auml;t. Die Frage ist, wann und in welcher Reihenfolge die Familien von den Chl&auml;usen optimal besucht wird. Das Problem wird in der Fachliteratur Vehicle Routing Problem with Time Windows genannt.
+</p>
+<p>
+	Im Rahmen unserer Arbeit l&ouml;sen wird das oben genannte Problem mit ganzzahliger linearer Programmierung. Der ganze Algorithmus ist dabei in zwei Teile getrennt. Zuerst wird ein Clustering gemacht und anschliessend werden die einzelnen Cluster mit dem Scheduling geplant.
+</p>
+
+<h5>Schl&uuml;sselbegriffe</h5>
+<p>ILP, VRPTW, Samichlaus</p>
+
+<h5>Zielsetzung</h5>
+<p>Entwicklung einer Webapplikation welche:
+<ul><li>Eine gef&uuml;hrte Erfassungsmaske f&uuml;r Mamis und Papis bereitstellt, um alle ben&ouml;tigten Informationen zu erfassen.
+Beispielsweise die Adresse, Datum und Zeit des Besuches, Anzahl Kinder, gutes und schlechtes
+Verhalten, ...</li>
+<li>Eine Funktion f&uuml;r die Planung, welche anhand von Parametern (Anzahl Besuche, Anzahl Kinder, Distanzen
+zwischen Wohnorten, ...) optimale Einsatzpl&auml;ne berechnet, wann welche Samichl&auml;use und Schmutzlis aufgeboten
+werden sollen. Dabei soll auch ein Wegeoptimierungs-Algorithmus zum Einsatz kommen, welcher
+den Samichl&auml;use hilft, eine ideale Route zu finden.
+</li>
+</ul>
+</p>
+
+<h5>Ausgangslage</h5>
+<p>
+	Die Jungwacht Niederwil sorgt jedes Jahr daf&uuml;r, dass in Niederwil und Nesselnbach der Samichlaus kommt. Die Familien k&ouml;nnen sich entweder auf der Webseite oder via schriftlichem Formular anmelden. Bei der Anmeldung k&ouml;nnen Terminw&uuml;nsche ge&auml;ussert werden. Nach Anmeldeschluss treffen sich die Organisatoren der Chlausgesellschaft und planen einen Abend lang. Dabei werden alle Anmeldungen nach bestem Wissen den Chl&auml;usen zugeteilt. Die Chl&auml;use erstellen dann eine individuelle Routenplanung. Diese Aufteilung und Routenplanung wird aber je l&auml;nger je komplizierter. Grund daf&uuml;r sind die steigenden Anmeldungen und die zunehmend fehlende Flexibilit&auml;t der Familien. Zus&auml;tzlich verlangt es den Chl&auml;usen viel Wissen und Erfahrung ab, ihre Routen zu planen.
+</p>
+<p>
+	Das oben beschriebene Problem ist in der Fachliteratur unter dem Namen Vehicle Routing Problem with Time Windows (kurz VRPTW) bekannt. Das Vehicle Routing Problem with Time Windows ist eine Erweiterung des Vehicle Routing Problem (kurz VRP). Einfach gesagt befasst sich das VRP mit einer Flotte von Fahrzeugen, welche G&uuml;ter aus einem zentralen Depot zu Kunde liefern soll. Bei der Erweiterung mit Time Windows besteht die Einschr&auml;nkung darin, dass Kunden nur in einem bestimmten Zeitfenster besucht werden d&uuml;rfen. Die Kunden sind in unserem Fall die Familien, welche von einem Chlaus besucht werden. Dementsprechend wird die Fahrzeugflotte durch die Chl&auml;use repr&auml;sentiert. Beide genannten Probleme geh&ouml;ren zur Klasse der NP-schweren Probleme.
+</p>
+
+<h5>Ergebnisse</h5>
+<p>Die Routen des Algorithmus k&ouml;nnen mit der manuell erstellten Route aus der Vergangenheit mithalten. Die automatisch erstellten Routen sind nicht generell schlechter oder besser. Vielmehr ist es so, dass die berechneten Routen gewisse Kennzahlen optimieren und somit andere vernachl&auml;ssigen. </p>
+
+<h5>Projektdaten</h5>
+<p>Projektdauer: Fr&uuml;hlingsemester 2018</p>
+<p>Aufwand: 360 Personenstunden</p>
+<p>Teamgr&ouml;sse: 2</p>
+
+<h5>Auftraggeber</h5>
+<img alt="Jungwacht Niederwil" src="jwlogo_gerade.png" style="margin-bottom 5px;max-width: 250px;" />
+<p>Jungwacht Niederwil, <a href="https://www.jw-niederwil.ch/">jw-niederwil.ch</a></p>
+
+<h5>Projektteam</h5>
+<p>Pascal L&uuml;scher, Janik Meyer</p>
+
+<h5>Kontakt</h5>
+<ul>
+	<li><a href="https://www.fhnw.ch/de/personen/simon-felix">Simon Felix</a>, <a href="mailto:simon.felix@fhnw.ch">simon.felix@fhnw.ch</a></li>
+	<li>Fabian Affolter, <a href="mailto:fabian.affolter@fhnw.ch">fabian.affolter@fhnw.ch</a></li>
+</ul>
+
+<h5><a href="../index.php"><< zur&uuml;ck</a></h5>
+<p>&nbsp;</p>
+
+<!-- _______________________________________________________________________ -->
+</div>
+
+<!-- Ende Content_FHNW -->
+</div>
+
+</body>
+</html>

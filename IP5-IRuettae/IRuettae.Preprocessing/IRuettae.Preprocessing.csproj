@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,13 +30,14 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug With RealGoogle|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug With RealGoogle\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -54,9 +56,15 @@
     <Compile Include="CSVImport\Import.cs" />
     <Compile Include="CSVImport\ImportModel.cs" />
     <Compile Include="CSVImport\Period.cs" />
+    <Compile Include="Mapping\ClusteringSolverVariableBuilder.cs" />
+    <Compile Include="Mapping\SchedulingSolverVariableBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\IRuettae.Core\IRuettae.Core.csproj">
+      <Project>{d56e9df6-b3a9-4b97-82e4-f3cd401bbe7c}</Project>
+      <Name>IRuettae.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\IRuettae.Persistence\IRuettae.Persistence.csproj">
       <Project>{48d4bedb-21dd-4ba9-8b15-7327f2a87ea3}</Project>
       <Name>IRuettae.Persistence</Name>

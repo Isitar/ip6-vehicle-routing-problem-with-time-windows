@@ -60,5 +60,10 @@ namespace IRuettae.WebApp.Models
             Unavailable = new List<PeriodVM>();
             Year = DateTime.Now.Year;
         }
+
+        public override string ToString()
+        {
+            return $"{Street}, {Zip} {City}";
+        }
     }
 }

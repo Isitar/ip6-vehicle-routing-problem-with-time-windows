@@ -1,0 +1,137 @@
+﻿@using System.Drawing
+@model IEnumerable<IRuettae.WebApp.Models.RouteCalculationWaypointVM[]>
+
+
+
+@{
+
+    int counter = 0;
+
+    <h1>Routen</h1>
+    @*<div id="allMap" style="min-height: 300px;"></div>*@
+
+    foreach (var route in Model)
+    {
+        counter = counter + 1;
+        var letterMap = 'A';
+
+        <h2>Route @route[0].SantaName @route[0].VisitStartTime.Date.ToShortDateString()</h2>
+        <div id="map-@counter" style="min-height: 300px"></div>
+        <table class="table">
+            <tr>
+                <th></th>
+                <th>
+                    @Html.DisplayNameFor(m => m[0].VisitStartTime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(m => m[0].VisitEndTime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(m => m[0].Visit)
+                </th>
+            </tr>
+            @foreach (var item in route)
+            {
+                <tr>
+                    <td>@letterMap</td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.VisitStartTime.TimeOfDay)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.VisitEndTime.TimeOfDay)
+                    </td>
+                    <td>
+                        @{
+                            var text = $"{item.Visit}";
+                        }
+                        @text
+                    </td>
+                </tr>
+                {
+                    letterMap += (char)1;
+                }
+            }
+        </table>
+
+
+        <script>
+            function initMap@(counter)() {
+                var directionsService = new google.maps.DirectionsService;
+                var directionsDisplay = new google.maps.DirectionsRenderer;
+                var map = new google.maps.Map(document.getElementById('map-@counter'),
+                    {
+                        zoom: 20,
+                        center: { lat: 41.85, lng: -87.65 }
+                    });
+                directionsDisplay.setMap(map);
+                calculateAndDisplayRoute@(counter)(directionsService, directionsDisplay);
+            }
+
+            function calculateAndDisplayRoute@(counter)(directionsService, directionsDisplay) {
+                var waypts = [];
+                @foreach (var wp in route.Skip(1).Take(route.Length - 2).Select(r => r.Visit.ToString()))
+                 {
+                     @:waypts.push({location:'@(wp)',stopover: true});
+                 }
+
+                directionsService.route({
+                        origin: '@route[0].Visit.ToString()',
+                        destination: '@route[route.Length - 1].Visit.ToString()',
+                        waypoints: waypts,
+                        optimizeWaypoints: false,
+                        travelMode: 'WALKING'
+                    },
+                    function(response, status) {
+                        if (status === 'OK') {
+                            directionsDisplay.setDirections(response);
+                        } else {
+                            window.alert('Directions request failed due to ' + status);
+                        }
+                    });
+            }
+        </script>
+
+    }
+}
+
+<script>
+    function initMap() {
+        @for (var i = 1; i <= counter; i++)
+        {
+            @Html.Raw($"initMap{i}();{Environment.NewLine}");
+        }
+
+        // renderAllMap();
+
+    }
+
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    function renderAllMap() {
+
+            var directionsService = new google.maps.DirectionsService;
+            var directionsDisplay = [];
+            var map = new google.maps.Map(document.getElementById('allMap'),
+                {
+                    zoom: 2,
+                    center: { lat: 41.85, lng: -87.65 }
+                });
+
+        @for (int idx = 1; idx <= Model.Count(); idx++)
+        {
+            @:directionsDisplay[@(idx)] = new google.maps.DirectionsRenderer({ markerOptions: {visible: false}, polylineOptions: { strokeColor: getRandomColor()}});
+            @:directionsDisplay[@(idx)].setMap(map);
+            @:calculateAndDisplayRoute@(idx)(directionsService, directionsDisplay[@(idx)]);
+        }
+    }
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=@(ViewBag.apikey)&callback=initMap">
+</script>

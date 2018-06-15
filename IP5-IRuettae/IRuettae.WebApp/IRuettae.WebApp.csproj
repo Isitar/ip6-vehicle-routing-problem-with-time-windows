@@ -144,6 +144,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\AlgorithmController.cs" />
     <Compile Include="Controllers\CSVImportController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SantaController.cs" />
@@ -151,7 +152,10 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AlgorithmStarterVM.cs" />
     <Compile Include="Models\BreakVM.cs" />
+    <Compile Include="Models\RouteCalculationVM.cs" />
+    <Compile Include="Models\RouteCalculationWaypointsVM.cs" />
     <Compile Include="Models\ViewState.cs" />
     <Compile Include="Models\PeriodVM.cs" />
     <Compile Include="Models\SantaVM.cs" />
@@ -172,6 +176,7 @@
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Christmas_background.jpg" />
     <Content Include="Content\Icons\Santa_1.png" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
@@ -312,6 +317,10 @@
     <Content Include="Views\Santa\Delete.cshtml" />
     <Content Include="Views\Santa\BreakForm.cshtml" />
     <Content Include="Views\Santa\DetailsBreakList.cshtml" />
+    <Content Include="Views\Algorithm\Index.cshtml" />
+    <Content Include="Views\Algorithm\Results.cshtml" />
+    <Content Include="Views\Algorithm\Result.cshtml" />
+    <Content Include="Views\Algorithm\Compare.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\logs\" />

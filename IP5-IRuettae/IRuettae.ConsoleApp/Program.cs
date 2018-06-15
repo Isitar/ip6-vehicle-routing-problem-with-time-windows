@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace IRuettae.ConsoleApp
 {
-    class Program
+    internal class Program
     {
         static void Main(string[] args)
         {
-            Test.Run(args);
+            //Test.Run(args);
+            TestNewSolution.Test();
+            Console.WriteLine("Program has finished, press enter to close it.");
             Console.ReadLine();
         }
     }
