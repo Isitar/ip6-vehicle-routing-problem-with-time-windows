@@ -207,7 +207,7 @@
     <Folder Include="Views\CSVImport\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\IRuettae.Core\IRuettae.Core.ILP.csproj">
+    <ProjectReference Include="..\..\Core\IRuettae.Core.ILP\IRuettae.Core.ILP.csproj">
       <Project>{d56e9df6-b3a9-4b97-82e4-f3cd401bbe7c}</Project>
       <Name>IRuettae.Core.ILP</Name>
     </ProjectReference>
