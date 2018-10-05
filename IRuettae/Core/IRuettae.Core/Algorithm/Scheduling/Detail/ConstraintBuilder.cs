@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Google.OrTools.LinearSolver;
 
-namespace IRuettae.Core.Algorithm.Scheduling.Detail
+namespace IRuettae.Core.ILP.Algorithm.Scheduling.Detail
 {
     internal class ConstraintBuilder
     {

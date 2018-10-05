@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 
-namespace IRuettae.Core.Algorithm.Scheduling.Detail
+namespace IRuettae.Core.ILP.Algorithm.Scheduling.Detail
 {
     internal class ResultBuilder
     {

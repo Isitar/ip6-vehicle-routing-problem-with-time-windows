@@ -1,4 +1,4 @@
-﻿namespace IRuettae.Core.Algorithm.Clustering.TargetFunctionBuilders
+﻿namespace IRuettae.Core.ILP.Algorithm.Clustering.TargetFunctionBuilders
 {
     internal enum TargetType
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IRuettae.Core.Algorithm.Clustering.TargetFunctionBuilders
+namespace IRuettae.Core.ILP.Algorithm.Clustering.TargetFunctionBuilders
 {
     internal static class TargetFunctionBuilderFactory
     {

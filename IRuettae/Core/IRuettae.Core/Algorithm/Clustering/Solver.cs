@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using IRuettae.Core.Algorithm.Clustering.Detail;
-using IRuettae.Core.Algorithm.Clustering.TargetFunctionBuilders;
+using IRuettae.Core.ILP.Algorithm.Clustering.Detail;
+using IRuettae.Core.ILP.Algorithm.Clustering.TargetFunctionBuilders;
 using GLS = Google.OrTools.LinearSolver;
 
-namespace IRuettae.Core.Algorithm.Clustering
+namespace IRuettae.Core.ILP.Algorithm.Clustering
 {
     internal class Solver : ISolver
     {

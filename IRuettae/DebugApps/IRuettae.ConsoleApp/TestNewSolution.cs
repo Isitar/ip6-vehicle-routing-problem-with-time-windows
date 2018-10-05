@@ -6,9 +6,9 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
-using IRuettae.Core.Algorithm;
+using IRuettae.Core.ILP.Algorithm;
 using IRuettae.WebApi.Helpers;
-using SolverInputData = IRuettae.Core.Algorithm.Clustering.SolverInputData;
+using SolverInputData = IRuettae.Core.ILP.Algorithm.Clustering.SolverInputData;
 
 namespace IRuettae.ConsoleApp
 {

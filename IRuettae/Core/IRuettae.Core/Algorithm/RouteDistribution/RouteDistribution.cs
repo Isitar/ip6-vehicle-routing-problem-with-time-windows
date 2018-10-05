@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace IRuettae.Core.Algorithm.RouteDistribution
+namespace IRuettae.Core.ILP.Algorithm.RouteDistribution
 {
     public class RouteDistribution
     {

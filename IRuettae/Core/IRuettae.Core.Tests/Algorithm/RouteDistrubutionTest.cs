@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using IRuettae.Core.Algorithm;
-using IRuettae.Core.Algorithm.RouteDistribution;
+using IRuettae.Core.ILP.Algorithm;
+using IRuettae.Core.ILP.Algorithm.RouteDistribution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace IRuettae.Core.Tests.Algorithm
@@ -16,7 +16,7 @@ namespace IRuettae.Core.Tests.Algorithm
             const int days = 2;
 
             // [santa][route,day] cost of route
-            var input = new Core.Algorithm.RouteDistribution.SolverInputData
+            var input = new ILP.Algorithm.RouteDistribution.SolverInputData
             {
                 RouteCost = new int[santas][,]
             };

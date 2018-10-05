@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace IRuettae.Core.Algorithm.Scheduling
+namespace IRuettae.Core.ILP.Algorithm.Scheduling
 {
     [Serializable]
     public class SolverInputData

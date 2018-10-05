@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders
+namespace IRuettae.Core.ILP.Algorithm.Scheduling.TargetFunctionBuilders
 {
     internal static class TargetFunctionBuilderFactory
     {

@@ -61,9 +61,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\IRuettae.Core\IRuettae.Core.csproj">
+    <ProjectReference Include="..\..\Core\IRuettae.Core\IRuettae.Core.ILP.csproj">
       <Project>{d56e9df6-b3a9-4b97-82e4-f3cd401bbe7c}</Project>
-      <Name>IRuettae.Core</Name>
+      <Name>IRuettae.Core.ILP</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Database\IRuettae.Persistence\IRuettae.Persistence.csproj">
       <Project>{48d4bedb-21dd-4ba9-8b15-7327f2a87ea3}</Project>

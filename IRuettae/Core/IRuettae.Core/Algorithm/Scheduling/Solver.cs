@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-using IRuettae.Core.Algorithm.Scheduling.Detail;
-using IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders;
+using IRuettae.Core.ILP.Algorithm.Scheduling.Detail;
+using IRuettae.Core.ILP.Algorithm.Scheduling.TargetFunctionBuilders;
 using GLS = Google.OrTools.LinearSolver;
 
-namespace IRuettae.Core.Algorithm.Scheduling
+namespace IRuettae.Core.ILP.Algorithm.Scheduling
 {
     internal class Solver : ISolver
     {

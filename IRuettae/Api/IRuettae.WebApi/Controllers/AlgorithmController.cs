@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Hosting;
 using System.Web.Http;
-using IRuettae.Core.Algorithm;
+using IRuettae.Core.ILP.Algorithm;
 using IRuettae.Persistence.Entities;
 using IRuettae.Preprocessing.Mapping;
 using IRuettae.WebApi.Helpers;

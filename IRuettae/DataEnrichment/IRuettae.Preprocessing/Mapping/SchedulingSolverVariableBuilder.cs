@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using IRuettae.Core.Algorithm;
-using IRuettae.Core.Algorithm.Scheduling;
+using IRuettae.Core.ILP.Algorithm;
+using IRuettae.Core.ILP.Algorithm.Scheduling;
 using IRuettae.Persistence.Entities;
 
 namespace IRuettae.Preprocessing.Mapping

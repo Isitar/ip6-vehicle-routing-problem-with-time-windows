@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using IRuettae.Core.Algorithm;
+using IRuettae.Core.ILP.Algorithm;
 using IRuettae.Persistence.Entities;
-using SolverInputData = IRuettae.Core.Algorithm.Clustering.SolverInputData;
+using SolverInputData = IRuettae.Core.ILP.Algorithm.Clustering.SolverInputData;
 
 namespace IRuettae.Preprocessing.Mapping
 {

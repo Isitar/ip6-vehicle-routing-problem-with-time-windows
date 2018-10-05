@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Google.OrTools.LinearSolver;
-using IRuettae.Core.Algorithm.Scheduling.Detail;
+using IRuettae.Core.ILP.Algorithm.Scheduling.Detail;
 
-namespace IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders
+namespace IRuettae.Core.ILP.Algorithm.Scheduling.TargetFunctionBuilders
 {
     internal class TargetFunctionFactory
     {

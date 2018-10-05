@@ -7,8 +7,8 @@
     <ProjectGuid>{D56E9DF6-B3A9-4B97-82E4-F3CD401BBE7C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>IRuettae.Core</RootNamespace>
-    <AssemblyName>IRuettae.Core</AssemblyName>
+    <RootNamespace>IRuettae.Core.ILP</RootNamespace>
+    <AssemblyName>IRuettae.Core.ILP</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

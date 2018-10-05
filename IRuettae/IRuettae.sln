@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Preprocessing", "D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Preprocessing.Tests", "DataEnrichment\IRuettae.Preprocessing.Tests\IRuettae.Preprocessing.Tests.csproj", "{8967F419-E3C4-4305-B8B9-0C1465960FB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core", "Core\IRuettae.Core\IRuettae.Core.csproj", "{D56E9DF6-B3A9-4B97-82E4-F3CD401BBE7C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core.ILP", "Core\IRuettae.Core\IRuettae.Core.ILP.csproj", "{D56E9DF6-B3A9-4B97-82E4-F3CD401BBE7C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core.Tests", "Core\IRuettae.Core.Tests\IRuettae.Core.Tests.csproj", "{648BD52D-DEA2-491C-B7D9-9DC959F537DE}"
 EndProject

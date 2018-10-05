@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using IRuettae.Core.Algorithm.Scheduling;
-using IRuettae.Core.Algorithm.Scheduling.Detail;
-using IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders;
+using IRuettae.Core.ILP.Algorithm.Scheduling.Detail;
+using IRuettae.Core.ILP.Algorithm.Scheduling;
+using IRuettae.Core.ILP.Algorithm.Scheduling.TargetFunctionBuilders;
 
-namespace IRuettae.Core.Algorithm
+namespace IRuettae.Core.ILP.Algorithm
 {
     public class Starter
     {

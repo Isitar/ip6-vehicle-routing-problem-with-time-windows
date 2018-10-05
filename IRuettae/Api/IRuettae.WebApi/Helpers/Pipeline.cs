@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Hosting;
-using IRuettae.Core.Algorithm;
+using IRuettae.Core.ILP.Algorithm;
 using IRuettae.Persistence.Entities;
 using IRuettae.Preprocessing.Mapping;
 using IRuettae.WebApi.Models;

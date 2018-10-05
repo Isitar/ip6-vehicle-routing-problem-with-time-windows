@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using IRuettae.Core.Algorithm;
-using IRuettae.Core.Algorithm.Scheduling;
+using IRuettae.Core.ILP.Algorithm;
+using IRuettae.Core.ILP.Algorithm.Scheduling;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace IRuettae.Core.Tests.Algorithm

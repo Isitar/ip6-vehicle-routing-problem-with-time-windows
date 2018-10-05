@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IRuettae.Core.Algorithm
+namespace IRuettae.Core.ILP.Algorithm
 {
     public enum VisitState
     {

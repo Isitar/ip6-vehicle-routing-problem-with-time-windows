@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IRuettae.Core.Algorithm
+namespace IRuettae.Core.ILP.Algorithm
 {
     public enum TargetBuilderType
     {

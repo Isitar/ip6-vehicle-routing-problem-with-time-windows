@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using IRuettae.Core.Algorithm.Scheduling.Detail;
+using IRuettae.Core.ILP.Algorithm.Scheduling.Detail;
 using GLS = Google.OrTools.LinearSolver;
 
-namespace IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders
+namespace IRuettae.Core.ILP.Algorithm.Scheduling.TargetFunctionBuilders
 {
     internal class DefaultTargetFunctionBuilder : AbstractTargetFunctionBuilder
     {

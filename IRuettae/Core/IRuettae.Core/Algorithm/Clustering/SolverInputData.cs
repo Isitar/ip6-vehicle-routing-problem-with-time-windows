@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IRuettae.Core.Algorithm.Clustering
+namespace IRuettae.Core.ILP.Algorithm.Clustering
 {
     [Serializable]
     public class SolverInputData

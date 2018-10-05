@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace IRuettae.Core.Algorithm.Clustering.Detail
+namespace IRuettae.Core.ILP.Algorithm.Clustering.Detail
 {
     internal class ResultBuilder
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IRuettae.Core.Algorithm.RouteDistribution
+namespace IRuettae.Core.ILP.Algorithm.RouteDistribution
 {
     [Serializable]
     public class SolverInputData

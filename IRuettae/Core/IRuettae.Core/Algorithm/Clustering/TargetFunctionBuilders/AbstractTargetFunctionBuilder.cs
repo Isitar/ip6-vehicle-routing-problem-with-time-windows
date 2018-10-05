@@ -1,6 +1,6 @@
-﻿using IRuettae.Core.Algorithm.Clustering.Detail;
+﻿using IRuettae.Core.ILP.Algorithm.Clustering.Detail;
 
-namespace IRuettae.Core.Algorithm.Clustering.TargetFunctionBuilders
+namespace IRuettae.Core.ILP.Algorithm.Clustering.TargetFunctionBuilders
 {
     internal abstract class AbstractTargetFunctionBuilder
     {

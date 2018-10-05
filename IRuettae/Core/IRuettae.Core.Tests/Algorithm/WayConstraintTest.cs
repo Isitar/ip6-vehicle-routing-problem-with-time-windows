@@ -1,6 +1,6 @@
 ﻿using System;
-using IRuettae.Core.Algorithm;
-using IRuettae.Core.Algorithm.Scheduling;
+using IRuettae.Core.ILP.Algorithm;
+using IRuettae.Core.ILP.Algorithm.Scheduling;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace IRuettae.Core.Tests.Algorithm

@@ -1,7 +1,7 @@
-﻿using IRuettae.Core.Algorithm.Clustering.Detail;
+﻿using IRuettae.Core.ILP.Algorithm.Clustering.Detail;
 using GLS = Google.OrTools.LinearSolver;
 
-namespace IRuettae.Core.Algorithm.Clustering.TargetFunctionBuilders
+namespace IRuettae.Core.ILP.Algorithm.Clustering.TargetFunctionBuilders
 {
     internal class MinTimePerSantaTargetFunctionBuilder : AbstractTargetFunctionBuilder
     {

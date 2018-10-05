@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using IRuettae.Core.Algorithm;
+using IRuettae.Core.ILP.Algorithm;
 
 namespace IRuettae.WebApi.Models
 {

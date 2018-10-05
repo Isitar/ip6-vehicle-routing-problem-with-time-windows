@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Google.OrTools.LinearSolver;
-using IRuettae.Core.Algorithm.Scheduling.Detail;
-using IRuettae.Core.Algorithm.Scheduling.TargetFunctionBuilders;
+using IRuettae.Core.ILP.Algorithm.Scheduling.Detail;
+using IRuettae.Core.ILP.Algorithm.Scheduling.TargetFunctionBuilders;
 using GLS = Google.OrTools.LinearSolver;
 
-namespace IRuettae.Core.Algorithm.RouteDistribution
+namespace IRuettae.Core.ILP.Algorithm.RouteDistribution
 {
     // Todo: Meyerj create or-tools solver base class
     // Todo: implement starter class

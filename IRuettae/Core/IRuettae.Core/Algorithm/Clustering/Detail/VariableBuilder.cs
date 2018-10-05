@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using GLS = Google.OrTools.LinearSolver;
 
-namespace IRuettae.Core.Algorithm.Clustering.Detail
+namespace IRuettae.Core.ILP.Algorithm.Clustering.Detail
 {
     internal class VariableBuilder
     {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using IRuettae.Core.Algorithm;
+using IRuettae.Core.ILP.Algorithm;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SolverInputData = IRuettae.Core.Algorithm.Clustering.SolverInputData;
+using SolverInputData = IRuettae.Core.ILP.Algorithm.Clustering.SolverInputData;
 
 namespace IRuettae.Core.Tests.Algorithm
 {
