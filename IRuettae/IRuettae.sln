@@ -3,29 +3,29 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.WebApp", "IRuettae.WebApp\IRuettae.WebApp.csproj", "{AB95E2B1-929A-4ECA-A848-AD7AC3D73DB7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.WebApp", "Frontend\IRuettae.WebApp\IRuettae.WebApp.csproj", "{AB95E2B1-929A-4ECA-A848-AD7AC3D73DB7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.WebApp.Tests", "IRuettae.WebApp.Tests\IRuettae.WebApp.Tests.csproj", "{AE883BE4-3D4F-44E1-A3ED-F59C7D57083D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.WebApp.Tests", "Frontend\IRuettae.WebApp.Tests\IRuettae.WebApp.Tests.csproj", "{AE883BE4-3D4F-44E1-A3ED-F59C7D57083D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.WebAPI", "IRuettae.WebAPI\IRuettae.WebAPI.csproj", "{BF1A0257-88B9-4E46-83EB-5C8836B3486A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.WebAPI", "Api\IRuettae.WebAPI\IRuettae.WebAPI.csproj", "{BF1A0257-88B9-4E46-83EB-5C8836B3486A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.WebAPI.Tests", "IRuettae.WebAPI.Tests\IRuettae.WebAPI.Tests.csproj", "{B0BA6194-1CA6-48F6-9090-DC6A8C468F63}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.WebAPI.Tests", "Api\IRuettae.WebAPI.Tests\IRuettae.WebAPI.Tests.csproj", "{B0BA6194-1CA6-48F6-9090-DC6A8C468F63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.GeoCalculations", "IRuettae.Geolocator\IRuettae.GeoCalculations.csproj", "{6CAFE95B-09B0-470D-83F3-B49C17B38334}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.GeoCalculations", "DataEnrichment\IRuettae.Geolocator\IRuettae.GeoCalculations.csproj", "{6CAFE95B-09B0-470D-83F3-B49C17B38334}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Preprocessing", "IRuettae.Preprocessing\IRuettae.Preprocessing.csproj", "{B84CADD1-5F00-4B62-A363-9A047E39FBBD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Preprocessing", "DataEnrichment\IRuettae.Preprocessing\IRuettae.Preprocessing.csproj", "{B84CADD1-5F00-4B62-A363-9A047E39FBBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Preprocessing.Tests", "IRuettae.Preprocessing.Tests\IRuettae.Preprocessing.Tests.csproj", "{8967F419-E3C4-4305-B8B9-0C1465960FB5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Preprocessing.Tests", "DataEnrichment\IRuettae.Preprocessing.Tests\IRuettae.Preprocessing.Tests.csproj", "{8967F419-E3C4-4305-B8B9-0C1465960FB5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core", "Core\IRuettae.Core\IRuettae.Core.csproj", "{D56E9DF6-B3A9-4B97-82E4-F3CD401BBE7C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core.Tests", "Core\IRuettae.Core.Tests\IRuettae.Core.Tests.csproj", "{648BD52D-DEA2-491C-B7D9-9DC959F537DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Persistence.Tests", "IRuettae.Persistence.Tests\IRuettae.Persistence.Tests.csproj", "{62985BC6-A3FC-442C-A32E-AA0893B88396}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Persistence.Tests", "Database\IRuettae.Persistence.Tests\IRuettae.Persistence.Tests.csproj", "{62985BC6-A3FC-442C-A32E-AA0893B88396}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Persistence", "IRuettae.Persistence\IRuettae.Persistence.csproj", "{48D4BEDB-21DD-4BA9-8B15-7327F2A87EA3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Persistence", "Database\IRuettae.Persistence\IRuettae.Persistence.csproj", "{48D4BEDB-21DD-4BA9-8B15-7327F2A87EA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.GeoCalculations.Tests", "IRuettae.GeoCalculations.Tests\IRuettae.GeoCalculations.Tests.csproj", "{79092310-533C-4709-814C-281D72D093F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.GeoCalculations.Tests", "DataEnrichment\IRuettae.GeoCalculations.Tests\IRuettae.GeoCalculations.Tests.csproj", "{79092310-533C-4709-814C-281D72D093F7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.ConsoleApp", "DebugApps\IRuettae.ConsoleApp\IRuettae.ConsoleApp.csproj", "{5E7DB822-C12C-4B12-A8FB-D8336F6E272E}"
 EndProject
@@ -43,7 +43,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{753659F5-28A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Converter", "Converter", "{6800792F-BAE0-49FD-AD84-142BBB895596}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Converter", "IRuettae.Converter\IRuettae.Converter.csproj", "{3653EA67-0CA2-40FC-B027-1DF812F7BC7C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Converter", "Converter\IRuettae.Converter\IRuettae.Converter.csproj", "{3653EA67-0CA2-40FC-B027-1DF812F7BC7C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
