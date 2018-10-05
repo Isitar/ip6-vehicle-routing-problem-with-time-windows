@@ -6,11 +6,25 @@ using System.Threading.Tasks;
 
 namespace IRuettae.Core.Models
 {
+    public enum ResultState
+    {
+        Finished,
+        TimelimitReached,
+        Cancelled,
+        Error
+    }
+
     /// <summary>
     /// Class containing the result of an optimisation algorithm
     /// </summary>
     public class OptimisationResult
     {
+
+        /// <summary>
+        /// The state of the result
+        /// </summary>
+        public ResultState ResultState { get; set; }
+
         /// <summary>
         /// Array containing all routes
         /// </summary>
