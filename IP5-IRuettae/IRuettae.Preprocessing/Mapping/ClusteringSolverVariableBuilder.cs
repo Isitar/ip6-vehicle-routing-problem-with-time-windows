@@ -66,11 +66,11 @@ namespace IRuettae.Preprocessing.Mapping
 
                 for (int v = 0; v < Visits.Count; v++)
                 {
-                    if (Visits[v].Unavailable.Any(p => Days[day].Item1 <= p.Start && p.Start <= Days[day].Item2))
+                    if (Visits[v].Unavailable.Any(p => p.Start.Value.Date == Days[day].Item1.Date))
                     {
                         visitsVar[day, v] = VisitState.Unavailable;
                     }
-                    else if (Visits[v].Desired.Any(p => Days[day].Item1 <= p.Start && p.Start <= Days[day].Item2))
+                    else if (Visits[v].Desired.Any(p => Days[day].Item1 < p.End && p.Start < Days[day].Item2))
                     {
                         visitsVar[day, v] = VisitState.Desired;
                     }
