@@ -59,7 +59,7 @@ namespace IRuettae.WebApp.Models
         public virtual string Result { get; set; }
         [DisplayName("Status")]
         public virtual RouteCalculationState State { get; set; }
-        [DisplayName("StatusText")]
+        [DisplayName("Status Text")]
         public virtual string StateText { get; set; }
         [DisplayName("Endzeit")]
         public virtual DateTime EndTime { get; set; }

@@ -169,9 +169,9 @@ namespace IRuettae.WebApi.Helpers
                         new BinaryFormatter().Serialize(stream, clusteringSolverInputData);
                     }
                 }
-#endif
                 var mpsPath = HostingEnvironment.MapPath($"~/App_Data/Clustering_{routeCalculation.Id}_{routeCalculation.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}.mps");
                 Starter.SaveMps(mpsPath, clusteringSolverInputData, targetType);
+#endif
 
 
                 var phase1Result = Starter.Optimise(clusteringSolverInputData, targetType, routeCalculation.ClustringMipGap, routeCalculation.ClusteringTimeLimit);
@@ -222,16 +222,19 @@ namespace IRuettae.WebApi.Helpers
                 routeCalculation.State = RouteCalculationState.RunningPhase2;
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
-                var inputData = schedulingSovlerVariableBuilders.Where(vb => vb.Visits.Count > 1)
+                var inputData = schedulingSovlerVariableBuilders.Where(vb => vb.Visits != null && vb.Visits.Count > 1)
                     .Select(vb => vb.Build())
                     .ToList();
 
-                int ctr = 0;
+
+                // TODO: Atomic Int oder so verwenden
+                //int ctr = 0;
                 var routeResults = inputData.AsParallel()
                     .Select(schedulingInputdata =>
                     {
-                        var mpsPathScheduling = HostingEnvironment.MapPath($"~/App_Data/Scheduling_{routeCalculation.Id}_{ctr++}.mps");
-                        Starter.SaveMps(mpsPathScheduling, schedulingInputdata, TargetBuilderType.Default);
+                        //var mpsPathScheduling = HostingEnvironment.MapPath($"~/App_Data/Scheduling_{routeCalculation.Id}_{ctr++}_{Guid.NewGuid().ToString()}.mps");
+                        //Starter.SaveMps(mpsPathScheduling, schedulingInputdata, TargetBuilderType.Default);
+
                         var retVal = new SchedulingResult
                         {
                             Route = Starter.Optimise(schedulingInputdata, TargetBuilderType.Default, routeCalculation.SchedulingMipGap, routeCalculation.SchedulingTimeLimit),
