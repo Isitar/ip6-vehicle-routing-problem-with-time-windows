@@ -96,6 +96,7 @@
     <Compile Include="Algorithm\TargetBuilderType.cs" />
     <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\TargetType.cs" />
     <Compile Include="Algorithm\VisitState.cs" />
+    <Compile Include="Algorithm\Waypoint.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
