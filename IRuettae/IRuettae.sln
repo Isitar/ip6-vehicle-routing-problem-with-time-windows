@@ -17,9 +17,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Preprocessing", "I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Preprocessing.Tests", "IRuettae.Preprocessing.Tests\IRuettae.Preprocessing.Tests.csproj", "{8967F419-E3C4-4305-B8B9-0C1465960FB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core", "IRuettae.Core\IRuettae.Core.csproj", "{D56E9DF6-B3A9-4B97-82E4-F3CD401BBE7C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core", "Core\IRuettae.Core\IRuettae.Core.csproj", "{D56E9DF6-B3A9-4B97-82E4-F3CD401BBE7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core.Tests", "IRuettae.Core.Tests\IRuettae.Core.Tests.csproj", "{648BD52D-DEA2-491C-B7D9-9DC959F537DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core.Tests", "Core\IRuettae.Core.Tests\IRuettae.Core.Tests.csproj", "{648BD52D-DEA2-491C-B7D9-9DC959F537DE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Persistence.Tests", "IRuettae.Persistence.Tests\IRuettae.Persistence.Tests.csproj", "{62985BC6-A3FC-442C-A32E-AA0893B88396}"
 EndProject
@@ -27,11 +27,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Persistence", "IRu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.GeoCalculations.Tests", "IRuettae.GeoCalculations.Tests\IRuettae.GeoCalculations.Tests.csproj", "{79092310-533C-4709-814C-281D72D093F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.ConsoleApp", "IRuettae.ConsoleApp\IRuettae.ConsoleApp.csproj", "{5E7DB822-C12C-4B12-A8FB-D8336F6E272E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.ConsoleApp", "DebugApps\IRuettae.ConsoleApp\IRuettae.ConsoleApp.csproj", "{5E7DB822-C12C-4B12-A8FB-D8336F6E272E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{4AFFAE11-44BE-4405-B3F8-A60826387129}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Debug", "Debug", "{F60824C4-90B4-4C99-BF8C-A185BCA036B0}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DebugApps", "DebugApps", "{F60824C4-90B4-4C99-BF8C-A185BCA036B0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data enrichment", "Data enrichment", "{491DA4DE-FC01-40E3-B29C-6ED65676BEA5}"
 EndProject
