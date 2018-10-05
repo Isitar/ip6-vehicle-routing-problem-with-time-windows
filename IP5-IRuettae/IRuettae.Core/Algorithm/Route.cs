@@ -80,7 +80,7 @@ namespace IRuettae.Core.Algorithm
             {
                 for (int day = 0; day < Waypoints.GetLength(1); day++)
                 {
-                    if (!Enumerable.SequenceEqual(Waypoints[santa, day], other.Waypoints[santa, day]))
+                    if (!Waypoints[santa, day].SequenceEqual(other.Waypoints[santa, day]))
                     {
                         return false;
                     }
@@ -96,21 +96,21 @@ namespace IRuettae.Core.Algorithm
 
         public override string ToString()
         {
-            string str = System.Environment.NewLine;
+            string str = Environment.NewLine;
             for (int santa = 0; santa < Waypoints.GetLength(0); santa++)
             {
-                str += $"Santa {santa}{System.Environment.NewLine}";
+                str += $"Santa {santa}{Environment.NewLine}";
                 for (int day = 0; day < Waypoints.GetLength(1); day++)
                 {
-                    str += $"Day {day}{System.Environment.NewLine}";
-                    str += $"Visit | StartTime{System.Environment.NewLine}";
+                    str += $"Day {day}{Environment.NewLine}";
+                    str += $"Visit | StartTime{Environment.NewLine}";
                     if (Waypoints[santa, day].Count > 0)
                     {
-                        str += Waypoints[santa, day].Select(w => $"{w.Visit,6}| {w.StartTime,6}").Aggregate((a, v) => a + System.Environment.NewLine + v);
+                        str += Waypoints[santa, day].Select(w => $"{w.Visit,6}| {w.StartTime,6}").Aggregate((a, v) => a + Environment.NewLine + v);
                     }
-                    str += System.Environment.NewLine;
+                    str += Environment.NewLine;
                 }
-                str += System.Environment.NewLine;
+                str += Environment.NewLine;
             }
             return str;
         }
