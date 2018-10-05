@@ -30,5 +30,16 @@ namespace IRuettae.Core.Models
         /// Containing the visit duration in seconds
         /// </summary>
         public int Duration;
+
+        /// <summary>
+        /// The cost to get from the depot (home) to this visit
+        /// </summary>
+        public int WayCostFromHome;
+
+        /// <summary>
+        /// The cost to get from this visit to the depot (home)
+        /// </summary>
+        public int WayCostToHome;
+
     }
 }

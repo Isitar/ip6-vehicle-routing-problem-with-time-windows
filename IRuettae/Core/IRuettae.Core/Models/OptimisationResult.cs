@@ -31,19 +31,9 @@ namespace IRuettae.Core.Models
         public Route[] Routes { get; set; }
 
         /// <summary>
-        /// Visit input data
+        /// The input used to calculate this result
         /// </summary>
-        public Visit[] Visits { get; set; }
-
-        /// <summary>
-        /// Santa input data
-        /// </summary>
-        public Santa[] Santas { get; set; }
-
-        /// <summary>
-        /// Way Matrix input data
-        /// </summary>
-        public WayMatrix WayMatrix { get; set; }
+        public OptimisationInput OptimisationInput { get; set; }
 
         /// <summary>
         /// Time elapsed to calculate this result (in ms)
