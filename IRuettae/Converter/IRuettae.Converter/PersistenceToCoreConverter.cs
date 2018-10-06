@@ -24,7 +24,7 @@ namespace IRuettae.Converter
             var input = new Core.Models.OptimisationInput
             {
                 Visits = new Core.Models.Visit[visits.Count],
-                Santas = new Core.Models.Santa[santas.Count * workingDays.Count],
+                Santas = new Core.Models.Santa[santas.Count],
                 Days = new(int from, int to)[workingDays.Count],
                 RouteCosts = new int[visits.Count, visits.Count],
             };
@@ -44,9 +44,9 @@ namespace IRuettae.Converter
                 {
                     Id = x,
                     Desired = persistenceVisit.Desired
-                        .Select(d => ((d.Start.Value - zeroTime).Seconds, (d.End.Value - zeroTime).Seconds)).ToArray(),
+                        .Select(d => ((int)(d.Start.Value - zeroTime).TotalSeconds, (int)(d.End.Value - zeroTime).TotalSeconds)).ToArray(),
                     Unavailable = persistenceVisit.Unavailable
-                        .Select(d => ((d.Start.Value - zeroTime).Seconds, (d.End.Value - zeroTime).Seconds)).ToArray(),
+                        .Select(d => ((int)(d.Start.Value - zeroTime).TotalSeconds, (int)(d.End.Value - zeroTime).TotalSeconds)).ToArray(),
                     Duration = (int)persistenceVisit.Duration,
                     WayCostFromHome = startVisit.ToWays.First(w => w.To.Id.Equals(persistenceVisit.Id)).Duration,
                     WayCostToHome = startVisit.FromWays.First(w => w.From.Id.Equals(persistenceVisit.Id)).Duration,
@@ -66,14 +66,14 @@ namespace IRuettae.Converter
                 }
             }
 
-            for (int i = 0; i < santas.Count * workingDays.Count; i++)
+            for (int i = 0; i < santas.Count; i++)
             {
                 input.Santas[i] = new Core.Models.Santa { Id = i };
             }
 
             for (int i = 0; i < workingDays.Count; i++)
             {
-                input.Days[i] = ((workingDays[i].Item1 - zeroTime).Seconds, (workingDays[i].Item2 - zeroTime).Seconds);
+                input.Days[i] = ((int)(workingDays[i].Item1 - zeroTime).TotalSeconds, (int)(workingDays[i].Item2 - zeroTime).TotalSeconds);
             }
 
             // todo: work from here ?break handling?

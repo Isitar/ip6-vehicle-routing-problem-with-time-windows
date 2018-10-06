@@ -11,9 +11,36 @@ namespace IRuettae.Converter.Tests
     [TestClass]
     public class PersistenceToCoreConverterTests
     {
+        private static bool Equals(Core.Models.OptimisationInput v1, Core.Models.OptimisationInput v2)
+        {
+            if (v1.Visits.Length != v2.Visits.Length)
+            {
+                return false;
+            }
+            bool equals = true;
+            for (int i = 0; equals && i < v1.Visits.Length; i++)
+            {
+                equals = true
+                     && v1.Visits[i].Id == v2.Visits[i].Id
+                     && v1.Visits[i].Duration == v2.Visits[i].Duration
+                     && v1.Visits[i].WayCostFromHome == v2.Visits[i].WayCostFromHome
+                     && v1.Visits[i].WayCostToHome == v2.Visits[i].WayCostToHome
+                     && v1.Visits[i].Desired.SequenceEqual(v2.Visits[i].Desired)
+                     && v1.Visits[i].Unavailable.SequenceEqual(v2.Visits[i].Unavailable)
+                     ;
+            }
+            return equals
+                && v1.Santas.SequenceEqual(v2.Santas)
+                && v1.Days.SequenceEqual(v2.Days)
+                && v1.RouteCosts.Cast<int>().SequenceEqual(v2.RouteCosts.Cast<int>())
+                ;
+        }
+
         [TestMethod()]
         public void ConvertTest()
         {
+            // test with two days, two visits, two santas without breaks
+
             var workingDays = new List<(DateTime, DateTime)>
             {
                 ( new DateTime(2017, 12, 08, 17, 0, 0), new DateTime(2017, 12, 08, 22, 0, 0) ),
@@ -177,10 +204,11 @@ namespace IRuettae.Converter.Tests
                     {
                         Id = 1,
                         Duration = 15,
+                        Desired = new (int,int)[0],
                         Unavailable = new (int,int)[2]
                         {
-                            (27*hour,29*hour),
                             (0*hour,5*hour),
+                            (27*hour,29*hour),
                         },
                         WayCostFromHome = w02.Duration,
                         WayCostToHome = w20.Duration,
@@ -199,7 +227,7 @@ namespace IRuettae.Converter.Tests
             };
             var actual = PersistenceToCoreConverter.Convert(workingDays, startVisit, visits, santas, breaks);
 
-            Assert.AreEqual(expected, actual);
+            Assert.IsTrue(Equals(expected, actual));
         }
     }
 }
