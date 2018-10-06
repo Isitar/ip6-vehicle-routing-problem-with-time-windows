@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace IRuettae.Converter
 {
-    public class PersistenceToCoreConverter
+    public static class PersistenceToCoreConverter
     {
         /// <summary>
         /// Converts the input params to an OptimisationInput
@@ -19,16 +19,14 @@ namespace IRuettae.Converter
         /// <param name="santas">All santas for the problem</param>
         /// <param name="breaks">All breaks for the santas</param>
         /// <returns>An optimisation input that can be used to solve the problem</returns>
-        public Core.Models.OptimisationInput Convert(List<(DateTime, DateTime)> workingDays, Persistence.Entities.Visit startVisit, List<Persistence.Entities.Visit> visits, List<Persistence.Entities.Santa> santas, List<Persistence.Entities.Visit> breaks)
+        public static Core.Models.OptimisationInput Convert(List<(DateTime, DateTime)> workingDays, Persistence.Entities.Visit startVisit, List<Persistence.Entities.Visit> visits, List<Persistence.Entities.Santa> santas, List<Persistence.Entities.Visit> breaks)
         {
             var input = new Core.Models.OptimisationInput
             {
-                WayMatrix = new Core.Models.WayMatrix
-                {
-                    RouteCosts = new int[visits.Count, visits.Count]
-                },
                 Visits = new Core.Models.Visit[visits.Count],
                 Santas = new Core.Models.Santa[santas.Count * workingDays.Count],
+                Days = new(int from, int to)[workingDays.Count],
+                RouteCosts = new int[visits.Count, visits.Count],
             };
 
             // set 0-time
@@ -49,9 +47,9 @@ namespace IRuettae.Converter
                         .Select(d => ((d.Start.Value - zeroTime).Seconds, (d.End.Value - zeroTime).Seconds)).ToArray(),
                     Unavailable = persistenceVisit.Unavailable
                         .Select(d => ((d.Start.Value - zeroTime).Seconds, (d.End.Value - zeroTime).Seconds)).ToArray(),
-                    Duration = persistenceVisit.NumberOfChildren * 5 + 15,
+                    Duration = (int)persistenceVisit.Duration,
                     WayCostFromHome = startVisit.ToWays.First(w => w.To.Id.Equals(persistenceVisit.Id)).Duration,
-                    WayCostToHome = startVisit.FromWays.First(w => w.To.Id.Equals(persistenceVisit.Id)).Duration,
+                    WayCostToHome = startVisit.FromWays.First(w => w.From.Id.Equals(persistenceVisit.Id)).Duration,
                 };
 
                 // fill distance matrix
@@ -59,11 +57,11 @@ namespace IRuettae.Converter
                 {
                     if (x == y)
                     {
-                        input.WayMatrix[x, y] = 0;
+                        input.RouteCosts[x, y] = 0;
                     }
                     else
                     {
-                        input.WayMatrix[x, y] = persistenceVisit.FromWays.First(w => w.To.Id.Equals(visits[y].Id)).Duration;
+                        input.RouteCosts[x, y] = persistenceVisit.ToWays.First(w => w.To.Id.Equals(visits[y].Id)).Duration;
                     }
                 }
             }
@@ -71,6 +69,11 @@ namespace IRuettae.Converter
             for (int i = 0; i < santas.Count * workingDays.Count; i++)
             {
                 input.Santas[i] = new Core.Models.Santa { Id = i };
+            }
+
+            for (int i = 0; i < workingDays.Count; i++)
+            {
+                input.Days[i] = ((workingDays[i].Item1 - zeroTime).Seconds, (workingDays[i].Item2 - zeroTime).Seconds);
             }
 
             // todo: work from here ?break handling?

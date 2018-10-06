@@ -49,11 +49,28 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="PersistenceToCoreConverterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\IRuettae.Core\IRuettae.Core.csproj">
+      <Project>{e6f0ffc6-7f26-4286-ae57-44411eb66118}</Project>
+      <Name>IRuettae.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Database\IRuettae.Persistence\IRuettae.Persistence.csproj">
+      <Project>{48d4bedb-21dd-4ba9-8b15-7327f2a87ea3}</Project>
+      <Name>IRuettae.Persistence</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IRuettae.Converter\IRuettae.Converter.csproj">
+      <Project>{3653EA67-0CA2-40FC-B027-1DF812F7BC7C}</Project>
+      <Name>IRuettae.Converter</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

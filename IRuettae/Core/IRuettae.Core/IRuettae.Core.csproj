@@ -47,7 +47,6 @@
     <Compile Include="Models\Route.cs" />
     <Compile Include="Models\Santa.cs" />
     <Compile Include="Models\Visit.cs" />
-    <Compile Include="Models\WayMatrix.cs" />
     <Compile Include="Models\Waypoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

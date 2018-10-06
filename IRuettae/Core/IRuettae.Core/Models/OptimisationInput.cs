@@ -22,8 +22,14 @@ namespace IRuettae.Core.Models
         public Santa[] Santas { get; set; }
 
         /// <summary>
-        /// Way Matrix input data
+        /// Days input data
         /// </summary>
-        public WayMatrix WayMatrix { get; set; }
+        public (int from, int to)[] Days { get; set; }
+
+        /// <summary>
+        /// Route costs from x to y in seconds
+        /// x -> y is on position [x,y]
+        /// </summary>
+        public int[,] RouteCosts { get; set; }
     }
 }
