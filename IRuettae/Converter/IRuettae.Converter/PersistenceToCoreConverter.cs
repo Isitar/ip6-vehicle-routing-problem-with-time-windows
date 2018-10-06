@@ -73,7 +73,7 @@ namespace IRuettae.Converter
 
             for (int i = 0; i < workingDays.Count; i++)
             {
-                input.Days[i] = ((workingDays[i].Item1 - zeroTime).Seconds, (workingDays[i].Item2 - zeroTime).Seconds);
+                input.Days[i] = ((workingDays[i].Start - zeroTime).Seconds, (workingDays[i].End - zeroTime).Seconds);
             }
 
             // todo: work from here ?break handling?
