@@ -49,11 +49,21 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="PersistenceToCoreConverterTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Database\IRuettae.Persistence\IRuettae.Persistence.csproj">
+      <Project>{48D4BEDB-21DD-4BA9-8B15-7327F2A87EA3}</Project>
+      <Name>IRuettae.Persistence</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IRuettae.Converter\IRuettae.Converter.csproj">
+      <Project>{3653ea67-0ca2-40fc-b027-1df812f7bc7c}</Project>
+      <Name>IRuettae.Converter</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

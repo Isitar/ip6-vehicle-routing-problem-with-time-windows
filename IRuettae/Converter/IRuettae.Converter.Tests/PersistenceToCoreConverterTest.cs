@@ -119,6 +119,22 @@ namespace IRuettae.Converter.Tests
                 Year = 2017
             };
 
+            v1.FromWays = new List<Way>(4)
+            {
+                new Way() {Distance = 0, Duration = 0, From = v1, To = v1},
+                new Way() {Distance = 10, Duration = 20, From = v1, To = v2},
+                new Way() {Distance = 11, Duration = 21, From = v1, To = v3},
+                new Way() {Distance = 12, Duration = 22, From = v1, To = v4},
+            };
+
+            v1.ToWays = new List<Way>(4)
+            {
+                new Way() {Distance = 0, Duration = 0, To = v1, From = v1},
+                new Way() {Distance = 10, Duration = 20, To = v1, From = v2},
+                new Way() {Distance = 11, Duration = 21, To = v1, From = v3},
+                new Way() {Distance = 12, Duration = 22, To = v1, From = v4},
+            };
+
             var visits = new List<Visit>
             {
                 
