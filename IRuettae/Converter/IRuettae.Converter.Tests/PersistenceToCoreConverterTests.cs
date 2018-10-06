@@ -36,7 +36,7 @@ namespace IRuettae.Converter.Tests
                 ;
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ConvertTest()
         {
             // test with two days, two visits, two santas without breaks
@@ -52,13 +52,13 @@ namespace IRuettae.Converter.Tests
             };
             var visits = new List<Persistence.Entities.Visit>
             {
-                new Persistence.Entities.Visit()
+                new Persistence.Entities.Visit
                 {
                     Id = 1,
                     Duration = 60,
                     Desired = new List<Persistence.Entities.Period>
                     {
-                        new Persistence.Entities.Period()
+                        new Persistence.Entities.Period
                         {
                             Start = new DateTime(2017, 12, 08, 18, 0, 0),
                             End = new DateTime(2017, 12, 08, 19, 0, 0),
@@ -66,25 +66,25 @@ namespace IRuettae.Converter.Tests
                     },
                     Unavailable = new List<Persistence.Entities.Period>
                     {
-                        new Persistence.Entities.Period()
+                        new Persistence.Entities.Period
                         {
                             Start = new DateTime(2017, 12, 09, 17, 0, 0),
                             End = new DateTime(2017, 12, 09, 22, 0, 0),
                         }
                     }
                 },
-                new Persistence.Entities.Visit()
+                new Persistence.Entities.Visit
                 {
                     Id = 3,
                     Duration = 15,
                     Unavailable = new List<Persistence.Entities.Period>
                     {
-                        new Persistence.Entities.Period()
+                        new Persistence.Entities.Period
                         {
                             Start = new DateTime(2017, 12, 08, 17, 0, 0),
                             End = new DateTime(2017, 12, 08, 22, 0, 0),
                         },
-                        new Persistence.Entities.Period()
+                        new Persistence.Entities.Period
                         {
                             Start = new DateTime(2017, 12, 09, 20, 0, 0),
                             End = new DateTime(2017, 12, 09, 22, 0, 0),
@@ -94,7 +94,7 @@ namespace IRuettae.Converter.Tests
             };
             var santas = new List<Persistence.Entities.Santa>
             {
-                new Persistence.Entities.Santa()
+                new Persistence.Entities.Santa
                 {
                     Name = "Mr Santa Test"
                 }
@@ -102,37 +102,37 @@ namespace IRuettae.Converter.Tests
             List<Persistence.Entities.Visit> breaks = null;
 
             // ways
-            var w01 = new Persistence.Entities.Way()
+            var w01 = new Persistence.Entities.Way
             {
                 From = startVisit,
                 To = visits[0],
                 Duration = 200
             };
-            var w02 = new Persistence.Entities.Way()
+            var w02 = new Persistence.Entities.Way
             {
                 From = startVisit,
                 To = visits[1],
                 Duration = 400
             };
-            var w10 = new Persistence.Entities.Way()
+            var w10 = new Persistence.Entities.Way
             {
                 From = visits[0],
                 To = startVisit,
                 Duration = 300
             };
-            var w20 = new Persistence.Entities.Way()
+            var w20 = new Persistence.Entities.Way
             {
                 From = visits[1],
                 To = startVisit,
                 Duration = 500
             };
-            var w12 = new Persistence.Entities.Way()
+            var w12 = new Persistence.Entities.Way
             {
                 From = visits[0],
                 To = visits[1],
                 Duration = 600
             };
-            var w21 = new Persistence.Entities.Way()
+            var w21 = new Persistence.Entities.Way
             {
                 From = visits[1],
                 To = visits[0],
@@ -141,32 +141,32 @@ namespace IRuettae.Converter.Tests
 
             // add ways to visits
             {
-                startVisit.ToWays = new List<Persistence.Entities.Way>()
+                startVisit.ToWays = new List<Persistence.Entities.Way>
                 {
                     w01,
                     w02,
                 };
-                startVisit.FromWays = new List<Persistence.Entities.Way>()
+                startVisit.FromWays = new List<Persistence.Entities.Way>
                 {
                     w10,
                     w20,
                 };
-                visits[0].ToWays = new List<Persistence.Entities.Way>()
+                visits[0].ToWays = new List<Persistence.Entities.Way>
                 {
                     w10,
                     w12,
                 };
-                visits[0].FromWays = new List<Persistence.Entities.Way>()
+                visits[0].FromWays = new List<Persistence.Entities.Way>
                 {
                     w01,
                     w21,
                 };
-                visits[1].ToWays = new List<Persistence.Entities.Way>()
+                visits[1].ToWays = new List<Persistence.Entities.Way>
                 {
                     w20,
                     w21,
                 };
-                visits[1].FromWays = new List<Persistence.Entities.Way>()
+                visits[1].FromWays = new List<Persistence.Entities.Way>
                 {
                     w02,
                     w12,
@@ -174,18 +174,18 @@ namespace IRuettae.Converter.Tests
             }
 
             var hour = 3600;
-            var expected = new Core.Models.OptimisationInput()
+            var expected = new Core.Models.OptimisationInput
             {
                 Santas = new Core.Models.Santa[1]
                 {
-                    new Core.Models.Santa()
+                    new Core.Models.Santa
                     {
                         Id = 0,
                     },
                 },
                 Visits = new Core.Models.Visit[2]
                 {
-                    new Core.Models.Visit()
+                    new Core.Models.Visit
                     {
                         Id = 0,
                         Duration = 60,
@@ -200,7 +200,7 @@ namespace IRuettae.Converter.Tests
                         WayCostFromHome = w01.Duration,
                         WayCostToHome = w10.Duration,
                     },
-                    new Core.Models.Visit()
+                    new Core.Models.Visit
                     {
                         Id = 1,
                         Duration = 15,
