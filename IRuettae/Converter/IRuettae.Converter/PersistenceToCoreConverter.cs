@@ -19,7 +19,7 @@ namespace IRuettae.Converter
         /// <param name="santas">All santas for the problem</param>
         /// <param name="breaks">All breaks for the santas</param>
         /// <returns>An optimisation input that can be used to solve the problem</returns>
-        public static Core.Models.OptimisationInput Convert(List<(DateTime, DateTime)> workingDays, Persistence.Entities.Visit startVisit, List<Persistence.Entities.Visit> visits, List<Persistence.Entities.Santa> santas, List<Persistence.Entities.Visit> breaks)
+        public static Core.Models.OptimisationInput Convert(List<(DateTime Start, DateTime End)> workingDays, Persistence.Entities.Visit startVisit, List<Persistence.Entities.Visit> visits, List<Persistence.Entities.Santa> santas, List<Persistence.Entities.Visit> breaks)
         {
             var input = new Core.Models.OptimisationInput
             {
@@ -30,7 +30,7 @@ namespace IRuettae.Converter
             };
 
             // set 0-time
-            var zeroTime = workingDays.Min(wd => wd.Item1);
+            var zeroTime = workingDays.Min(wd => wd.Start);
 
             // create visits
 
@@ -73,7 +73,7 @@ namespace IRuettae.Converter
 
             for (int i = 0; i < workingDays.Count; i++)
             {
-                input.Days[i] = ((int)(workingDays[i].Item1 - zeroTime).TotalSeconds, (int)(workingDays[i].Item2 - zeroTime).TotalSeconds);
+                input.Days[i] = ((int)(workingDays[i].Start - zeroTime).TotalSeconds, (int)(workingDays[i].End - zeroTime).TotalSeconds);
             }
 
             // todo: work from here ?break handling?

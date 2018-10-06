@@ -41,10 +41,10 @@ namespace IRuettae.Converter.Tests
         {
             // test with two days, two visits, two santas without breaks
 
-            var workingDays = new List<(DateTime, DateTime)>
+            var workingDays = new List<(DateTime Start, DateTime End)>
             {
-                ( new DateTime(2017, 12, 08, 17, 0, 0), new DateTime(2017, 12, 08, 22, 0, 0) ),
-                ( new DateTime(2017, 12, 09, 17, 0, 0), new DateTime(2017, 12, 09, 22, 0, 0) ),
+                (new DateTime(2017, 12, 08, 17, 0, 0), new DateTime(2017, 12, 08, 22, 0, 0)),
+                (new DateTime(2017, 12, 09, 17, 0, 0), new DateTime(2017, 12, 09, 22, 0, 0)),
             };
             var startVisit = new Persistence.Entities.Visit
             {
