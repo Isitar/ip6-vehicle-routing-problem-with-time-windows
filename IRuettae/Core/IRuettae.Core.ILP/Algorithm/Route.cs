@@ -16,7 +16,7 @@ namespace IRuettae.Core.ILP.Algorithm
         /// </summary>
         public DateTime[] StartingTime { get; set; }
 
-        public long[] SantaIds { get; set; }
+        public int[] SantaIds { get; set; }
 
         public Route(int numberOfSantas, int numberOfDays)
         {

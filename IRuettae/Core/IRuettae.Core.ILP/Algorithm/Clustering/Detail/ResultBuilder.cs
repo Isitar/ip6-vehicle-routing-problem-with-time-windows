@@ -34,7 +34,6 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering.Detail
                     }
 
                     route.Waypoints[santa, day] = waypoints;
-                    route.StartingTime = solverData.SolverInputData.DayStartingTime;
                 }
             }
             return route;

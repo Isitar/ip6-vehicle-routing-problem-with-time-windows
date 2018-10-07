@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using IRuettae.Core.ILP.Algorithm;
-using IRuettae.Persistence.Entities;
+using IRuettae.Core.Models;
 using SolverInputData = IRuettae.Core.ILP.Algorithm.Clustering.SolverInputData;
 
 namespace IRuettae.Preprocessing.Mapping
@@ -15,18 +15,21 @@ namespace IRuettae.Preprocessing.Mapping
 
         public int TimeSliceDuration { get; set; }
 
+        private OptimisationInput optimisationInput;
+
         /// <summary>
         /// List of days(StartTime, EndTime)
         /// </summary>
-        public List<(DateTime, DateTime)> Days { get; set; }
+        public List<(int Start, int End)> Days { get; set; }
 
-        public ClusteringSolverVariableBuilder(List<Santa> santas = null, List<Visit> visits = null,
-            List<(DateTime, DateTime)> days = null, int timeSliceDuration = 0)
+        public ClusteringSolverVariableBuilder(OptimisationInput input, int timeSliceDuration)
         {
-            Santas = santas;
-            Visits = visits;
-            Days = days;
+            Santas = input.Santas.ToList();
+            Visits = input.Visits.ToList();
+            Days = input.Days.ToList();
             TimeSliceDuration = timeSliceDuration;
+
+            optimisationInput = input;
         }
 
 
@@ -53,7 +56,7 @@ namespace IRuettae.Preprocessing.Mapping
 
             bool[,] santasVar = new bool[Days.Count, Santas.Count];
             VisitState[,] visitsVar = new VisitState[Days.Count, Visits.Count];
-            int[] visitDuration = Visits.Select(v => (int)Math.Ceiling(v.Duration)).ToArray();
+            int[] visitDuration = Visits.Select(v => v.Duration).ToArray();
 
             for (int day = 0; day < Days.Count; day++)
             {
@@ -63,14 +66,16 @@ namespace IRuettae.Preprocessing.Mapping
                     santasVar[day, santa] = true;
                 }
 
+                var dayTimeduration = 24 * 60 * 60;
+
 
                 for (int v = 0; v < Visits.Count; v++)
                 {
-                    if (Visits[v].Unavailable.Any(p => p.Start.Value.Date == Days[day].Item1.Date))
+                    if (Visits[v].Unavailable.Any(p => Days[day].End < p.to && p.from < Days[day].End))
                     {
                         visitsVar[day, v] = VisitState.Unavailable;
                     }
-                    else if (Visits[v].Desired.Any(p => Days[day].Item1 < p.End && p.Start < Days[day].Item2))
+                    else if (Visits[v].Desired.Any(p => Days[day].End < p.to && p.from< Days[day].End))
                     {
                         visitsVar[day, v] = VisitState.Desired;
                     }
@@ -82,28 +87,30 @@ namespace IRuettae.Preprocessing.Mapping
             }
 
 
-            int[,] distances = new int[Visits.Count, Visits.Count];
-            for (int v = 0; v < Visits.Count; v++)
-            {
-                for (int d = 0; d < Visits.Count; d++)
-                {
-                    distances[v, d] = (int)(Math.Ceiling(Visits[v].FromWays.First(w => w.To.Equals(Visits[d])).Duration / (double)TimeSliceDuration) * TimeSliceDuration);
-                }
-            }
+            //int[,] distances = new int[Visits.Count, Visits.Count];
+            //for (int v = 0; v < Visits.Count; v++)
+            //{
+            //    for (int d = 0; d < Visits.Count; d++)
+            //    {
+            //        distances[v, d] = (int)(Math.Ceiling(Visits[v].FromWays.First(w => w.To.Equals(Visits[d])).Duration / (double)TimeSliceDuration) * TimeSliceDuration);
+            //    }
+            //}
 
-            int[] dayDuration = Days.Select(startEnd => (int)Math.Ceiling((startEnd.Item2 - startEnd.Item1).TotalSeconds)).ToArray();
+
+
+            int[] dayDuration = Days.Select(d => d.End - d.Start).ToArray();
             int[][] santaBreaks = new int[Santas.Count][];
             for (int santaIdx = 0; santaIdx < Santas.Count; santaIdx++)
             {
                 var santa = Santas[santaIdx];
-                santaBreaks[santaIdx] = santa.Breaks.Select(b => Visits.IndexOf(b)).ToArray();
+                santaBreaks[santaIdx] = Visits.Where(v => v.IsBreak && v.SantaId == santaIdx).Select(v => v.Id).ToArray();
             }
 
-            var solverInputData = new SolverInputData(santasVar, visitDuration, visitsVar, distances,
-                dayDuration, santaBreaks, Days.Select(d => d.Item1).ToArray())
+            var solverInputData = new SolverInputData(santasVar, visitDuration, visitsVar, optimisationInput.RouteCosts,
+                dayDuration, santaBreaks)
             {
-                VisitNames = Visits.Select(v => $"{v.Street} {v.Zip} {v.City}").ToArray(),
-                VisitIds = Visits.Select(v => v.Id).ToArray()
+                //VisitNames = Visits.Select(v => $"{v.Street} {v.Zip} {v.City}").ToArray(),
+                //VisitIds = Visits.Select(v => v.Id).ToArray()
             };
 
             return solverInputData;

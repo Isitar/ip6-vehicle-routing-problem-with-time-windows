@@ -27,11 +27,10 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
         public int[,] Distances { get; }
 
 
-        public long[] VisitIds { get; }
-        public long[] SantaIds { get; }
-        public DateTime[] DayStartingTimes { get; }
+        public int[] VisitIds { get; }
+        public int[] SantaIds { get; }
 
-        public SolverInputData(bool[][,] santas, int[] visitsDuration, VisitState[][,] visits, int[,] distances, long[] visitIds, long[] santaIds, DateTime[] dayStartingTimes)
+        public SolverInputData(bool[][,] santas, int[] visitsDuration, VisitState[][,] visits, int[,] distances, int[] visitIds, int[] santaIds)
         {
             Santas = santas;
             VisitsDuration = visitsDuration;
@@ -39,7 +38,6 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
             Distances = distances;
             VisitIds = visitIds;
             SantaIds = santaIds;
-            DayStartingTimes = dayStartingTimes;
         }
 
         public bool IsValid()
