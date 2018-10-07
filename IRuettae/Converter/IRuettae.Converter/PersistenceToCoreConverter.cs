@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using IRuettae.Persistence.Entities;
 
 
 namespace IRuettae.Converter
@@ -17,10 +18,12 @@ namespace IRuettae.Converter
         /// <param name="startVisit">Where all routes have to start</param>
         /// <param name="visits">All visits for the problem</param>
         /// <param name="santas">All santas for the problem</param>
-        /// <param name="breaks">All breaks for the santas</param>
         /// <returns>An optimisation input that can be used to solve the problem</returns>
-        public static Core.Models.OptimisationInput Convert(List<(DateTime Start, DateTime End)> workingDays, Persistence.Entities.Visit startVisit, List<Persistence.Entities.Visit> visits, List<Persistence.Entities.Santa> santas, List<Persistence.Entities.Visit> breaks)
+        public static Core.Models.OptimisationInput Convert(List<(DateTime Start, DateTime End)> workingDays, Persistence.Entities.Visit startVisit, List<Persistence.Entities.Visit> visits, List<Persistence.Entities.Santa> santas)
         {
+            var visitMap = new Dictionary<long,int>();
+            var santaMap = new Dictionary<long, int>();
+
             var input = new Core.Models.OptimisationInput
             {
                 Visits = new Core.Models.Visit[visits.Count],
@@ -32,24 +35,36 @@ namespace IRuettae.Converter
             // set 0-time
             var zeroTime = workingDays.Min(wd => wd.Start);
 
+            // create santas
+            santas = santas.OrderBy(s => s.Id).ToList();
+            for (int i = 0; i < santas.Count; i++)
+            {
+                var persistenceSanta = santas[i];
+                santaMap.Add(persistenceSanta.Id, i);
+                input.Santas[i] = new Core.Models.Santa { Id = i };
+            }
+
             // create visits
-
-            // sort visits to be sure they are in id order
             visits = visits.OrderBy(v => v.Id).ToList();
-
             for (int x = 0; x < visits.Count; x++)
             {
                 var persistenceVisit = visits[x];
-                input.Visits[x] = new Core.Models.Visit()
+                visitMap.Add(persistenceVisit.Id, x);
+
+                var isBreak = persistenceVisit.VisitType == VisitType.Break;
+
+                input.Visits[x] = new Core.Models.Visit
                 {
                     Id = x,
                     Desired = persistenceVisit.Desired
                         .Select(d => ((int)(d.Start.Value - zeroTime).TotalSeconds, (int)(d.End.Value - zeroTime).TotalSeconds)).ToArray(),
                     Unavailable = persistenceVisit.Unavailable
                         .Select(d => ((int)(d.Start.Value - zeroTime).TotalSeconds, (int)(d.End.Value - zeroTime).TotalSeconds)).ToArray(),
-                    Duration = (int)persistenceVisit.Duration,
+                    Duration = isBreak ? (int)persistenceVisit.Duration : (persistenceVisit.NumberOfChildren * 5 + 15) * 60,
                     WayCostFromHome = startVisit.ToWays.First(w => w.To.Id.Equals(persistenceVisit.Id)).Duration,
                     WayCostToHome = startVisit.FromWays.First(w => w.From.Id.Equals(persistenceVisit.Id)).Duration,
+                    IsBreak = isBreak,
+                    SantaId = isBreak  ? santaMap[persistenceVisit.Santa.Id] : -1,
                 };
 
                 // fill distance matrix
@@ -66,18 +81,12 @@ namespace IRuettae.Converter
                 }
             }
 
-            for (int i = 0; i < santas.Count; i++)
-            {
-                input.Santas[i] = new Core.Models.Santa { Id = i };
-            }
+            
 
             for (int i = 0; i < workingDays.Count; i++)
             {
                 input.Days[i] = ((int)(workingDays[i].Start - zeroTime).TotalSeconds, (int)(workingDays[i].End - zeroTime).TotalSeconds);
             }
-
-            // todo: work from here ?break handling?
-
             return input;
         }
     }

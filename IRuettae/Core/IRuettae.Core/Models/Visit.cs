@@ -41,5 +41,15 @@ namespace IRuettae.Core.Models
         /// </summary>
         public int WayCostToHome;
 
+        /// <summary>
+        /// If this visit is a break, the santa Id will be set.
+        /// </summary>
+        public int SantaId;
+
+        /// <summary>
+        /// If it's a santa break or not
+        /// </summary>
+        public bool IsBreak;
+
     }
 }
