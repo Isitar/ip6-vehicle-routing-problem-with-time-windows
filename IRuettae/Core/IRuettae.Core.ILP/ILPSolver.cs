@@ -24,10 +24,17 @@ namespace IRuettae.Core.ILP
             var clusteringSolverInputData = clusteringSolverVariableBuilder.Build();
             var clusterinSolver =
                 new Algorithm.Clustering.Solver(clusteringSolverInputData, new MinAvgTimeTargetFunctionBuilder());
-            var solutions = clusterinSolver.Solve(0, timelimit);
+            var phase1Result = clusterinSolver.Solve(0, timelimit);
             progress.Report(50);
 
-
+            foreach (var santa in Enumerable.Range(0, phase1Result..GetLength(0)))
+            {
+                foreach (var day in Enumerable.Range(0, phase1Result.Waypoints.GetLength(1)))
+                {
+                    var cluster = phase1Result.Waypoints[santa, day];
+                    schedulingSovlerVariableBuilders.Add(new SchedulingSolverVariableBuilder(routeCalculation.TimeSliceDuration, new List<Santa> { santas[santa] }, visits.Where(v => cluster.Select(w => w.RealVisitId).Contains(v.Id)).ToList(), new List<(DateTime, DateTime)> { routeCalculation.Days[day] }));
+                }
+            }
 
         }
     }

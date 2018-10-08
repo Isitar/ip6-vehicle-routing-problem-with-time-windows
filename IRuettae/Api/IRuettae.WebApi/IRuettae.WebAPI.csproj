@@ -207,9 +207,17 @@
     <Folder Include="Views\CSVImport\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Converter\IRuettae.Converter\IRuettae.Converter.csproj">
+      <Project>{3653ea67-0ca2-40fc-b027-1df812f7bc7c}</Project>
+      <Name>IRuettae.Converter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\IRuettae.Core.ILP\IRuettae.Core.ILP.csproj">
       <Project>{d56e9df6-b3a9-4b97-82e4-f3cd401bbe7c}</Project>
       <Name>IRuettae.Core.ILP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\IRuettae.Core\IRuettae.Core.csproj">
+      <Project>{e6f0ffc6-7f26-4286-ae57-44411eb66118}</Project>
+      <Name>IRuettae.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Database\IRuettae.Persistence\IRuettae.Persistence.csproj">
       <Project>{48d4bedb-21dd-4ba9-8b15-7327f2a87ea3}</Project>

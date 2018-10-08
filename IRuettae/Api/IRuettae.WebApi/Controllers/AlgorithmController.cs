@@ -48,6 +48,8 @@ namespace IRuettae.WebApi.Controllers
                     return a.Id.CompareTo(b.Id);
                 });
 
+
+
                 var solverVariableBuilder = new SchedulingSolverVariableBuilder(algorithmStarter.TimeSliceDuration)
                 {
                     Visits = visits,

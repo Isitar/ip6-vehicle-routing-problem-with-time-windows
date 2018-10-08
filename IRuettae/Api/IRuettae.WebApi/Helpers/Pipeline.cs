@@ -99,28 +99,7 @@ namespace IRuettae.WebApi.Helpers
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
 
-                //var eventTextWriter = new EventTextWriter();
-                //var lastUpdate = DateTime.Now;
-                //eventTextWriter.CharWritten += (o, c) =>
-                //{
-                //    if (null == routeCalculation.StateText)
-                //    {
-                //        routeCalculation.StateText = string.Empty;
-                //    }
-
-                //    routeCalculation.StateText += c;
-                //    if (DateTime.Now - lastUpdate > TimeSpan.FromMinutes(1))
-                //    {
-                //        lastUpdate = DateTime.Now;
-                //        dbSession.Update(routeCalculation);
-                //        dbSession.Flush();
-                //    }
-                //};
-
-                //Console.SetOut(eventTextWriter);
-                //Console.SetError(eventTextWriter);
-
-
+         
                 // ******************************
 
                 #region Clustering
