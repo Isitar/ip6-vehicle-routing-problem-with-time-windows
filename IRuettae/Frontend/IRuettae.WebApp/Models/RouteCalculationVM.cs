@@ -39,7 +39,7 @@ namespace IRuettae.WebApp.Models
 
         // Phase 1
         [DisplayName("Clustering Zielfunktion")]
-        public virtual ClusteringOptimisationGoals ClusteringOptimisationFunction { get; set; }
+        public virtual ClusteringOptimizationGoals ClusteringOptimizationFunction { get; set; }
         [DisplayName("Clustering MIP GAP")]
         public virtual double ClustringMipGap { get; set; }
         [DisplayName("Clustering Resultat")]
@@ -98,7 +98,7 @@ namespace IRuettae.WebApp.Models
             Finished,
         }
 
-        public enum ClusteringOptimisationGoals
+        public enum ClusteringOptimizationGoals
         {
             OverallMinTime,
             MinTimePerSanta,

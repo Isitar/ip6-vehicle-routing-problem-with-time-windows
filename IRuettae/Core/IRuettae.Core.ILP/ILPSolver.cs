@@ -16,9 +16,9 @@ namespace IRuettae.Core.ILP
 {
     public class ILPSolver : ISolver
     {
-        private readonly OptimisationInput input;
+        private readonly OptimizationInput input;
 
-        public ILPSolver(OptimisationInput input)
+        public ILPSolver(OptimizationInput input)
         {
             this.input = input;
         }
@@ -49,7 +49,7 @@ namespace IRuettae.Core.ILP
                 foreach (var day in Enumerable.Range(0, phase1Result.Waypoints.GetLength(1)))
                 {
                     var cluster = phase1Result.Waypoints[santa, day];
-                    var schedulingOptimisationInput = new OptimisationInput
+                    var schedulingOptimizationInput = new OptimizationInput
                     {
                         Visits = input.Visits.Where(v => cluster.Select(w => w.Visit).Contains(v.Id)).ToArray(),
                         Santas = new[] {input.Santas[santa]},
@@ -57,7 +57,7 @@ namespace IRuettae.Core.ILP
                         RouteCosts = input.RouteCosts,
                     };
 
-                    schedulingSovlerVariableBuilders.Add(new SchedulingSolverVariableBuilder(timeslice, schedulingOptimisationInput));
+                    schedulingSovlerVariableBuilders.Add(new SchedulingSolverVariableBuilder(timeslice, schedulingOptimizationInput));
                 }
             }
 
@@ -76,7 +76,7 @@ namespace IRuettae.Core.ILP
 
             var optimizationResult = new OptimizationResult()
             {
-                OptimisationInput = input,
+                OptimizationInput = input,
                 Routes = routeResults.Select(r => new Route
                 {
                     SantaId = r.SantaIds[0],

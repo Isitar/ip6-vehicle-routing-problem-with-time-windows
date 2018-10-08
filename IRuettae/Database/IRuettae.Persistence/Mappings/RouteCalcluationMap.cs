@@ -20,7 +20,7 @@ namespace IRuettae.Persistence.Mappings
             Map(x => x.SantaJson).CustomSqlType("LONGTEXT");
             Map(x => x.VisitsJson).CustomSqlType("LONGTEXT"); ;
 
-            Map(x => x.ClusteringOptimisationFunction);
+            Map(x => x.ClusteringOptimizationFunction);
             Map(x => x.ClustringMipGap);
             Map(x => x.ClusteringTimeLimit);
             Map(x => x.ClusteringResult).CustomSqlType("LONGTEXT"); ;

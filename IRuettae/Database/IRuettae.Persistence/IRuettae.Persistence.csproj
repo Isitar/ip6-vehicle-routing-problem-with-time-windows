@@ -72,7 +72,7 @@
   <ItemGroup>
     <Compile Include="Entities\BaseEntity.cs" />
     <Compile Include="Entities\Period.cs" />
-    <Compile Include="Entities\ClusteringOptimisationGoals.cs" />
+    <Compile Include="Entities\ClusteringOptimizationGoals.cs" />
     <Compile Include="Entities\RouteCalculation.cs" />
     <Compile Include="Entities\RouteCalculationState.cs" />
     <Compile Include="Entities\Santa.cs" />

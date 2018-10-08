@@ -45,7 +45,7 @@ namespace IRuettae.Converter.Tests
         /// </summary>
         /// <param name="expected"></param>
         /// <param name="actual"></param>
-        private static void AssertOptimisationInputEqual(Core.Models.OptimizationInput expected, Core.Models.OptimizationInput actual)
+        private static void AssertOptimizationInputEqual(Core.Models.OptimizationInput expected, Core.Models.OptimizationInput actual)
         {
 
             Assert.AreEqual(expected.Visits.Length, actual.Visits.Length);
@@ -265,7 +265,7 @@ namespace IRuettae.Converter.Tests
             };
             var actual = PersistenceToCoreConverter.Convert(workingDays, startVisit, visits, santas);
 
-            AssertOptimisationInputEqual(expected, actual);
+            AssertOptimizationInputEqual(expected, actual);
         }
 
         [TestMethod]
@@ -672,7 +672,7 @@ namespace IRuettae.Converter.Tests
             };
             var actual = PersistenceToCoreConverter.Convert(workingDays, startVisit, visits, santas);
 
-            AssertOptimisationInputEqual(expected, actual);
+            AssertOptimizationInputEqual(expected, actual);
             
         }
     }

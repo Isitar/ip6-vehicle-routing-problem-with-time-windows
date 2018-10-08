@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IRuettae.Persistence.Entities
 {
-    public enum ClusteringOptimisationGoals
+    public enum ClusteringOptimizationGoals
     {
         OverallMinTime,
         MinTimePerSanta,

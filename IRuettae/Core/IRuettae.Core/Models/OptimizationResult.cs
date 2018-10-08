@@ -15,7 +15,7 @@ namespace IRuettae.Core.Models
     }
 
     /// <summary>
-    /// Class containing the result of an optimisation algorithm
+    /// Class containing the result of an optimization algorithm
     /// </summary>
     public class OptimizationResult
     {

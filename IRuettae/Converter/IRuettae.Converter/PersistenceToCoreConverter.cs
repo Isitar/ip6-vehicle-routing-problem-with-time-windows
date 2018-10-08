@@ -18,7 +18,7 @@ namespace IRuettae.Converter
         /// <param name="startVisit">Where all routes have to start</param>
         /// <param name="visits">All visits for the problem</param>
         /// <param name="santas">All santas for the problem</param>
-        /// <returns>An optimisation input that can be used to solve the problem</returns>
+        /// <returns>An optimization input that can be used to solve the problem</returns>
         public static Core.Models.OptimizationInput Convert(List<(DateTime Start, DateTime End)> workingDays, Persistence.Entities.Visit startVisit, List<Persistence.Entities.Visit> visits, List<Persistence.Entities.Santa> santas)
         {
             var visitMap = new Dictionary<long,int>();

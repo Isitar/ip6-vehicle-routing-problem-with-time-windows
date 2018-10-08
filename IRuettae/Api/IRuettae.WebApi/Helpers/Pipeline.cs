@@ -123,15 +123,15 @@ namespace IRuettae.WebApi.Helpers
                 dbSession.Flush();
 
                 TargetBuilderType targetType = TargetBuilderType.Default;
-                switch (routeCalculation.ClusteringOptimisationFunction)
+                switch (routeCalculation.ClusteringOptimizationFunction)
                 {
-                    case ClusteringOptimisationGoals.OverallMinTime:
+                    case ClusteringOptimizationGoals.OverallMinTime:
                         targetType = TargetBuilderType.MinTimeOnly;
                         break;
-                    case ClusteringOptimisationGoals.MinTimePerSanta:
+                    case ClusteringOptimizationGoals.MinTimePerSanta:
                         targetType = TargetBuilderType.Default;
                         break;
-                    case ClusteringOptimisationGoals.MinAvgTimePerSanta:
+                    case ClusteringOptimizationGoals.MinAvgTimePerSanta:
                         targetType = TargetBuilderType.MinAvgTimeOnly;
                         break;
                     default:
@@ -140,7 +140,7 @@ namespace IRuettae.WebApi.Helpers
                 }
 
 #if DEBUG
-                var serialPath = HostingEnvironment.MapPath($"~/App_Data/Clustering{routeCalculation.Id}_{routeCalculation.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}.serial");
+                var serialPath = HostingEnvironment.MapPath($"~/App_Data/Clustering{routeCalculation.Id}_{routeCalculation.ClusteringOptimizationFunction}_{routeCalculation.NumberOfVisits}.serial");
                 if (serialPath != null)
                 {
                     using (var stream = File.Open(serialPath, FileMode.Create))
@@ -148,7 +148,7 @@ namespace IRuettae.WebApi.Helpers
                         new BinaryFormatter().Serialize(stream, clusteringSolverInputData);
                     }
                 }
-                var mpsPath = HostingEnvironment.MapPath($"~/App_Data/Clustering_{routeCalculation.Id}_{routeCalculation.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}.mps");
+                var mpsPath = HostingEnvironment.MapPath($"~/App_Data/Clustering_{routeCalculation.Id}_{routeCalculation.ClusteringOptimizationFunction}_{routeCalculation.NumberOfVisits}.mps");
                 Starter.SaveMps(mpsPath, clusteringSolverInputData, targetType);
 #endif
 
