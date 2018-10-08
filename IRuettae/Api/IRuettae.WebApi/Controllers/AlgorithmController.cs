@@ -12,7 +12,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Hosting;
 using System.Web.Http;
+using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm;
+using IRuettae.Core.Models;
 using IRuettae.Persistence.Entities;
 using IRuettae.Preprocessing.Mapping;
 using IRuettae.WebApi.Helpers;
@@ -20,6 +22,8 @@ using IRuettae.WebApi.Models;
 using IRuettae.WebApi.Persistence;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Santa = IRuettae.Persistence.Entities.Santa;
+using Visit = IRuettae.Persistence.Entities.Visit;
 
 namespace IRuettae.WebApi.Controllers
 {
@@ -27,41 +31,23 @@ namespace IRuettae.WebApi.Controllers
     public class AlgorithmController : ApiController
     {
         [HttpPost]
-        public Route CalculateRoute([FromBody] AlgorithmStarter algorithmStarter)
+        public OptimizationResult CalculateRoute([FromBody] AlgorithmStarter algorithmStarter)
         {
 
             using (var dbSession = SessionFactory.Instance.OpenSession())
             using (var transaction = dbSession.BeginTransaction())
             {
-                var visits = dbSession.Query<Visit>().Where(v => v.Year == algorithmStarter.Year).ToList();
+                var visits = dbSession.Query<Visit>().Where(v => v.Year == algorithmStarter.Year && v.Id != algorithmStarter.StarterId).ToList();
                 visits.ForEach(v => v.Duration = 60 * (v.NumberOfChildren * algorithmStarter.TimePerChild + algorithmStarter.Beta0));
-                visits.Sort((a, b) =>
-                {
-                    if (a.Id == algorithmStarter.StarterId)
-                    {
-                        return -1;
-                    }
-                    if (b.Id == algorithmStarter.StarterId)
-                    {
-                        return 1;
-                    }
-                    return a.Id.CompareTo(b.Id);
-                });
 
 
+                var optimisationInput = Converter.PersistenceToCoreConverter.Convert(algorithmStarter.Days, dbSession.Query<Visit>().First(v => v.Id == algorithmStarter.StarterId), visits,
+                    dbSession.Query<Santa>().ToList());
 
-                var solverVariableBuilder = new SchedulingSolverVariableBuilder(algorithmStarter.TimeSliceDuration)
-                {
-                    Visits = visits,
-                    Santas = dbSession.Query<Santa>().ToList(),
-                    Days = algorithmStarter.Days
-                };
-
-                var solverInputData = solverVariableBuilder.Build();
-                var mpsPathScheduling = HostingEnvironment.MapPath($"~/App_Data/Scheduling_{visits.Count}.mps");
-                Starter.SaveMps(mpsPathScheduling, solverInputData, TargetBuilderType.Default);
-
-                return Starter.Optimise(solverInputData);
+                var ilpSolver = new ILPSolver(optimisationInput);
+                var progress = new Progress<int>();
+                progress.ProgressChanged += (sender, i) => { Console.WriteLine($"Progress: {i}"); };
+                return ilpSolver.Solve(0, progress);
             }
         }
         /// <summary>
@@ -93,7 +79,7 @@ namespace IRuettae.WebApi.Controllers
                     Year = algorithmStarter.Year,
                     ClusteringOptimizationFunction = ClusteringOptimizationGoals.OverallMinTime,
                     ClustringMipGap = Properties.Settings.Default.MIPGapClustering,
-                    ClusteringTimeLimit =  Properties.Settings.Default.TimelimitClustering,
+                    ClusteringTimeLimit = Properties.Settings.Default.TimelimitClustering,
                     SchedulingMipGap = Properties.Settings.Default.MIPGapScheduling,
                     SchedulingTimeLimit = Properties.Settings.Default.TimelimitScheduling,
                 };

@@ -47,7 +47,6 @@ namespace IRuettae.Converter.Tests
         /// <param name="actual"></param>
         private static void AssertOptimizationInputEqual(Core.Models.OptimizationInput expected, Core.Models.OptimizationInput actual)
         {
-
             Assert.AreEqual(expected.Visits.Length, actual.Visits.Length);
             
             for (int i = 0; i < expected.Visits.Length; i++)
@@ -87,7 +86,7 @@ namespace IRuettae.Converter.Tests
                 new Persistence.Entities.Visit
                 {
                     Id = 1,
-                    Duration = 12,
+                    Duration = 3*5+15,
                     NumberOfChildren = 3,
                     Desired = new List<Persistence.Entities.Period>
                     {
@@ -109,7 +108,7 @@ namespace IRuettae.Converter.Tests
                 new Persistence.Entities.Visit
                 {
                     Id = 3,
-                    Duration = 15,
+                    Duration = 1*5+15,
                     NumberOfChildren = 1,
                     Unavailable = new List<Persistence.Entities.Period>
                     {
@@ -302,6 +301,7 @@ namespace IRuettae.Converter.Tests
                 {
                     Id = 1,
                     NumberOfChildren = 3,
+                    Duration = 3*5+15,
                     Desired = new List<Persistence.Entities.Period>
                     {
                         new Persistence.Entities.Period
@@ -316,6 +316,7 @@ namespace IRuettae.Converter.Tests
                 {
                     Id = 3,
                     NumberOfChildren = 4,
+                    Duration= 4*5+15,
                     Unavailable = new List<Persistence.Entities.Period>
                     {
                         new Persistence.Entities.Period

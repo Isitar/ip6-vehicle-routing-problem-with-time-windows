@@ -60,7 +60,7 @@ namespace IRuettae.Converter
                         .Select(d => ((int)(d.Start.Value - zeroTime).TotalSeconds, (int)(d.End.Value - zeroTime).TotalSeconds)).ToArray(),
                     Unavailable = persistenceVisit.Unavailable
                         .Select(d => ((int)(d.Start.Value - zeroTime).TotalSeconds, (int)(d.End.Value - zeroTime).TotalSeconds)).ToArray(),
-                    Duration = isBreak ? (int)persistenceVisit.Duration : (persistenceVisit.NumberOfChildren * 5 + 15) * 60,
+                    Duration = (int)persistenceVisit.Duration,
                     WayCostFromHome = startVisit.ToWays.First(w => w.To.Id.Equals(persistenceVisit.Id)).Duration,
                     WayCostToHome = startVisit.FromWays.First(w => w.From.Id.Equals(persistenceVisit.Id)).Duration,
                     IsBreak = isBreak,

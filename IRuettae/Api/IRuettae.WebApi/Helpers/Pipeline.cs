@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Entity;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -11,13 +12,18 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Hosting;
+using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm;
+using IRuettae.Core.Models;
 using IRuettae.Persistence.Entities;
 using IRuettae.Preprocessing.Mapping;
 using IRuettae.WebApi.Models;
 using IRuettae.WebApi.Persistence;
 using Newtonsoft.Json;
 using NHibernate;
+using Santa = IRuettae.Persistence.Entities.Santa;
+using Visit = IRuettae.Persistence.Entities.Visit;
+using Waypoint = IRuettae.Core.ILP.Algorithm.Waypoint;
 
 namespace IRuettae.WebApi.Helpers
 {
@@ -68,29 +74,12 @@ namespace IRuettae.WebApi.Helpers
                 var santas = dbSession.Query<Santa>().ToList();
 
                 var visits = dbSession.Query<Visit>()
-                    .Where(v => v.Year == routeCalculation.Year || v.Id == routeCalculation.StarterVisitId)
+                    .Where(v => v.Year == routeCalculation.Year && v.Id != routeCalculation.StarterVisitId)
                     .ToList();
-
-
+                
                 visits.ForEach(v => v.Duration = 60 * (v.NumberOfChildren * routeCalculation.TimePerChild + routeCalculation.TimePerChildOffset));
 
-                // set starterId to front
-                visits.Sort((a, b) =>
-                {
-                    if (a.Id == routeCalculation.StarterVisitId)
-                    {
-                        return -1;
-                    }
-
-                    if (b.Id == routeCalculation.StarterVisitId)
-                    {
-                        return 1;
-                    }
-
-                    return a.Id.CompareTo(b.Id);
-                });
-
-                visits[0].Duration = 0;
+                var startVisit = dbSession.Query<Visit>().First(v => v.Id == routeCalculation.StarterVisitId);
 
                 routeCalculation.NumberOfSantas = santas.Count;
                 routeCalculation.NumberOfVisits = visits.Count;
@@ -99,6 +88,7 @@ namespace IRuettae.WebApi.Helpers
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
 
+
          
                 // ******************************
 
@@ -106,11 +96,15 @@ namespace IRuettae.WebApi.Helpers
 
                 // ******************************
 
+                var optimizationInput =
+                    Converter.PersistenceToCoreConverter.Convert(routeCalculation.Days, startVisit, visits, santas);
+
+                var ilpSolver = new ILPSolver(optimizationInput);
+
                 var clusteringSolverVariableBuilder = new ClusteringSolverVariableBuilder
                 {
-                    Visits = visits,
-                    Santas = santas,
-                    Days = routeCalculation.Days,
+                   
+                   
                     TimeSliceDuration = routeCalculation.TimeSliceDuration,
                 };
 
