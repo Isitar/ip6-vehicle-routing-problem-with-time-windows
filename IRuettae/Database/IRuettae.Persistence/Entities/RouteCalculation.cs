@@ -25,7 +25,7 @@ namespace IRuettae.Persistence.Entities
         public virtual string VisitsJson { get; set; }
 
         // Phase 1
-        public virtual ClusteringOptimisationGoals ClusteringOptimisationFunction { get; set; }
+        public virtual ClusteringOptimizationGoals ClusteringOptimizationFunction { get; set; }
         public virtual double ClustringMipGap { get; set; }
         public virtual long ClusteringTimeLimit { get; set; }
         public virtual string ClusteringResult { get; set; }

@@ -12,7 +12,7 @@ namespace IRuettae.Converter.Tests
     [TestClass]
     public class PersistenceToCoreConverterTests
     {
-        private static bool Equals(Core.Models.OptimisationInput v1, Core.Models.OptimisationInput v2)
+        private static bool Equals(Core.Models.OptimizationInput v1, Core.Models.OptimizationInput v2)
         {
             if (v1.Visits.Length != v2.Visits.Length)
             {
@@ -45,7 +45,7 @@ namespace IRuettae.Converter.Tests
         /// </summary>
         /// <param name="expected"></param>
         /// <param name="actual"></param>
-        private static void AssertOptimisationInputEqual(Core.Models.OptimisationInput expected, Core.Models.OptimisationInput actual)
+        private static void AssertOptimisationInputEqual(Core.Models.OptimizationInput expected, Core.Models.OptimizationInput actual)
         {
 
             Assert.AreEqual(expected.Visits.Length, actual.Visits.Length);
@@ -208,7 +208,7 @@ namespace IRuettae.Converter.Tests
             }
 
             var hour = 3600;
-            var expected = new Core.Models.OptimisationInput
+            var expected = new Core.Models.OptimizationInput
             {
                 Santas = new Core.Models.Santa[1]
                 {
@@ -591,7 +591,7 @@ namespace IRuettae.Converter.Tests
             }
 
             var hour = 3600;
-            var expected = new Core.Models.OptimisationInput
+            var expected = new Core.Models.OptimizationInput
             {
                 Santas = new Core.Models.Santa[2]
                 {

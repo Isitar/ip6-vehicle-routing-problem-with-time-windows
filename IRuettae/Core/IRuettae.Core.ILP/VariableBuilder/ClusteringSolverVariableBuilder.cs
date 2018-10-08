@@ -15,21 +15,21 @@ namespace IRuettae.Preprocessing.Mapping
 
         public int TimeSliceDuration { get; set; }
 
-        private OptimisationInput optimisationInput;
+        private OptimizationInput optimizationInput;
 
         /// <summary>
         /// List of days(StartTime, EndTime)
         /// </summary>
         public List<(int Start, int End)> Days { get; set; }
 
-        public ClusteringSolverVariableBuilder(OptimisationInput input, int timeSliceDuration)
+        public ClusteringSolverVariableBuilder(OptimizationInput input, int timeSliceDuration)
         {
             Santas = input.Santas.ToList();
             Visits = input.Visits.ToList();
             Days = input.Days.ToList();
             TimeSliceDuration = timeSliceDuration;
 
-            optimisationInput = input;
+            optimizationInput = input;
         }
 
 
@@ -106,7 +106,7 @@ namespace IRuettae.Preprocessing.Mapping
                 santaBreaks[santaIdx] = Visits.Where(v => v.IsBreak && v.SantaId == santaIdx).Select(v => v.Id).ToArray();
             }
 
-            var solverInputData = new SolverInputData(santasVar, visitDuration, visitsVar, optimisationInput.RouteCosts,
+            var solverInputData = new SolverInputData(santasVar, visitDuration, visitsVar, optimizationInput.RouteCosts,
                 dayDuration, santaBreaks)
             {
                 //VisitNames = Visits.Select(v => $"{v.Street} {v.Zip} {v.City}").ToArray(),

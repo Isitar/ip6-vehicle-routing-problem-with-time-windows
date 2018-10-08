@@ -12,19 +12,19 @@ namespace IRuettae.Converter
     public static class PersistenceToCoreConverter
     {
         /// <summary>
-        /// Converts the input params to an OptimisationInput
+        /// Converts the input params to an OptimizationInput
         /// </summary>
         /// <param name="workingDays">All working days for the santas</param>
         /// <param name="startVisit">Where all routes have to start</param>
         /// <param name="visits">All visits for the problem</param>
         /// <param name="santas">All santas for the problem</param>
         /// <returns>An optimisation input that can be used to solve the problem</returns>
-        public static Core.Models.OptimisationInput Convert(List<(DateTime Start, DateTime End)> workingDays, Persistence.Entities.Visit startVisit, List<Persistence.Entities.Visit> visits, List<Persistence.Entities.Santa> santas)
+        public static Core.Models.OptimizationInput Convert(List<(DateTime Start, DateTime End)> workingDays, Persistence.Entities.Visit startVisit, List<Persistence.Entities.Visit> visits, List<Persistence.Entities.Santa> santas)
         {
             var visitMap = new Dictionary<long,int>();
             var santaMap = new Dictionary<long, int>();
 
-            var input = new Core.Models.OptimisationInput
+            var input = new Core.Models.OptimizationInput
             {
                 Visits = new Core.Models.Visit[visits.Count],
                 Santas = new Core.Models.Santa[santas.Count],
