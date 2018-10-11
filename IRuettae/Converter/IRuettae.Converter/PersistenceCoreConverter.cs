@@ -9,8 +9,20 @@ using IRuettae.Persistence.Entities;
 
 namespace IRuettae.Converter
 {
-    public static class PersistenceToCoreConverter
+    public class PersistenceCoreConverter
     {
+        /// <summary>
+        /// Mapping for backward conversion
+        /// Visit-Number to Visit.Id
+        /// </summary>
+        private Dictionary<int, long> visitMap = new Dictionary<int, long>();
+
+        /// <summary>
+        /// Mapping for backward conversion
+        /// Santa-Number to Santa.Id
+        /// </summary>
+        private Dictionary<int, long> santaMap = new Dictionary<int, long>();
+
         /// <summary>
         /// Converts the input params to an OptimisationInput
         /// </summary>
@@ -19,10 +31,14 @@ namespace IRuettae.Converter
         /// <param name="visits">All visits for the problem</param>
         /// <param name="santas">All santas for the problem</param>
         /// <returns>An optimisation input that can be used to solve the problem</returns>
-        public static Core.Models.OptimisationInput Convert(List<(DateTime Start, DateTime End)> workingDays, Persistence.Entities.Visit startVisit, List<Persistence.Entities.Visit> visits, List<Persistence.Entities.Santa> santas)
+        public Core.Models.OptimisationInput Convert(List<(DateTime Start, DateTime End)> workingDays, Persistence.Entities.Visit startVisit, List<Persistence.Entities.Visit> visits, List<Persistence.Entities.Santa> santas)
         {
-            var visitMap = new Dictionary<long,int>();
-            var santaMap = new Dictionary<long, int>();
+            if (visitMap.Count != 0 || visitMap.Count != 0)
+            {
+                throw new InvalidOperationException("each instance of " + this.GetType().FullName + "can only be used once");
+            }
+
+            var recidToSantaMap = new Dictionary<long, int>();
 
             var input = new Core.Models.OptimisationInput
             {
@@ -40,7 +56,8 @@ namespace IRuettae.Converter
             for (int i = 0; i < santas.Count; i++)
             {
                 var persistenceSanta = santas[i];
-                santaMap.Add(persistenceSanta.Id, i);
+                recidToSantaMap.Add(persistenceSanta.Id, i);
+                santaMap.Add(i, persistenceSanta.Id);
                 input.Santas[i] = new Core.Models.Santa { Id = i };
             }
 
@@ -49,7 +66,7 @@ namespace IRuettae.Converter
             for (int x = 0; x < visits.Count; x++)
             {
                 var persistenceVisit = visits[x];
-                visitMap.Add(persistenceVisit.Id, x);
+                visitMap.Add(x, persistenceVisit.Id);
 
                 var isBreak = persistenceVisit.VisitType == VisitType.Break;
 
@@ -64,7 +81,7 @@ namespace IRuettae.Converter
                     WayCostFromHome = startVisit.ToWays.First(w => w.To.Id.Equals(persistenceVisit.Id)).Duration,
                     WayCostToHome = startVisit.FromWays.First(w => w.From.Id.Equals(persistenceVisit.Id)).Duration,
                     IsBreak = isBreak,
-                    SantaId = isBreak  ? santaMap[persistenceVisit.Santa.Id] : -1,
+                    SantaId = isBreak ? recidToSantaMap[persistenceVisit.Santa.Id] : -1,
                 };
 
                 // fill distance matrix
@@ -80,8 +97,6 @@ namespace IRuettae.Converter
                     }
                 }
             }
-
-            
 
             for (int i = 0; i < workingDays.Count; i++)
             {
