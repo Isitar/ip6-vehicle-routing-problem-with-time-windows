@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Web.Hosting;
 using System.Web.Http;
 using IRuettae.Core.ILP.Algorithm;
+using IRuettae.Core.ILP.Algorithm.Persistence;
 using IRuettae.Persistence.Entities;
 using IRuettae.Preprocessing.Mapping;
 using IRuettae.WebApi.Helpers;
@@ -78,6 +79,15 @@ namespace IRuettae.WebApi.Controllers
 
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
+                ILPStarterData ilpData = new ILPStarterData()
+                {
+                    TimeSliceDuration = algorithmStarter.TimeSliceDuration,
+                    ClusteringOptimisationFunction = ClusteringOptimisationGoals.OverallMinTime,
+                    ClusteringMipGap = Properties.Settings.Default.MIPGapClustering,
+                    ClusteringTimeLimit = Properties.Settings.Default.TimelimitClustering,
+                    SchedulingMipGap = Properties.Settings.Default.MIPGapScheduling,
+                    SchedulingTimeLimit = Properties.Settings.Default.TimelimitScheduling,
+                };
                 rc = new RouteCalculation
                 {
                     Days = algorithmStarter.Days,
@@ -87,16 +97,22 @@ namespace IRuettae.WebApi.Controllers
                     State = RouteCalculationState.Creating,
                     TimePerChild = algorithmStarter.TimePerChild,
                     TimePerChildOffset = algorithmStarter.Beta0,
-                    TimeSliceDuration = algorithmStarter.TimeSliceDuration,
                     Year = algorithmStarter.Year,
-                    ClusteringOptimisationFunction = ClusteringOptimisationGoals.OverallMinTime,
+                    AlgorithmType = AlgorithmType.ILP,
+                    AlgorithmData = JsonConvert.SerializeObject(ilpData),
+                    AlgorithmDataObj = ilpData,
+                };
+                rc = dbSession.Merge(rc);
+
+                ILPStarterData ilpData2 = new ILPStarterData()
+                {
+                    TimeSliceDuration = algorithmStarter.TimeSliceDuration,
+                    ClusteringOptimisationFunction = ClusteringOptimisationGoals.MinTimePerSanta,
                     ClusteringMipGap = Properties.Settings.Default.MIPGapClustering,
                     ClusteringTimeLimit = Properties.Settings.Default.TimelimitClustering,
                     SchedulingMipGap = Properties.Settings.Default.MIPGapScheduling,
                     SchedulingTimeLimit = Properties.Settings.Default.TimelimitScheduling,
                 };
-                rc = dbSession.Merge(rc);
-
                 rc2 = new RouteCalculation
                 {
                     Days = algorithmStarter.Days,
@@ -106,15 +122,23 @@ namespace IRuettae.WebApi.Controllers
                     State = RouteCalculationState.Creating,
                     TimePerChild = algorithmStarter.TimePerChild,
                     TimePerChildOffset = algorithmStarter.Beta0,
-                    TimeSliceDuration = algorithmStarter.TimeSliceDuration,
                     Year = algorithmStarter.Year,
-                    ClusteringOptimisationFunction = ClusteringOptimisationGoals.MinTimePerSanta,
+                    AlgorithmType = AlgorithmType.ILP,
+                    AlgorithmData = JsonConvert.SerializeObject(ilpData2),
+                    AlgorithmDataObj = ilpData2,
+                };
+                rc2 = dbSession.Merge(rc2);
+
+
+                ILPStarterData ilpData3 = new ILPStarterData()
+                {
+                    TimeSliceDuration = algorithmStarter.TimeSliceDuration,
+                    ClusteringOptimisationFunction = ClusteringOptimisationGoals.MinAvgTimePerSanta,
                     ClusteringMipGap = Properties.Settings.Default.MIPGapClustering,
                     ClusteringTimeLimit = Properties.Settings.Default.TimelimitClustering,
                     SchedulingMipGap = Properties.Settings.Default.MIPGapScheduling,
                     SchedulingTimeLimit = Properties.Settings.Default.TimelimitScheduling,
                 };
-                rc2 = dbSession.Merge(rc2);
                 rc3 = new RouteCalculation
                 {
                     Days = algorithmStarter.Days,
@@ -124,13 +148,10 @@ namespace IRuettae.WebApi.Controllers
                     State = RouteCalculationState.Creating,
                     TimePerChild = algorithmStarter.TimePerChild,
                     TimePerChildOffset = algorithmStarter.Beta0,
-                    TimeSliceDuration = algorithmStarter.TimeSliceDuration,
                     Year = algorithmStarter.Year,
-                    ClusteringOptimisationFunction = ClusteringOptimisationGoals.MinAvgTimePerSanta,
-                    ClusteringMipGap = Properties.Settings.Default.MIPGapClustering,
-                    ClusteringTimeLimit = Properties.Settings.Default.TimelimitClustering,
-                    SchedulingMipGap = Properties.Settings.Default.MIPGapScheduling,
-                    SchedulingTimeLimit = Properties.Settings.Default.TimelimitScheduling,
+                    AlgorithmType = AlgorithmType.ILP,
+                    AlgorithmData = JsonConvert.SerializeObject(ilpData3),
+                    AlgorithmDataObj = ilpData3,
                 };
                 rc3 = dbSession.Merge(rc3);
             }
@@ -214,8 +235,10 @@ namespace IRuettae.WebApi.Controllers
                 return schedulingResults.Select(sr => sr.Route.Waypoints[0, 0].Select(wp => new
                 {
                     Visit = (VisitDTO)dbSession.Get<Visit>(wp.RealVisitId),
-                    VisitStartTime = sr.StartingTime.AddSeconds(wp.StartTime * routeCalculation.TimeSliceDuration),
-                    VisitEndtime = sr.StartingTime.AddSeconds(wp.StartTime * routeCalculation.TimeSliceDuration).AddSeconds(dbSession.Get<Visit>(wp.RealVisitId).Duration),
+                    VisitStartTime = new DateTime(),
+                    VisitEndtime = new DateTime(),
+                    // Todo: VisitStartTime = sr.StartingTime.AddSeconds(wp.StartTime * routeCalculation.TimeSliceDuration),
+                    // Todo: VisitEndtime = sr.StartingTime.AddSeconds(wp.StartTime * routeCalculation.TimeSliceDuration).AddSeconds(dbSession.Get<Visit>(wp.RealVisitId).Duration),
                     SantaName = dbSession.Get<Santa>(sr.Route.SantaIds[0])?.Name,
                 }).ToList()).ToList();
             }

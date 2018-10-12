@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithm\Persistence\ClusteringOptimisationGoals.cs" />
     <Compile Include="Algorithm\Clustering\Detail\ConstraintBuilder.cs" />
     <Compile Include="Algorithm\Clustering\Detail\ResultBuilder.cs" />
     <Compile Include="Algorithm\Clustering\Detail\SolverData.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Algorithm\Clustering\TargetFunctionBuilders\TargetFunctionBuilderFactory.cs" />
     <Compile Include="Algorithm\Clustering\TargetFunctionBuilders\TargetFunctionFactory.cs" />
     <Compile Include="Algorithm\Clustering\TargetFunctionBuilders\TargetType.cs" />
+    <Compile Include="Algorithm\Persistence\ILPStarterData.cs" />
     <Compile Include="Algorithm\RouteDistribution\Solver.cs" />
     <Compile Include="Algorithm\RouteDistribution\SolverInputData.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\SolverData.cs" />

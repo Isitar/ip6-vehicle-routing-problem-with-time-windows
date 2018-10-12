@@ -24,18 +24,11 @@ namespace IRuettae.Persistence.Entities
         public virtual string SantaJson { get; set; }
         public virtual string VisitsJson { get; set; }
 
-        // Phase 1
-        public virtual ClusteringOptimisationGoals ClusteringOptimisationFunction { get; set; }
-        public virtual double ClusteringMipGap { get; set; }
-        public virtual long ClusteringTimeLimit { get; set; }
-        public virtual string ClusteringResult { get; set; }
-
-        // Phase 2
-        public virtual int TimeSliceDuration { get; set; }
-        public virtual double SchedulingMipGap { get; set; }
-        public virtual long SchedulingTimeLimit { get; set; }
-        public virtual string SchedulingResult { get; set; }
-
+        // Algorithm specific data
+        public virtual AlgorithmType AlgorithmType { get; set; }
+        public virtual string AlgorithmData { get; set; }
+        // Convenience, will not be stored in db
+        public object AlgorithmDataObj { get; set; }
 
         // Running & Result
         public virtual string Result { get; set; }
