@@ -39,9 +39,9 @@ namespace IRuettae.WebApi.Controllers
             {
                 var visits = dbSession.Query<Visit>().Where(v => v.Year == algorithmStarter.Year && v.Id != algorithmStarter.StarterId).ToList();
                 visits.ForEach(v => v.Duration = 60 * (v.NumberOfChildren * algorithmStarter.TimePerChild + algorithmStarter.Beta0));
+                var converter = new Converter.PersistenceCoreConverter();
 
-
-                var optimisationInput = Converter.PersistenceToCoreConverter.Convert(algorithmStarter.Days, dbSession.Query<Visit>().First(v => v.Id == algorithmStarter.StarterId), visits,
+                var optimisationInput = converter.Convert(algorithmStarter.Days, dbSession.Query<Visit>().First(v => v.Id == algorithmStarter.StarterId), visits,
                     dbSession.Query<Santa>().ToList());
 
                 var ilpSolver = new ILPSolver(optimisationInput);

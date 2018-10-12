@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace IRuettae.Converter.Tests
 {
     [TestClass]
-    public class PersistenceToCoreConverterTests
+    public class PersistenceCoreConverterTests
     {
         private static bool Equals(Core.Models.OptimizationInput v1, Core.Models.OptimizationInput v2)
         {
@@ -48,7 +48,7 @@ namespace IRuettae.Converter.Tests
         private static void AssertOptimizationInputEqual(Core.Models.OptimizationInput expected, Core.Models.OptimizationInput actual)
         {
             Assert.AreEqual(expected.Visits.Length, actual.Visits.Length);
-            
+
             for (int i = 0; i < expected.Visits.Length; i++)
             {
                 Assert.AreEqual(expected.Visits[i].Id, actual.Visits[i].Id);
@@ -60,7 +60,7 @@ namespace IRuettae.Converter.Tests
                 Assert.AreEqual(expected.Visits[i].IsBreak, actual.Visits[i].IsBreak);
                 Assert.AreEqual(expected.Visits[i].SantaId, actual.Visits[i].SantaId);
             }
-            
+
             CollectionAssert.AreEqual(expected.Santas, actual.Santas);
             CollectionAssert.AreEqual(expected.Days, actual.Days);
             CollectionAssert.AreEqual(expected.RouteCosts, actual.RouteCosts);
@@ -251,7 +251,7 @@ namespace IRuettae.Converter.Tests
                         WayCostToHome = w20.Duration,
                     }
                 },
-                Days = new (int, int)[2]
+                Days = new(int, int)[2]
                 {
                     (0 * hour, 5 * hour),
                     (24 * hour, 29 * hour),
@@ -262,7 +262,7 @@ namespace IRuettae.Converter.Tests
                     {w21.Duration, 0},
                 }
             };
-            var actual = PersistenceToCoreConverter.Convert(workingDays, startVisit, visits, santas);
+            var actual = new PersistenceCoreConverter().Convert(workingDays, startVisit, visits, santas);
 
             AssertOptimizationInputEqual(expected, actual);
         }
@@ -659,7 +659,7 @@ namespace IRuettae.Converter.Tests
                     }
                 },
 
-                Days = new (int, int)[1]
+                Days = new(int, int)[1]
                 {
                     (0 * hour, 5 * hour)
                 },
@@ -671,7 +671,7 @@ namespace IRuettae.Converter.Tests
                     {w41.Duration, w42.Duration, w43.Duration, 0},
                 }
             };
-            var actual = PersistenceToCoreConverter.Convert(workingDays, startVisit, visits, santas);
+            var actual = new PersistenceCoreConverter().Convert(workingDays, startVisit, visits, santas);
 
             AssertOptimizationInputEqual(expected, actual);
             

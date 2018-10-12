@@ -76,7 +76,7 @@ namespace IRuettae.WebApi.Helpers
                 var visits = dbSession.Query<Visit>()
                     .Where(v => v.Year == routeCalculation.Year && v.Id != routeCalculation.StarterVisitId)
                     .ToList();
-                
+
                 visits.ForEach(v => v.Duration = 60 * (v.NumberOfChildren * routeCalculation.TimePerChild + routeCalculation.TimePerChildOffset));
 
                 var startVisit = dbSession.Query<Visit>().First(v => v.Id == routeCalculation.StarterVisitId);
@@ -89,22 +89,21 @@ namespace IRuettae.WebApi.Helpers
                 dbSession.Flush();
 
 
-         
+
                 // ******************************
 
                 #region Clustering
 
                 // ******************************
-
-                var optimizationInput =
-                    Converter.PersistenceToCoreConverter.Convert(routeCalculation.Days, startVisit, visits, santas);
+                var converter = new Converter.PersistenceCoreConverter();
+                var optimizationInput = converter.Convert(routeCalculation.Days, startVisit, visits, santas);
 
                 var ilpSolver = new ILPSolver(optimizationInput);
 
                 var clusteringSolverVariableBuilder = new ClusteringSolverVariableBuilder
                 {
-                   
-                   
+
+
                     TimeSliceDuration = routeCalculation.TimeSliceDuration,
                 };
 
