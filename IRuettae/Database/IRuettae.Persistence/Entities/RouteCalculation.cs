@@ -26,7 +26,7 @@ namespace IRuettae.Persistence.Entities
 
         // Phase 1
         public virtual ClusteringOptimisationGoals ClusteringOptimisationFunction { get; set; }
-        public virtual double ClustringMipGap { get; set; }
+        public virtual double ClusteringMipGap { get; set; }
         public virtual long ClusteringTimeLimit { get; set; }
         public virtual string ClusteringResult { get; set; }
 
