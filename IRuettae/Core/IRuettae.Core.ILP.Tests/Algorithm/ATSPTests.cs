@@ -43,7 +43,7 @@ namespace IRuettae.Core.Tests.Algorithm
 
             int[] dayDuration = new int[1] { 17 };
 
-            var solverInputData = new SolverInputData(santas, visitsDuration, visitStates, distances, dayDuration, null, new[] { DateTime.Now })
+            var solverInputData = new SolverInputData(santas, visitsDuration, visitStates, distances, dayDuration, null)
             {
                 VisitIds = new long[] { 0, 1, 2, 3, 4, 5 }
             };
@@ -98,7 +98,7 @@ namespace IRuettae.Core.Tests.Algorithm
 
             int[] dayDuration = new int[numberOfDays] { 17, 17 };
 
-            var solverInputData = new SolverInputData(santas, visitsDuration, visitStates, distances, dayDuration, null, new[] { DateTime.Now, DateTime.Now })
+            var solverInputData = new SolverInputData(santas, visitsDuration, visitStates, distances, dayDuration, null)
             {
                 VisitIds = new long[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }
             };

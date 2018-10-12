@@ -18,7 +18,6 @@ namespace IRuettae.ConsoleApp
         private const ConsoleColor ResultColor = ConsoleColor.Green;
         public static void Test()
         {
-            
             var eventTextWriter = new EventTextWriter();
             eventTextWriter.CharWritten += (sender, c) => { Debug.Write(c); };
             Console.OpenStandardOutput();
@@ -29,11 +28,10 @@ namespace IRuettae.ConsoleApp
             TestAlgorithm(35);
         }
 
-        
         private static void TestAlgorithm(int n_visits)
         {
             ConsoleExt.WriteLine($"Start testing algorithm with {n_visits} visits", InfoColor);
-            
+
             TestSerailDataVisits($"SerializedObjects/ClusteringSolverInput{n_visits}Visits.serial", numberOfRuns: 1);
         }
 
@@ -69,7 +67,7 @@ namespace IRuettae.ConsoleApp
                 int ctr = 0;
                 foreach (var route in routes)
                 {
-                    File.WriteAllText($"R{ctr}_{mip_gap}.csv",$"Address{Environment.NewLine}{route}");
+                    File.WriteAllText($"R{ctr}_{mip_gap}.csv", $"Address{Environment.NewLine}{route}");
                     ConsoleExt.WriteLine(ctr.ToString(), ResultColor);
                     ConsoleExt.WriteLine(route, ResultColor);
                     ctr++;
@@ -127,9 +125,8 @@ namespace IRuettae.ConsoleApp
                 new int[] {}
             };
 
-            var solverInputData = new SolverInputData(santas, visitsDuration, visits, distances, dayDuration, santaBreaks, new []{DateTime.Now});
+            var solverInputData = new SolverInputData(santas, visitsDuration, visits, distances, dayDuration, santaBreaks);
             Starter.Optimise(solverInputData);
-
         }
     }
 }

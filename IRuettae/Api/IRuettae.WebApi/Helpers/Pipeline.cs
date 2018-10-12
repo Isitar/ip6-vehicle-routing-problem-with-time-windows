@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Entity;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -11,14 +12,19 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Hosting;
+using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm;
 using IRuettae.Core.ILP.Algorithm.Persistence;
+using IRuettae.Core.Models;
 using IRuettae.Persistence.Entities;
 using IRuettae.Preprocessing.Mapping;
 using IRuettae.WebApi.Models;
 using IRuettae.WebApi.Persistence;
 using Newtonsoft.Json;
 using NHibernate;
+using Santa = IRuettae.Persistence.Entities.Santa;
+using Visit = IRuettae.Persistence.Entities.Visit;
+using Waypoint = IRuettae.Core.ILP.Algorithm.Waypoint;
 
 namespace IRuettae.WebApi.Helpers
 {
@@ -69,29 +75,12 @@ namespace IRuettae.WebApi.Helpers
                 var santas = dbSession.Query<Santa>().ToList();
 
                 var visits = dbSession.Query<Visit>()
-                    .Where(v => v.Year == routeCalculation.Year || v.Id == routeCalculation.StarterVisitId)
+                    .Where(v => v.Year == routeCalculation.Year && v.Id != routeCalculation.StarterVisitId)
                     .ToList();
-
 
                 visits.ForEach(v => v.Duration = 60 * (v.NumberOfChildren * routeCalculation.TimePerChild + routeCalculation.TimePerChildOffset));
 
-                // set starterId to front
-                visits.Sort((a, b) =>
-                {
-                    if (a.Id == routeCalculation.StarterVisitId)
-                    {
-                        return -1;
-                    }
-
-                    if (b.Id == routeCalculation.StarterVisitId)
-                    {
-                        return 1;
-                    }
-
-                    return a.Id.CompareTo(b.Id);
-                });
-
-                visits[0].Duration = 0;
+                var startVisit = dbSession.Query<Visit>().First(v => v.Id == routeCalculation.StarterVisitId);
 
                 routeCalculation.NumberOfSantas = santas.Count;
                 routeCalculation.NumberOfVisits = visits.Count;
@@ -102,26 +91,6 @@ namespace IRuettae.WebApi.Helpers
 
                 var ilpData = JsonConvert.DeserializeObject<ILPStarterData>(routeCalculation.AlgorithmData);
 
-                //var eventTextWriter = new EventTextWriter();
-                //var lastUpdate = DateTime.Now;
-                //eventTextWriter.CharWritten += (o, c) =>
-                //{
-                //    if (null == routeCalculation.StateText)
-                //    {
-                //        routeCalculation.StateText = string.Empty;
-                //    }
-
-                //    routeCalculation.StateText += c;
-                //    if (DateTime.Now - lastUpdate > TimeSpan.FromMinutes(1))
-                //    {
-                //        lastUpdate = DateTime.Now;
-                //        dbSession.Update(routeCalculation);
-                //        dbSession.Flush();
-                //    }
-                //};
-
-                //Console.SetOut(eventTextWriter);
-                //Console.SetError(eventTextWriter);
 
 
                 // ******************************
@@ -129,12 +98,15 @@ namespace IRuettae.WebApi.Helpers
                 #region Clustering
 
                 // ******************************
+                var converter = new Converter.PersistenceCoreConverter();
+                var optimizationInput = converter.Convert(routeCalculation.Days, startVisit, visits, santas);
+
+                var ilpSolver = new ILPSolver(optimizationInput);
 
                 var clusteringSolverVariableBuilder = new ClusteringSolverVariableBuilder
                 {
-                    Visits = visits,
-                    Santas = santas,
-                    Days = routeCalculation.Days,
+
+
                     TimeSliceDuration = ilpData.TimeSliceDuration,
                 };
 
@@ -147,15 +119,15 @@ namespace IRuettae.WebApi.Helpers
                 dbSession.Flush();
 
                 TargetBuilderType targetType = TargetBuilderType.Default;
-                switch (ilpData.ClusteringOptimisationFunction)
+                switch (ilpData.ClusteringOptimizationFunction)
                 {
-                    case ClusteringOptimisationGoals.OverallMinTime:
+                    case ClusteringOptimizationGoals.OverallMinTime:
                         targetType = TargetBuilderType.MinTimeOnly;
                         break;
-                    case ClusteringOptimisationGoals.MinTimePerSanta:
+                    case ClusteringOptimizationGoals.MinTimePerSanta:
                         targetType = TargetBuilderType.Default;
                         break;
-                    case ClusteringOptimisationGoals.MinAvgTimePerSanta:
+                    case ClusteringOptimizationGoals.MinAvgTimePerSanta:
                         targetType = TargetBuilderType.MinAvgTimeOnly;
                         break;
                     default:
@@ -164,7 +136,7 @@ namespace IRuettae.WebApi.Helpers
                 }
 
 #if DEBUG
-                var serialPath = HostingEnvironment.MapPath($"~/App_Data/Clustering{routeCalculation.Id}_{ilpData.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}.serial");
+                var serialPath = HostingEnvironment.MapPath($"~/App_Data/Clustering{routeCalculation.Id}_{ilpData.ClusteringOptimizationFunction}_{routeCalculation.NumberOfVisits}.serial");
                 if (serialPath != null)
                 {
                     using (var stream = File.Open(serialPath, FileMode.Create))
@@ -172,7 +144,7 @@ namespace IRuettae.WebApi.Helpers
                         new BinaryFormatter().Serialize(stream, clusteringSolverInputData);
                     }
                 }
-                var mpsPath = HostingEnvironment.MapPath($"~/App_Data/Clustering_{routeCalculation.Id}_{ilpData.ClusteringOptimisationFunction}_{routeCalculation.NumberOfVisits}.mps");
+                var mpsPath = HostingEnvironment.MapPath($"~/App_Data/Clustering_{routeCalculation.Id}_{ilpData.ClusteringOptimizationFunction}_{routeCalculation.NumberOfVisits}.mps");
                 Starter.SaveMps(mpsPath, clusteringSolverInputData, targetType);
 #endif
 

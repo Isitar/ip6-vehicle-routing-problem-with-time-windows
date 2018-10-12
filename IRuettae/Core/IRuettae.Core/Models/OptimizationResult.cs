@@ -15,9 +15,9 @@ namespace IRuettae.Core.Models
     }
 
     /// <summary>
-    /// Class containing the result of an optimisation algorithm
+    /// Class containing the result of an optimization algorithm
     /// </summary>
-    public class OptimisationResult
+    public class OptimizationResult
     {
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace IRuettae.Core.Models
         /// <summary>
         /// The input used to calculate this result
         /// </summary>
-        public OptimisationInput OptimisationInput { get; set; }
+        public OptimizationInput OptimizationInput { get; set; }
 
         /// <summary>
         /// Time elapsed to calculate this result (in ms)
