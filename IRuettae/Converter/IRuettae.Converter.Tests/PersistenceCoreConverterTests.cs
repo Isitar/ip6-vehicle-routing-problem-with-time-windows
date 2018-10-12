@@ -133,7 +133,6 @@ namespace IRuettae.Converter.Tests
                     Name = "Mr Santa Test"
                 }
             };
-            List<Persistence.Entities.Visit> breaks = null;
 
             // ways
             var w01 = new Persistence.Entities.Way
