@@ -386,7 +386,7 @@ namespace IRuettae.WebApi.Helpers
                 dbSession.Flush();
 
 
-                routeCalculation.Result = ilpData.SchedulingResult;
+                routeCalculation.Result = null; // Todo: ilpData.SchedulingResult;
                 routeCalculation.State = RouteCalculationState.Finished;
 
                 routeCalculation.EndTime = DateTime.Now;
