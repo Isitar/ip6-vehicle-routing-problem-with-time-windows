@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="WebAPIBaseUrl" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">http://localhost:19259</Value>
+      <Value Profile="(Default)">http://localhost:62343</Value>
     </Setting>
     <Setting Name="GoogleMapsApiKey" Type="System.String" Scope="Application">
       <Value Profile="(Default)">AIzaSyDQKw_peFfQoSnd62jx7rW3SxmivD1hjSU</Value>
