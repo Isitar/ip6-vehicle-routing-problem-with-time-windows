@@ -86,7 +86,7 @@ namespace IRuettae.Converter.Tests
                 new Persistence.Entities.Visit
                 {
                     Id = 1,
-                    Duration = 3*5+15,
+                    Duration = 60 * (3 * 5 + 15),
                     NumberOfChildren = 3,
                     Desired = new List<Persistence.Entities.Period>
                     {
@@ -108,7 +108,7 @@ namespace IRuettae.Converter.Tests
                 new Persistence.Entities.Visit
                 {
                     Id = 3,
-                    Duration = 1*5+15,
+                    Duration = 60 * (1 * 5 + 15),
                     NumberOfChildren = 1,
                     Unavailable = new List<Persistence.Entities.Period>
                     {
@@ -300,7 +300,7 @@ namespace IRuettae.Converter.Tests
                 {
                     Id = 1,
                     NumberOfChildren = 3,
-                    Duration = 3*5+15,
+                    Duration = 60*(3*5+15),
                     Desired = new List<Persistence.Entities.Period>
                     {
                         new Persistence.Entities.Period
@@ -315,7 +315,7 @@ namespace IRuettae.Converter.Tests
                 {
                     Id = 3,
                     NumberOfChildren = 4,
-                    Duration= 4*5+15,
+                    Duration= 60*(4*5+15),
                     Unavailable = new List<Persistence.Entities.Period>
                     {
                         new Persistence.Entities.Period
@@ -673,7 +673,7 @@ namespace IRuettae.Converter.Tests
             var actual = new PersistenceToCoreConverter().Convert(workingDays, startVisit, visits, santas);
 
             AssertOptimizationInputEqual(expected, actual);
-            
+
         }
     }
 }
