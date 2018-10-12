@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace IRuettae.Converter.Tests
 {
     [TestClass]
-    public class PersistenceCoreConverterTests
+    public class PersistenceToCoreConverterTests
     {
         private static bool Equals(Core.Models.OptimisationInput v1, Core.Models.OptimisationInput v2)
         {
@@ -262,7 +262,7 @@ namespace IRuettae.Converter.Tests
                     {w21.Duration, 0},
                 }
             };
-            var actual = new PersistenceCoreConverter().Convert(workingDays, startVisit, visits, santas);
+            var actual = new PersistenceToCoreConverter().Convert(workingDays, startVisit, visits, santas);
 
             AssertOptimisationInputEqual(expected, actual);
         }
@@ -669,7 +669,7 @@ namespace IRuettae.Converter.Tests
                     {w41.Duration, w42.Duration, w43.Duration, 0},
                 }
             };
-            var actual = new PersistenceCoreConverter().Convert(workingDays, startVisit, visits, santas);
+            var actual = new PersistenceToCoreConverter().Convert(workingDays, startVisit, visits, santas);
 
             AssertOptimisationInputEqual(expected, actual);
 

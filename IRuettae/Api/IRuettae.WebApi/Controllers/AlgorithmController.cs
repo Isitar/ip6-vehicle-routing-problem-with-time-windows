@@ -98,9 +98,8 @@ namespace IRuettae.WebApi.Controllers
                     TimePerChild = algorithmStarter.TimePerChild,
                     TimePerChildOffset = algorithmStarter.Beta0,
                     Year = algorithmStarter.Year,
-                    AlgorithmType = AlgorithmType.ILP,
+                    Algorithm = AlgorithmType.ILP,
                     AlgorithmData = JsonConvert.SerializeObject(ilpData),
-                    AlgorithmDataObj = ilpData,
                 };
                 rc = dbSession.Merge(rc);
 
@@ -123,9 +122,8 @@ namespace IRuettae.WebApi.Controllers
                     TimePerChild = algorithmStarter.TimePerChild,
                     TimePerChildOffset = algorithmStarter.Beta0,
                     Year = algorithmStarter.Year,
-                    AlgorithmType = AlgorithmType.ILP,
+                    Algorithm = AlgorithmType.ILP,
                     AlgorithmData = JsonConvert.SerializeObject(ilpData2),
-                    AlgorithmDataObj = ilpData2,
                 };
                 rc2 = dbSession.Merge(rc2);
 
@@ -149,9 +147,8 @@ namespace IRuettae.WebApi.Controllers
                     TimePerChild = algorithmStarter.TimePerChild,
                     TimePerChildOffset = algorithmStarter.Beta0,
                     Year = algorithmStarter.Year,
-                    AlgorithmType = AlgorithmType.ILP,
+                    Algorithm = AlgorithmType.ILP,
                     AlgorithmData = JsonConvert.SerializeObject(ilpData3),
-                    AlgorithmDataObj = ilpData3,
                 };
                 rc3 = dbSession.Merge(rc3);
             }

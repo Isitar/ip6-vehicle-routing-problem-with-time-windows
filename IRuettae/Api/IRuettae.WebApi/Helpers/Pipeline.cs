@@ -100,7 +100,7 @@ namespace IRuettae.WebApi.Helpers
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
 
-                var ilpData = (ILPStarterData)routeCalculation.AlgorithmDataObj;
+                var ilpData = JsonConvert.DeserializeObject<ILPStarterData>(routeCalculation.AlgorithmData);
 
                 //var eventTextWriter = new EventTextWriter();
                 //var lastUpdate = DateTime.Now;

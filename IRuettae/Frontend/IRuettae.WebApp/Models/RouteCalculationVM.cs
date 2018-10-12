@@ -32,26 +32,10 @@ namespace IRuettae.WebApp.Models
         public virtual int NumberOfRoutes { get; set; }
         [DisplayName("Anzahl Besuche")]
         public virtual int NumberOfVisits { get; set; }
-        [DisplayName("")]
-        public virtual string SantaJson { get; set; }
-        [DisplayName("")]
-        public virtual string VisitsJson { get; set; }
 
-        // Phase 1
-        [DisplayName("Clustering Zielfunktion")]
-        public virtual ClusteringOptimisationGoals ClusteringOptimisationFunction { get; set; }
-        [DisplayName("Clustering MIP GAP")]
-        public virtual double ClustringMipGap { get; set; }
-        [DisplayName("Clustering Resultat")]
-        public virtual string ClusteringResult { get; set; }
-
-        // Phase 2
-        [DisplayName("Zeitgenauigkeit [s]")]
-        public virtual int TimeSliceDuration { get; set; }
-        [DisplayName("Scheduling MIP GAP")]
-        public virtual double SchedulingMipGap { get; set; }
-        [DisplayName("Scheduling Resultat")]
-        public virtual string SchedulingResult { get; set; }
+        // Algorithm specific data
+        [DisplayName("Algorithmus")]
+        public virtual AlgorithmType Algorithm { get; set; }
 
 
         // Running & Result
@@ -98,11 +82,9 @@ namespace IRuettae.WebApp.Models
             Finished,
         }
 
-        public enum ClusteringOptimisationGoals
+        public enum AlgorithmType
         {
-            OverallMinTime,
-            MinTimePerSanta,
-            MinAvgTimePerSanta
+            ILP,
         }
 
     }

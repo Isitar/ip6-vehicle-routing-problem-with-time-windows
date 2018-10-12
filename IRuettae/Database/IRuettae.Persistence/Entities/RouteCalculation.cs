@@ -25,10 +25,8 @@ namespace IRuettae.Persistence.Entities
         public virtual string VisitsJson { get; set; }
 
         // Algorithm specific data
-        public virtual AlgorithmType AlgorithmType { get; set; }
+        public virtual AlgorithmType Algorithm { get; set; }
         public virtual string AlgorithmData { get; set; }
-        // Convenience, will not be stored in db
-        public object AlgorithmDataObj { get; set; }
 
         // Running & Result
         public virtual string Result { get; set; }

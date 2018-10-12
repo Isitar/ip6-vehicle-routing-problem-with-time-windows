@@ -9,19 +9,28 @@ using IRuettae.Persistence.Entities;
 
 namespace IRuettae.Converter
 {
-    public class PersistenceCoreConverter
+    public class PersistenceToCoreConverter
     {
         /// <summary>
         /// Mapping for backward conversion
         /// Visit-Number to Visit.Id
         /// </summary>
         private Dictionary<int, long> visitMap = new Dictionary<int, long>();
+        public Dictionary<int, long> VisitMap { get; }
 
         /// <summary>
         /// Mapping for backward conversion
         /// Santa-Number to Santa.Id
         /// </summary>
         private Dictionary<int, long> santaMap = new Dictionary<int, long>();
+        public Dictionary<int, long> SantaMap { get; }
+
+        /// <summary>
+        /// Starting time of the first day
+        /// Used to retreive the real time from a relative time in seconds
+        /// </summary>
+        private DateTime zeroTime = new DateTime();
+        public DateTime ZeroTime { get; }
 
         /// <summary>
         /// Converts the input params to an OptimisationInput
@@ -33,10 +42,8 @@ namespace IRuettae.Converter
         /// <returns>An optimisation input that can be used to solve the problem</returns>
         public Core.Models.OptimisationInput Convert(List<(DateTime Start, DateTime End)> workingDays, Persistence.Entities.Visit startVisit, List<Persistence.Entities.Visit> visits, List<Persistence.Entities.Santa> santas)
         {
-            if (visitMap.Count != 0 || visitMap.Count != 0)
-            {
-                throw new InvalidOperationException("each instance of " + this.GetType().FullName + "can only be used once");
-            }
+            visitMap.Clear();
+            santaMap.Clear();
 
             var recidToSantaMap = new Dictionary<long, int>();
 
@@ -49,7 +56,7 @@ namespace IRuettae.Converter
             };
 
             // set 0-time
-            var zeroTime = workingDays.Min(wd => wd.Start);
+            zeroTime = workingDays.Min(wd => wd.Start);
 
             // create santas
             santas = santas.OrderBy(s => s.Id).ToList();
