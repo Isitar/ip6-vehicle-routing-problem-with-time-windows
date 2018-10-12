@@ -42,8 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ISolver.cs" />
-    <Compile Include="Models\OptimisationInput.cs" />
-    <Compile Include="Models\OptimisationResult.cs" />
+    <Compile Include="Models\OptimizationInput.cs" />
+    <Compile Include="Models\OptimizationResult.cs" />
     <Compile Include="Models\Route.cs" />
     <Compile Include="Models\Santa.cs" />
     <Compile Include="Models\Visit.cs" />

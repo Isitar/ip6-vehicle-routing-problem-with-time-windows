@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using IRuettae.Core.ILP.Algorithm;
 using IRuettae.Core.ILP.Algorithm.Scheduling;
-using IRuettae.Persistence.Entities;
+using IRuettae.Core.Models;
+
 
 namespace IRuettae.Preprocessing.Mapping
 {
@@ -14,19 +15,22 @@ namespace IRuettae.Preprocessing.Mapping
         public List<Visit> Visits { get; set; }
 
         private readonly int timeslotLength;
+        private readonly OptimizationInput input;
 
+        private const int TwentyFourHours = 24 * 60 * 60;
 
         /// <summary>
         /// List of days(StartTime, EndTime)
         /// </summary>
-        public List<(DateTime, DateTime)> Days { get; set; }
+        public List<(int Start, int End)> Days { get; set; }
 
-        public SchedulingSolverVariableBuilder(int timeslotLength, List<Santa> santas = null, List<Visit> visits = null, List<(DateTime, DateTime)> days = null)
+        public SchedulingSolverVariableBuilder(int timeslotLength, OptimizationInput input)
         {
-            Santas = santas;
-            Visits = visits;
-            Days = days;
+            Santas = input.Santas.ToList();
+            Visits = input.Visits.ToList();
+            Days = input.Days.ToList();
             this.timeslotLength = timeslotLength;
+            this.input = input;
         }
 
         /// <summary>
@@ -59,22 +63,22 @@ namespace IRuettae.Preprocessing.Mapping
             VisitState[][,] visitsVar = new VisitState[Days.Count][,];
 
 
-            for (int day = 0; day < Days.Count; day++)
+            for (int d = 0; d < Days.Count; d++)
             {
-                var (starttime, endtime) = Days[day];
-                var numberOfTimeslots = Convert.ToInt32(Math.Ceiling((endtime - starttime).TotalSeconds / timeslotLength));
-                santasVar[day] = new bool[Santas.Count, numberOfTimeslots];
+                var day = Days[d];
+                var numberOfTimeslots = Convert.ToInt32(day.End - day.Start / timeslotLength);
+                santasVar[d] = new bool[Santas.Count, numberOfTimeslots];
                 // set all santas available
                 for (int i = 0; i < Santas.Count; i++)
                 {
                     for (int j = 0; j < numberOfTimeslots; j++)
                     {
-                        santasVar[day][i, j] = true;
+                        santasVar[d][i, j] = true;
                     }
                 }
 
                 // visits
-                visitsVar[day] = new VisitState[Visits.Count, numberOfTimeslots];
+                visitsVar[d] = new VisitState[Visits.Count, numberOfTimeslots];
 
                 for (int v = 0; v < Visits.Count; v++)
                 {
@@ -83,15 +87,15 @@ namespace IRuettae.Preprocessing.Mapping
                     // set all to default
                     for (int j = 0; j < numberOfTimeslots; j++)
                     {
-                        visitsVar[day][v, j] = VisitState.Default;
+                        visitsVar[d][v, j] = VisitState.Default;
                     }
 
-                    bool isCurrentDay(Period p) => p.Start.HasValue && p.End.HasValue && p.Start.Value.Date == starttime.Date;
-                    (int startSlice, int endSlice) toTimeslice(Period p)
+                    bool isCurrentDay((int Start, int End) p) => p.Start / TwentyFourHours == day.Start / TwentyFourHours;
+                    (int startSlice, int endSlice) toTimeslice((int Start, int End) p)
                     {
                         return (
-                            SecondsToTimeslice((p.Start.Value - starttime).TotalSeconds),
-                            SecondsToTimeslice((p.End.Value - starttime).TotalSeconds)
+                            SecondsToTimeslice(p.Start - day.Start),
+                            SecondsToTimeslice(p.End - day.Start)
                         );
                     }
 
@@ -101,7 +105,7 @@ namespace IRuettae.Preprocessing.Mapping
                         (var startSlice, var endSlice) = toTimeslice(desired);
                         for (int t = startSlice; t < endSlice; t++)
                         {
-                            visitsVar[day][v, t] = VisitState.Desired;
+                            visitsVar[d][v, t] = VisitState.Desired;
                         }
                     }
 
@@ -111,24 +115,17 @@ namespace IRuettae.Preprocessing.Mapping
                         (var startSlice, var endSlice) = toTimeslice(unavailable);
                         for (int t = startSlice; t < endSlice; t++)
                         {
-                            visitsVar[day][v, t] = VisitState.Unavailable;
+                            visitsVar[d][v, t] = VisitState.Unavailable;
                         }
                     }
                 }
             }
 
 
-            int[,] distances = new int[Visits.Count, Visits.Count];
-            for (int v = 0; v < Visits.Count; v++)
-            {
-                for (int d = 0; d < Visits.Count; d++)
-                {
-                    distances[v, d] = SecondsToTimeslice(Visits[v].FromWays.First(w => w.To.Equals(Visits[d])).Duration);
-                }
-            }
+            int[,] distances = input.RouteCosts;
 
             int[] visitLength = Visits.Select(v => SecondsToTimeslice(v.Duration)).ToArray();
-            return new SolverInputData(santasVar, visitLength, visitsVar, distances, Visits.Select(v => v.Id).ToArray(), Santas.Select(s => s.Id).ToArray(), Days.Select(d => d.Item1).ToArray());
+            return new SolverInputData(santasVar, visitLength, visitsVar, distances, Visits.Select(v => v.Id).ToArray(), Santas.Select(s => s.Id).ToArray());
         }
     }
 }

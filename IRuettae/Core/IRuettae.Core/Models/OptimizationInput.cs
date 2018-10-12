@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace IRuettae.Core.Models
 {
     /// <summary>
-    /// Struct containing the optimisation input data
+    /// Struct containing the optimization input data
     /// </summary>
-    public struct OptimisationInput
+    public struct OptimizationInput
     {
         /// <summary>
         /// Visit input data

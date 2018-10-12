@@ -18,7 +18,7 @@ namespace IRuettae.WebApi.Controllers
         public void Post([FromBody]string content)
         {
             var csvVisits = Import.StartImport(content);
-            var visits = Converter.ToDatabase(csvVisits);
+            var visits = Preprocessing.CSVImport.Converter.ToDatabase(csvVisits);
             var managedVisits = new List<Visit>();
 
             try

@@ -18,19 +18,12 @@ namespace IRuettae.Persistence.Mappings
             Map(x => x.NumberOfSantas);
             Map(x => x.NumberOfVisits);
             Map(x => x.SantaJson).CustomSqlType("LONGTEXT");
-            Map(x => x.VisitsJson).CustomSqlType("LONGTEXT"); ;
+            Map(x => x.VisitsJson).CustomSqlType("LONGTEXT");
 
-            Map(x => x.ClusteringOptimisationFunction);
-            Map(x => x.ClustringMipGap);
-            Map(x => x.ClusteringTimeLimit);
-            Map(x => x.ClusteringResult).CustomSqlType("LONGTEXT"); ;
+            Map(x => x.Algorithm);
+            Map(x => x.AlgorithmData).CustomSqlType("LONGTEXT");
 
-            Map(x => x.TimeSliceDuration);
-            Map(x => x.SchedulingMipGap);
-            Map(x => x.SchedulingTimeLimit);
-            Map(x => x.SchedulingResult).CustomSqlType("LONGTEXT"); ;
-
-            Map(x => x.Result).CustomSqlType("LONGTEXT"); ;
+            Map(x => x.Result).CustomSqlType("LONGTEXT");
 
             Map(x => x.NumberOfRoutes);
             Map(x => x.TotalWaytime);

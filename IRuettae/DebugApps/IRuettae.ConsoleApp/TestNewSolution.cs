@@ -7,6 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.ILP.Algorithm;
+using IRuettae.Core.ILP.Algorithm.Persistence;
 using IRuettae.WebApi.Helpers;
 using SolverInputData = IRuettae.Core.ILP.Algorithm.Clustering.SolverInputData;
 
@@ -18,7 +19,6 @@ namespace IRuettae.ConsoleApp
         private const ConsoleColor ResultColor = ConsoleColor.Green;
         public static void Test()
         {
-            
             var eventTextWriter = new EventTextWriter();
             eventTextWriter.CharWritten += (sender, c) => { Debug.Write(c); };
             Console.OpenStandardOutput();
@@ -29,11 +29,10 @@ namespace IRuettae.ConsoleApp
             TestAlgorithm(35);
         }
 
-        
         private static void TestAlgorithm(int n_visits)
         {
             ConsoleExt.WriteLine($"Start testing algorithm with {n_visits} visits", InfoColor);
-            
+
             TestSerailDataVisits($"SerializedObjects/ClusteringSolverInput{n_visits}Visits.serial", numberOfRuns: 1);
         }
 
@@ -41,7 +40,7 @@ namespace IRuettae.ConsoleApp
         {
             var solverInputData = Deserialize($"SerializedObjects/ClusteringSolverInput{n_visits}Visits.serial");
             // solverInputData.DayDuration = solverInputData.DayDuration.Select(d => (int)(d / 0.7)).ToArray();
-            Starter.SaveMps($"New_{n_visits}_mps.mps", solverInputData, TargetBuilderType.Default);
+            Starter.SaveMps($"New_{n_visits}_mps.mps", solverInputData, ClusteringOptimizationGoals.MinTimePerSanta);
             ConsoleExt.WriteLine($"Saved mps for {n_visits} visits", InfoColor);
         }
         private static void TestSerailDataVisits(string serialDataName, int numberOfRuns = 5)
@@ -54,7 +53,7 @@ namespace IRuettae.ConsoleApp
             {
                 var sw = Stopwatch.StartNew();
 
-                var routeResult = Starter.Optimise(solverInputData, MIP_GAP: mip_gap);
+                var routeResult = Starter.Optimise(solverInputData, ClusteringOptimizationGoals.MinTimePerSanta, MIP_GAP: mip_gap);
                 sw.Stop();
                 ConsoleExt.WriteLine($"{i}/{numberOfRuns}: Elapsed s: {sw.ElapsedMilliseconds / 1000}", InfoColor);
 
@@ -69,7 +68,7 @@ namespace IRuettae.ConsoleApp
                 int ctr = 0;
                 foreach (var route in routes)
                 {
-                    File.WriteAllText($"R{ctr}_{mip_gap}.csv",$"Address{Environment.NewLine}{route}");
+                    File.WriteAllText($"R{ctr}_{mip_gap}.csv", $"Address{Environment.NewLine}{route}");
                     ConsoleExt.WriteLine(ctr.ToString(), ResultColor);
                     ConsoleExt.WriteLine(route, ResultColor);
                     ctr++;
@@ -127,9 +126,8 @@ namespace IRuettae.ConsoleApp
                 new int[] {}
             };
 
-            var solverInputData = new SolverInputData(santas, visitsDuration, visits, distances, dayDuration, santaBreaks, new []{DateTime.Now});
-            Starter.Optimise(solverInputData);
-
+            var solverInputData = new SolverInputData(santas, visitsDuration, visits, distances, dayDuration, santaBreaks);
+            Starter.Optimise(solverInputData, ClusteringOptimizationGoals.MinTimePerSanta);
         }
     }
 }

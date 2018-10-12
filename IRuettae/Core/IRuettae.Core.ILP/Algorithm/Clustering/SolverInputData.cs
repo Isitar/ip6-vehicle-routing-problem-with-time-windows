@@ -36,7 +36,7 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering
         /// </summary>
         public int[][] SantaBreaks { get; }
 
-        public SolverInputData(bool[,] santas, int[] visitsDuration, VisitState[,] visits, int[,] distances, int[] dayDuration, int[][]  santaBreaks, DateTime[] dayStartingTime)
+        public SolverInputData(bool[,] santas, int[] visitsDuration, VisitState[,] visits, int[,] distances, int[] dayDuration, int[][]  santaBreaks)
         {
             Santas = santas;
             VisitsDuration = visitsDuration;
@@ -44,7 +44,6 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering
             Distances = distances;
             DayDuration = dayDuration;
             SantaBreaks = santaBreaks;
-            DayStartingTime = dayStartingTime;
         }
 
 

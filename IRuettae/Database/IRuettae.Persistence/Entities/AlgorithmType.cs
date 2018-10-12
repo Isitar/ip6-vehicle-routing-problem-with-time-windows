@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace IRuettae.Persistence.Entities
 {
-    public enum ClusteringOptimisationGoals
+    public enum AlgorithmType
     {
-        OverallMinTime,
-        MinTimePerSanta,
-        MinAvgTimePerSanta
+        ILP,
     }
 }

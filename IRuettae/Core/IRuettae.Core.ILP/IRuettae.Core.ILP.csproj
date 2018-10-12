@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithm\Persistence\ClusteringOptimisationGoals.cs" />
     <Compile Include="Algorithm\Clustering\Detail\ConstraintBuilder.cs" />
     <Compile Include="Algorithm\Clustering\Detail\ResultBuilder.cs" />
     <Compile Include="Algorithm\Clustering\Detail\SolverData.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Algorithm\Clustering\TargetFunctionBuilders\TargetFunctionBuilderFactory.cs" />
     <Compile Include="Algorithm\Clustering\TargetFunctionBuilders\TargetFunctionFactory.cs" />
     <Compile Include="Algorithm\Clustering\TargetFunctionBuilders\TargetType.cs" />
+    <Compile Include="Algorithm\Persistence\ILPStarterData.cs" />
     <Compile Include="Algorithm\RouteDistribution\Solver.cs" />
     <Compile Include="Algorithm\RouteDistribution\SolverInputData.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\SolverData.cs" />
@@ -98,7 +100,10 @@
     <Compile Include="Algorithm\VisitState.cs" />
     <Compile Include="Algorithm\Waypoint.cs" />
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="ILPSolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VariableBuilder\ClusteringSolverVariableBuilder.cs" />
+    <Compile Include="VariableBuilder\SchedulingSolverVariableBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Libs\Google.OrTools.dll" />
@@ -106,6 +111,12 @@
     <Content Include="libscip-4.0.0.mingw.x86_64.msvc.opt.spx2.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IRuettae.Core\IRuettae.Core.csproj">
+      <Project>{e6f0ffc6-7f26-4286-ae57-44411eb66118}</Project>
+      <Name>IRuettae.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -10,9 +10,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace IRuettae.Converter.Tests
 {
     [TestClass]
-    public class PersistenceCoreConverterTests
+    public class PersistenceToCoreConverterTests
     {
-        private static bool Equals(Core.Models.OptimisationInput v1, Core.Models.OptimisationInput v2)
+        private static bool Equals(Core.Models.OptimizationInput v1, Core.Models.OptimizationInput v2)
         {
             if (v1.Visits.Length != v2.Visits.Length)
             {
@@ -45,9 +45,8 @@ namespace IRuettae.Converter.Tests
         /// </summary>
         /// <param name="expected"></param>
         /// <param name="actual"></param>
-        private static void AssertOptimisationInputEqual(Core.Models.OptimisationInput expected, Core.Models.OptimisationInput actual)
+        private static void AssertOptimizationInputEqual(Core.Models.OptimizationInput expected, Core.Models.OptimizationInput actual)
         {
-
             Assert.AreEqual(expected.Visits.Length, actual.Visits.Length);
 
             for (int i = 0; i < expected.Visits.Length; i++)
@@ -87,7 +86,7 @@ namespace IRuettae.Converter.Tests
                 new Persistence.Entities.Visit
                 {
                     Id = 1,
-                    Duration = 12,
+                    Duration = 60 * (3 * 5 + 15),
                     NumberOfChildren = 3,
                     Desired = new List<Persistence.Entities.Period>
                     {
@@ -109,7 +108,7 @@ namespace IRuettae.Converter.Tests
                 new Persistence.Entities.Visit
                 {
                     Id = 3,
-                    Duration = 15,
+                    Duration = 60 * (1 * 5 + 15),
                     NumberOfChildren = 1,
                     Unavailable = new List<Persistence.Entities.Period>
                     {
@@ -133,7 +132,6 @@ namespace IRuettae.Converter.Tests
                     Name = "Mr Santa Test"
                 }
             };
-            List<Persistence.Entities.Visit> breaks = null;
 
             // ways
             var w01 = new Persistence.Entities.Way
@@ -208,7 +206,7 @@ namespace IRuettae.Converter.Tests
             }
 
             var hour = 3600;
-            var expected = new Core.Models.OptimisationInput
+            var expected = new Core.Models.OptimizationInput
             {
                 Santas = new Core.Models.Santa[1]
                 {
@@ -263,9 +261,9 @@ namespace IRuettae.Converter.Tests
                     {w21.Duration, 0},
                 }
             };
-            var actual = new PersistenceCoreConverter().Convert(workingDays, startVisit, visits, santas);
+            var actual = new PersistenceToCoreConverter().Convert(workingDays, startVisit, visits, santas);
 
-            AssertOptimisationInputEqual(expected, actual);
+            AssertOptimizationInputEqual(expected, actual);
         }
 
         [TestMethod]
@@ -302,6 +300,7 @@ namespace IRuettae.Converter.Tests
                 {
                     Id = 1,
                     NumberOfChildren = 3,
+                    Duration = 60*(3*5+15),
                     Desired = new List<Persistence.Entities.Period>
                     {
                         new Persistence.Entities.Period
@@ -316,6 +315,7 @@ namespace IRuettae.Converter.Tests
                 {
                     Id = 3,
                     NumberOfChildren = 4,
+                    Duration= 60*(4*5+15),
                     Unavailable = new List<Persistence.Entities.Period>
                     {
                         new Persistence.Entities.Period
@@ -591,7 +591,7 @@ namespace IRuettae.Converter.Tests
             }
 
             var hour = 3600;
-            var expected = new Core.Models.OptimisationInput
+            var expected = new Core.Models.OptimizationInput
             {
                 Santas = new Core.Models.Santa[2]
                 {
@@ -670,9 +670,9 @@ namespace IRuettae.Converter.Tests
                     {w41.Duration, w42.Duration, w43.Duration, 0},
                 }
             };
-            var actual = new PersistenceCoreConverter().Convert(workingDays, startVisit, visits, santas);
+            var actual = new PersistenceToCoreConverter().Convert(workingDays, startVisit, visits, santas);
 
-            AssertOptimisationInputEqual(expected, actual);
+            AssertOptimizationInputEqual(expected, actual);
 
         }
     }

@@ -9,38 +9,45 @@ using IRuettae.Persistence.Entities;
 
 namespace IRuettae.Converter
 {
-    public class PersistenceCoreConverter
+    public class PersistenceToCoreConverter
     {
         /// <summary>
         /// Mapping for backward conversion
         /// Visit-Number to Visit.Id
         /// </summary>
         private Dictionary<int, long> visitMap = new Dictionary<int, long>();
+        public Dictionary<int, long> VisitMap { get; }
 
         /// <summary>
         /// Mapping for backward conversion
         /// Santa-Number to Santa.Id
         /// </summary>
         private Dictionary<int, long> santaMap = new Dictionary<int, long>();
+        public Dictionary<int, long> SantaMap { get; }
 
         /// <summary>
-        /// Converts the input params to an OptimisationInput
+        /// Starting time of the first day
+        /// Used to retreive the real time from a relative time in seconds
+        /// </summary>
+        private DateTime zeroTime = new DateTime();
+        public DateTime ZeroTime { get; }
+
+        /// <summary>
+        /// Converts the input params to an OptimizationInput
         /// </summary>
         /// <param name="workingDays">All working days for the santas</param>
         /// <param name="startVisit">Where all routes have to start</param>
         /// <param name="visits">All visits for the problem</param>
         /// <param name="santas">All santas for the problem</param>
-        /// <returns>An optimisation input that can be used to solve the problem</returns>
-        public Core.Models.OptimisationInput Convert(List<(DateTime Start, DateTime End)> workingDays, Persistence.Entities.Visit startVisit, List<Persistence.Entities.Visit> visits, List<Persistence.Entities.Santa> santas)
+        /// <returns>An optimization input that can be used to solve the problem</returns>
+        public Core.Models.OptimizationInput Convert(List<(DateTime Start, DateTime End)> workingDays, Persistence.Entities.Visit startVisit, List<Persistence.Entities.Visit> visits, List<Persistence.Entities.Santa> santas)
         {
-            if (visitMap.Count != 0 || visitMap.Count != 0)
-            {
-                throw new InvalidOperationException("each instance of " + this.GetType().FullName + "can only be used once");
-            }
+            visitMap.Clear();
+            santaMap.Clear();
 
             var recidToSantaMap = new Dictionary<long, int>();
 
-            var input = new Core.Models.OptimisationInput
+            var input = new Core.Models.OptimizationInput
             {
                 Visits = new Core.Models.Visit[visits.Count],
                 Santas = new Core.Models.Santa[santas.Count],
@@ -49,7 +56,7 @@ namespace IRuettae.Converter
             };
 
             // set 0-time
-            var zeroTime = workingDays.Min(wd => wd.Start);
+            zeroTime = workingDays.Min(wd => wd.Start);
 
             // create santas
             santas = santas.OrderBy(s => s.Id).ToList();
@@ -77,7 +84,7 @@ namespace IRuettae.Converter
                         .Select(d => ((int)(d.Start.Value - zeroTime).TotalSeconds, (int)(d.End.Value - zeroTime).TotalSeconds)).ToArray(),
                     Unavailable = persistenceVisit.Unavailable
                         .Select(d => ((int)(d.Start.Value - zeroTime).TotalSeconds, (int)(d.End.Value - zeroTime).TotalSeconds)).ToArray(),
-                    Duration = isBreak ? (int)persistenceVisit.Duration : (persistenceVisit.NumberOfChildren * 5 + 15) * 60,
+                    Duration = (int)persistenceVisit.Duration,
                     WayCostFromHome = startVisit.ToWays.First(w => w.To.Id.Equals(persistenceVisit.Id)).Duration,
                     WayCostToHome = startVisit.FromWays.First(w => w.From.Id.Equals(persistenceVisit.Id)).Duration,
                     IsBreak = isBreak,
