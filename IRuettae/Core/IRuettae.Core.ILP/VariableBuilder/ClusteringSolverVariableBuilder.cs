@@ -66,8 +66,6 @@ namespace IRuettae.Preprocessing.Mapping
                     santasVar[day, santa] = true;
                 }
 
-                var dayTimeduration = 24 * 60 * 60;
-
 
                 for (int v = 0; v < Visits.Count; v++)
                 {
@@ -75,7 +73,7 @@ namespace IRuettae.Preprocessing.Mapping
                     {
                         visitsVar[day, v] = VisitState.Unavailable;
                     }
-                    else if (Visits[v].Desired.Any(p => Days[day].End < p.to && p.from< Days[day].End))
+                    else if (Visits[v].Desired.Any(p => Days[day].End < p.to && p.from < Days[day].End))
                     {
                         visitsVar[day, v] = VisitState.Desired;
                     }

@@ -1,18 +1,19 @@
 ﻿using System;
+using IRuettae.Core.ILP.Algorithm.Persistence;
 
 namespace IRuettae.Core.ILP.Algorithm.Clustering.TargetFunctionBuilders
 {
     internal static class TargetFunctionBuilderFactory
     {
-        public static AbstractTargetFunctionBuilder Create(TargetBuilderType type)
+        public static AbstractTargetFunctionBuilder Create(ClusteringOptimizationGoals goal)
         {
-            switch (type)
+            switch (goal)
             {
-                case TargetBuilderType.Default:
+                case ClusteringOptimizationGoals.MinTimePerSanta:
                     return new MinTimePerSantaTargetFunctionBuilder();
-                case TargetBuilderType.MinTimeOnly:
+                case ClusteringOptimizationGoals.OverallMinTime:
                     return new OverallMinTimeTargetFunctionBuilder();
-                case TargetBuilderType.MinAvgTimeOnly:
+                case ClusteringOptimizationGoals.MinAvgTimePerSanta:
                     return new MinAvgTimeTargetFunctionBuilder();
                 default:
                     break;

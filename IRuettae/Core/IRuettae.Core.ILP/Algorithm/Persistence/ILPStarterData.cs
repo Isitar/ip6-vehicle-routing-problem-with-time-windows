@@ -12,7 +12,7 @@ namespace IRuettae.Core.ILP.Algorithm.Persistence
     public class ILPStarterData
     {
         // Phase 1
-        public ClusteringOptimisationGoals ClusteringOptimisationFunction { get; set; }
+        public ClusteringOptimizationGoals ClusteringOptimizationFunction { get; set; }
         public double ClusteringMipGap { get; set; }
         public long ClusteringTimeLimit { get; set; }
         public string ClusteringResult { get; set; }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.ILP.Algorithm;
 using IRuettae.Core.ILP.Algorithm.Clustering.TargetFunctionBuilders;
+using IRuettae.Core.ILP.Algorithm.Persistence;
 using IRuettae.Core.Models;
 using IRuettae.Preprocessing.Mapping;
 using ResultState = IRuettae.Core.ILP.Algorithm.ResultState;
@@ -17,23 +18,30 @@ namespace IRuettae.Core.ILP
     public class ILPSolver : ISolver
     {
         private readonly OptimizationInput input;
+        private readonly int timeSliceDuration;
+        private readonly AbstractTargetFunctionBuilder targetFunctionBuilder;
 
-        public ILPSolver(OptimizationInput input)
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="timeSliceDuration">in seconds</param>
+        public ILPSolver(OptimizationInput input, int timeSliceDuration, ClusteringOptimizationGoals goals = ClusteringOptimizationGoals.MinAvgTimePerSanta)
         {
             this.input = input;
+            this.timeSliceDuration = timeSliceDuration;
+            this.targetFunctionBuilder = TargetFunctionBuilderFactory.Create(goals);
         }
 
         public OptimizationResult Solve(int timelimit, IProgress<int> progress)
         {
             var sw = Stopwatch.StartNew();
-            
-            int timeslice = 5 * 60; // 5 mins
 
             var clusteringSolverVariableBuilder = new ClusteringSolverVariableBuilder(input, 0);
             var clusteringSolverInputData = clusteringSolverVariableBuilder.Build();
             var clusterinSolver =
-                new Algorithm.Clustering.Solver(clusteringSolverInputData, new MinAvgTimeTargetFunctionBuilder());
-            var phase1ResultState = clusterinSolver.Solve(timeslice, timelimit);
+                new Algorithm.Clustering.Solver(clusteringSolverInputData, targetFunctionBuilder);
+            var phase1ResultState = clusterinSolver.Solve(timeSliceDuration, timelimit);
             if (!(new[] { ResultState.Feasible, ResultState.Optimal }).Contains(phase1ResultState))
             {
                 return null;
@@ -52,19 +60,19 @@ namespace IRuettae.Core.ILP
                     var schedulingOptimizationInput = new OptimizationInput
                     {
                         Visits = input.Visits.Where(v => cluster.Select(w => w.Visit).Contains(v.Id)).ToArray(),
-                        Santas = new[] {input.Santas[santa]},
-                        Days = new [] {input.Days[day]},
+                        Santas = new[] { input.Santas[santa] },
+                        Days = new[] { input.Days[day] },
                         RouteCosts = input.RouteCosts,
                     };
 
-                    schedulingSovlerVariableBuilders.Add(new SchedulingSolverVariableBuilder(timeslice, schedulingOptimizationInput));
+                    schedulingSovlerVariableBuilders.Add(new SchedulingSolverVariableBuilder(timeSliceDuration, schedulingOptimizationInput));
                 }
             }
 
             var schedulingInputVariables = schedulingSovlerVariableBuilders
                 .Where(vb => vb.Visits != null && vb.Visits.Count > 1)
                 .Select(vb => vb.Build());
-                
+
 
             var routeResults = schedulingInputVariables
                 .AsParallel()
@@ -80,19 +88,19 @@ namespace IRuettae.Core.ILP
                 Routes = routeResults.Select(r => new Route
                 {
                     SantaId = r.SantaIds[0],
-                    Waypoints = r.Waypoints[0,0].Select(origWp => new Waypoint
+                    Waypoints = r.Waypoints[0, 0].Select(origWp => new Waypoint
                     {
                         VisitId = origWp.Visit,
                         StartTime = origWp.StartTime
                     }).ToArray(),
-                   
+
                 }).ToArray(),
             };
 
 
             // assign elapsed in the end.
             sw.Stop();
-            optimizationResult.TimeElapsed = (int) (sw.ElapsedMilliseconds / 1000);
+            optimizationResult.TimeElapsed = (int)(sw.ElapsedMilliseconds / 1000);
             return optimizationResult;
         }
     }

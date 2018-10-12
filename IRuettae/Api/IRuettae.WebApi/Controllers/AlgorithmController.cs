@@ -14,6 +14,7 @@ using System.Web.Hosting;
 using System.Web.Http;
 using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm;
+using IRuettae.Core.ILP.Algorithm.Persistence;
 using IRuettae.Core.Models;
 using IRuettae.Persistence.Entities;
 using IRuettae.Preprocessing.Mapping;
@@ -39,12 +40,12 @@ namespace IRuettae.WebApi.Controllers
             {
                 var visits = dbSession.Query<Visit>().Where(v => v.Year == algorithmStarter.Year && v.Id != algorithmStarter.StarterId).ToList();
                 visits.ForEach(v => v.Duration = 60 * (v.NumberOfChildren * algorithmStarter.TimePerChild + algorithmStarter.Beta0));
-                var converter = new Converter.PersistenceCoreConverter();
+                var converter = new Converter.PersistenceToCoreConverter();
 
-                var optimisationInput = converter.Convert(algorithmStarter.Days, dbSession.Query<Visit>().First(v => v.Id == algorithmStarter.StarterId), visits,
+                var optimizationInput = converter.Convert(algorithmStarter.Days, dbSession.Query<Visit>().First(v => v.Id == algorithmStarter.StarterId), visits,
                     dbSession.Query<Santa>().ToList());
 
-                var ilpSolver = new ILPSolver(optimisationInput);
+                var ilpSolver = new ILPSolver(optimizationInput, algorithmStarter.TimeSliceDuration);
                 var progress = new Progress<int>();
                 progress.ProgressChanged += (sender, i) => { Console.WriteLine($"Progress: {i}"); };
                 return ilpSolver.Solve(0, progress);
@@ -69,7 +70,7 @@ namespace IRuettae.WebApi.Controllers
                 ILPStarterData ilpData = new ILPStarterData()
                 {
                     TimeSliceDuration = algorithmStarter.TimeSliceDuration,
-                    ClusteringOptimisationFunction = ClusteringOptimisationGoals.OverallMinTime,
+                    ClusteringOptimizationFunction = ClusteringOptimizationGoals.OverallMinTime,
                     ClusteringMipGap = Properties.Settings.Default.MIPGapClustering,
                     ClusteringTimeLimit = Properties.Settings.Default.TimelimitClustering,
                     SchedulingMipGap = Properties.Settings.Default.MIPGapScheduling,
@@ -93,7 +94,7 @@ namespace IRuettae.WebApi.Controllers
                 ILPStarterData ilpData2 = new ILPStarterData()
                 {
                     TimeSliceDuration = algorithmStarter.TimeSliceDuration,
-                    ClusteringOptimisationFunction = ClusteringOptimisationGoals.MinTimePerSanta,
+                    ClusteringOptimizationFunction = ClusteringOptimizationGoals.MinTimePerSanta,
                     ClusteringMipGap = Properties.Settings.Default.MIPGapClustering,
                     ClusteringTimeLimit = Properties.Settings.Default.TimelimitClustering,
                     SchedulingMipGap = Properties.Settings.Default.MIPGapScheduling,
@@ -118,7 +119,7 @@ namespace IRuettae.WebApi.Controllers
                 ILPStarterData ilpData3 = new ILPStarterData()
                 {
                     TimeSliceDuration = algorithmStarter.TimeSliceDuration,
-                    ClusteringOptimisationFunction = ClusteringOptimisationGoals.MinAvgTimePerSanta,
+                    ClusteringOptimizationFunction = ClusteringOptimizationGoals.MinAvgTimePerSanta,
                     ClusteringMipGap = Properties.Settings.Default.MIPGapClustering,
                     ClusteringTimeLimit = Properties.Settings.Default.TimelimitClustering,
                     SchedulingMipGap = Properties.Settings.Default.MIPGapScheduling,

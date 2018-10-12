@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace IRuettae.Core.ILP.Algorithm.Persistence
 {
-    public enum ClusteringOptimisationGoals
+    public enum ClusteringOptimizationGoals
     {
         OverallMinTime,
         MinTimePerSanta,
-        MinAvgTimePerSanta
+        MinAvgTimePerSanta, // Default
     }
 }

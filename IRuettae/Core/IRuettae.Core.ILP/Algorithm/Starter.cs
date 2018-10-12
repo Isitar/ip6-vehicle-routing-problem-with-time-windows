@@ -11,22 +11,32 @@ namespace IRuettae.Core.ILP.Algorithm
 {
     public class Starter
     {
-        public static Route Optimise(object solverInputData, TargetBuilderType builderType = TargetBuilderType.Default,
+        public static Route Optimise(Clustering.SolverInputData solverInputData, Persistence.ClusteringOptimizationGoals goal,
             double MIP_GAP = 0, long timelimit = 0)
         {
-            ISolver solver;
-            switch (solverInputData)
+            ISolver solver = new Clustering.Solver(solverInputData, Clustering.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(goal));
+
+            var resultState = solver.Solve(MIP_GAP, timelimit);
+            switch (resultState)
             {
-                case SolverInputData sid:
-                    solver = new Solver(sid, TargetFunctionBuilderFactory.Create(builderType));
-                    break;
-                case Clustering.SolverInputData sid:
-                    solver = new Clustering.Solver(sid, Clustering.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(builderType));
+                case ResultState.Optimal:
+                case ResultState.Feasible:
+                    return solver.GetResult();
+                case ResultState.Unknown:
+                case ResultState.NotSolved:
+                case ResultState.Infeasible:
                     break;
                 default:
-                    throw new ArgumentException("SolverInputData not recognized");
+                    Console.WriteLine("Warning: Api changed, new result state");
+                    break;
             }
 
+            return null;
+        }
+        public static Route Optimise(SolverInputData solverInputData, TargetBuilderType builderType = TargetBuilderType.Default,
+            double MIP_GAP = 0, long timelimit = 0)
+        {
+            ISolver solver = new Solver(solverInputData, TargetFunctionBuilderFactory.Create(builderType));
 
             var resultState = solver.Solve(MIP_GAP, timelimit);
             switch (resultState)
@@ -46,21 +56,16 @@ namespace IRuettae.Core.ILP.Algorithm
             return null;
         }
 
-        public static void SaveMps(string path, object solverInputData, TargetBuilderType builderType = TargetBuilderType.Default)
+        public static void SaveMps(string path, Clustering.SolverInputData solverInputData, Persistence.ClusteringOptimizationGoals goal)
         {
-            ISolver solver;
-            switch (solverInputData)
-            {
-                case SolverInputData sid:
-                    solver = new Solver(sid, TargetFunctionBuilderFactory.Create(builderType));
-                    break;
-                case Clustering.SolverInputData sid:
-                    solver = new Clustering.Solver(sid, Clustering.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(builderType));
-                    break;
-                default:
-                    throw new ArgumentException("SolverInputData not recognized");
-            }
+            ISolver solver = new Clustering.Solver(solverInputData, Clustering.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(goal));
 
+            System.IO.File.WriteAllText(path, solver.ExportMPS());
+        }
+
+        public static void SaveMps(string path, SolverInputData solverInputData, TargetBuilderType builderType = TargetBuilderType.Default)
+        {
+            ISolver solver = new Solver(solverInputData, TargetFunctionBuilderFactory.Create(builderType));
 
             System.IO.File.WriteAllText(path, solver.ExportMPS());
         }

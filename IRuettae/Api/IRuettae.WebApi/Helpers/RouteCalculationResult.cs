@@ -9,7 +9,7 @@ namespace IRuettae.Persistence.Entities
 {
     public class RouteCalculationResult
     {
-        public OptimisationResult OptimizationResult { get; set; }
+        public OptimizationResult OptimizationResult { get; set; }
         public Dictionary<int, long> VisitMap { get; }
         public Dictionary<int, long> SantaMap { get; }
         public DateTime ZeroTime { get; }

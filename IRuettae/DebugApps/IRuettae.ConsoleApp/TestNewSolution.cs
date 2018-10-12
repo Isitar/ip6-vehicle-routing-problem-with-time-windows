@@ -7,6 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.ILP.Algorithm;
+using IRuettae.Core.ILP.Algorithm.Persistence;
 using IRuettae.WebApi.Helpers;
 using SolverInputData = IRuettae.Core.ILP.Algorithm.Clustering.SolverInputData;
 
@@ -39,7 +40,7 @@ namespace IRuettae.ConsoleApp
         {
             var solverInputData = Deserialize($"SerializedObjects/ClusteringSolverInput{n_visits}Visits.serial");
             // solverInputData.DayDuration = solverInputData.DayDuration.Select(d => (int)(d / 0.7)).ToArray();
-            Starter.SaveMps($"New_{n_visits}_mps.mps", solverInputData, TargetBuilderType.Default);
+            Starter.SaveMps($"New_{n_visits}_mps.mps", solverInputData, ClusteringOptimizationGoals.MinTimePerSanta);
             ConsoleExt.WriteLine($"Saved mps for {n_visits} visits", InfoColor);
         }
         private static void TestSerailDataVisits(string serialDataName, int numberOfRuns = 5)
@@ -52,7 +53,7 @@ namespace IRuettae.ConsoleApp
             {
                 var sw = Stopwatch.StartNew();
 
-                var routeResult = Starter.Optimise(solverInputData, MIP_GAP: mip_gap);
+                var routeResult = Starter.Optimise(solverInputData, ClusteringOptimizationGoals.MinTimePerSanta, MIP_GAP: mip_gap);
                 sw.Stop();
                 ConsoleExt.WriteLine($"{i}/{numberOfRuns}: Elapsed s: {sw.ElapsedMilliseconds / 1000}", InfoColor);
 
@@ -126,7 +127,7 @@ namespace IRuettae.ConsoleApp
             };
 
             var solverInputData = new SolverInputData(santas, visitsDuration, visits, distances, dayDuration, santaBreaks);
-            Starter.Optimise(solverInputData);
+            Starter.Optimise(solverInputData, ClusteringOptimizationGoals.MinTimePerSanta);
         }
     }
 }
