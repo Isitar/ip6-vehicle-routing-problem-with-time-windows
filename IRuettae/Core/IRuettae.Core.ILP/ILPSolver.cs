@@ -33,7 +33,7 @@ namespace IRuettae.Core.ILP
             this.targetFunctionBuilder = TargetFunctionBuilderFactory.Create(goals);
         }
 
-        public OptimizationResult Solve(int timelimit, IProgress<int> progress)
+        public OptimizationResult Solve(int timelimit, IProgress<ProgressReport> progress)
         {
             var sw = Stopwatch.StartNew();
 
@@ -48,7 +48,7 @@ namespace IRuettae.Core.ILP
             }
 
             var phase1Result = clusterinSolver.GetResult();
-            progress.Report(50);
+            progress.Report(new ProgressReport(50));
 
 
             var schedulingSovlerVariableBuilders = new List<SchedulingSolverVariableBuilder>();

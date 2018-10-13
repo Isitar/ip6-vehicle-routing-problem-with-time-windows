@@ -46,7 +46,7 @@ namespace IRuettae.WebApi.Controllers
                     dbSession.Query<Santa>().ToList());
 
                 var ilpSolver = new ILPSolver(optimizationInput, algorithmStarter.TimeSliceDuration);
-                var progress = new Progress<int>();
+                var progress = new Progress<ProgressReport>();
                 progress.ProgressChanged += (sender, i) => { Console.WriteLine($"Progress: {i}"); };
                 return ilpSolver.Solve(0, progress);
             }
