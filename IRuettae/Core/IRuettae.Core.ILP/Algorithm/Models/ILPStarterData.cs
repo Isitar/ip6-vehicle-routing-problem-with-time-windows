@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IRuettae.Core.ILP.Algorithm.Persistence
+namespace IRuettae.Core.ILP.Algorithm.Models
 {
     /// <summary>
     /// Class that holds the ilp specific data belonging to a route calculation

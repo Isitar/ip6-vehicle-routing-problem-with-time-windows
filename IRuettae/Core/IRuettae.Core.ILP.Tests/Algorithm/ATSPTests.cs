@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.ILP.Algorithm;
-using IRuettae.Core.ILP.Algorithm.Persistence;
+using IRuettae.Core.ILP.Algorithm.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SolverInputData = IRuettae.Core.ILP.Algorithm.Clustering.SolverInputData;
 

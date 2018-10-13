@@ -11,7 +11,7 @@ namespace IRuettae.Core.ILP.Algorithm
 {
     public class Starter
     {
-        public static Route Optimise(Clustering.SolverInputData solverInputData, Persistence.ClusteringOptimizationGoals goal,
+        public static Route Optimise(Clustering.SolverInputData solverInputData, Models.ClusteringOptimizationGoals goal,
             double MIP_GAP = 0, long timelimit = 0)
         {
             ISolver solver = new Clustering.Solver(solverInputData, Clustering.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(goal));
@@ -56,7 +56,7 @@ namespace IRuettae.Core.ILP.Algorithm
             return null;
         }
 
-        public static void SaveMps(string path, Clustering.SolverInputData solverInputData, Persistence.ClusteringOptimizationGoals goal)
+        public static void SaveMps(string path, Clustering.SolverInputData solverInputData, Models.ClusteringOptimizationGoals goal)
         {
             ISolver solver = new Clustering.Solver(solverInputData, Clustering.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(goal));
 

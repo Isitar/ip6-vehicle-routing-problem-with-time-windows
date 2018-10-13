@@ -1,5 +1,5 @@
 ﻿using System;
-using IRuettae.Core.ILP.Algorithm.Persistence;
+using IRuettae.Core.ILP.Algorithm.Models;
 
 namespace IRuettae.Core.ILP.Algorithm.Clustering.TargetFunctionBuilders
 {

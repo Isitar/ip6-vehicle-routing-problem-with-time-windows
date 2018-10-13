@@ -14,7 +14,7 @@ using System.Web.Hosting;
 using System.Web.Http;
 using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm;
-using IRuettae.Core.ILP.Algorithm.Persistence;
+using IRuettae.Core.ILP.Algorithm.Models;
 using IRuettae.Core.Models;
 using IRuettae.Persistence.Entities;
 using IRuettae.Preprocessing.Mapping;

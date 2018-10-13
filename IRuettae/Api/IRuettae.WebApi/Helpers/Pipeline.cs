@@ -15,7 +15,7 @@ using System.Web.Helpers;
 using System.Web.Hosting;
 using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm;
-using IRuettae.Core.ILP.Algorithm.Persistence;
+using IRuettae.Core.ILP.Algorithm.Models;
 using IRuettae.Core.Models;
 using IRuettae.Persistence.Entities;
 using IRuettae.Preprocessing.Mapping;
@@ -196,7 +196,7 @@ namespace IRuettae.WebApi.Helpers
                         var mpsPathScheduling = HostingEnvironment.MapPath($"~/App_Data/Scheduling_{routeCalculation.Id}_{Interlocked.Increment(ref counter)}_{Guid.NewGuid().ToString()}.mps");
                         Starter.SaveMps(mpsPathScheduling, schedulingInputVariable, TargetBuilderType.Default);
 #endif
-                        return Starter.Optimise(schedulingInputVariable, TargetBuilderType.Default, 0, ilpData.SchedulingTimeLimit);
+                        return Starter.Optimise(schedulingInputVariable, TargetBuilderType.Default, ilpData.SchedulingMipGap, ilpData.SchedulingTimeLimit);
                     })
                     .ToList();
 

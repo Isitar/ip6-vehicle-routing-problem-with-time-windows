@@ -7,7 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.ILP.Algorithm;
-using IRuettae.Core.ILP.Algorithm.Persistence;
+using IRuettae.Core.ILP.Algorithm.Models;
 using IRuettae.WebApi.Helpers;
 using SolverInputData = IRuettae.Core.ILP.Algorithm.Clustering.SolverInputData;
 

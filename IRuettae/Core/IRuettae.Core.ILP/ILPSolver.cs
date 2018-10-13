@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.ILP.Algorithm;
 using IRuettae.Core.ILP.Algorithm.Clustering.TargetFunctionBuilders;
-using IRuettae.Core.ILP.Algorithm.Persistence;
+using IRuettae.Core.ILP.Algorithm.Models;
 using IRuettae.Core.Models;
 using IRuettae.Preprocessing.Mapping;
 using ResultState = IRuettae.Core.ILP.Algorithm.ResultState;
