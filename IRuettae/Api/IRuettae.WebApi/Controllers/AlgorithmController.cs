@@ -48,7 +48,7 @@ namespace IRuettae.WebApi.Controllers
                 var ilpSolver = new ILPSolver(optimizationInput, algorithmStarter.TimeSliceDuration);
                 var progress = new Progress<ProgressReport>();
                 progress.ProgressChanged += (sender, i) => { Console.WriteLine($"Progress: {i}"); };
-                return ilpSolver.Solve(0, progress);
+                return ilpSolver.Solve(0, progress, null);
             }
         }
         /// <summary>

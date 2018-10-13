@@ -10,6 +10,9 @@ namespace IRuettae.Core.Models
     {
         private double progress;
 
+        /// <summary>
+        /// Progress from 0 to 1
+        /// </summary>
         public double Progress
         {
             get => progress;
