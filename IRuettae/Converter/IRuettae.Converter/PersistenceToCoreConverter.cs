@@ -15,22 +15,19 @@ namespace IRuettae.Converter
         /// Mapping for backward conversion
         /// Visit-Number to Visit.Id
         /// </summary>
-        private Dictionary<int, long> visitMap = new Dictionary<int, long>();
-        public Dictionary<int, long> VisitMap { get; }
+        public Dictionary<int, long> VisitMap { get; } = new Dictionary<int, long>();
 
         /// <summary>
         /// Mapping for backward conversion
         /// Santa-Number to Santa.Id
         /// </summary>
-        private Dictionary<int, long> santaMap = new Dictionary<int, long>();
-        public Dictionary<int, long> SantaMap { get; }
+        public Dictionary<int, long> SantaMap { get; } = new Dictionary<int, long>();
 
         /// <summary>
         /// Starting time of the first day
         /// Used to retreive the real time from a relative time in seconds
         /// </summary>
-        private DateTime zeroTime = new DateTime();
-        public DateTime ZeroTime { get; }
+        public DateTime ZeroTime { get; private set; } = new DateTime();
 
         /// <summary>
         /// Converts the input params to an OptimizationInput
@@ -42,8 +39,8 @@ namespace IRuettae.Converter
         /// <returns>An optimization input that can be used to solve the problem</returns>
         public Core.Models.OptimizationInput Convert(List<(DateTime Start, DateTime End)> workingDays, Persistence.Entities.Visit startVisit, List<Persistence.Entities.Visit> visits, List<Persistence.Entities.Santa> santas)
         {
-            visitMap.Clear();
-            santaMap.Clear();
+            VisitMap.Clear();
+            SantaMap.Clear();
 
             var recidToSantaMap = new Dictionary<long, int>();
 
@@ -56,7 +53,7 @@ namespace IRuettae.Converter
             };
 
             // set 0-time
-            zeroTime = workingDays.Min(wd => wd.Start);
+            ZeroTime = workingDays.Min(wd => wd.Start);
 
             // create santas
             santas = santas.OrderBy(s => s.Id).ToList();
@@ -64,7 +61,7 @@ namespace IRuettae.Converter
             {
                 var persistenceSanta = santas[i];
                 recidToSantaMap.Add(persistenceSanta.Id, i);
-                santaMap.Add(i, persistenceSanta.Id);
+                SantaMap.Add(i, persistenceSanta.Id);
                 input.Santas[i] = new Core.Models.Santa { Id = i };
             }
 
@@ -73,7 +70,7 @@ namespace IRuettae.Converter
             for (int x = 0; x < visits.Count; x++)
             {
                 var persistenceVisit = visits[x];
-                visitMap.Add(x, persistenceVisit.Id);
+                VisitMap.Add(x, persistenceVisit.Id);
 
                 var isBreak = persistenceVisit.VisitType == VisitType.Break;
 
@@ -81,9 +78,9 @@ namespace IRuettae.Converter
                 {
                     Id = x,
                     Desired = persistenceVisit.Desired
-                        .Select(d => ((int)(d.Start.Value - zeroTime).TotalSeconds, (int)(d.End.Value - zeroTime).TotalSeconds)).ToArray(),
+                        .Select(d => ((int)(d.Start.Value - ZeroTime).TotalSeconds, (int)(d.End.Value - ZeroTime).TotalSeconds)).ToArray(),
                     Unavailable = persistenceVisit.Unavailable
-                        .Select(d => ((int)(d.Start.Value - zeroTime).TotalSeconds, (int)(d.End.Value - zeroTime).TotalSeconds)).ToArray(),
+                        .Select(d => ((int)(d.Start.Value - ZeroTime).TotalSeconds, (int)(d.End.Value - ZeroTime).TotalSeconds)).ToArray(),
                     Duration = (int)persistenceVisit.Duration,
                     WayCostFromHome = startVisit.ToWays.First(w => w.To.Id.Equals(persistenceVisit.Id)).Duration,
                     WayCostToHome = startVisit.FromWays.First(w => w.From.Id.Equals(persistenceVisit.Id)).Duration,
@@ -107,7 +104,7 @@ namespace IRuettae.Converter
 
             for (int i = 0; i < workingDays.Count; i++)
             {
-                input.Days[i] = ((int)(workingDays[i].Start - zeroTime).TotalSeconds, (int)(workingDays[i].End - zeroTime).TotalSeconds);
+                input.Days[i] = ((int)(workingDays[i].Start - ZeroTime).TotalSeconds, (int)(workingDays[i].End - ZeroTime).TotalSeconds);
             }
             return input;
         }
