@@ -29,7 +29,7 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering.Detail
                     {
                         if (Math.Abs(solverData.Variables.SantaVisit[day * realNumberOfSantas + santa, visit].SolutionValue() - 1) < 0.0001)
                         {
-                            waypoints.Add(new Waypoint(visit, 0, solverData.SolverInputData.VisitIds[visit]));
+                            waypoints.Add(new Waypoint(visit, 0));
                         }
                     }
 

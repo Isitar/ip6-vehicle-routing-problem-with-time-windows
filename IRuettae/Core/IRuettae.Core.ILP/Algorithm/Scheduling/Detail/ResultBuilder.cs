@@ -24,7 +24,7 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling.Detail
             {
                 for (int santa = 0; santa < solverData.NumberOfSantas; santa++)
                 {
-                    Waypoint? nextLocation = new Waypoint(0, -1, solverData.Input.VisitIds[0]);
+                    Waypoint? nextLocation = new Waypoint(0, -1);
                     nextLocation = GetNextLocation(day, santa, nextLocation.Value);
                     if (!nextLocation.HasValue)
                     {
@@ -35,7 +35,7 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling.Detail
                     // create way from home
                     {
                         var distance = solverData.Input.Distances[solverData.StartEndPoint, nextLocation.Value.Visit];
-                        nextLocation = new Waypoint(0, (nextLocation.Value.StartTime - distance - 1), solverData.Input.VisitIds[0]);
+                        nextLocation = new Waypoint(0, (nextLocation.Value.StartTime - distance - 1));
                     }
 
                     do
@@ -49,7 +49,7 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling.Detail
                         var last = route.Waypoints[santa, day].LastOrDefault();
                         var duration = solverData.Input.VisitsDuration[last.Visit];
                         var distance = solverData.Input.Distances[last.Visit, solverData.StartEndPoint];
-                        route.Waypoints[santa, day].Add(new Waypoint(0, last.StartTime + duration + distance, solverData.Input.VisitIds[0]));
+                        route.Waypoints[santa, day].Add(new Waypoint(0, last.StartTime + duration + distance));
                     }
                 }
             }
@@ -74,7 +74,7 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling.Detail
 
                     if (solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice].SolutionValue() == 1)
                     {
-                        return new Waypoint(visit, timeslice, solverData.Input.VisitIds[visit]);
+                        return new Waypoint(visit, timeslice);
                     }
                 }
             }

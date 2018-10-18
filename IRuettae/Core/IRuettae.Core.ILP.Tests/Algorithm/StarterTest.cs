@@ -73,17 +73,17 @@ namespace IRuettae.Core.Tests.Algorithm
                     { // santa 1
                         new List<Waypoint>()
                         { // day 1
-                            new Waypoint (0,-1, 0),
-                            new Waypoint (1, 1, 1),
-                            new Waypoint (2, 3, 2),
-                            new Waypoint (0, 6, 0),
+                            new Waypoint (0,-1),
+                            new Waypoint (1, 1),
+                            new Waypoint (2, 3),
+                            new Waypoint (0, 6),
                         },
                         new List<Waypoint>()
                         { // day 2
-                            new Waypoint (0,-1, 0),
-                            new Waypoint (3, 1, 3),
-                            new Waypoint (4, 4, 4),
-                            new Waypoint (0, 7, 0),
+                            new Waypoint (0,-1),
+                            new Waypoint (3, 1),
+                            new Waypoint (4, 4),
+                            new Waypoint (0, 7),
                         },
                     },
                 }
