@@ -82,8 +82,8 @@ namespace IRuettae.Converter
                     Unavailable = persistenceVisit.Unavailable
                         .Select(d => ((int)(d.Start.Value - ZeroTime).TotalSeconds, (int)(d.End.Value - ZeroTime).TotalSeconds)).ToArray(),
                     Duration = (int)persistenceVisit.Duration,
-                    WayCostFromHome = startVisit.ToWays.First(w => w.To.Id.Equals(persistenceVisit.Id)).Duration,
-                    WayCostToHome = startVisit.FromWays.First(w => w.From.Id.Equals(persistenceVisit.Id)).Duration,
+                    WayCostFromHome = startVisit.FromWays.First(w => w.To.Id.Equals(persistenceVisit.Id)).Duration,
+                    WayCostToHome = startVisit.ToWays.First(w => w.From.Id.Equals(persistenceVisit.Id)).Duration,
                     IsBreak = isBreak,
                     SantaId = isBreak ? recidToSantaMap[persistenceVisit.Santa.Id] : -1,
                 };
@@ -97,7 +97,7 @@ namespace IRuettae.Converter
                     }
                     else
                     {
-                        input.RouteCosts[x, y] = persistenceVisit.ToWays.First(w => w.To.Id.Equals(visits[y].Id)).Duration;
+                        input.RouteCosts[x, y] = persistenceVisit.FromWays.First(w => w.To.Id.Equals(visits[y].Id)).Duration;
                     }
                 }
             }
