@@ -109,8 +109,9 @@ namespace IRuettae.WebApi.Helpers
                 {
                     Console.WriteLine(message);
                     routeCalculation.StateText += message + Environment.NewLine;
-                    dbSession.Update(routeCalculation);
-                    dbSession.Flush();
+                    // Todo: can't do that concurrent
+                    // dbSession.Update(routeCalculation);
+                    // dbSession.Flush();
                 };
                 var progress = new Progress<ProgressReport>();
                 progress.ProgressChanged += (s, report) =>
