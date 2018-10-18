@@ -175,33 +175,33 @@ namespace IRuettae.Converter.Tests
             {
                 startVisit.ToWays = new List<Persistence.Entities.Way>
                 {
-                    w01,
-                    w02,
+                    w10,
+                    w20,
                 };
                 startVisit.FromWays = new List<Persistence.Entities.Way>
                 {
-                    w10,
-                    w20,
+                    w01,
+                    w02,
                 };
                 visits[0].ToWays = new List<Persistence.Entities.Way>
-                {
-                    w10,
-                    w12,
-                };
-                visits[0].FromWays = new List<Persistence.Entities.Way>
                 {
                     w01,
                     w21,
                 };
-                visits[1].ToWays = new List<Persistence.Entities.Way>
+                visits[0].FromWays = new List<Persistence.Entities.Way>
                 {
-                    w20,
-                    w21,
+                    w10,
+                    w12,
                 };
-                visits[1].FromWays = new List<Persistence.Entities.Way>
+                visits[1].ToWays = new List<Persistence.Entities.Way>
                 {
                     w02,
                     w12,
+                };
+                visits[1].FromWays = new List<Persistence.Entities.Way>
+                {
+                    w20,
+                    w21,
                 };
             }
 
@@ -510,27 +510,19 @@ namespace IRuettae.Converter.Tests
             {
                 startVisit.ToWays = new List<Persistence.Entities.Way>
                 {
-                    w01,
-                    w02,
-                    w03,
-                    w04,
-                };
-                startVisit.FromWays = new List<Persistence.Entities.Way>
-                {
                     w10,
                     w20,
                     w30,
                     w40,
                 };
-                visits[0].ToWays = new List<Persistence.Entities.Way>
+                startVisit.FromWays = new List<Persistence.Entities.Way>
                 {
-                    w10,
-                    w11,
-                    w12,
-                    w13,
-                    w14,
+                    w01,
+                    w02,
+                    w03,
+                    w04,
                 };
-                visits[0].FromWays = new List<Persistence.Entities.Way>
+                visits[0].ToWays = new List<Persistence.Entities.Way>
                 {
                     w01,
                     w11,
@@ -538,55 +530,63 @@ namespace IRuettae.Converter.Tests
                     w31,
                     w41,
                 };
-                visits[1].ToWays = new List<Persistence.Entities.Way>
+                visits[0].FromWays = new List<Persistence.Entities.Way>
                 {
-                    w20,
-                    w21,
-                    w22,
-                    w23,
-                    w24,
+                    w10,
+                    w11,
+                    w12,
+                    w13,
+                    w14,
                 };
-                visits[1].FromWays = new List<Persistence.Entities.Way>
+                visits[1].ToWays = new List<Persistence.Entities.Way>
                 {
                     w02,
                     w12,
                     w22,
                     w32,
                     w42,
+                };
+                visits[1].FromWays = new List<Persistence.Entities.Way>
+                {
+                    w20,
+                    w21,
+                    w22,
+                    w23,
+                    w24,
                 };
 
                 visits[2].ToWays = new List<Persistence.Entities.Way>
                 {
-                    w30,
-                    w31,
-                    w32,
-                    w33,
-                    w34,
-                };
-                visits[2].FromWays = new List<Persistence.Entities.Way>
-                {
                     w03,
                     w13,
                     w23,
                     w33,
                     w44,
                 };
+                visits[2].FromWays = new List<Persistence.Entities.Way>
+                {
+                    w30,
+                    w31,
+                    w32,
+                    w33,
+                    w34,
+                };
 
                 visits[3].ToWays = new List<Persistence.Entities.Way>
-                {
-                    w40,
-                    w41,
-                    w42,
-                    w43,
-                    w43,
-                };
-                visits[3].FromWays = new List<Persistence.Entities.Way>
                 {
                     w04,
                     w14,
                     w24,
                     w34,
                     w44,
+                };
+                visits[3].FromWays = new List<Persistence.Entities.Way>
+                {
+                    w40,
+                    w41,
+                    w42,
+                    w43,
+                    w43,
                 };
             }
 
