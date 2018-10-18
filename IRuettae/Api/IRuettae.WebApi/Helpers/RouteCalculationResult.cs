@@ -10,9 +10,9 @@ namespace IRuettae.Persistence.Entities
     public class RouteCalculationResult
     {
         public OptimizationResult OptimizationResult { get; set; }
-        public Dictionary<int, long> VisitMap { get; }
-        public Dictionary<int, long> SantaMap { get; }
-        public DateTime ZeroTime { get; }
+        public Dictionary<int, long> VisitMap { get; set; }
+        public Dictionary<int, long> SantaMap { get; set; }
+        public DateTime ZeroTime { get; set; }
         public DateTime ConvertTime(int time)
         {
             return ZeroTime.AddSeconds(time);

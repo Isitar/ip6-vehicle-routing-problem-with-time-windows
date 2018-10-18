@@ -108,15 +108,16 @@ namespace IRuettae.WebApi.Helpers
                 consoleProgress.ProgressChanged += (s, message) =>
                 {
                     Console.WriteLine(message);
-                    routeCalculation.StateText += message + Environment.NewLine;
                     // Todo: can't do that concurrent
+                    //routeCalculation.StateText += message + Environment.NewLine;
                     // dbSession.Update(routeCalculation);
                     // dbSession.Flush();
                 };
                 var progress = new Progress<ProgressReport>();
                 progress.ProgressChanged += (s, report) =>
                 {
-                    routeCalculation.Progress = report.Progress;
+                    // Todo: can't do that concurrent
+                    //routeCalculation.Progress = report.Progress;
                     ((IProgress<String>)consoleProgress).Report($"Progress: {report.Progress}");
                 };
 
@@ -126,7 +127,15 @@ namespace IRuettae.WebApi.Helpers
 
                 var optimizationResult = solver.Solve((int)(ilpData.ClusteringTimeLimit + ilpData.SchedulingTimeLimit), progress, consoleProgress);
 
-                routeCalculation.Result = JsonConvert.SerializeObject(optimizationResult);
+                var routeCalculationResult = new RouteCalculationResult()
+                {
+                    OptimizationResult = optimizationResult,
+                    VisitMap = converter.VisitMap,
+                    SantaMap = converter.SantaMap,
+                    ZeroTime = converter.ZeroTime,
+                };
+
+                routeCalculation.Result = JsonConvert.SerializeObject(routeCalculationResult);
                 routeCalculation.State = RouteCalculationState.Finished;
 
                 #endregion Run
@@ -207,7 +216,7 @@ namespace IRuettae.WebApi.Helpers
                         break;
                 }
 
-#if DEBUG
+        #if DEBUG
                 var serialPath = HostingEnvironment.MapPath($"~/App_Data/Clustering{routeCalculation.Id}_{ilpData.ClusteringOptimizationFunction}_{routeCalculation.NumberOfVisits}.serial");
                 if (serialPath != null)
                 {
@@ -218,7 +227,7 @@ namespace IRuettae.WebApi.Helpers
                 }
                 var mpsPath = HostingEnvironment.MapPath($"~/App_Data/Clustering_{routeCalculation.Id}_{ilpData.ClusteringOptimizationFunction}_{routeCalculation.NumberOfVisits}.mps");
                 Starter.SaveMps(mpsPath, clusteringSolverInputData, targetType);
-#endif
+        #endif
 
 
                 var phase1Result = Starter.Optimise(clusteringSolverInputData, targetType, ilpData.ClusteringMipGap, ilpData.ClusteringTimeLimit);

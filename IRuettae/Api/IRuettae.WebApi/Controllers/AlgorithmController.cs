@@ -228,7 +228,7 @@ namespace IRuettae.WebApi.Controllers
                 var routeCalculation = dbSession.Get<RouteCalculation>(id);
                 var schedulingResults = JsonConvert.DeserializeObject<RouteCalculationResult>(routeCalculation.Result);
 
-                return schedulingResults.OptimizationResult.Routes.Select(r => r.Waypoints.Select(wp =>
+                var ret = schedulingResults.OptimizationResult.Routes.Select(r => r.Waypoints.Select(wp =>
                 {
                     var v = dbSession.Get<Visit>(schedulingResults.VisitMap[wp.VisitId]);
                     return new
@@ -239,6 +239,8 @@ namespace IRuettae.WebApi.Controllers
                         SantaName = dbSession.Get<Santa>(schedulingResults.VisitMap[r.SantaId])?.Name,
                     };
                 }).ToList()).ToList();
+
+                return ret;
             }
         }
     }
