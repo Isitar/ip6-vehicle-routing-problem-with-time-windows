@@ -192,7 +192,7 @@ namespace IRuettae.WebApi.Controllers
                 if (Pipeline.BackgroundWorkers.IsEmpty)
                 {
                     dbSession.Query<RouteCalculation>()
-                        .Where(rc => new[] { RouteCalculationState.Ready, RouteCalculationState.RunningPhase1, RouteCalculationState.RunningPhase2, RouteCalculationState.RunningPhase3 }.Contains(rc.State))
+                        .Where(rc => new[] { RouteCalculationState.Ready, RouteCalculationState.Running }.Contains(rc.State))
                         .ToList()
                         .ForEach(rc =>
                         {

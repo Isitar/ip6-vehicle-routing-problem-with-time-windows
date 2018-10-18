@@ -10,9 +10,7 @@ namespace IRuettae.Persistence.Entities
     {
         Creating,
         Ready,
-        RunningPhase1,
-        RunningPhase2,
-        RunningPhase3,
+        Running,
         Cancelled,
         Finished
     }

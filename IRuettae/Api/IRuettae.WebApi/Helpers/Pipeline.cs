@@ -73,7 +73,7 @@ namespace IRuettae.WebApi.Helpers
         {
             try
             {
-                #region Start
+                #region Prepare
 
                 var santas = dbSession.Query<Santa>().ToList();
 
@@ -97,21 +97,20 @@ namespace IRuettae.WebApi.Helpers
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
 
-                #endregion Start
+                #endregion Prepare
+
+                routeCalculation.StartTime = DateTime.Now;
+
+                routeCalculation.State = RouteCalculationState.Running;
+                dbSession.Update(routeCalculation);
+                dbSession.Flush();
 
 
                 #region Clustering
 
-                routeCalculation.StartTime = DateTime.Now;
-
-                routeCalculation.State = RouteCalculationState.RunningPhase1;
-                dbSession.Update(routeCalculation);
-                dbSession.Flush();
-
-                var sw = Stopwatch.StartNew();
-
                 var clusteringSolverVariableBuilder = new ClusteringSolverVariableBuilder(optimizationInput, ilpData.TimeSliceDuration);
                 var clusteringSolverInputData = clusteringSolverVariableBuilder.Build();
+
 
 
 #if DEBUG
@@ -156,10 +155,6 @@ namespace IRuettae.WebApi.Helpers
 
 
                 #region Scheduling
-
-                routeCalculation.State = RouteCalculationState.RunningPhase2;
-                dbSession.Update(routeCalculation);
-                dbSession.Flush();
 
                 var schedulingSovlerVariableBuilders = new List<SchedulingSolverVariableBuilder>();
                 foreach (var santa in Enumerable.Range(0, phase1Result.Waypoints.GetLength(0)))

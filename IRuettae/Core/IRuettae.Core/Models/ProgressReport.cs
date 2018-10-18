@@ -28,7 +28,7 @@ namespace IRuettae.Core.Models
 
         public ProgressReport()
         {
-            
+
         }
 
         public ProgressReport(double progress)
