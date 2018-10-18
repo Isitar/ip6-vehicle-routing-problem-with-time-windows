@@ -24,6 +24,11 @@ namespace IRuettae.Persistence.Mappings
             Map(x => x.AlgorithmData).CustomSqlType("LONGTEXT");
 
             Map(x => x.Result).CustomSqlType("LONGTEXT");
+            Map(x => x.State);
+            Map(x => x.Progress);
+            Map(x => x.StateText);
+            Map(x => x.EndTime);
+            Map(x => x.StartTime);
 
             Map(x => x.NumberOfRoutes);
             Map(x => x.TotalWaytime);
@@ -34,11 +39,6 @@ namespace IRuettae.Persistence.Mappings
             Map(x => x.LongestRouteDistance);
             Map(x => x.LongestDay);
             Map(x => x.LatestVisit);
-
-            Map(x => x.State);
-            Map(x => x.StateText);
-            Map(x => x.EndTime);
-            Map(x => x.StartTime);
         }
     }
 }

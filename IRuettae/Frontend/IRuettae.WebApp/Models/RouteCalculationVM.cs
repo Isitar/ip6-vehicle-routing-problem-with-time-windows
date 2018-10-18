@@ -43,6 +43,8 @@ namespace IRuettae.WebApp.Models
         public virtual string Result { get; set; }
         [DisplayName("Status")]
         public virtual RouteCalculationState State { get; set; }
+        [DisplayName("Fortschritt")]
+        public virtual double Progress { get; set; }
         [DisplayName("Status Text")]
         public virtual string StateText { get; set; }
         [DisplayName("Endzeit")]
@@ -75,9 +77,7 @@ namespace IRuettae.WebApp.Models
         {
             Creating,
             Ready,
-            RunningPhase1,
-            RunningPhase2,
-            RunningPhase3,
+            Running,
             Cancelled,
             Finished,
         }

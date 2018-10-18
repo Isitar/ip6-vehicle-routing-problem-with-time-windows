@@ -99,129 +99,36 @@ namespace IRuettae.WebApi.Helpers
 
                 #endregion Prepare
 
+                #region Run
                 routeCalculation.StartTime = DateTime.Now;
+
+                var solver = new ILPSolver(optimizationInput, ilpData);
+
+                var consoleProgress = new Progress<String>();
+                consoleProgress.ProgressChanged += (s, message) =>
+                {
+                    Console.WriteLine(message);
+                    routeCalculation.StateText += message + Environment.NewLine;
+                    dbSession.Update(routeCalculation);
+                    dbSession.Flush();
+                };
+                var progress = new Progress<ProgressReport>();
+                progress.ProgressChanged += (s, report) =>
+                {
+                    routeCalculation.Progress = report.Progress;
+                    ((IProgress<String>)consoleProgress).Report($"Progress: {report.Progress}");
+                };
 
                 routeCalculation.State = RouteCalculationState.Running;
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
 
-
-                #region Clustering
-
-                var clusteringSolverVariableBuilder = new ClusteringSolverVariableBuilder(optimizationInput, ilpData.TimeSliceDuration);
-                var clusteringSolverInputData = clusteringSolverVariableBuilder.Build();
-
-
-
-#if DEBUG
-                var serialPath = HostingEnvironment.MapPath($"~/App_Data/Clustering{routeCalculation.Id}_{ilpData.ClusteringOptimizationFunction}_{routeCalculation.NumberOfVisits}.serial");
-                if (serialPath != null)
-                {
-                    using (var stream = File.Open(serialPath, FileMode.Create))
-                    {
-                        new BinaryFormatter().Serialize(stream, clusteringSolverInputData);
-                    }
-                }
-                var mpsPath = HostingEnvironment.MapPath($"~/App_Data/Clustering_{routeCalculation.Id}_{ilpData.ClusteringOptimizationFunction}_{routeCalculation.NumberOfVisits}.mps");
-                Starter.SaveMps(mpsPath, clusteringSolverInputData, ilpData.ClusteringOptimizationFunction);
-#endif
-
-                var phase1Result = Starter.Optimise(clusteringSolverInputData, ilpData.ClusteringOptimizationFunction, ilpData.ClusteringMipGap, ilpData.ClusteringTimeLimit);
-                if (phase1Result == null)
-                {
-                    throw new Exception("Clustering couldn't be solved");
-                }
-                routeCalculation.StateText += $"{DateTime.Now}: Clustering done{Environment.NewLine}";
-
-                var clusteredRoutesSb = new StringBuilder();
-                for (int santa = 0; santa < phase1Result.Waypoints.GetLength(0); santa++)
-                {
-                    for (int day = 0; day < phase1Result.Waypoints.GetLength(1); day++)
-                    {
-                        var wp = phase1Result.Waypoints[santa, day].Aggregate(string.Empty, (carry, n) => carry + Environment.NewLine + $"[{n.RealVisitId} {clusteringSolverInputData.VisitNames[n.Visit]}]");
-                        clusteredRoutesSb.Append($"Route Santa {santas[santa].Name} on {phase1Result.StartingTime[day]}");
-                        clusteredRoutesSb.AppendLine(wp);
-                        clusteredRoutesSb.AppendLine(new string('-', 20));
-                    }
-                }
-
-                ilpData.ClusteringResult = clusteredRoutesSb.ToString();
-                routeCalculation.AlgorithmData = JsonConvert.SerializeObject(ilpData);
-
-                dbSession.Update(routeCalculation);
-                dbSession.Flush();
-
-                #endregion Clustering
-
-
-                #region Scheduling
-
-                var schedulingSovlerVariableBuilders = new List<SchedulingSolverVariableBuilder>();
-                foreach (var santa in Enumerable.Range(0, phase1Result.Waypoints.GetLength(0)))
-                {
-                    foreach (var day in Enumerable.Range(0, phase1Result.Waypoints.GetLength(1)))
-                    {
-                        var cluster = phase1Result.Waypoints[santa, day];
-                        var schedulingOptimizationInput = new OptimizationInput
-                        {
-                            Visits = optimizationInput.Visits.Where(v => cluster.Select(w => w.Visit).Contains(v.Id)).ToArray(),
-                            Santas = new[] { optimizationInput.Santas[santa] },
-                            Days = new[] { optimizationInput.Days[day] },
-                            RouteCosts = optimizationInput.RouteCosts,
-                        };
-
-                        schedulingSovlerVariableBuilders.Add(new SchedulingSolverVariableBuilder(ilpData.TimeSliceDuration, schedulingOptimizationInput));
-                    }
-                }
-
-                var schedulingInputVariables = schedulingSovlerVariableBuilders
-                    .Where(vb => vb.Visits != null && vb.Visits.Count > 1)
-                    .Select(vb => vb.Build());
-
-#if DEBUG
-                // Must be accessed thread safe
-                long counter = 0;
-#endif
-
-                var routeResults = schedulingInputVariables
-                    .AsParallel()
-                    .Select(schedulingInputVariable =>
-                    {
-#if DEBUG
-                        var mpsPathScheduling = HostingEnvironment.MapPath($"~/App_Data/Scheduling_{routeCalculation.Id}_{Interlocked.Increment(ref counter)}_{Guid.NewGuid().ToString()}.mps");
-                        Starter.SaveMps(mpsPathScheduling, schedulingInputVariable, TargetBuilderType.Default);
-#endif
-                        return Starter.Optimise(schedulingInputVariable, TargetBuilderType.Default, ilpData.SchedulingMipGap, ilpData.SchedulingTimeLimit);
-                    })
-                    .ToList();
-
-                ilpData.SchedulingResult = JsonConvert.SerializeObject(routeResults);
-                routeCalculation.AlgorithmData = JsonConvert.SerializeObject(ilpData);
-                routeCalculation.StateText += $"{DateTime.Now}: Scheduling done{Environment.NewLine}";
-                dbSession.Update(routeCalculation);
-                dbSession.Flush();
-
-                #endregion Scheduling
-
-                // Construct new output elem
-                var optimizationResult = new OptimizationResult()
-                {
-                    OptimizationInput = optimizationInput,
-                    Routes = routeResults.Select(r => new Core.Models.Route
-                    {
-                        SantaId = r.SantaIds[0],
-                        Waypoints = r.Waypoints[0, 0].Select(origWp => new Core.Models.Waypoint
-                        {
-                            VisitId = origWp.Visit,
-                            StartTime = origWp.StartTime
-                        }).ToArray(),
-
-                    }).ToArray(),
-                };
-
+                var optimizationResult = solver.Solve((int)(ilpData.ClusteringTimeLimit + ilpData.SchedulingTimeLimit), progress, consoleProgress);
 
                 routeCalculation.Result = JsonConvert.SerializeObject(optimizationResult);
                 routeCalculation.State = RouteCalculationState.Finished;
+
+                #endregion Run
 
                 // Todo: metrics
 

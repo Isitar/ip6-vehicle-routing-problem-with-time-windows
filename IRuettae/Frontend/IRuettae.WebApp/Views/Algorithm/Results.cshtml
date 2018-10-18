@@ -26,9 +26,7 @@
     {
         <tr>
             <td class="@(item.State == RouteCalculationVM.RouteCalculationState.Finished ? "td-green" :
-                         (new []{RouteCalculationVM.RouteCalculationState.RunningPhase1,
-                             RouteCalculationVM.RouteCalculationState.RunningPhase2,
-                             RouteCalculationVM.RouteCalculationState.RunningPhase3,
+                         (new []{RouteCalculationVM.RouteCalculationState.Running,
                              RouteCalculationVM.RouteCalculationState.Ready
                          }).Contains(item.State) ? "td-orange" : "td-red")"></td>
             <td>
@@ -72,7 +70,7 @@
                 </td>*@
             <td style="white-space: nowrap;">
 
-                @if ((new[] { RouteCalculationVM.RouteCalculationState.Ready, RouteCalculationVM.RouteCalculationState.RunningPhase1, RouteCalculationVM.RouteCalculationState.RunningPhase2, RouteCalculationVM.RouteCalculationState.RunningPhase3 }).Contains(item.State))
+                @if ((new[] { RouteCalculationVM.RouteCalculationState.Ready, RouteCalculationVM.RouteCalculationState.Running }).Contains(item.State))
                 {
                     <i class="fas fa-spinner fa-pulse"></i>
                 }

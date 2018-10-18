@@ -36,9 +36,9 @@ namespace IRuettae.Core.Models
         public OptimizationInput OptimizationInput { get; set; }
 
         /// <summary>
-        /// Time elapsed to calculate this result (in ms)
+        /// Time elapsed to calculate this result (in s)
         /// </summary>
-        public int TimeElapsed { get; set; }
+        public long TimeElapsed { get; set; }
 
         /// <summary>
         /// Returns the value of our cost_function for this result

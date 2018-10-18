@@ -9,6 +9,9 @@ using IRuettae.Core.ILP.Algorithm.Scheduling.TargetFunctionBuilders;
 
 namespace IRuettae.Core.ILP.Algorithm
 {
+    /// <summary>
+    /// only for testing purposes
+    /// </summary>
     public class Starter
     {
         public static Route Optimise(Clustering.SolverInputData solverInputData, Models.ClusteringOptimizationGoals goal,

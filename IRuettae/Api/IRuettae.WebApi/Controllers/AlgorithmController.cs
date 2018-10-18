@@ -45,9 +45,20 @@ namespace IRuettae.WebApi.Controllers
                 var optimizationInput = converter.Convert(algorithmStarter.Days, dbSession.Query<Visit>().First(v => v.Id == algorithmStarter.StarterId), visits,
                     dbSession.Query<Santa>().ToList());
 
-                var ilpSolver = new ILPSolver(optimizationInput, algorithmStarter.TimeSliceDuration);
+                var starterData = new ILPStarterData()
+                {
+                    TimeSliceDuration = algorithmStarter.TimeSliceDuration,
+                    ClusteringMIPGap = Properties.Settings.Default.MIPGapClustering,
+                    ClusteringTimeLimit = Properties.Settings.Default.TimelimitClustering,
+                    SchedulingMIPGap = Properties.Settings.Default.MIPGapScheduling,
+                    SchedulingTimeLimit = Properties.Settings.Default.TimelimitScheduling,
+                };
+
+                var ilpSolver = new ILPSolver(optimizationInput, starterData);
                 var progress = new Progress<ProgressReport>();
                 progress.ProgressChanged += (sender, i) => { Console.WriteLine($"Progress: {i}"); };
+                var consoleProgress = new Progress<ProgressReport>();
+                consoleProgress.ProgressChanged += (sender, msg) => { Console.WriteLine(msg); };
                 return ilpSolver.Solve(0, progress, null);
             }
         }
@@ -71,9 +82,9 @@ namespace IRuettae.WebApi.Controllers
                 {
                     TimeSliceDuration = algorithmStarter.TimeSliceDuration,
                     ClusteringOptimizationFunction = ClusteringOptimizationGoals.OverallMinTime,
-                    ClusteringMipGap = Properties.Settings.Default.MIPGapClustering,
+                    ClusteringMIPGap = Properties.Settings.Default.MIPGapClustering,
                     ClusteringTimeLimit = Properties.Settings.Default.TimelimitClustering,
-                    SchedulingMipGap = Properties.Settings.Default.MIPGapScheduling,
+                    SchedulingMIPGap = Properties.Settings.Default.MIPGapScheduling,
                     SchedulingTimeLimit = Properties.Settings.Default.TimelimitScheduling,
                 };
                 rc = new RouteCalculation
@@ -95,9 +106,9 @@ namespace IRuettae.WebApi.Controllers
                 {
                     TimeSliceDuration = algorithmStarter.TimeSliceDuration,
                     ClusteringOptimizationFunction = ClusteringOptimizationGoals.MinTimePerSanta,
-                    ClusteringMipGap = Properties.Settings.Default.MIPGapClustering,
+                    ClusteringMIPGap = Properties.Settings.Default.MIPGapClustering,
                     ClusteringTimeLimit = Properties.Settings.Default.TimelimitClustering,
-                    SchedulingMipGap = Properties.Settings.Default.MIPGapScheduling,
+                    SchedulingMIPGap = Properties.Settings.Default.MIPGapScheduling,
                     SchedulingTimeLimit = Properties.Settings.Default.TimelimitScheduling,
                 };
                 rc2 = new RouteCalculation
@@ -120,9 +131,9 @@ namespace IRuettae.WebApi.Controllers
                 {
                     TimeSliceDuration = algorithmStarter.TimeSliceDuration,
                     ClusteringOptimizationFunction = ClusteringOptimizationGoals.MinAvgTimePerSanta,
-                    ClusteringMipGap = Properties.Settings.Default.MIPGapClustering,
+                    ClusteringMIPGap = Properties.Settings.Default.MIPGapClustering,
                     ClusteringTimeLimit = Properties.Settings.Default.TimelimitClustering,
-                    SchedulingMipGap = Properties.Settings.Default.MIPGapScheduling,
+                    SchedulingMIPGap = Properties.Settings.Default.MIPGapScheduling,
                     SchedulingTimeLimit = Properties.Settings.Default.TimelimitScheduling,
                 };
                 rc3 = new RouteCalculation
@@ -142,8 +153,8 @@ namespace IRuettae.WebApi.Controllers
             }
 
             Task.Run(() => new Pipeline(rc).StartWorker());
-            Task.Run(() => new Pipeline(rc2).StartWorker());
-            Task.Run(() => new Pipeline(rc3).StartWorker());
+            //Task.Run(() => new Pipeline(rc2).StartWorker());
+            //Task.Run(() => new Pipeline(rc3).StartWorker());
 
             return rc.Id;
 

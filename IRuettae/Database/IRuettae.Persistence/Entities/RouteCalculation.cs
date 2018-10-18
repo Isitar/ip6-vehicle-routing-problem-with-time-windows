@@ -31,6 +31,7 @@ namespace IRuettae.Persistence.Entities
         // Running & Result
         public virtual string Result { get; set; }
         public virtual RouteCalculationState State { get; set; }
+        public virtual double Progress { get; set; }
         public virtual string StateText { get; set; }
         public virtual DateTime EndTime { get; set; }
 

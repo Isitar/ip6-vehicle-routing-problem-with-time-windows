@@ -11,16 +11,16 @@ namespace IRuettae.Core.ILP.Algorithm.Models
     /// </summary>
     public class ILPStarterData
     {
+        // General
+        public int TimeSliceDuration { get; set; }
+
         // Phase 1
-        public ClusteringOptimizationGoals ClusteringOptimizationFunction { get; set; }
-        public double ClusteringMipGap { get; set; }
+        public ClusteringOptimizationGoals ClusteringOptimizationFunction { get; set; } = ClusteringOptimizationGoals.MinAvgTimePerSanta;
+        public double ClusteringMIPGap { get; set; }
         public long ClusteringTimeLimit { get; set; }
-        public string ClusteringResult { get; set; }
 
         // Phase 2
-        public int TimeSliceDuration { get; set; }
-        public double SchedulingMipGap { get; set; }
+        public double SchedulingMIPGap { get; set; }
         public long SchedulingTimeLimit { get; set; }
-        public string SchedulingResult { get; set; }
     }
 }

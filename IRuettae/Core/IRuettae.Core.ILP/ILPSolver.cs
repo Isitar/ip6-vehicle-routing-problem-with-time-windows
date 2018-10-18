@@ -17,8 +17,10 @@ namespace IRuettae.Core.ILP
 {
     public class ILPSolver : ISolver
     {
+        private const bool ExportMPS = false;
+
         private readonly OptimizationInput input;
-        private readonly int timeSliceDuration;
+        private readonly ILPStarterData starterData;
         private readonly AbstractTargetFunctionBuilder targetFunctionBuilder;
 
         /// <summary>
@@ -26,29 +28,50 @@ namespace IRuettae.Core.ILP
         /// </summary>
         /// <param name="input"></param>
         /// <param name="timeSliceDuration">in seconds</param>
-        public ILPSolver(OptimizationInput input, int timeSliceDuration, ClusteringOptimizationGoals goals = ClusteringOptimizationGoals.MinAvgTimePerSanta)
+        /// <param name="clusteringMIPGap">from 0 - 1</param>
+        /// <param name="schedulingMIPGap">from 0 - 1</param>
+        public ILPSolver(OptimizationInput input, ILPStarterData starterData)
         {
             this.input = input;
-            this.timeSliceDuration = timeSliceDuration;
-            this.targetFunctionBuilder = TargetFunctionBuilderFactory.Create(goals);
+            this.starterData = starterData;
+            this.targetFunctionBuilder = TargetFunctionBuilderFactory.Create(starterData.ClusteringOptimizationFunction);
         }
 
         public OptimizationResult Solve(int timelimit, IProgress<ProgressReport> progress, IProgress<string> consoleProgress)
         {
+            if (timelimit < starterData.ClusteringTimeLimit + starterData.SchedulingTimeLimit)
+            {
+                throw new ArgumentException("overall timelimit must be at least the sum of ClusteringTimeLimit and SchedulingTimeLimit");
+            }
+
             var sw = Stopwatch.StartNew();
 
-            var clusteringSolverVariableBuilder = new ClusteringSolverVariableBuilder(input, 0);
+            var clusteringSolverVariableBuilder = new ClusteringSolverVariableBuilder(input, starterData.TimeSliceDuration);
             var clusteringSolverInputData = clusteringSolverVariableBuilder.Build();
-            var clusterinSolver =
+            var clusteringSolver =
                 new Algorithm.Clustering.Solver(clusteringSolverInputData, targetFunctionBuilder);
-            var phase1ResultState = clusterinSolver.Solve(timeSliceDuration, timelimit);
+
+
+#if WriteMPS && DEBUG
+            System.IO.File.WriteAllText($@"C:\Temp\iRuettae\ILP\Clustering\{new Guid()}.mps", clusterinSolver.ExportMPS());
+#endif
+            long clusteringTimeLimit = starterData.SchedulingTimeLimit;
+            if (clusteringTimeLimit == 0)
+            {
+                // avoid surpassing timelimit
+                clusteringTimeLimit = timelimit;
+            }
+
+            var phase1ResultState = clusteringSolver.Solve(starterData.ClusteringMIPGap, starterData.ClusteringTimeLimit);
             if (!(new[] { ResultState.Feasible, ResultState.Optimal }).Contains(phase1ResultState))
             {
                 return null;
             }
 
-            var phase1Result = clusterinSolver.GetResult();
+            var phase1Result = clusteringSolver.GetResult();
             progress.Report(new ProgressReport(0.5));
+            consoleProgress.Report("Clustering done");
+            consoleProgress.Report($"Clustering Result: {phase1Result}");
 
 
             var schedulingSovlerVariableBuilders = new List<SchedulingSolverVariableBuilder>();
@@ -65,7 +88,7 @@ namespace IRuettae.Core.ILP
                         RouteCosts = input.RouteCosts,
                     };
 
-                    schedulingSovlerVariableBuilders.Add(new SchedulingSolverVariableBuilder(timeSliceDuration, schedulingOptimizationInput));
+                    schedulingSovlerVariableBuilders.Add(new SchedulingSolverVariableBuilder(starterData.TimeSliceDuration, schedulingOptimizationInput));
                 }
             }
 
@@ -76,12 +99,39 @@ namespace IRuettae.Core.ILP
 
             var routeResults = schedulingInputVariables
                 .AsParallel()
-                .Select(schedulingInputVariable => Starter.Optimise(schedulingInputVariable, TargetBuilderType.Default, 0, timelimit))
+                .Select(schedulingInputVariable =>
+                {
+                    var targetFunctionBuilder = Algorithm.Scheduling.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(TargetBuilderType.Default);
+                    var schedulingSolver =
+                        new Algorithm.Scheduling.Solver(schedulingInputVariable, targetFunctionBuilder);
+
+#if WriteMPS && DEBUG
+                    System.IO.File.WriteAllText($@"C:\Temp\iRuettae\ILP\Scheduling\{new Guid()}.mps", schedulingSolver.ExportMPS());
+#endif
+
+                    long schedulingTimelimit = starterData.SchedulingTimeLimit;
+                    if (schedulingTimelimit == 0 && timelimit != 0)
+                    {
+                        // avoid surpassing timelimit
+                        schedulingTimelimit = Math.Max(1, timelimit - (sw.ElapsedMilliseconds / 1000));
+                    }
+
+                    schedulingSolver.Solve(starterData.SchedulingMIPGap, schedulingTimelimit);
+                    if (!(new[] { ResultState.Feasible, ResultState.Optimal }).Contains(phase1ResultState))
+                    {
+                        return null;
+                    }
+
+                    return schedulingSolver.GetResult();
+                })
                 .ToList();
 
+            progress.Report(new ProgressReport(0.99));
+            consoleProgress.Report("Scheduling done");
+            consoleProgress.Report($"Scheduling Result:{Environment.NewLine}" +
+                routeResults.Select(r => r.ToString()).Aggregate((acc, c) => acc + Environment.NewLine + c));
 
-            // Construct new output elem
-
+            // construct new output elem
             var optimizationResult = new OptimizationResult()
             {
                 OptimizationInput = input,
@@ -97,10 +147,11 @@ namespace IRuettae.Core.ILP
                 }).ToArray(),
             };
 
+            progress.Report(new ProgressReport(1));
 
-            // assign elapsed in the end.
+            // assign total elapsed time
             sw.Stop();
-            optimizationResult.TimeElapsed = (int)(sw.ElapsedMilliseconds / 1000);
+            optimizationResult.TimeElapsed = sw.ElapsedMilliseconds / 1000;
             return optimizationResult;
         }
     }
