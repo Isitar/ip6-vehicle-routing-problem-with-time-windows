@@ -24,7 +24,7 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling.Detail
             CreateVisitsConstraint();
             CreateSantaVisitsConstraint();
             CreateUsesSantaConstraint();
-            /*
+            
             // visit
             CreateVisitAvailableConstraint();
             CreateVisitOverallLengthConstraint();
@@ -42,7 +42,7 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling.Detail
             CreateSantaEnRouteConstraint();
 
             CreatePerformanceConstraints();
-            */
+           
         }
 
         /// <summary>
