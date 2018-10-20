@@ -9,6 +9,9 @@ namespace IRuettae.Preprocessing.Mapping
 {
     public class ClusteringSolverVariableBuilder
     {
+
+        private int SecondsToTimeslice(double seconds) => Convert.ToInt32(Math.Ceiling(seconds / TimeSliceDuration));
+
         public List<Santa> Santas { get; set; }
 
         public List<Visit> Visits { get; set; }
@@ -84,15 +87,17 @@ namespace IRuettae.Preprocessing.Mapping
                 }
             }
 
-
-            //int[,] distances = new int[Visits.Count, Visits.Count];
-            //for (int v = 0; v < Visits.Count; v++)
-            //{
-            //    for (int d = 0; d < Visits.Count; d++)
-            //    {
-            //        distances[v, d] = (int)(Math.Ceiling(Visits[v].FromWays.First(w => w.To.Equals(Visits[d])).Duration / (double)TimeSliceDuration) * TimeSliceDuration);
-            //    }
-            //}
+            
+            int[,] distances = optimizationInput.RouteCosts;
+            for (int i = 0; i < distances.GetLength(0); i++)
+            {
+                for (int j = 0; j < distances.GetLength(1); j++)
+                {
+                    distances[i,j] = SecondsToTimeslice(distances[i,j]) * TimeSliceDuration; 
+                }
+            }
+                
+            
 
 
 

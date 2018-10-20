@@ -123,6 +123,13 @@ namespace IRuettae.Preprocessing.Mapping
 
 
             int[,] distances = input.RouteCosts;
+            for (int i = 0; i < distances.GetLength(0); i++)
+            {
+                for (int j = 0; j < distances.GetLength(1); j++)
+                {
+                    distances[i, j] = SecondsToTimeslice(distances[i, j]);
+                }
+            }
 
             int[] visitLength = Visits.Select(v => SecondsToTimeslice(v.Duration)).ToArray();
             return new SolverInputData(santasVar, visitLength, visitsVar, distances, Visits.Select(v => v.Id).ToArray(), Santas.Select(s => s.Id).ToArray());

@@ -62,7 +62,7 @@ namespace IRuettae.Core.ILP
                 clusteringTimeLimit = timelimit;
             }
 
-            var phase1ResultState = clusteringSolver.Solve(starterData.ClusteringMIPGap, starterData.ClusteringTimeLimit);
+            var phase1ResultState = clusteringSolver.Solve(starterData.ClusteringMIPGap, clusteringTimeLimit);
             if (!(new[] { ResultState.Feasible, ResultState.Optimal }).Contains(phase1ResultState))
             {
                 return null;
@@ -116,8 +116,8 @@ namespace IRuettae.Core.ILP
                         schedulingTimelimit = Math.Max(1, timelimit - (sw.ElapsedMilliseconds / 1000));
                     }
 
-                    schedulingSolver.Solve(starterData.SchedulingMIPGap, schedulingTimelimit);
-                    if (!(new[] { ResultState.Feasible, ResultState.Optimal }).Contains(phase1ResultState))
+                    var schedulingResultState = schedulingSolver.Solve(starterData.SchedulingMIPGap, schedulingTimelimit);
+                    if (!(new[] { ResultState.Feasible, ResultState.Optimal }).Contains(schedulingResultState))
                     {
                         return null;
                     }
@@ -141,7 +141,7 @@ namespace IRuettae.Core.ILP
                     Waypoints = r.Waypoints[0, 0].Select(origWp => new Waypoint
                     {
                         VisitId = origWp.Visit,
-                        StartTime = origWp.StartTime
+                        StartTime = origWp.StartTime *  starterData.TimeSliceDuration
                     }).ToArray(),
 
                 }).ToArray(),

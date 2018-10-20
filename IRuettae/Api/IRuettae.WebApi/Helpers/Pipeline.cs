@@ -152,21 +152,33 @@ namespace IRuettae.WebApi.Helpers
 
         private void OnConsoleProgressOnProgressChanged(object s, string message)
         {
-            var dbSession = SessionFactory.Instance.OpenSession();
-            var routeCalculation = dbSession.Get<RouteCalculation>(routeCalculationId);
-            routeCalculation.StateText.Add(new RouteCalculationLog() { Log = message });
-            dbSession.Update(routeCalculation);
-            dbSession.Flush();
+            try
+            {
+
+                var dbSession = SessionFactory.Instance.OpenSession();
+                var routeCalculation = dbSession.Get<RouteCalculation>(routeCalculationId);
+                routeCalculation.StateText.Add(new RouteCalculationLog() {Log = message});
+                dbSession.Update(routeCalculation);
+                dbSession.Flush();
+            }
+            catch
+            {
+                // ignored
+            }
         }
 
         private void OnProgressOnProgressChanged(object s, ProgressReport report)
         {
-            var dbSession = SessionFactory.Instance.OpenSession();
-            var routeCalculation = dbSession.Get<RouteCalculation>(routeCalculationId);
-            routeCalculation.Progress = report.Progress;
-            dbSession.Update(routeCalculation);
+            try
+            {
+                var dbSession = SessionFactory.Instance.OpenSession();
+                var routeCalculation = dbSession.Get<RouteCalculation>(routeCalculationId);
+                routeCalculation.Progress = report.Progress;
+                dbSession.Update(routeCalculation);
 
-            OnConsoleProgressOnProgressChanged(s, $"Progress: {report.Progress}");
+                OnConsoleProgressOnProgressChanged(s, $"Progress: {report.Progress}");
+            }
+            catch { }
         }
     }
 
