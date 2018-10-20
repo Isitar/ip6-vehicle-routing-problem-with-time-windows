@@ -26,7 +26,7 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling.Detail
                 {
                     Waypoint? nextLocation = new Waypoint(0, -1);
                     nextLocation = GetNextLocation(day, santa, nextLocation.Value);
-                    if (!nextLocation.HasValue)
+                    if (!nextLocation.HasValue || nextLocation.Value.StartTime < 0)
                     {
                         // no visits that evening
                         continue;

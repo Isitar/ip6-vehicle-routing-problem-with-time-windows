@@ -74,11 +74,13 @@
     <Compile Include="Entities\BaseEntity.cs" />
     <Compile Include="Entities\Period.cs" />
     <Compile Include="Entities\RouteCalculation.cs" />
+    <Compile Include="Entities\RouteCalculationLog.cs" />
     <Compile Include="Entities\RouteCalculationState.cs" />
     <Compile Include="Entities\Santa.cs" />
     <Compile Include="Entities\Visit.cs" />
     <Compile Include="Entities\VisitType.cs" />
     <Compile Include="Entities\Way.cs" />
+    <Compile Include="Mappings\RouteCalculationLogMap.cs" />
     <Compile Include="Mappings\PeriodMap.cs" />
     <Compile Include="Mappings\RouteCalcluationMap.cs" />
     <Compile Include="Mappings\SantaMap.cs" />

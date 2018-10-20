@@ -55,7 +55,7 @@ namespace IRuettae.Core.ILP
 #if WriteMPS && DEBUG
             System.IO.File.WriteAllText($@"C:\Temp\iRuettae\ILP\Clustering\{new Guid()}.mps", clusterinSolver.ExportMPS());
 #endif
-            long clusteringTimeLimit = starterData.SchedulingTimeLimit;
+            var clusteringTimeLimit = starterData.ClusteringTimeLimit;
             if (clusteringTimeLimit == 0)
             {
                 // avoid surpassing timelimit

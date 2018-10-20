@@ -46,7 +46,9 @@ namespace IRuettae.WebApp.Models
         [DisplayName("Fortschritt")]
         public virtual double Progress { get; set; }
         [DisplayName("Status Text")]
-        public virtual string StateText { get; set; }
+        public virtual List<dynamic> StateText { get; set; }
+        [DisplayName("Status Text")]
+        public virtual string StateTextDisplay { get; set; }
         [DisplayName("Endzeit")]
         public virtual DateTime EndTime { get; set; }
 

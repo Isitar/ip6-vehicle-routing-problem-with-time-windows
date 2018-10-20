@@ -26,7 +26,7 @@ namespace IRuettae.Persistence.Mappings
             Map(x => x.Result).CustomSqlType("LONGTEXT");
             Map(x => x.State);
             Map(x => x.Progress);
-            Map(x => x.StateText);
+            HasMany(x => x.StateText).KeyColumn("routecalculation_id").Not.LazyLoad().Cascade.AllDeleteOrphan();
             Map(x => x.EndTime);
             Map(x => x.StartTime);
 

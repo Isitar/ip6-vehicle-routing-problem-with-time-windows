@@ -60,6 +60,11 @@ namespace IRuettae.WebApp.Controllers
         {
             var result = await Client.GetAsync("api/algorithm/RouteCalculations");
             var routeCalculations = JArray.Parse(result.Content.ReadAsStringAsync().Result).ToObject<RouteCalculationVM[]>().OrderByDescending(rc => rc.StartTime);
+            foreach (var routeCalculationVM in routeCalculations)
+            {
+                routeCalculationVM.StateTextDisplay = string.Join(Environment.NewLine,
+                    routeCalculationVM.StateText.Select(rc => rc.Log));
+            }
             return View(routeCalculations);
         }
 

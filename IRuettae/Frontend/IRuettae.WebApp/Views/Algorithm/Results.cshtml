@@ -14,7 +14,7 @@
             @Html.DisplayNameFor(model => model.State)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.StateText)
+            @Html.DisplayNameFor(model => model.StateTextDisplay)
         </th>
         <th>
             Metriken
@@ -79,9 +79,9 @@
 
             </td>
             <td>
-                @if (!string.IsNullOrEmpty(item.StateText))
+                @if (!string.IsNullOrEmpty(item.StateTextDisplay))
                 {
-                    @Html.Raw(item.StateText.Replace(Environment.NewLine, "<br />"))
+                    @Html.Raw(item.StateTextDisplay.Replace(Environment.NewLine, "<br />"))
                 }
             </td>
             <td style="min-width: 200px; font-size: 12px">

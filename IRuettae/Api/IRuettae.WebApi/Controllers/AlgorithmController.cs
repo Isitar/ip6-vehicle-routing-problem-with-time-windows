@@ -73,12 +73,10 @@ namespace IRuettae.WebApi.Controllers
         {
 
             RouteCalculation rc;
-            RouteCalculation rc2;
-            RouteCalculation rc3;
 
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
-                ILPStarterData ilpData = new ILPStarterData()
+                var ilpData = new ILPStarterData()
                 {
                     TimeSliceDuration = algorithmStarter.TimeSliceDuration,
                     ClusteringOptimizationFunction = ClusteringOptimizationGoals.OverallMinTime,
@@ -101,61 +99,9 @@ namespace IRuettae.WebApi.Controllers
                     AlgorithmData = JsonConvert.SerializeObject(ilpData),
                 };
                 rc = dbSession.Merge(rc);
-
-                ILPStarterData ilpData2 = new ILPStarterData()
-                {
-                    TimeSliceDuration = algorithmStarter.TimeSliceDuration,
-                    ClusteringOptimizationFunction = ClusteringOptimizationGoals.MinTimePerSanta,
-                    ClusteringMIPGap = Properties.Settings.Default.MIPGapClustering,
-                    ClusteringTimeLimit = Properties.Settings.Default.TimelimitClustering,
-                    SchedulingMIPGap = Properties.Settings.Default.MIPGapScheduling,
-                    SchedulingTimeLimit = Properties.Settings.Default.TimelimitScheduling,
-                };
-                rc2 = new RouteCalculation
-                {
-                    Days = algorithmStarter.Days,
-                    SantaJson = "",
-                    VisitsJson = "",
-                    StarterVisitId = algorithmStarter.StarterId,
-                    State = RouteCalculationState.Creating,
-                    TimePerChild = algorithmStarter.TimePerChild,
-                    TimePerChildOffset = algorithmStarter.Beta0,
-                    Year = algorithmStarter.Year,
-                    Algorithm = AlgorithmType.ILP,
-                    AlgorithmData = JsonConvert.SerializeObject(ilpData2),
-                };
-                rc2 = dbSession.Merge(rc2);
-
-
-                ILPStarterData ilpData3 = new ILPStarterData()
-                {
-                    TimeSliceDuration = algorithmStarter.TimeSliceDuration,
-                    ClusteringOptimizationFunction = ClusteringOptimizationGoals.MinAvgTimePerSanta,
-                    ClusteringMIPGap = Properties.Settings.Default.MIPGapClustering,
-                    ClusteringTimeLimit = Properties.Settings.Default.TimelimitClustering,
-                    SchedulingMIPGap = Properties.Settings.Default.MIPGapScheduling,
-                    SchedulingTimeLimit = Properties.Settings.Default.TimelimitScheduling,
-                };
-                rc3 = new RouteCalculation
-                {
-                    Days = algorithmStarter.Days,
-                    SantaJson = "",
-                    VisitsJson = "",
-                    StarterVisitId = algorithmStarter.StarterId,
-                    State = RouteCalculationState.Creating,
-                    TimePerChild = algorithmStarter.TimePerChild,
-                    TimePerChildOffset = algorithmStarter.Beta0,
-                    Year = algorithmStarter.Year,
-                    Algorithm = AlgorithmType.ILP,
-                    AlgorithmData = JsonConvert.SerializeObject(ilpData3),
-                };
-                rc3 = dbSession.Merge(rc3);
             }
 
             Task.Run(() => new Pipeline(rc).StartWorker());
-            //Task.Run(() => new Pipeline(rc2).StartWorker());
-            //Task.Run(() => new Pipeline(rc3).StartWorker());
-
             return rc.Id;
 
 
