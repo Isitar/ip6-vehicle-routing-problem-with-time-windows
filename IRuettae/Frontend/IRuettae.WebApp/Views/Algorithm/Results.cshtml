@@ -38,36 +38,6 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Year)
             </td>
-            @*<td>
-                    @if (!string.IsNullOrEmpty(item.ClusteringResult))
-                    {
-                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-cl-@item.Id" aria-expanded="False" aria-controls="collapse-cl-@item.Id">Anzeigen</button>
-
-                        <div class="collapse" id="collapse-cl-@item.Id" style="min-width: 400px">
-                            <div class="card card-body">
-                                @foreach (var line in item.ClusteringResult?.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
-                                {
-                                    <p>@line</p>
-                                }
-                            </div>
-                        </div>
-                    }
-                </td>
-                <td>
-                    @if (!string.IsNullOrEmpty(item.SchedulingResult))
-                    {
-                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-sr-@item.Id" aria-expanded="False" aria-controls="collapse-sr-@item.Id">Anzeigen</button>
-
-                        <div class="collapse" id="collapse-sr-@item.Id">
-                            <div class="card card-body">
-                                @foreach (var line in item.SchedulingResult?.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
-                                {
-                                    <p>@line</p>
-                                }
-                            </div>
-                        </div>
-                    }
-                </td>*@
             <td style="white-space: nowrap;">
 
                 @if ((new[] { RouteCalculationVM.RouteCalculationState.Ready, RouteCalculationVM.RouteCalculationState.Running }).Contains(item.State))
@@ -79,10 +49,23 @@
 
             </td>
             <td>
-                @if (!string.IsNullOrEmpty(item.StateTextDisplay))
-                {
-                    @Html.Raw(item.StateTextDisplay.Replace(Environment.NewLine, "<br />"))
-                }
+                @item.StateTextDisplay<br />
+                <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-status-@item.Id" aria-expanded="False" aria-controls="collapse-status-@item.Id">Log anzeigen</button>
+
+                <div class="collapse" id="collapse-status-@item.Id">
+                    <table>
+                        <thead>
+                        <tr><th>Timestamp</th><th>Log</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var status in item.StateText)
+                            {
+                                <tr><td>@status.CreationDate</td><td>@Html.Raw(((string)status.Log).Replace(Environment.NewLine, "<br />"))</td></tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
             </td>
             <td style="min-width: 200px; font-size: 12px">
                 @if (!string.IsNullOrEmpty(item.Result))
@@ -179,21 +162,21 @@
             });
 
             $('.view-more').live('click', function(){
-                var btnShowMore = $(this); 
+                var btnShowMore = $(this);
                 if(btnShowMore.text() === "Mehr anzeigen"){
                     btnShowMore.closest("dt").each(function(k,v){
                         var dObj = $(this);
                         dObj.nextUntil("dt").filter(function(index){
                             $(this).show();
-                        });        
+                        });
                     });
                     btnShowMore.text("Weniger anzeigen");
                 }else{
                     btnShowMore.closest("dt").each(function(k,v){
-                        var dObj = $(this);            
+                        var dObj = $(this);
                         dObj.nextUntil("dt").filter(function(index){
                             if(index > 2){ $(this).hide(); }
-                        });        
+                        });
                     });
                     btnShowMore.text("Mehr anzeigen");
                 }

@@ -62,8 +62,7 @@ namespace IRuettae.WebApp.Controllers
             var routeCalculations = JArray.Parse(result.Content.ReadAsStringAsync().Result).ToObject<RouteCalculationVM[]>().OrderByDescending(rc => rc.StartTime);
             foreach (var routeCalculationVM in routeCalculations)
             {
-                routeCalculationVM.StateTextDisplay = string.Join(Environment.NewLine,
-                    routeCalculationVM.StateText.Select(rc => rc.Log));
+                routeCalculationVM.StateTextDisplay = routeCalculationVM.StateText.LastOrDefault()?.Log;
             }
             return View(routeCalculations);
         }
