@@ -20,7 +20,7 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering
 
         private readonly GLS.Solver solver = new GLS.Solver("Santa Problem", GLS.Solver.SCIP_MIXED_INTEGER_PROGRAMMING);
         //new GLS.Solver("SantaProblem", GLS.Solver.CBC_MIXED_INTEGER_PROGRAMMING);
-     
+
 
         public Solver(SolverInputData solverInputData)
         {
@@ -94,7 +94,11 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering
                 solver.Add(longestDay >= santaWorkingTime[santa]);
             }
 
-            targetFunction = 40 * hour * santaWorkingTime.Sum() +  30 * hour * longestDay;
+            var workingTimeFactor = (40d / hour);
+            var longestDayFactor = (30d / hour);
+
+            targetFunction = workingTimeFactor * santaWorkingTime.Sum()
+                             + longestDayFactor * longestDay;
 
             solverData.Solver.Minimize(targetFunction);
 
@@ -129,7 +133,7 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering
             Debug.WriteLine(string.Empty);
             Debug.WriteLine("DEBUG OUTPUT");
             Debug.WriteLine(string.Empty);
-            
+
 
             PrintMeta();
             PrintVariables();

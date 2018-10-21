@@ -46,8 +46,63 @@ namespace IRuettae.Core.Models
         /// <returns></returns>
         public int MetricValue()
         {
-            //todo: implement cost function
+            const int hour = 3600;
+            return (int)(Math.Ceiling(560 * NumberOfNonVisitedFamilies()
+                                       + 400 * NumberOfAdditionalSantas()
+                                       + (40d / hour) * AdditionalSantaWorkTime())
+                                       + (120d / hour) * VisitTimeInUnavailabe()
+                                       - (20d / hour) * VisitTimeDesired()
+                                       + (40d / hour) * SantaWorkTime()
+                                       + (30d / hour) * LongestDay()
+
+                );
+        }
+
+        public int NumberOfNonVisitedFamilies()
+        {
+            var visitedVisits = Routes.SelectMany(r => r.Waypoints.Select(w => w.VisitId));
+            return OptimizationInput.Visits.Count(v => !visitedVisits.Contains(v.Id));
+        }
+
+        public int NumberOfAdditionalSantas()
+        {
+            var additionalSantaIds = Routes.Where(r => !OptimizationInput.Santas.Select(s => s.Id).Contains(r.SantaId))
+                .Select(r => r.SantaId)
+                .Distinct().ToList();
+            return additionalSantaIds.Count;
+        }
+
+        public int AdditionalSantaWorkTime()
+        {
+            var additionalSantaIds = Routes.Where(r => !OptimizationInput.Santas.Select(s => s.Id).Contains(r.SantaId))
+                .Select(r => r.SantaId)
+                .Distinct().ToList();
+            var additionalSantaRoutes = Routes.Where(r => additionalSantaIds.Contains(r.SantaId));
+            return additionalSantaRoutes.Select(r =>
+                    r.Waypoints.Max(wp => wp.StartTime) - r.Waypoints.Min(wp => wp.StartTime))
+                .Sum();
+        }
+
+        public int VisitTimeInUnavailabe()
+        {
+            //todo: implement
             return 0;
+        }
+
+        public int VisitTimeDesired()
+        {
+            // todo: implement
+            return 0;
+        }
+
+        public int SantaWorkTime()
+        {
+            return Routes.Select(r => r.Waypoints.Max(wp => wp.StartTime) - r.Waypoints.Min(wp => wp.StartTime)).Sum();
+        }
+
+        public int LongestDay()
+        {
+            return Routes.Select(r => r.Waypoints.Max(wp => wp.StartTime) - r.Waypoints.Min(wp => wp.StartTime)).Max();
         }
     }
 }
