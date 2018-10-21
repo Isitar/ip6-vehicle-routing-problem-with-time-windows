@@ -62,7 +62,6 @@
     <Compile Include="Algorithm\ATSPTests.cs" />
     <Compile Include="Algorithm\TryDesiredTargetTest.cs" />
     <Compile Include="Algorithm\MultipleSantaTest.cs" />
-    <Compile Include="Algorithm\RouteDistrubutionTest.cs" />
     <Compile Include="Algorithm\RouteTest.cs" />
     <Compile Include="Algorithm\StarterTest.cs" />
     <Compile Include="Algorithm\MinTimeTargetTest.cs" />

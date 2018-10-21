@@ -82,7 +82,7 @@ namespace IRuettae.Core.ILP
                     var cluster = phase1Result.Waypoints[santa, day];
                     var schedulingOptimizationInput = new OptimizationInput
                     {
-                        Visits = input.Visits.Where(v => cluster.Select(w => w.Visit).Contains(v.Id)).ToArray(),
+                        Visits = input.Visits.Where(v => cluster.Select(w => w.Visit - 1).Contains(v.Id)).ToArray(),
                         Santas = new[] { input.Santas[santa] },
                         Days = new[] { input.Days[day] },
                         RouteCosts = input.RouteCosts,
@@ -98,7 +98,7 @@ namespace IRuettae.Core.ILP
 
 
             var routeResults = schedulingInputVariables
-                .AsParallel()
+                //.AsParallel()
                 .Select(schedulingInputVariable =>
                 {
                     var targetFunctionBuilder = Algorithm.Scheduling.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(TargetBuilderType.Default);
@@ -109,7 +109,7 @@ namespace IRuettae.Core.ILP
                     System.IO.File.WriteAllText($@"C:\Temp\iRuettae\ILP\Scheduling\{new Guid()}.mps", schedulingSolver.ExportMPS());
 #endif
 
-                    long schedulingTimelimit = starterData.SchedulingTimeLimit;
+                    var schedulingTimelimit = starterData.SchedulingTimeLimit;
                     if (schedulingTimelimit == 0 && timelimit != 0)
                     {
                         // avoid surpassing timelimit
@@ -122,7 +122,28 @@ namespace IRuettae.Core.ILP
                         return null;
                     }
 
-                    return schedulingSolver.GetResult();
+                    var route = schedulingSolver.GetResult();
+                    
+                    for (int i = 0; i < route.Waypoints.GetLength(0); i++)
+                    {
+                        for (int j = 0; j < route.Waypoints.GetLength(1); j++)
+                        {
+
+                            var realWaypointList = new List<Algorithm.Waypoint>();
+
+                            var waypointList = route.Waypoints[i, j];
+                            waypointList.ForEach(wp =>
+                            {
+                                wp.Visit = wp.Visit == 0
+                                    ? -1
+                                    : schedulingInputVariable.VisitIds[wp.Visit - 1];
+                                realWaypointList.Add(wp);
+                            });
+                            route.Waypoints[i, j] = realWaypointList;
+                        }
+                    }
+
+                    return route;
                 })
                 .ToList();
 
@@ -141,7 +162,7 @@ namespace IRuettae.Core.ILP
                     Waypoints = r.Waypoints[0, 0].Select(origWp => new Waypoint
                     {
                         VisitId = origWp.Visit,
-                        StartTime = origWp.StartTime *  starterData.TimeSliceDuration
+                        StartTime = origWp.StartTime * starterData.TimeSliceDuration
                     }).ToArray(),
 
                 }).ToArray(),

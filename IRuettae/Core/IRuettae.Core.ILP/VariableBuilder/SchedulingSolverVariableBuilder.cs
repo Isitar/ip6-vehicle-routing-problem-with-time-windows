@@ -78,11 +78,16 @@ namespace IRuettae.Preprocessing.Mapping
                 }
 
                 // visits
-                visitsVar[d] = new VisitState[Visits.Count, numberOfTimeslots];
+                visitsVar[d] = new VisitState[Visits.Count + 1, numberOfTimeslots];
 
-                for (int v = 0; v < Visits.Count; v++)
+                for (int j = 0; j < numberOfTimeslots; j++)
                 {
-                    var visit = Visits[v];
+                    visitsVar[d][0, j] = VisitState.Default;
+                }
+
+                for (int v = 1; v <= Visits.Count; v++)
+                {
+                    var visit = Visits[v-1];
 
                     // set all to default
                     for (int j = 0; j < numberOfTimeslots; j++)
@@ -122,16 +127,24 @@ namespace IRuettae.Preprocessing.Mapping
             }
 
 
-            int[,] distances = input.RouteCosts;
-            for (int i = 0; i < distances.GetLength(0); i++)
+            int[,] distances = new int[Visits.Count + 1, Visits.Count + 1];
+            for (int i = 1; i < distances.GetLength(0); i++)
             {
-                for (int j = 0; j < distances.GetLength(1); j++)
+                for (int j = 1; j < distances.GetLength(1); j++)
                 {
-                    distances[i, j] = SecondsToTimeslice(distances[i, j]);
+                    distances[i, j] = SecondsToTimeslice(input.RouteCosts[i - 1, j - 1]);
                 }
             }
 
-            int[] visitLength = Visits.Select(v => SecondsToTimeslice(v.Duration)).ToArray();
+            for (int i = 1; i < distances.GetLength(0); i++)
+            {
+                distances[i, 0] = SecondsToTimeslice(input.Visits[i - 1].WayCostToHome);
+                distances[0, i] = SecondsToTimeslice(input.Visits[i - 1].WayCostFromHome);
+            }
+
+            distances[0, 0] = 0;
+
+            int[] visitLength = Visits.Select(v => SecondsToTimeslice(v.Duration)).Prepend(0).ToArray();
             return new SolverInputData(santasVar, visitLength, visitsVar, distances, Visits.Select(v => v.Id).ToArray(), Santas.Select(s => s.Id).ToArray());
         }
     }

@@ -176,7 +176,7 @@ namespace IRuettae.WebApi.Controllers
 
                 var ret = schedulingResults.OptimizationResult.Routes.Select(r => r.Waypoints.Select(wp =>
                 {
-                    var v = dbSession.Get<Visit>(schedulingResults.VisitMap[wp.VisitId]);
+                    var v = dbSession.Get<Visit>(wp.VisitId == -1 ? routeCalculation.StarterVisitId : schedulingResults.VisitMap[wp.VisitId]);
                     return new
                     {
                         Visit = (VisitDTO)v,

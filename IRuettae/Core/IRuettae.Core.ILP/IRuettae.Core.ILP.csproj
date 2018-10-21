@@ -74,11 +74,8 @@
     <Compile Include="Algorithm\Clustering\TargetFunctionBuilders\TargetFunctionFactory.cs" />
     <Compile Include="Algorithm\Clustering\TargetFunctionBuilders\TargetType.cs" />
     <Compile Include="Algorithm\Models\ILPStarterData.cs" />
-    <Compile Include="Algorithm\RouteDistribution\Solver.cs" />
-    <Compile Include="Algorithm\RouteDistribution\SolverInputData.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\SolverData.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\SolverVariables.cs" />
-    <Compile Include="Algorithm\RouteDistribution\RouteDistribution.cs" />
     <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\AbstractTargetFunctionBuilder.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\ConstraintBuilder.cs" />
     <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\DefaultTargetFunctionBuilder.cs" />
