@@ -14,7 +14,7 @@ using Visit = IRuettae.Persistence.Entities.Visit;
 
 namespace IRuettae.WebApi.Helpers
 {
-    public class Pipeline
+    public class RouteCalculator
     {
         public static ConcurrentBag<BackgroundWorker> BackgroundWorkers = new ConcurrentBag<BackgroundWorker>();
 
@@ -23,7 +23,7 @@ namespace IRuettae.WebApi.Helpers
         private BackgroundWorker bgWorker;
 
 
-        public Pipeline(RouteCalculation routeCalculation)
+        public RouteCalculator(RouteCalculation routeCalculation)
         {
             this.routeCalculationId = routeCalculation.Id;
            
