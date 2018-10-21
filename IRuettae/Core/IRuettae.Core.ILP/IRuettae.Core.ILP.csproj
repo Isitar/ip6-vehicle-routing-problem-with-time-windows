@@ -66,13 +66,6 @@
     <Compile Include="Algorithm\Clustering\Detail\SolverVariables.cs" />
     <Compile Include="Algorithm\Clustering\Detail\VariableBuilder.cs" />
     <Compile Include="Algorithm\Clustering\Solver.cs" />
-    <Compile Include="Algorithm\Clustering\TargetFunctionBuilders\AbstractTargetFunctionBuilder.cs" />
-    <Compile Include="Algorithm\Clustering\TargetFunctionBuilders\MinTimePerSantaTargetFunctionBuilder.cs" />
-    <Compile Include="Algorithm\Clustering\TargetFunctionBuilders\MinAvgTimeTargetFunctionBuilder.cs" />
-    <Compile Include="Algorithm\Clustering\TargetFunctionBuilders\OverallMinTimeTargetFunctionBuilder.cs" />
-    <Compile Include="Algorithm\Clustering\TargetFunctionBuilders\TargetFunctionBuilderFactory.cs" />
-    <Compile Include="Algorithm\Clustering\TargetFunctionBuilders\TargetFunctionFactory.cs" />
-    <Compile Include="Algorithm\Clustering\TargetFunctionBuilders\TargetType.cs" />
     <Compile Include="Algorithm\Models\ILPStarterData.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\SolverData.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\SolverVariables.cs" />

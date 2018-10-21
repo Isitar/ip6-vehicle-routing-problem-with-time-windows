@@ -175,7 +175,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\EventTextWriter.cs" />
-    <Compile Include="Helpers\Pipeline.cs" />
+    <Compile Include="Helpers\RouteCalculator.cs" />
     <Compile Include="Helpers\RouteCalculationResult.cs" />
     <Compile Include="Helpers\VisitWayCreator.cs" />
     <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />

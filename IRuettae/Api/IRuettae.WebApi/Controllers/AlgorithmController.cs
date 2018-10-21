@@ -101,7 +101,7 @@ namespace IRuettae.WebApi.Controllers
                 rc = dbSession.Merge(rc);
             }
 
-            Task.Run(() => new Pipeline(rc).StartWorker());
+            Task.Run(() => new RouteCalculator(rc).StartWorker());
             return rc.Id;
 
 
@@ -146,7 +146,7 @@ namespace IRuettae.WebApi.Controllers
         {
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
-                if (Pipeline.BackgroundWorkers.IsEmpty)
+                if (RouteCalculator.BackgroundWorkers.IsEmpty)
                 {
                     dbSession.Query<RouteCalculation>()
                         .Where(rc => new[] { RouteCalculationState.Ready, RouteCalculationState.Running }.Contains(rc.State))

@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using IRuettae.Core.ILP.Algorithm.Clustering.Detail;
-using IRuettae.Core.ILP.Algorithm.Clustering.TargetFunctionBuilders;
+using Google.OrTools.LinearSolver;
 using GLS = Google.OrTools.LinearSolver;
 
 namespace IRuettae.Core.ILP.Algorithm.Clustering
@@ -20,12 +20,11 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering
 
         private readonly GLS.Solver solver = new GLS.Solver("Santa Problem", GLS.Solver.SCIP_MIXED_INTEGER_PROGRAMMING);
         //new GLS.Solver("SantaProblem", GLS.Solver.CBC_MIXED_INTEGER_PROGRAMMING);
-        private readonly AbstractTargetFunctionBuilder targetFunctionBuilder;
+     
 
-        public Solver(SolverInputData solverInputData, AbstractTargetFunctionBuilder targetFunctionBuilder)
+        public Solver(SolverInputData solverInputData)
         {
-            this.solverData = new SolverData(solverInputData, solver);
-            this.targetFunctionBuilder = targetFunctionBuilder;
+            solverData = new SolverData(solverInputData, solver);
         }
 
         public ResultState Solve()
@@ -84,8 +83,20 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering
         private void AddTargetFunction()
         {
             PrintDebugRessourcesBefore("AddTargetFunction");
+            var targetFunction = new LinearExpr();
+            var hour = 3600;
 
-            targetFunctionBuilder.CreateTargetFunction(solverData);
+            var santaWorkingTime = new LinearExpr[solverData.NumberOfSantas];
+            var longestDay = solver.MakeIntVar(0, int.MaxValue, "longest day");
+            foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
+            {
+                santaWorkingTime[santa] = solverData.Variables.SantaVisitTime[santa] + solverData.Variables.SantaRouteCost[santa];
+                solver.Add(longestDay >= santaWorkingTime[santa]);
+            }
+
+            targetFunction = 40 * hour * santaWorkingTime.Sum() +  30 * hour * longestDay;
+
+            solverData.Solver.Minimize(targetFunction);
 
             PrintDebugRessourcesAfter();
         }
@@ -94,9 +105,9 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering
         {
             PrintDebugRessourcesBefore("SolveInternal");
 
-            var param = new GLS.MPSolverParameters();
+            var param = new MPSolverParameters();
 
-            param.SetDoubleParam(GLS.MPSolverParameters.RELATIVE_MIP_GAP, MIP_GAP);
+            param.SetDoubleParam(MPSolverParameters.RELATIVE_MIP_GAP, MIP_GAP);
             if (timelimit != 0)
             {
                 solver.SetTimeLimit(timelimit);

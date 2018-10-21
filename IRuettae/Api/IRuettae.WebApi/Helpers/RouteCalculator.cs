@@ -111,7 +111,7 @@ namespace IRuettae.WebApi.Helpers
                 var optimizationResult = solver.Solve((int)(ilpData.ClusteringTimeLimit + ilpData.SchedulingTimeLimit),
                     progress, consoleProgress);
                 routeCalculation = dbSession.Get<RouteCalculation>(routeCalculation.Id);
-                var routeCalculationResult = new RouteCalculationResult()
+                var routeCalculationResult = new RouteCalculationResult
                 {
                     OptimizationResult = optimizationResult,
                     VisitMap = converter.VisitMap,
@@ -124,7 +124,11 @@ namespace IRuettae.WebApi.Helpers
 
                 #endregion Run
 
-                // Todo: metrics
+
+                #region metrics
+                
+
+                #endregion
 
                 routeCalculation.EndTime = DateTime.Now;
                 dbSession.Update(routeCalculation);

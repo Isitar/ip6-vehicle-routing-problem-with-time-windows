@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.ILP.Algorithm;
-using IRuettae.Core.ILP.Algorithm.Clustering.TargetFunctionBuilders;
 using IRuettae.Core.ILP.Algorithm.Models;
 using IRuettae.Core.Models;
 using IRuettae.Preprocessing.Mapping;
@@ -21,7 +20,6 @@ namespace IRuettae.Core.ILP
 
         private readonly OptimizationInput input;
         private readonly ILPStarterData starterData;
-        private readonly AbstractTargetFunctionBuilder targetFunctionBuilder;
 
         /// <summary>
         ///
@@ -34,7 +32,6 @@ namespace IRuettae.Core.ILP
         {
             this.input = input;
             this.starterData = starterData;
-            this.targetFunctionBuilder = TargetFunctionBuilderFactory.Create(starterData.ClusteringOptimizationFunction);
         }
 
         public OptimizationResult Solve(int timelimit, IProgress<ProgressReport> progress, IProgress<string> consoleProgress)
@@ -49,7 +46,7 @@ namespace IRuettae.Core.ILP
             var clusteringSolverVariableBuilder = new ClusteringSolverVariableBuilder(input, starterData.TimeSliceDuration);
             var clusteringSolverInputData = clusteringSolverVariableBuilder.Build();
             var clusteringSolver =
-                new Algorithm.Clustering.Solver(clusteringSolverInputData, targetFunctionBuilder);
+                new Algorithm.Clustering.Solver(clusteringSolverInputData);
 
 
 #if WriteMPS && DEBUG
@@ -98,7 +95,7 @@ namespace IRuettae.Core.ILP
 
 
             var routeResults = schedulingInputVariables
-                //.AsParallel()
+                .AsParallel()
                 .Select(schedulingInputVariable =>
                 {
                     var targetFunctionBuilder = Algorithm.Scheduling.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(TargetBuilderType.Default);

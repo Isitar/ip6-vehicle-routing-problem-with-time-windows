@@ -17,7 +17,7 @@ namespace IRuettae.Core.ILP.Algorithm
         public static Route Optimise(Clustering.SolverInputData solverInputData, Models.ClusteringOptimizationGoals goal,
             double MIP_GAP = 0, long timelimit = 0)
         {
-            ISolver solver = new Clustering.Solver(solverInputData, Clustering.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(goal));
+            ISolver solver = new Clustering.Solver(solverInputData);
 
             var resultState = solver.Solve(MIP_GAP, timelimit);
             switch (resultState)
@@ -61,7 +61,7 @@ namespace IRuettae.Core.ILP.Algorithm
 
         public static void SaveMps(string path, Clustering.SolverInputData solverInputData, Models.ClusteringOptimizationGoals goal)
         {
-            ISolver solver = new Clustering.Solver(solverInputData, Clustering.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(goal));
+            ISolver solver = new Clustering.Solver(solverInputData);
 
             System.IO.File.WriteAllText(path, solver.ExportMPS());
         }
