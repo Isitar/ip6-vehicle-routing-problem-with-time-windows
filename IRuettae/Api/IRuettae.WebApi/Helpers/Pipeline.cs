@@ -80,7 +80,7 @@ namespace IRuettae.WebApi.Helpers
                 routeCalculation.NumberOfSantas = santas.Count;
                 routeCalculation.NumberOfVisits = visits.Count;
 
-                var ilpData = JsonConvert.DeserializeObject<ILPStarterData>(routeCalculation.AlgorithmData);
+                
 
                 var converter = new Converter.PersistenceToCoreConverter();
                 var optimizationInput = converter.Convert(routeCalculation.Days, startVisit, visits, santas);
@@ -95,21 +95,18 @@ namespace IRuettae.WebApi.Helpers
 
                 routeCalculation.StartTime = DateTime.Now;
 
+                var ilpData = JsonConvert.DeserializeObject<ILPStarterData>(routeCalculation.AlgorithmData);
                 var solver = new ILPSolver(optimizationInput, ilpData);
 
                 var consoleProgress = new Progress<String>();
                 consoleProgress.ProgressChanged += OnConsoleProgressOnProgressChanged;
                 var progress = new Progress<ProgressReport>();
 
-
-
                 progress.ProgressChanged += OnProgressOnProgressChanged;
 
                 routeCalculation.State = RouteCalculationState.Running;
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
-
-
                 
                 var optimizationResult = solver.Solve((int)(ilpData.ClusteringTimeLimit + ilpData.SchedulingTimeLimit),
                     progress, consoleProgress);

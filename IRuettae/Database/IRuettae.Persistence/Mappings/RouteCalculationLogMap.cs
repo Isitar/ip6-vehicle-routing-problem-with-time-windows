@@ -9,7 +9,7 @@ namespace IRuettae.Persistence.Mappings
         {
             Id(x => x.Id);
             Map(x => x.CreationDate);
-            Map(x => x.Log);
+            Map(x => x.Log).Length(6000);
         }
     }
 }
