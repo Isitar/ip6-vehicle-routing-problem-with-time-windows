@@ -61,6 +61,9 @@ namespace IRuettae.WebApp.Models
             Year = DateTime.Now.Year;
         }
 
+        public virtual double Lat { get; set; }
+        public virtual double Long { get; set; }
+
         public override string ToString()
         {
             return $"{Street}, {Zip} {City}";

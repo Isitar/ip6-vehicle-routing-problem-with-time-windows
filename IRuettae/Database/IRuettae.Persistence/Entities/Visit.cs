@@ -35,6 +35,9 @@ namespace IRuettae.Persistence.Entities
         public virtual int DeltaWayDuration { get; set; }
         public virtual VisitType VisitType { get; set; }
 
+        public virtual double Lat { get; set; }
+        public virtual double Long { get; set; }
+
         public virtual Santa Santa { get; set; }
         public virtual double Duration { get; set; }
 

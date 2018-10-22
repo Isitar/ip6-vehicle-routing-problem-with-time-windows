@@ -21,7 +21,8 @@ namespace IRuettae.WebApi.Models
         public virtual int NumberOfChildrean { get; set; }
         public virtual IList<Period> Desired { get; set; }
         public virtual IList<Period> Unavailable { get; set; }
-
+        public virtual double Lat { get; set; }
+        public virtual double Long { get; set; }
         public virtual VisitType VisitType { get; set; }
 
         public virtual double Duration { get; set; }
@@ -41,7 +42,9 @@ namespace IRuettae.WebApi.Models
                 NumberOfChildrean = v.NumberOfChildren,
                 Unavailable = v.Unavailable.ToList(),
                 Duration = v.Duration,
-                VisitType = v.VisitType
+                VisitType = v.VisitType,
+                Lat = v.Lat,
+                Long = v.Long,
             };
         }
     }
