@@ -41,6 +41,8 @@ namespace IRuettae.Core.ILP
                 throw new ArgumentException("overall timelimit must be at least the sum of ClusteringTimeLimit and SchedulingTimeLimit");
             }
 
+            consoleProgress.Report("Solving started");
+
             var sw = Stopwatch.StartNew();
 
             var clusteringSolverVariableBuilder = new ClusteringSolverVariableBuilder(input, starterData.TimeSliceDuration);
@@ -120,7 +122,7 @@ namespace IRuettae.Core.ILP
                     }
 
                     var route = schedulingSolver.GetResult();
-                    
+
                     for (int i = 0; i < route.Waypoints.GetLength(0); i++)
                     {
                         for (int j = 0; j < route.Waypoints.GetLength(1); j++)
