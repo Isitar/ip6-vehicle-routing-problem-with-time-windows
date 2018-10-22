@@ -91,14 +91,9 @@ namespace IRuettae.Core.Models
             {
                 foreach (var waypoint in route.Waypoints)
                 {
-                    try
-                    {
-                        var visit = OptimizationInput.Visits.First(v => v.Id == waypoint.VisitId);
-                    }
-                    catch 
-                    {
 
-                    }
+                    var visit = OptimizationInput.Visits.Cast<Visit?>().FirstOrDefault(v => v != null && v.Value.Id == waypoint.VisitId);
+                    if (visit == null) { continue; }
                     
 
                 }
