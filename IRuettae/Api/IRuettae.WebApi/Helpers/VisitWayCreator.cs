@@ -17,7 +17,6 @@ namespace IRuettae.WebApi.Helpers
 
         public static void CreateWays(Visit visit)
         {
-            // Todo: add dependency injection
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
                 using (var transaction = dbSession.BeginTransaction())

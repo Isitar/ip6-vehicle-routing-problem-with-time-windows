@@ -85,7 +85,25 @@ namespace IRuettae.Core.Models
 
         public int VisitTimeInUnavailabe()
         {
-            //todo: implement
+            var unavailableSum = 0;
+
+            foreach (var route in Routes)
+            {
+                foreach (var waypoint in route.Waypoints)
+                {
+                    try
+                    {
+                        var visit = OptimizationInput.Visits.First(v => v.Id == waypoint.VisitId);
+                    }
+                    catch 
+                    {
+
+                    }
+                    
+
+                }
+            }
+
             return 0;
         }
 

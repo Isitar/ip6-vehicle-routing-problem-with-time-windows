@@ -21,7 +21,15 @@ namespace IRuettae.Persistence.Entities
         public virtual int NumberOfChildren { get; set; }
         public virtual IList<Period> Desired { get; set; }
         public virtual IList<Period> Unavailable { get; set; }
+        /// <summary>
+        /// From this visit to other visits
+        /// (outgoing)
+        /// </summary>
         public virtual IList<Way> FromWays { get; set; }
+        /// <summary>
+        /// From other visits to this visit
+        /// (incoming)
+        /// </summary>
         public virtual IList<Way> ToWays { get; set; }
         public virtual int DeltaWayDistance { get; set; }
         public virtual int DeltaWayDuration { get; set; }

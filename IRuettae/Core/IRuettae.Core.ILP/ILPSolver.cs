@@ -125,7 +125,6 @@ namespace IRuettae.Core.ILP
                     {
                         for (int j = 0; j < route.Waypoints.GetLength(1); j++)
                         {
-
                             var realWaypointList = new List<Algorithm.Waypoint>();
 
                             var waypointList = route.Waypoints[i, j];
