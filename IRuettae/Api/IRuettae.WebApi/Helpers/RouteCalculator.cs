@@ -91,11 +91,9 @@ namespace IRuettae.WebApi.Helpers
                 var ilpData = JsonConvert.DeserializeObject<ILPStarterData>(routeCalculation.AlgorithmData);
                 var solver = new ILPSolver(optimizationInput, ilpData);
 
-                var consoleProgress = new Progress<String>();
-                consoleProgress.ProgressChanged += OnConsoleProgressOnProgressChanged;
-                var progress = new Progress<ProgressReport>();
-
-                progress.ProgressChanged += OnProgressOnProgressChanged;
+                // note: Progress<> is not suitable here as it may use multiple threads
+                var consoleProgress = new EventHandler<string>((object s, string msg) => OnConsoleProgressOnProgressChanged(s, msg));
+                var progress = new EventHandler<ProgressReport>((object s, ProgressReport r) => OnProgressOnProgressChanged(s, r));
 
                 routeCalculation.State = RouteCalculationState.Running;
                 dbSession.Update(routeCalculation);
@@ -104,6 +102,8 @@ namespace IRuettae.WebApi.Helpers
                 var optimizationResult = solver.Solve((int)(ilpData.ClusteringTimeLimit + ilpData.SchedulingTimeLimit),
                     progress, consoleProgress);
 
+                // refresh session as changes where made in other sessions (progress)
+                dbSession.Clear();
                 routeCalculation = dbSession.Get<RouteCalculation>(routeCalculation.Id);
                 var routeCalculationResult = new RouteCalculationResult
                 {

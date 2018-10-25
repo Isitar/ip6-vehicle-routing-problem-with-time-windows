@@ -34,14 +34,14 @@ namespace IRuettae.Core.ILP
             this.starterData = starterData;
         }
 
-        public OptimizationResult Solve(int timelimit, IProgress<ProgressReport> progress, IProgress<string> consoleProgress)
+        public OptimizationResult Solve(int timelimit, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
         {
             if (timelimit < starterData.ClusteringTimeLimit + starterData.SchedulingTimeLimit)
             {
                 throw new ArgumentException("overall timelimit must be at least the sum of ClusteringTimeLimit and SchedulingTimeLimit");
             }
 
-            consoleProgress.Report("Solving started");
+            consoleProgress?.Invoke(this, "Solving started");
 
             var sw = Stopwatch.StartNew();
 
@@ -68,9 +68,9 @@ namespace IRuettae.Core.ILP
             }
 
             var phase1Result = clusteringSolver.GetResult();
-            progress.Report(new ProgressReport(0.5));
-            consoleProgress.Report("Clustering done");
-            consoleProgress.Report($"Clustering Result: {phase1Result}");
+            progress?.Invoke(this, new ProgressReport(0.5));
+            consoleProgress?.Invoke(this, "Clustering done");
+            consoleProgress?.Invoke(this, $"Clustering Result: {phase1Result}");
 
 
             var schedulingSovlerVariableBuilders = new List<SchedulingSolverVariableBuilder>();
@@ -145,9 +145,9 @@ namespace IRuettae.Core.ILP
                 })
                 .ToList();
 
-            progress.Report(new ProgressReport(0.99));
-            consoleProgress.Report("Scheduling done");
-            consoleProgress.Report($"Scheduling Result:{Environment.NewLine}" +
+            progress?.Invoke(this, new ProgressReport(0.99));
+            consoleProgress?.Invoke(this, "Scheduling done");
+            consoleProgress?.Invoke(this, $"Scheduling Result:{Environment.NewLine}" +
                 routeResults.Select(r => r.ToString()).Aggregate((acc, c) => acc + Environment.NewLine + c));
 
             // construct new output elem
@@ -166,7 +166,7 @@ namespace IRuettae.Core.ILP
                 }).ToArray(),
             };
 
-            progress.Report(new ProgressReport(1));
+            progress?.Invoke(this, new ProgressReport(1));
 
             // assign total elapsed time
             sw.Stop();

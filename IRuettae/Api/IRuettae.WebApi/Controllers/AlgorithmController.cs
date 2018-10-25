@@ -55,11 +55,9 @@ namespace IRuettae.WebApi.Controllers
                 };
 
                 var ilpSolver = new ILPSolver(optimizationInput, starterData);
-                var progress = new Progress<ProgressReport>();
-                progress.ProgressChanged += (sender, i) => { Console.WriteLine($"Progress: {i}"); };
-                var consoleProgress = new Progress<ProgressReport>();
-                consoleProgress.ProgressChanged += (sender, msg) => { Console.WriteLine(msg); };
-                return ilpSolver.Solve(0, progress, null);
+                var progress = new EventHandler<ProgressReport>((sender, i) => { Console.WriteLine($"Progress: {i}"); });
+                var consoleProgress = new EventHandler<String>((sender, msg) => { Console.WriteLine(msg); });
+                return ilpSolver.Solve(0, progress, consoleProgress);
             }
         }
         /// <summary>
