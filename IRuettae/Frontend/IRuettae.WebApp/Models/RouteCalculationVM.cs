@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,7 +44,6 @@ namespace IRuettae.WebApp.Models
         [DisplayName("Status")]
         public virtual RouteCalculationState State { get; set; }
         [DisplayName("Fortschritt")]
-        [DisplayFormat(DataFormatString = "{0:P0}")]
         public virtual double Progress { get; set; }
         [DisplayName("Status Text")]
         public virtual List<dynamic> StateText { get; set; }
