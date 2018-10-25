@@ -161,5 +161,63 @@ namespace IRuettae.Core.Models
         {
             return Routes.Select(r => r.Waypoints.Max(wp => wp.StartTime) - r.Waypoints.Min(wp => wp.StartTime)).Max();
         }
+
+        public int NumberOfNeededSantas()
+        {
+            return Routes.Select(r => FindDay(r)).GroupBy(d => d).Select(g => g.Count()).Max();
+        }
+
+        public int NumberOfRoutes()
+        {
+            return Routes.Count();
+        }
+
+        public int NumberOfVisits()
+        {
+            return OptimizationInput.Visits.Count();
+        }
+
+        public int TotalWaytime()
+        {
+            int totalTime = Routes.Select(r => r.Waypoints.Last().StartTime - r.Waypoints[0].StartTime).Sum();
+            return TotalVisitTime() - totalTime;
+        }
+
+        public int TotalVisitTime()
+        {
+            var visitedVisits = Routes.SelectMany(r => r.Waypoints.Select(w => w.VisitId));
+            return OptimizationInput.Visits.Where(v => visitedVisits.Contains(v.Id)).Select(v => v.Duration).Sum();
+        }
+
+        public int AverageWaytimePerRoute()
+        {
+            return TotalWaytime() / NumberOfRoutes();
+        }
+
+        /// <summary>
+        /// Biggest difference of a Visit Start and the start of the corresponding day
+        /// </summary>
+        /// <returns></returns>
+        public int LatestVisit()
+        {
+            return Routes.Select(r => r.Waypoints.ElementAt(r.Waypoints.Count()).StartTime - FindDay(r).from).Max();
+        }
+
+        /// <summary>
+        /// Returns the day from OptimizationInput.Days which correspondes to the Route
+        /// </summary>
+        /// <param name="route"></param>
+        /// <returns></returns>
+        private (int from, int to) FindDay(Route route)
+        {
+            foreach (var (from, to) in OptimizationInput.Days)
+            {
+                if (CalculateIntersection(route.Waypoints.First().StartTime, route.Waypoints.Last().StartTime, from, to) > 0)
+                {
+                    return (from, to);
+                }
+            }
+            throw new ArgumentException("no matching day found");
+        }
     }
 }
