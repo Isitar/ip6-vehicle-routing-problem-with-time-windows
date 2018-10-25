@@ -328,4 +328,6 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+
 /IRuettae/Api/IRuettae.WebApi/App_Data
+/IRuettae/Frontend/IRuettae.WebApp/App_Data
