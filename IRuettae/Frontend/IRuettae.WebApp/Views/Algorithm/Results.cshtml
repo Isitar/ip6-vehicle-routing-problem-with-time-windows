@@ -13,10 +13,10 @@
         <th>
             @Html.DisplayNameFor(model => model.State)
         </th>
-        <th>
+        <th style="padding-left: 1.5rem; padding-right: 1.5rem;">
             @Html.DisplayNameFor(model => model.StateTextDisplay)
         </th>
-        <th>
+        <th style="padding-left: 1.5rem; padding-right: 1.5rem;">
             Metriken
         </th>
         <th></th>
@@ -43,15 +43,12 @@
                 @if ((new[] { RouteCalculationVM.RouteCalculationState.Ready, RouteCalculationVM.RouteCalculationState.Running }).Contains(item.State))
                 {
                     <i class="fas fa-spinner fa-pulse"></i>
+                    <div>&nbsp;</div>
                 }
-                &nbsp;
-                @Html.DisplayFor(modelItem => item.State)
-                (@Html.DisplayFor(modelItem => item.Progress))
-
+                @Html.DisplayFor(modelItem => item.State)&nbsp;(@Html.DisplayFor(modelItem => item.Progress))
             </td>
             <td style="padding-top: 18px">
                 <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-status-@item.Id" aria-expanded="False" aria-controls="collapse-status-@item.Id">Log anzeigen</button>
-
                 <div class="collapse" id="collapse-status-@item.Id">
                     <table>
                         <thead>
