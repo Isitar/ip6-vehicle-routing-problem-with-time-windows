@@ -166,7 +166,7 @@ namespace IRuettae.Core.ILP
                 }).ToArray(),
             };
 
-            progress.Report(new ProgressReport(1));
+            progress.Report(new ProgressReport(1.0));
 
             // assign total elapsed time
             sw.Stop();

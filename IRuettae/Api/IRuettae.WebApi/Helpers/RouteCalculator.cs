@@ -169,6 +169,7 @@ namespace IRuettae.WebApi.Helpers
                 var routeCalculation = dbSession.Get<RouteCalculation>(routeCalculationId);
                 routeCalculation.Progress = report.Progress;
                 dbSession.Update(routeCalculation);
+                dbSession.Flush();
 
                 OnConsoleProgressOnProgressChanged(s, $"Progress: {report.Progress}");
             }

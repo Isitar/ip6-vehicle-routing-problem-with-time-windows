@@ -29,16 +29,16 @@
                          (new []{RouteCalculationVM.RouteCalculationState.Running,
                              RouteCalculationVM.RouteCalculationState.Ready
                          }).Contains(item.State) ? "td-orange" : "td-red")"></td>
-            <td>
+            <td style="padding-top: 28px">
                 @if (!string.IsNullOrEmpty(item.Result))
                 {
                     <input type="checkbox" class="form-control" name="compare[@item.Id]" data-id="@item.Id" style="height: 20px" />
                 }
             </td>
-            <td>
+            <td style="padding-top: 24px">
                 @Html.DisplayFor(modelItem => item.Year)
             </td>
-            <td style="white-space: nowrap;">
+            <td style="white-space: nowrap; padding-top: 24px">
 
                 @if ((new[] { RouteCalculationVM.RouteCalculationState.Ready, RouteCalculationVM.RouteCalculationState.Running }).Contains(item.State))
                 {
@@ -46,10 +46,10 @@
                 }
                 &nbsp;
                 @Html.DisplayFor(modelItem => item.State)
+                (@Html.DisplayFor(modelItem => item.Progress))
 
             </td>
-            <td>
-                @item.StateTextDisplay<br />
+            <td style="padding-top: 18px">
                 <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-status-@item.Id" aria-expanded="False" aria-controls="collapse-status-@item.Id">Log anzeigen</button>
 
                 <div class="collapse" id="collapse-status-@item.Id">
@@ -67,7 +67,7 @@
 
                 </div>
             </td>
-            <td style="min-width: 200px; font-size: 12px">
+            <td style="min-width: 200px; padding-top: 18px">
                 @if (!string.IsNullOrEmpty(item.Result))
                 {
                     <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-cl-@item.Id" aria-expanded="False" aria-controls="collapse-cl-@item.Id">Metriken anzeigen</button>
