@@ -41,11 +41,7 @@
             <td style="white-space: nowrap; padding-top: 24px">
 
                 @if ((new[] { RouteCalculationVM.RouteCalculationState.Ready, RouteCalculationVM.RouteCalculationState.Running }).Contains(item.State))
-                {
-                    <i class="fas fa-spinner fa-pulse"></i>
-                    <div>&nbsp;</div>
-                }
-                @Html.DisplayFor(modelItem => item.State)&nbsp;(@Html.DisplayFor(modelItem => item.Progress))
+                {<i class="fas fa-spinner fa-pulse"></i><text>&nbsp;</text>}@Html.DisplayFor(modelItem => item.State)&nbsp;(@Html.DisplayFor(modelItem => item.Progress))
             </td>
             <td style="padding-top: 18px">
                 <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-status-@item.Id" aria-expanded="False" aria-controls="collapse-status-@item.Id">Log anzeigen</button>
