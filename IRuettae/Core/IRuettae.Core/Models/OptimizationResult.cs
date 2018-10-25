@@ -44,21 +44,21 @@ namespace IRuettae.Core.Models
         /// Returns the value of our cost_function for this result
         /// </summary>
         /// <returns></returns>
-        public int MetricValue()
+        public int Cost()
         {
             const int hour = 3600;
-            return (int)(Math.Ceiling(560 * NumberOfNonVisitedFamilies()
+            return (int)(Math.Ceiling(
+                                       +560 * NumberOfNotVisitedFamilies()
                                        + 400 * NumberOfAdditionalSantas()
                                        + (40d / hour) * AdditionalSantaWorkTime())
                                        + (120d / hour) * VisitTimeInUnavailabe()
                                        - (20d / hour) * VisitTimeDesired()
                                        + (40d / hour) * SantaWorkTime()
                                        + (30d / hour) * LongestDay()
-
                 );
         }
 
-        public int NumberOfNonVisitedFamilies()
+        public int NumberOfNotVisitedFamilies()
         {
             var visitedVisits = Routes.SelectMany(r => r.Waypoints.Select(w => w.VisitId));
             return OptimizationInput.Visits.Count(v => !visitedVisits.Contains(v.Id));
@@ -93,19 +93,63 @@ namespace IRuettae.Core.Models
                 {
 
                     var visit = OptimizationInput.Visits.Cast<Visit?>().FirstOrDefault(v => v != null && v.Value.Id == waypoint.VisitId);
-                    if (visit == null) { continue; }
-                    
+                    if (!visit.HasValue) { continue; }
+
+                    int startTime = waypoint.StartTime;
+                    int endTime = startTime + visit.Value.Duration;
+                    foreach (var (from, to) in visit.Value.Unavailable)
+                    {
+                        unavailableSum += CalculateIntersection(startTime, endTime, from, to);
+                    }
 
                 }
             }
 
+            return unavailableSum;
+        }
+
+        /// <summary>
+        /// Returns how much the two intervals overlap
+        /// </summary>
+        /// <param name="from1"></param>
+        /// <param name="to1"></param>
+        /// <param name="from2"></param>
+        /// <param name="to2"></param>
+        /// <returns></returns>
+        private int CalculateIntersection(int from1, int to1, int from2, int to2)
+        {
+            int startUnavailableTime = Math.Max(from1, from2);
+            int endUnavailableTime = Math.Min(to1, to2);
+            if (startUnavailableTime < endUnavailableTime)
+            {
+                return endUnavailableTime - startUnavailableTime;
+            }
             return 0;
         }
 
         public int VisitTimeDesired()
         {
-            // todo: implement
-            return 0;
+            var desiredSum = 0;
+
+            foreach (var route in Routes)
+            {
+                foreach (var waypoint in route.Waypoints)
+                {
+
+                    var visit = OptimizationInput.Visits.Cast<Visit?>().FirstOrDefault(v => v != null && v.Value.Id == waypoint.VisitId);
+                    if (!visit.HasValue) { continue; }
+
+                    int startTime = waypoint.StartTime;
+                    int endTime = startTime + visit.Value.Duration;
+                    foreach (var (from, to) in visit.Value.Desired)
+                    {
+                        desiredSum += CalculateIntersection(startTime, endTime, from, to);
+                    }
+
+                }
+            }
+
+            return desiredSum;
         }
 
         public int SantaWorkTime()
