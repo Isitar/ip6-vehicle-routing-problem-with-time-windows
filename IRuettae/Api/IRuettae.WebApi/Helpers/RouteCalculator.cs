@@ -171,7 +171,7 @@ namespace IRuettae.WebApi.Helpers
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
 
-                OnConsoleProgressOnProgressChanged(s, $"Progress: {report.Progress}");
+                OnConsoleProgressOnProgressChanged(s, $"Progress: {String.Format("{0:P2}", report.Progress)}");
             }
             catch
             {
