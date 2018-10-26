@@ -43,7 +43,7 @@ namespace IRuettae.Core.Models.Tests
 
         private OptimizationResult GetModel()
         {
-            // unavailble
+            // unavailable
             var unavailableDay1Before = (int.MinValue, day1Start);
             var unavailableBetween = (day1End, day2Start);
             var unavailableDay2After = (day2End, int.MaxValue);
