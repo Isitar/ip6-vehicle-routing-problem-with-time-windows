@@ -2,13 +2,13 @@
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Linq;
+using IRuettae.Converter;
 using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm.Models;
 using IRuettae.Core.Models;
 using IRuettae.Persistence.Entities;
 using IRuettae.WebApi.Persistence;
 using Newtonsoft.Json;
-using NHibernate;
 using Santa = IRuettae.Persistence.Entities.Santa;
 using Visit = IRuettae.Persistence.Entities.Visit;
 
@@ -25,7 +25,7 @@ namespace IRuettae.WebApi.Helpers
 
         public RouteCalculator(RouteCalculation routeCalculation)
         {
-            this.routeCalculationId = routeCalculation.Id;
+            routeCalculationId = routeCalculation.Id;
             SetupBgWorker();
         }
 
@@ -40,7 +40,7 @@ namespace IRuettae.WebApi.Helpers
                 if (string.IsNullOrEmpty(routeCalculation.Result))
                 {
                     routeCalculation.State = RouteCalculationState.Cancelled;
-                    routeCalculation.StateText.Append(new RouteCalculationLog()
+                    routeCalculation.StateText.Append(new RouteCalculationLog
                     {
                         Log = $"{Environment.NewLine} {DateTime.Now} Background worker stopped"
                     });
@@ -58,6 +58,7 @@ namespace IRuettae.WebApi.Helpers
             try
             {
                 #region Prepare
+
                 var dbSession = SessionFactory.Instance.OpenSession();
                 var routeCalculation = dbSession.Get<RouteCalculation>(routeCalculationId);
 
@@ -76,12 +77,13 @@ namespace IRuettae.WebApi.Helpers
                 routeCalculation.NumberOfSantas = santas.Count;
                 routeCalculation.NumberOfVisits = visits.Count;
 
-                var converter = new Converter.PersistenceToCoreConverter();
+                var converter = new PersistenceToCoreConverter();
                 var optimizationInput = converter.Convert(routeCalculation.Days, startVisit, visits, santas);
 
                 routeCalculation.State = RouteCalculationState.Ready;
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
+
                 #endregion Prepare
 
                 #region Run
@@ -99,7 +101,7 @@ namespace IRuettae.WebApi.Helpers
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
 
-                var optimizationResult = solver.Solve((int)(ilpData.ClusteringTimeLimit + ilpData.SchedulingTimeLimit),
+                var optimizationResult = solver.Solve((int) (ilpData.ClusteringTimeLimit + ilpData.SchedulingTimeLimit),
                     progress, consoleProgress);
 
                 // refresh session as changes where made in other sessions (progress)
@@ -110,7 +112,7 @@ namespace IRuettae.WebApi.Helpers
                     OptimizationResult = optimizationResult,
                     VisitMap = converter.VisitMap,
                     SantaMap = converter.SantaMap,
-                    ZeroTime = converter.ZeroTime,
+                    ZeroTime = converter.ZeroTime
                 };
 
                 routeCalculation.Result = JsonConvert.SerializeObject(routeCalculationResult);
@@ -121,20 +123,18 @@ namespace IRuettae.WebApi.Helpers
 
                 #region metrics
 
-
                 #endregion metrics
 
                 routeCalculation.EndTime = DateTime.Now;
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
-
             }
             catch (Exception e)
             {
                 var dbSession = SessionFactory.Instance.OpenSession();
                 var routeCalculation = dbSession.Get<RouteCalculation>(routeCalculationId);
                 routeCalculation.State = RouteCalculationState.Cancelled;
-                routeCalculation.StateText.Add(new RouteCalculationLog() { Log = $"Error: {e.Message}"});
+                routeCalculation.StateText.Add(new RouteCalculationLog {Log = $"Error: {e.Message}"});
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
             }
@@ -151,7 +151,7 @@ namespace IRuettae.WebApi.Helpers
             {
                 var dbSession = SessionFactory.Instance.OpenSession();
                 var routeCalculation = dbSession.Get<RouteCalculation>(routeCalculationId);
-                routeCalculation.StateText.Add(new RouteCalculationLog { Log = message });
+                routeCalculation.StateText.Add(new RouteCalculationLog {Log = message});
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
             }
@@ -179,5 +179,4 @@ namespace IRuettae.WebApi.Helpers
             }
         }
     }
-
 }
