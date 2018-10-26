@@ -34,7 +34,7 @@
                                  RouteCalculationVM.RouteCalculationState.Ready
                              }).Contains(item.State) ? "td-orange" : "td-red")"></td>
             <td>
-                @if (!string.IsNullOrEmpty(item.Result))
+                @if (item.IsFinished)
                 {
                     <input type="checkbox" class="form-control" name="compare[@item.Id]" data-id="@item.Id" style="height: 20px" />
                 }
@@ -80,7 +80,7 @@
 
             </td>
             <td style="min-width: 200px">
-                @if (!string.IsNullOrEmpty(item.Result))
+                @if (item.IsFinished)
                 {
                     <button class="btn btn-link" data-toggle="modal" data-target="#modal-cl-@item.Id" aria-expanded="False" aria-controls="modal-cl-@item.Id">Metriken anzeigen</button>
                     <div class="modal fade" id="modal-cl-@item.Id" role="dialog">
@@ -106,7 +106,7 @@
                 }
             </td>
             <td>
-                @if (!string.IsNullOrEmpty(item.Result))
+                @if (item.IsFinished)
                 {
                     <a href="@Url.Action("Result", new {id = item.Id})" class="btn btn-lg btn-info">
                         <i class="fa fa-eye"></i>
