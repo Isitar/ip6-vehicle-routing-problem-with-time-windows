@@ -86,7 +86,6 @@ namespace IRuettae.Core.Models
         public int VisitTimeInUnavailabe()
         {
             var unavailableSum = 0;
-
             foreach (var route in Routes)
             {
                 foreach (var waypoint in route.Waypoints)
@@ -180,7 +179,7 @@ namespace IRuettae.Core.Models
         public int TotalWaytime()
         {
             int totalTime = Routes.Select(r => r.Waypoints.Last().StartTime - r.Waypoints[0].StartTime).Sum();
-            return TotalVisitTime() - totalTime;
+            return totalTime - TotalVisitTime();
         }
 
         public int TotalVisitTime()
@@ -192,6 +191,11 @@ namespace IRuettae.Core.Models
         public int AverageWaytimePerRoute()
         {
             return TotalWaytime() / NumberOfRoutes();
+        }
+
+        public int AverageDurationPerRoute()
+        {
+            return (TotalVisitTime() + TotalWaytime()) / NumberOfRoutes();
         }
 
         /// <summary>
