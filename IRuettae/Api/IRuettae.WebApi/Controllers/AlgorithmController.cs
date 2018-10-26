@@ -109,7 +109,7 @@ namespace IRuettae.WebApi.Controllers
                     dbSession.Flush();
                 }
 
-                var routeCalculations = dbSession.Query<RouteCalculation>().Cast<RouteCalculationDTO>().ToList();
+                var routeCalculations = dbSession.Query<RouteCalculation>().ToList().Select(rc => (RouteCalculationDTO)rc);
                 return routeCalculations;
             }
         }
