@@ -8,7 +8,7 @@ namespace IRuettae.GeoCalculations.Tests
     [TestClass]
     public class NominatimGeocoderTest
     {
-        
+
         private const string region = "CH";
         private const string referer = "ip6.isitar.ch";
         private const string email = "luescherpascal@gmail.com";
@@ -16,7 +16,7 @@ namespace IRuettae.GeoCalculations.Tests
         [TestMethod]
         public void TestCityFromZip()
         {
-            var geocoder = new NominatimGeocoder(email,region,referer);
+            var geocoder = new NominatimGeocoder(email, region, referer);
             Assert.IsNotNull(geocoder);
 
             var cities = geocoder.CityFromZip(5600);
@@ -42,9 +42,9 @@ namespace IRuettae.GeoCalculations.Tests
         public void TestCoords()
         {
             var geocoder = new NominatimGeocoder(email, region, referer);
-            var coords = geocoder.Locate("Schafisheimerstrasse 12 5603 Staufen");
-            Assert.AreEqual(47.38376435,coords.lat);
-            Assert.AreEqual(8.1582365, coords.lng);
+            (double lat, double lng) = geocoder.Locate("Schafisheimerstrasse 12 5603 Staufen");
+            Assert.AreEqual(47.38376435, lat);
+            Assert.AreEqual(8.1582365, lng);
         }
     }
 }
