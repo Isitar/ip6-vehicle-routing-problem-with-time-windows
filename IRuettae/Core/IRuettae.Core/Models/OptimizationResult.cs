@@ -173,7 +173,7 @@ namespace IRuettae.Core.Models
             return OptimizationInput.Visits.Length;
         }
 
-        public int TotalWaytime()
+        public int TotalWayTime()
         {
             int totalTime = Routes.Select(r => r.Waypoints.Last().StartTime - r.Waypoints[0].StartTime).Sum();
             return totalTime - TotalVisitTime();
@@ -185,14 +185,14 @@ namespace IRuettae.Core.Models
             return OptimizationInput.Visits.Where(v => visitedVisits.Contains(v.Id)).Select(v => v.Duration).Sum();
         }
 
-        public int AverageWaytimePerRoute()
+        public int AverageWayTimePerRoute()
         {
-            return TotalWaytime() / NumberOfRoutes();
+            return TotalWayTime() / NumberOfRoutes();
         }
 
         public int AverageDurationPerRoute()
         {
-            return (TotalVisitTime() + TotalWaytime()) / NumberOfRoutes();
+            return (TotalVisitTime() + TotalWayTime()) / NumberOfRoutes();
         }
 
         /// <summary>

@@ -345,11 +345,11 @@ namespace IRuettae.Core.Models.Tests
         }
 
         [TestMethod()]
-        public void TotalWaytimeTest()
+        public void TotalWayTimeTest()
         {
             int sum = w01 + w12 + w20 + w03 + w30 + w04 + w40;
             var model = GetModel();
-            Assert.AreEqual(sum, model.TotalWaytime());
+            Assert.AreEqual(sum, model.TotalWayTime());
         }
 
         [TestMethod()]
@@ -361,11 +361,11 @@ namespace IRuettae.Core.Models.Tests
         }
 
         [TestMethod()]
-        public void AverageWaytimePerRouteTest()
+        public void AverageWayTimePerRouteTest()
         {
             int avg = (int)new int[] { w01 + w12 + w20, w03 + w30, w04 + w40 }.Average();
             var model = GetModel();
-            Assert.AreEqual(avg, model.AverageWaytimePerRoute());
+            Assert.AreEqual(avg, model.AverageWayTimePerRoute());
         }
 
         [TestMethod()]
