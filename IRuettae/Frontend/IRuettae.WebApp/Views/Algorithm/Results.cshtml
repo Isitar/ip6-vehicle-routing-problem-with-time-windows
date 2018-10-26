@@ -94,7 +94,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="card card-body">
-                                       @Html.Partial("_Metrics", item)
+                                        @Html.Partial("_Metrics", item)
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -109,7 +109,6 @@
                 @if (!string.IsNullOrEmpty(item.Result))
                 {
                     <a href="@Url.Action("Result", new {id = item.Id})" class="btn btn-lg btn-info">
-
                         <i class="fa fa-eye"></i>
                         Resultat
                     </a>
