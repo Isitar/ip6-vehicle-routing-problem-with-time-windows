@@ -3,8 +3,9 @@ using IRuettae.Core.ILP.Algorithm;
 using System.Linq;
 using IRuettae.Core.ILP.Algorithm.Scheduling;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using IRuettae.Core.ILP.Algorithm.Models;
 
-namespace IRuettae.Core.Tests.Algorithm
+namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
 {
     [TestClass]
     public class MultipleSantaTest
@@ -47,7 +48,7 @@ namespace IRuettae.Core.Tests.Algorithm
                 0, 1, 1,
             };
 
-            return new SolverInputData(santas, visitLength, visits, distances, new [] { 0, 1, 2 }, new[] { 0, 1 });
+            return new SolverInputData(santas, visitLength, visits, distances, new[] { 0, 1, 2 }, new[] { 0, 1 });
         }
 
 
@@ -55,7 +56,7 @@ namespace IRuettae.Core.Tests.Algorithm
         public void TestMultipleSanta()
         {
             var model = GetModel();
-            var result = Starter.Optimise(model, TargetBuilderType.MinTimeOnly);
+            var result = Starter.Optimise(model, SchedulingOptimizationGoals.MinTimeOnly);
 
             Assert.AreEqual(2, result.Waypoints.GetLength(0));
             Assert.AreEqual(3, result.Waypoints[0, 0].Count);

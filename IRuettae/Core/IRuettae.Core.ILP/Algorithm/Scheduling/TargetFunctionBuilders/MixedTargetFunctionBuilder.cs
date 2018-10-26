@@ -8,7 +8,7 @@ using GLS = Google.OrTools.LinearSolver;
 
 namespace IRuettae.Core.ILP.Algorithm.Scheduling.TargetFunctionBuilders
 {
-    internal class DefaultTargetFunctionBuilder : AbstractTargetFunctionBuilder
+    internal class MixedTargetFunctionBuilder : AbstractTargetFunctionBuilder
     {
         private GLS.LinearExpr targetFunction = new GLS.LinearExpr();
 
@@ -16,8 +16,9 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling.TargetFunctionBuilders
         {
             var factory = new TargetFunctionFactory(solverData);
 
-            targetFunction += factory.CreateTargetFunction(TargetType.MinTime, 40);
-            targetFunction += factory.CreateTargetFunction(TargetType.TryVisitDesired, 20);
+            targetFunction += factory.CreateTargetFunction(TargetType.MinTime, 4);
+            targetFunction += factory.CreateTargetFunction(TargetType.TryVisitEarly, 2);
+            targetFunction += factory.CreateTargetFunction(TargetType.TryVisitDesired, 1);
 
             solverData.Solver.Minimize(targetFunction);
         }

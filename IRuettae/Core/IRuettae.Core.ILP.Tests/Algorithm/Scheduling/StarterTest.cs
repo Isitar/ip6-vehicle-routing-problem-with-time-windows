@@ -7,7 +7,7 @@ using IRuettae.Core.ILP.Algorithm;
 using IRuettae.Core.ILP.Algorithm.Scheduling;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace IRuettae.Core.Tests.Algorithm
+namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
 {
     [TestClass]
     public class StarterTest

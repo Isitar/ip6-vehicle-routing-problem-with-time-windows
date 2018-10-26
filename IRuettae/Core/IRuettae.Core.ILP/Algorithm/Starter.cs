@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using IRuettae.Core.ILP.Algorithm.Scheduling.Detail;
 using IRuettae.Core.ILP.Algorithm.Scheduling;
 using IRuettae.Core.ILP.Algorithm.Scheduling.TargetFunctionBuilders;
+using IRuettae.Core.ILP.Algorithm.Models;
 
 namespace IRuettae.Core.ILP.Algorithm
 {
@@ -14,7 +15,7 @@ namespace IRuettae.Core.ILP.Algorithm
     /// </summary>
     public class Starter
     {
-        public static Route Optimise(Clustering.SolverInputData solverInputData, Models.ClusteringOptimizationGoals goal,
+        public static Route Optimise(Clustering.SolverInputData solverInputData, ClusteringOptimizationGoals goal,
             double MIP_GAP = 0, long timelimit = 0)
         {
             ISolver solver = new Clustering.Solver(solverInputData);
@@ -36,7 +37,7 @@ namespace IRuettae.Core.ILP.Algorithm
 
             return null;
         }
-        public static Route Optimise(SolverInputData solverInputData, TargetBuilderType builderType = TargetBuilderType.Default,
+        public static Route Optimise(SolverInputData solverInputData, SchedulingOptimizationGoals builderType = SchedulingOptimizationGoals.Default,
             double MIP_GAP = 0, long timelimit = 0)
         {
             ISolver solver = new Solver(solverInputData, TargetFunctionBuilderFactory.Create(builderType));
@@ -66,7 +67,7 @@ namespace IRuettae.Core.ILP.Algorithm
             System.IO.File.WriteAllText(path, solver.ExportMPS());
         }
 
-        public static void SaveMps(string path, SolverInputData solverInputData, TargetBuilderType builderType = TargetBuilderType.Default)
+        public static void SaveMps(string path, SolverInputData solverInputData, SchedulingOptimizationGoals builderType = SchedulingOptimizationGoals.Default)
         {
             ISolver solver = new Solver(solverInputData, TargetFunctionBuilderFactory.Create(builderType));
 

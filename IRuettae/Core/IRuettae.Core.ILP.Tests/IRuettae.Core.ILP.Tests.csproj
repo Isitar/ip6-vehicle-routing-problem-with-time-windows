@@ -59,13 +59,14 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Algorithm\ATSPTests.cs" />
-    <Compile Include="Algorithm\TryDesiredTargetTest.cs" />
-    <Compile Include="Algorithm\MultipleSantaTest.cs" />
+    <Compile Include="Algorithm\Clustering\ATSPTests.cs" />
+    <Compile Include="Algorithm\Scheduling\DefaultTargetTest.cs" />
+    <Compile Include="Algorithm\Scheduling\TryDesiredTargetTest.cs" />
+    <Compile Include="Algorithm\Scheduling\MultipleSantaTest.cs" />
     <Compile Include="Algorithm\RouteTest.cs" />
-    <Compile Include="Algorithm\StarterTest.cs" />
-    <Compile Include="Algorithm\MinTimeTargetTest.cs" />
-    <Compile Include="Algorithm\WayConstraintTest.cs" />
+    <Compile Include="Algorithm\Scheduling\StarterTest.cs" />
+    <Compile Include="Algorithm\Scheduling\MinTimeTargetTest.cs" />
+    <Compile Include="Algorithm\Scheduling\WayConstraintTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using IRuettae.Core.ILP.Algorithm;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace IRuettae.Core.Tests.Algorithm
+namespace IRuettae.Core.ILP.Tests.Algorithm
 {
     [TestClass]
     public class RouteTest

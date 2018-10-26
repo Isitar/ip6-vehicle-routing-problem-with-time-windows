@@ -8,7 +8,7 @@ using IRuettae.Core.ILP.Algorithm.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SolverInputData = IRuettae.Core.ILP.Algorithm.Clustering.SolverInputData;
 
-namespace IRuettae.Core.Tests.Algorithm
+namespace IRuettae.Core.ILP.Tests.Algorithm.Clustering
 {
     [TestClass]
     public class ATSPTests

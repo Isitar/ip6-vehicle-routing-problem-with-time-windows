@@ -1,12 +1,14 @@
 ﻿using System;
 using IRuettae.Core.ILP.Algorithm;
+using System.Linq;
 using IRuettae.Core.ILP.Algorithm.Scheduling;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using IRuettae.Core.ILP.Algorithm.Models;
 
-namespace IRuettae.Core.Tests.Algorithm
+namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
 {
     [TestClass]
-    public class WayConstraintTest
+    public class MinTimeTargetTest
     {
         public SolverInputData GetModel()
         {
@@ -28,7 +30,7 @@ namespace IRuettae.Core.Tests.Algorithm
             {
                 new[,]
                 {
-                    {t, t, t, t, t, t},
+                    {t, t, t, t, t, t, t, t},
                 }
             };
 
@@ -37,9 +39,9 @@ namespace IRuettae.Core.Tests.Algorithm
             {
                 new[,]
                 {
-                    {d, d, d, d, d, d},
-                    {d, d, d, d, d, d},
-                    {d, d, d, d, d, d},
+                    {d, d, d, d, d, d, d, d},
+                    {d, d, d, d, d, d, d, d},
+                    {d, d, d, d, d, d, d, d},
                 },
 
             };
@@ -48,7 +50,7 @@ namespace IRuettae.Core.Tests.Algorithm
             int[,] distances =
             {
                 {0, 1, 1},
-                {1, 0, 2},
+                {1, 0, 1},
                 {1, 2, 0},
             };
 
@@ -62,32 +64,16 @@ namespace IRuettae.Core.Tests.Algorithm
 
 
         [TestMethod]
-        public void TestRespectingWay()
+        public void TestMinTimeOnly()
         {
             var model = GetModel();
-            var calculatedRoute = Starter.Optimise(model);
-            Assert.IsNotNull(calculatedRoute);
+            var result = Starter.Optimise(model, SchedulingOptimizationGoals.MinTimeOnly);
 
-            var waypoints = calculatedRoute.Waypoints[0, 0];
-            Assert.AreEqual(4, waypoints.Count);
-            Assert.AreEqual(0, waypoints[0].Visit);
+            var firstWaypoint = result.Waypoints[0, 0].First();
+            var lastWaypoint = result.Waypoints[0, 0].Last();
+            var duration = lastWaypoint.StartTime - firstWaypoint.StartTime;
 
-            // Order may change
-            if (waypoints[1].Visit == 1)
-            {
-                Assert.AreEqual(1, waypoints[1].Visit);
-                Assert.AreEqual(2, waypoints[2].Visit);
-            }
-            else
-            {
-                Assert.AreEqual(2, waypoints[1].Visit);
-                Assert.AreEqual(1, waypoints[2].Visit);
-            }
-
-            Assert.AreEqual(-1, waypoints[0].StartTime);
-            Assert.AreEqual(1, waypoints[1].StartTime);
-            Assert.AreEqual(4, waypoints[2].StartTime);
-
+            Assert.AreEqual(6, duration);
         }
     }
 }

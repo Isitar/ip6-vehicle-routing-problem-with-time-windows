@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IRuettae.Core.ILP.Algorithm
+namespace IRuettae.Core.ILP.Algorithm.Models
 {
-    public enum TargetBuilderType
+    public enum SchedulingOptimizationGoals
     {
-        Default,
+        Default, // minimises time,
+        OldDefault, // minimises time, early and maximises desired
         MinTimeOnly, // only minimises time
         TryDesiredOnly, // only minimises try desired
-        MinAvgTimeOnly, // only min avg time
     }
 }

@@ -8,6 +8,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.ILP.Algorithm;
+using IRuettae.Core.ILP.Algorithm.Models;
 using IRuettae.Core.ILP.Algorithm.Scheduling;
 using IRuettae.GeoCalculations.RouteCalculation;
 using Newtonsoft.Json;
@@ -42,7 +43,7 @@ namespace IRuettae.ConsoleApp
         private static void ExportMPSVisits(int n_visits)
         {
             var solverInputData = Deserialize($"SerializedObjects/SolverInput{n_visits}Visits.serial");
-            Starter.SaveMps($"{n_visits}_mps.mps", solverInputData, TargetBuilderType.Default);
+            Starter.SaveMps($"{n_visits}_mps.mps", solverInputData, SchedulingOptimizationGoals.Default);
         }
 
         private static void TestSerailDataVisits(string serialDataName, int numberOfRuns = 5)

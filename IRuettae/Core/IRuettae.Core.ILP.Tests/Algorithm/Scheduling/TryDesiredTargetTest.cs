@@ -3,26 +3,15 @@ using IRuettae.Core.ILP.Algorithm;
 using System.Linq;
 using IRuettae.Core.ILP.Algorithm.Scheduling;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using IRuettae.Core.ILP.Algorithm.Models;
 
-namespace IRuettae.Core.Tests.Algorithm
+namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
 {
     [TestClass]
-    public class MinTimeTargetTest
+    public class TryDesiredTargetTest
     {
         public SolverInputData GetModel()
         {
-            // 1 Santa, 5 timeslots
-            // A <-> B : 1
-            // A <-> C : 1
-            // B <-> C : 1
-
-
-            // Visit duration:
-            // A : 0
-            // B : 1
-            // C : 1
-
-
             const bool t = true;
             //const bool f = false;
             bool[][,] santas =
@@ -34,18 +23,18 @@ namespace IRuettae.Core.Tests.Algorithm
             };
 
             VisitState d = VisitState.Default;
+            VisitState X = VisitState.Desired;
             VisitState[][,] visits =
             {
                 new[,]
                 {
                     {d, d, d, d, d, d, d, d},
-                    {d, d, d, d, d, d, d, d},
-                    {d, d, d, d, d, d, d, d},
+                    {d, X, d, d, d, d, d, d},
+                    {d, d, d, d, X, d, d, d},
                 },
 
             };
 
-            //var X = int.MaxValue;
             int[,] distances =
             {
                 {0, 1, 1},
@@ -63,16 +52,22 @@ namespace IRuettae.Core.Tests.Algorithm
 
 
         [TestMethod]
-        public void TestMinTimeOnly()
+        public void TestTryDesiredOnly()
         {
             var model = GetModel();
-            var result = Starter.Optimise(model, TargetBuilderType.MinTimeOnly);
+            var result = Starter.Optimise(model, SchedulingOptimizationGoals.TryDesiredOnly);
 
-            var firstWaypoint = result.Waypoints[0, 0].First();
-            var lastWaypoint = result.Waypoints[0, 0].Last();
+            var wp = result.Waypoints[0, 0];
+
+            Assert.AreEqual(1, wp[1].StartTime);
+            Assert.AreEqual(4, wp[2].StartTime);
+
+            var firstWaypoint = wp.First();
+            var lastWaypoint = wp.Last();
             var duration = lastWaypoint.StartTime - firstWaypoint.StartTime;
 
-            Assert.AreEqual(6, duration);
+            // one longer than neccessary
+            Assert.AreEqual(7, duration);
         }
     }
 }

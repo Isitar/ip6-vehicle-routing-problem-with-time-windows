@@ -3,20 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IRuettae.Core.ILP.Algorithm.Models;
 
 namespace IRuettae.Core.ILP.Algorithm.Scheduling.TargetFunctionBuilders
 {
     internal static class TargetFunctionBuilderFactory
     {
-        public static AbstractTargetFunctionBuilder Create(TargetBuilderType type)
+        public static AbstractTargetFunctionBuilder Create(SchedulingOptimizationGoals type)
         {
             switch (type)
             {
-                case TargetBuilderType.Default:
+                case SchedulingOptimizationGoals.Default:
                     return new DefaultTargetFunctionBuilder();
-                case TargetBuilderType.MinTimeOnly:
+                case SchedulingOptimizationGoals.OldDefault:
+                    return new MixedTargetFunctionBuilder();
+                case SchedulingOptimizationGoals.MinTimeOnly:
                     return new MinTimeOnlyTargetFunctionBuilder();
-                case TargetBuilderType.TryDesiredOnly:
+                case SchedulingOptimizationGoals.TryDesiredOnly:
                     return new TryDesiredOnlyTargetFunctionBuilder();
                 default:
                     break;

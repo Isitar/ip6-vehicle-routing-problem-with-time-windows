@@ -100,7 +100,7 @@ namespace IRuettae.Core.ILP
                 .AsParallel()
                 .Select(schedulingInputVariable =>
                 {
-                    var targetFunctionBuilder = Algorithm.Scheduling.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(TargetBuilderType.Default);
+                    var targetFunctionBuilder = Algorithm.Scheduling.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(SchedulingOptimizationGoals.Default);
                     var schedulingSolver =
                         new Algorithm.Scheduling.Solver(schedulingInputVariable, targetFunctionBuilder);
 
