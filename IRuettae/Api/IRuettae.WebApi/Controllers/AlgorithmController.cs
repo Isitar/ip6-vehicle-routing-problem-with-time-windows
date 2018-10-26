@@ -170,17 +170,17 @@ namespace IRuettae.WebApi.Controllers
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
                 var routeCalculation = dbSession.Get<RouteCalculation>(id);
-                var schedulingResults = JsonConvert.DeserializeObject<RouteCalculationResult>(routeCalculation.Result);
+                var routeCalculationResult = JsonConvert.DeserializeObject<RouteCalculationResult>(routeCalculation.Result);
 
-                var ret = schedulingResults.OptimizationResult.Routes.Select(r => r.Waypoints.Select(wp =>
+                var ret = routeCalculationResult.OptimizationResult.Routes.Select(r => r.Waypoints.Select(wp =>
                 {
-                    var v = dbSession.Get<Visit>(wp.VisitId == -1 ? routeCalculation.StarterVisitId : schedulingResults.VisitMap[wp.VisitId]);
+                    var v = dbSession.Get<Visit>(wp.VisitId == -1 ? routeCalculation.StarterVisitId : routeCalculationResult.VisitMap[wp.VisitId]);
                     return new
                     {
                         Visit = (VisitDTO)v,
-                        VisitStartTime = schedulingResults.ConvertTime(wp.StartTime),
-                        VisitEndtime = schedulingResults.ConvertTime(wp.StartTime).AddSeconds(v.Duration),
-                        SantaName = dbSession.Get<Santa>(schedulingResults.VisitMap[r.SantaId])?.Name,
+                        VisitStartTime = routeCalculationResult.ConvertTime(wp.StartTime),
+                        VisitEndtime = routeCalculationResult.ConvertTime(wp.StartTime).AddSeconds(v.Duration),
+                        SantaName = dbSession.Get<Santa>(routeCalculationResult.VisitMap[r.SantaId])?.Name,
                     };
                 }).ToList()).ToList();
 
