@@ -66,7 +66,7 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
         public void TestSolve()
         {
             var model = GetModel();
-            var actual = Starter.Optimise(model);
+            var actual = Starter.Optimize(model);
             var expected = new Route(model.Santas.Length, model.Santas[0].GetLength(0))
             {
                 Waypoints = new List<Waypoint>[,] {
@@ -103,7 +103,7 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
         {
             var model = GetModel();
             // shouldn't throw an exception
-            Assert.IsNotNull(Starter.Optimise(model));
+            Assert.IsNotNull(Starter.Optimize(model));
         }
     }
 }

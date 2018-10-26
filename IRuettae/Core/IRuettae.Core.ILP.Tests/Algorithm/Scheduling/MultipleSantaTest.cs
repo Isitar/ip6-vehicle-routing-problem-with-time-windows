@@ -56,7 +56,7 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
         public void TestMultipleSanta()
         {
             var model = GetModel();
-            var result = Starter.Optimise(model, SchedulingOptimizationGoals.MinTimeOnly);
+            var result = Starter.Optimize(model, SchedulingOptimizationGoals.MinTimeOnly);
 
             Assert.AreEqual(2, result.Waypoints.GetLength(0));
             Assert.AreEqual(3, result.Waypoints[0, 0].Count);

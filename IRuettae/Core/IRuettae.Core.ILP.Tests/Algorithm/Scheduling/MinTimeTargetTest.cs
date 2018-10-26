@@ -67,7 +67,7 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
         public void TestMinTimeOnly()
         {
             var model = GetModel();
-            var result = Starter.Optimise(model, SchedulingOptimizationGoals.MinTimeOnly);
+            var result = Starter.Optimize(model, SchedulingOptimizationGoals.MinTimeOnly);
 
             var firstWaypoint = result.Waypoints[0, 0].First();
             var lastWaypoint = result.Waypoints[0, 0].Last();

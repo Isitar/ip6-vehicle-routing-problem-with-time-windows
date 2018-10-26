@@ -15,7 +15,7 @@ namespace IRuettae.Core.ILP.Algorithm
     /// </summary>
     public class Starter
     {
-        public static Route Optimise(Clustering.SolverInputData solverInputData, ClusteringOptimizationGoals goal,
+        public static Route Optimize(Clustering.SolverInputData solverInputData, ClusteringOptimizationGoals goal,
             double MIP_GAP = 0, long timelimit = 0)
         {
             ISolver solver = new Clustering.Solver(solverInputData);
@@ -37,7 +37,7 @@ namespace IRuettae.Core.ILP.Algorithm
 
             return null;
         }
-        public static Route Optimise(SolverInputData solverInputData, SchedulingOptimizationGoals builderType = SchedulingOptimizationGoals.Default,
+        public static Route Optimize(SolverInputData solverInputData, SchedulingOptimizationGoals builderType = SchedulingOptimizationGoals.Default,
             double MIP_GAP = 0, long timelimit = 0)
         {
             ISolver solver = new Solver(solverInputData, TargetFunctionBuilderFactory.Create(builderType));

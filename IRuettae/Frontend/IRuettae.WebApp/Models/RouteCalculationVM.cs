@@ -111,5 +111,6 @@ namespace IRuettae.WebApp.Models
             ILP,
         }
 
+        public bool IsFinished => State == RouteCalculationState.Finished;
     }
 }
