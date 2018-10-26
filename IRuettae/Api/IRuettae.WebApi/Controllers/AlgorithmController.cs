@@ -1,28 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Runtime.Remoting.Messaging;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web.Hosting;
 using System.Web.Http;
 using IRuettae.Core.ILP;
-using IRuettae.Core.ILP.Algorithm;
 using IRuettae.Core.ILP.Algorithm.Models;
 using IRuettae.Core.Models;
 using IRuettae.Persistence.Entities;
-using IRuettae.Preprocessing.Mapping;
 using IRuettae.WebApi.Helpers;
 using IRuettae.WebApi.Models;
 using IRuettae.WebApi.Persistence;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Santa = IRuettae.Persistence.Entities.Santa;
 using Visit = IRuettae.Persistence.Entities.Visit;
 
@@ -101,41 +89,6 @@ namespace IRuettae.WebApi.Controllers
 
             Task.Run(() => new RouteCalculator(rc).StartWorker());
             return rc.Id;
-
-
-
-
-            //var serialPath = HostingEnvironment.MapPath($"~/App_Data/SolverInputNew{n_visits}Visits.serial");
-            //using (var stream = File.Open(serialPath, FileMode.Create))
-            //{
-            //    new BinaryFormatter().Serialize(stream, solverInputData);
-            //}
-
-            //var mpsPath = HostingEnvironment.MapPath($"~/App_Data/MPS_{n_visits}Visits_new.mps");
-            //Starter.SaveMps(mpsPath, solverInputData);
-
-            //var sw = Stopwatch.StartNew();
-            //var routeResult = Starter.Optimise(solverInputData, MIP_GAP: 0.5);
-            //sw.Stop();
-            //var routes = routeResult.Waypoints
-            //    .Cast<List<Waypoint>>()
-            //    .Select(wp => wp.Aggregate("",
-            //        (carry, n) => carry + Environment.NewLine + solverInputData.VisitNames[n.Visit]))
-            //    .ToList();
-
-
-            //var ctr = 0;
-            //foreach (var route in routes)
-            //{
-            //    File.WriteAllText(HostingEnvironment.MapPath($"~/App_Data/R{ctr}_{0.5}.csv"), $"Address{Environment.NewLine}{route}");
-            //    //ConsoleExt.WriteLine(ctr.ToString(), ResultColor);
-            //    //ConsoleExt.WriteLine(route, ResultColor);
-            //    ctr++;
-            //}
-
-
-            //Debug.WriteLine("Elapsed ms: " + sw.ElapsedMilliseconds);
-            //return routes;
         }
 
         [HttpGet]
