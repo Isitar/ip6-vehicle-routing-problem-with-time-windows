@@ -42,7 +42,7 @@ namespace IRuettae.WebApi.Helpers
                     routeCalculation.State = RouteCalculationState.Cancelled;
                     routeCalculation.StateText.Append(new RouteCalculationLog()
                     {
-                        Log = "{Environment.NewLine} {DateTime.Now} Background worker stopped"
+                        Log = $"{Environment.NewLine} {DateTime.Now} Background worker stopped"
                     });
                 }
 
@@ -134,7 +134,7 @@ namespace IRuettae.WebApi.Helpers
                 var dbSession = SessionFactory.Instance.OpenSession();
                 var routeCalculation = dbSession.Get<RouteCalculation>(routeCalculationId);
                 routeCalculation.State = RouteCalculationState.Cancelled;
-                routeCalculation.StateText.Add(new RouteCalculationLog() { Log = "Error: " + e.Message });
+                routeCalculation.StateText.Add(new RouteCalculationLog() { Log = $"Error: {e.Message}"});
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
             }
