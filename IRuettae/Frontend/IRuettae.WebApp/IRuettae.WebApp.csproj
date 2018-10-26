@@ -321,6 +321,7 @@
     <Content Include="Views\Algorithm\Results.cshtml" />
     <Content Include="Views\Algorithm\Result.cshtml" />
     <Content Include="Views\Algorithm\Compare.cshtml" />
+    <Content Include="Views\Algorithm\_Metrics.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\logs\" />
