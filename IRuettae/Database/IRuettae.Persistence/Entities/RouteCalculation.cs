@@ -35,17 +35,6 @@ namespace IRuettae.Persistence.Entities
         public virtual IList<RouteCalculationLog> StateText { get; set; }
         public virtual DateTime EndTime { get; set; }
 
-        // Metrics
-        public virtual int NumberOfRoutes { get; set; }
-        public virtual double TotalWaytime { get; set; }
-        public virtual double TotalVisitTime { get; set; }
-        public virtual double WaytimePerSanta { get; set; }
-        public virtual double DesiredSeconds { get; set; }
-        public virtual double LongestRouteTime { get; set; }
-        public virtual double LongestRouteDistance { get; set; }
-        public virtual double LongestDay { get; set; }
-        public virtual DateTime LatestVisit { get; set; }
-
         public RouteCalculation()
         {
             this.StateText = new List<RouteCalculationLog>();
