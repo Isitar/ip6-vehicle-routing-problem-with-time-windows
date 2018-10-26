@@ -92,8 +92,8 @@ namespace IRuettae.WebApi.Helpers
                 var solver = new ILPSolver(optimizationInput, ilpData);
 
                 // note: Progress<> is not suitable here as it may use multiple threads
-                var consoleProgress = new EventHandler<string>((object s, string msg) => OnConsoleProgressOnProgressChanged(s, msg));
-                var progress = new EventHandler<ProgressReport>((object s, ProgressReport r) => OnProgressOnProgressChanged(s, r));
+                var consoleProgress = new EventHandler<string>(OnConsoleProgressOnProgressChanged);
+                var progress = new EventHandler<ProgressReport>(OnProgressOnProgressChanged);
 
                 routeCalculation.State = RouteCalculationState.Running;
                 dbSession.Update(routeCalculation);
@@ -171,7 +171,7 @@ namespace IRuettae.WebApi.Helpers
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
 
-                OnConsoleProgressOnProgressChanged(s, $"Progress: {String.Format("{0:P2}", report.Progress)}");
+                OnConsoleProgressOnProgressChanged(s, $"Progress: {report.Progress:P2}");
             }
             catch
             {
