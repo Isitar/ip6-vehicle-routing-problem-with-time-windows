@@ -9,6 +9,8 @@ namespace IRuettae.WebApi.Models
 {
     public class RouteCalculationDTO
     {
+        public virtual long Id { get; set; }
+
         // starter Properties
         public virtual DateTime StartTime { get; set; }
         public virtual int Year { get; set; }
@@ -52,6 +54,7 @@ namespace IRuettae.WebApi.Models
         {
             var dto = new RouteCalculationDTO
             {
+                Id = rc.Id,
                 StartTime = rc.StartTime,
                 Year = rc.Year,
                 Days = rc.Days,
