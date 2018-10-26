@@ -107,22 +107,6 @@ namespace IRuettae.Core.Models
             return unavailableSum;
         }
 
-        /// <summary>
-        /// Returns how much the two intervals overlap
-        /// </summary>
-        /// <param name="intervals"></param>
-        /// <returns></returns>
-        private int IntersectionLength(IEnumerable<(int from, int to)> intervals)
-        {
-            int startIntersection = intervals.Max(interval => interval.from);
-            int endIntersection = intervals.Min(interval => interval.to);
-            if (startIntersection < endIntersection)
-            {
-                return endIntersection - startIntersection;
-            }
-            return 0;
-        }
-
         public int VisitTimeInDesired()
         {
             var desiredSum = 0;
@@ -210,6 +194,22 @@ namespace IRuettae.Core.Models
                 }
             }
             throw new ArgumentException("no matching day found");
+        }
+
+        /// <summary>
+        /// Returns how much the two intervals overlap
+        /// </summary>
+        /// <param name="intervals"></param>
+        /// <returns></returns>
+        private static int IntersectionLength(IEnumerable<(int from, int to)> intervals)
+        {
+            int startIntersection = intervals.Max(interval => interval.from);
+            int endIntersection = intervals.Min(interval => interval.to);
+            if (startIntersection < endIntersection)
+            {
+                return endIntersection - startIntersection;
+            }
+            return 0;
         }
     }
 }
