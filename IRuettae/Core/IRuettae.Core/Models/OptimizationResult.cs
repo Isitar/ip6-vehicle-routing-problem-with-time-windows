@@ -195,15 +195,6 @@ namespace IRuettae.Core.Models
         }
 
         /// <summary>
-        /// Biggest difference of a Visit Start and the start of the corresponding day
-        /// </summary>
-        /// <returns></returns>
-        public int LatestVisit()
-        {
-            return Routes.Select(r => r.Waypoints.ElementAt(r.Waypoints.Count()).StartTime - FindDay(r).from).Max();
-        }
-
-        /// <summary>
         /// Returns the day from OptimizationInput.Days which correspondes to the Route
         /// </summary>
         /// <param name="route"></param>
