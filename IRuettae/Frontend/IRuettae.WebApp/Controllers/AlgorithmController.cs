@@ -22,7 +22,7 @@ namespace IRuettae.WebApp.Controllers
             var model = new AlgorithmStarterVM();
             var response = Client.GetAsync("api/visit").Result;
             var visits = JArray.Parse(response.Content.ReadAsStringAsync().Result).ToObject<VisitVM[]>();
-            
+
             if (System.IO.File.Exists(ConfigPath))
             {
                 model = JsonConvert.DeserializeObject<AlgorithmStarterVM>(System.IO.File.ReadAllText(ConfigPath));
@@ -60,10 +60,6 @@ namespace IRuettae.WebApp.Controllers
         {
             var result = await Client.GetAsync("api/algorithm/RouteCalculations");
             var routeCalculations = JArray.Parse(result.Content.ReadAsStringAsync().Result).ToObject<RouteCalculationVM[]>().OrderByDescending(rc => rc.StartTime);
-            foreach (var routeCalculationVM in routeCalculations)
-            {
-                routeCalculationVM.StateTextDisplay = routeCalculationVM.StateText.LastOrDefault()?.Log;
-            }
             return View(routeCalculations);
         }
 
