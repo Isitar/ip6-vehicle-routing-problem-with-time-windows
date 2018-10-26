@@ -35,8 +35,6 @@ namespace IRuettae.WebApp.Models
 
 
         // Running & Result
-        [DisplayName("Resultat")]
-        public virtual string Result { get; set; }
         [DisplayName("Status")]
         public virtual RouteCalculationState State { get; set; }
         [DisplayName("Fortschritt")]
