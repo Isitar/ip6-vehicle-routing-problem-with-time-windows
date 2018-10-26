@@ -57,7 +57,6 @@ namespace IRuettae.WebApi.Controllers
         [Route("StartRouteCalculation")]
         public long StartRouteCalculation([FromBody]AlgorithmStarter algorithmStarter)
         {
-
             RouteCalculation rc;
 
             using (var dbSession = SessionFactory.Instance.OpenSession())
@@ -93,7 +92,7 @@ namespace IRuettae.WebApi.Controllers
 
         [HttpGet]
         [Route("RouteCalculations")]
-        public IEnumerable<RouteCalculation> GetRouteCalculations()
+        public IEnumerable<RouteCalculationDTO> GetRouteCalculations()
         {
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
@@ -110,7 +109,7 @@ namespace IRuettae.WebApi.Controllers
                     dbSession.Flush();
                 }
 
-                var routeCalculations = dbSession.Query<RouteCalculation>().ToList();
+                var routeCalculations = dbSession.Query<RouteCalculation>().Cast<RouteCalculationDTO>().ToList();
                 return routeCalculations;
             }
         }
