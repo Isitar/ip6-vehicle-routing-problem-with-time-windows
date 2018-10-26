@@ -59,13 +59,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Algorithm\Models\ClusteringOptimisationGoals.cs" />
     <Compile Include="Algorithm\Clustering\Detail\ConstraintBuilder.cs" />
     <Compile Include="Algorithm\Clustering\Detail\ResultBuilder.cs" />
     <Compile Include="Algorithm\Clustering\Detail\SolverData.cs" />
     <Compile Include="Algorithm\Clustering\Detail\SolverVariables.cs" />
     <Compile Include="Algorithm\Clustering\Detail\VariableBuilder.cs" />
     <Compile Include="Algorithm\Clustering\Solver.cs" />
+    <Compile Include="Algorithm\Models\ClusteringOptimizationGoals.cs" />
     <Compile Include="Algorithm\Models\ILPStarterData.cs" />
     <Compile Include="Algorithm\Models\SchedulingOptimizationGoals.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\SolverData.cs" />
