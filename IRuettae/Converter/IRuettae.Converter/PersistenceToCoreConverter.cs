@@ -106,6 +106,34 @@ namespace IRuettae.Converter
             {
                 input.Days[i] = ((int)(workingDays[i].Start - ZeroTime).TotalSeconds, (int)(workingDays[i].End - ZeroTime).TotalSeconds);
             }
+
+            // Add unavailable outside of working hours
+            {
+                var orderedDays = input.Days.OrderBy(d => d.from).ToList();
+                var unavailabilities = new List<(int from, int to)>();
+                (int from, int to) lastDay = orderedDays.First();
+
+                // before first day
+                unavailabilities.Add((int.MinValue, lastDay.from));
+
+                // between days
+                foreach (var day in orderedDays.Skip(1))
+                {
+                    unavailabilities.Add((lastDay.to, day.from));
+                    lastDay = day;
+                }
+
+                // after last day
+                unavailabilities.Add((lastDay.to, int.MaxValue));
+
+                // add to visits
+                for (int i = 0; i < input.Visits.Count(); i++)
+                {
+                    var newUnavailable = new List<(int from, int to)>(input.Visits[i].Unavailable);
+                    newUnavailable.AddRange(unavailabilities);
+                    input.Visits[i].Unavailable = newUnavailable.ToArray();
+                }
+            }
             return input;
         }
     }

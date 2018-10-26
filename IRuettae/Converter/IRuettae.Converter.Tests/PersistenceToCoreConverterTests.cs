@@ -205,29 +205,36 @@ namespace IRuettae.Converter.Tests
                 };
             }
 
-            var hour = 3600;
+            // unavailable
+            const int hour = 3600;
+            var unavailableDay1Before = (int.MinValue, 0);
+            var unavailableBetween = (5 * hour, 24 * hour);
+            var unavailableDay2After = (29 * hour, int.MaxValue);
             var expected = new Core.Models.OptimizationInput
             {
-                Santas = new Core.Models.Santa[1]
+                Santas = new Core.Models.Santa[]
                 {
                     new Core.Models.Santa
                     {
                         Id = 0,
                     },
                 },
-                Visits = new Core.Models.Visit[2]
+                Visits = new Core.Models.Visit[]
                 {
                     new Core.Models.Visit
                     {
                         Id = 0,
                         Duration = 30*60,
-                        Desired = new (int, int)[1]
+                        Desired = new (int, int)[]
                         {
                             (hour, 2 * hour)
                         },
-                        Unavailable = new (int, int)[1]
+                        Unavailable = new (int, int)[]
                         {
-                            (24 * hour, 29 * hour)
+                            (24 * hour, 29 * hour),
+                            unavailableDay1Before,
+                            unavailableBetween,
+                            unavailableDay2After,
                         },
                         IsBreak = false,
                         SantaId = -1,
@@ -239,10 +246,13 @@ namespace IRuettae.Converter.Tests
                         Id = 1,
                         Duration = 20*60,
                         Desired = new (int, int)[0],
-                        Unavailable = new (int, int)[2]
+                        Unavailable = new (int, int)[]
                         {
                             (0 * hour, 5 * hour),
                             (27 * hour, 29 * hour),
+                            unavailableDay1Before,
+                            unavailableBetween,
+                            unavailableDay2After,
                         },
                         IsBreak = false,
                         SantaId = -1,
@@ -590,7 +600,9 @@ namespace IRuettae.Converter.Tests
                 };
             }
 
-            var hour = 3600;
+            const int hour = 3600;
+            var unavailableDay1Before = (int.MinValue, 0);
+            var unavailableDay1After = (5 * hour, int.MaxValue);
             var expected = new Core.Models.OptimizationInput
             {
                 Santas = new Core.Models.Santa[2]
@@ -616,7 +628,11 @@ namespace IRuettae.Converter.Tests
                         {
                             (1 * hour, 2 * hour)
                         },
-                        Unavailable = new (int from, int to)[0],
+                        Unavailable = new (int from, int to)[]
+                        {
+                            unavailableDay1Before,
+                            unavailableDay1After,
+                        },
                         WayCostFromHome = w01.Duration,
                         WayCostToHome = w10.Duration,
                     },
@@ -629,7 +645,9 @@ namespace IRuettae.Converter.Tests
                         Desired = new (int, int)[0],
                         Unavailable = new (int, int)[]
                         {
-                            (1 * hour, 5 * hour)
+                            (1 * hour, 5 * hour),
+                            unavailableDay1Before,
+                            unavailableDay1After,
                         },
                         WayCostFromHome = w02.Duration,
                         WayCostToHome = w20.Duration,
@@ -639,7 +657,11 @@ namespace IRuettae.Converter.Tests
                         Id = 2,
                         Duration = 30 *60,
                         Desired = new (int from, int to)[0],
-                        Unavailable = new (int from, int to)[0],
+                        Unavailable = new (int from, int to)[]
+                        {
+                            unavailableDay1Before,
+                            unavailableDay1After,
+                        },
                         IsBreak = true,
                         SantaId = 1,
                         WayCostFromHome = w03.Duration,
@@ -650,7 +672,10 @@ namespace IRuettae.Converter.Tests
                         Id = 3,
                         Duration = 30 *60,
                         Desired = new (int from, int to)[0],
-                        Unavailable = new (int from, int to)[0],
+                        Unavailable = new (int from, int to)[]{
+                            unavailableDay1Before,
+                            unavailableDay1After,
+                        },
                         IsBreak = true,
                         SantaId = 0,
                         WayCostFromHome = w04.Duration,
