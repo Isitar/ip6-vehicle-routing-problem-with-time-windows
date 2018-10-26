@@ -36,7 +36,7 @@
             <button type="button" id="AddDay" class="btn btn-sm btn-success">
                 <i class="fa fa-plus"></i>
             </button>
-            @if (Model.DaysPeriod.Count == 0)
+            @if (Model.DaysPeriod?.Count == 0)
             {
                 <div class="days">
                     <div class="form-group row">
@@ -57,7 +57,7 @@
                     <div class="p-1"></div>
                 </div>
             }
-            @for (int i = 0; i < Model.DaysPeriod.Count; i++)
+            @for (int i = 0; i < Model.DaysPeriod?.Count; i++)
             {
                 <div class="days">
                     <div class="form-group row">

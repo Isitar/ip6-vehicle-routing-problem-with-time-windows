@@ -29,11 +29,6 @@ namespace IRuettae.WebApp.Models
         [DisplayName("Anzahl benötigte Chläuse")]
         public virtual int NumberOfSantas { get; set; }
 
-        [DisplayName("Anzahl Routen")]
-        public virtual int NumberOfRoutes { get; set; }
-        [DisplayName("Anzahl Besuche")]
-        public virtual int NumberOfVisits { get; set; }
-
         // Algorithm specific data
         [DisplayName("Algorithmus")]
         public virtual AlgorithmType Algorithm { get; set; }
@@ -55,22 +50,53 @@ namespace IRuettae.WebApp.Models
         public virtual DateTime EndTime { get; set; }
 
         // Metrics
+        [DisplayName("Kosten")]
+        public virtual int Cost { get; set; }
+
+        [DisplayName("Anzahl nicht besuchter Familien")]
+        public virtual int NumberOfNotVisitedFamilies { get; set; }
+
+        [DisplayName("Anzahl zusätzlich benötigter Chläuse")]
+        public virtual int NumberOfAdditionalSantas { get; set; }
+
+        [DisplayName("Arbeitszeit der zusätzlich benötigten Chläusen")]
+        public virtual int AdditionalSantaWorkTime { get; set; }
+
+        [DisplayName("Besuchszeiten ausserhalb der verfügbaren Zeit")]
+        public virtual int VisitTimeInUnavailable { get; set; }
+
+        [DisplayName("Besuchszeiten innerhalb der Wunschzeit")]
+        public virtual int VisitTimeInDesired { get; set; }
+
+        [DisplayName("Arbeitszeit der Chläuse")]
+        public virtual int SantaWorkTime { get; set; }
+
+        [DisplayName("Längster Tag")]
+        public virtual int LongestDay { get; set; }
+
+        [DisplayName("Anzahl benötigter Chläuse")]
+        public virtual int NumberOfNeededSantas { get; set; }
+
+        [DisplayName("Anzahl Routen")]
+        public virtual int NumberOfRoutes { get; set; }
+
+        [DisplayName("Anzahl Besuche")]
+        public virtual int NumberOfVisits { get; set; }
+
+
         [DisplayName("Totale Wegzeit")]
-        public virtual double TotalWaytime { get; set; }
+        public virtual int TotalWayTime { get; set; }
 
         [DisplayName("Totale Besuchszeit")]
-        public virtual double TotalVisitTime { get; set; }
+        public virtual int TotalVisitTime { get; set; }
 
-        [DisplayName("Ø Wegzeit pro Chlaus")]
-        public virtual double WaytimePerSanta { get; set; }
-        [DisplayName("Wunschzeit erfüllt")]
-        public virtual double DesiredSeconds { get; set; }
+        
+        [DisplayName("Durchschnittliche Wegzeit")]
+        public virtual int AverageWayTimePerRoute { get; set; }
 
-        [DisplayName("Längste Route")]
-        public virtual double LongestDay { get; set; }
 
-        [DisplayName("Spätester Besuch")]
-        public virtual DateTime LatestVisit { get; set; }
+        [DisplayName("Durchschnittliche Zeit pro Route")]
+        public virtual int AverageDurationPerRoute { get; set; }
 
 
         public enum RouteCalculationState
