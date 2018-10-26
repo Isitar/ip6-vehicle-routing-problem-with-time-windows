@@ -49,7 +49,7 @@ namespace IRuettae.WebApp.Models
         public virtual double Progress { get; set; }
         [DisplayName("Status Text")]
         public virtual List<dynamic> StateText { get; set; }
-        [DisplayName("Status Text")]
+        [DisplayName("Statustext")]
         public virtual string StateTextDisplay { get; set; }
         [DisplayName("Endzeit")]
         public virtual DateTime EndTime { get; set; }
