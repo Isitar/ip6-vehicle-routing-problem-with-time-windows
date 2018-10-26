@@ -181,7 +181,6 @@
     <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
     <Compile Include="Models\AlgorithmStarter.cs" />
     <Compile Include="Models\SantaDTO.cs" />
-    <Compile Include="Models\SchedulingResult.cs" />
     <Compile Include="Models\VisitDTO.cs" />
     <Compile Include="Persistence\SessionFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
