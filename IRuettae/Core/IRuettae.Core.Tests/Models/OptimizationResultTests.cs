@@ -298,11 +298,11 @@ namespace IRuettae.Core.Models.Tests
         }
 
         [TestMethod()]
-        public void VisitTimeDesiredTest()
+        public void VisitTimeInDesiredTest()
         {
             var model = GetModel();
             var sum = 1 * hour + 15 * minute + 20 * minute;
-            Assert.AreEqual(sum, model.VisitTimeDesired());
+            Assert.AreEqual(sum, model.VisitTimeInDesired());
         }
 
         [TestMethod()]
@@ -345,11 +345,11 @@ namespace IRuettae.Core.Models.Tests
         }
 
         [TestMethod()]
-        public void TotalWaytimeTest()
+        public void TotalWayTimeTest()
         {
             int sum = w01 + w12 + w20 + w03 + w30 + w04 + w40;
             var model = GetModel();
-            Assert.AreEqual(sum, model.TotalWaytime());
+            Assert.AreEqual(sum, model.TotalWayTime());
         }
 
         [TestMethod()]
@@ -361,11 +361,11 @@ namespace IRuettae.Core.Models.Tests
         }
 
         [TestMethod()]
-        public void AverageWaytimePerRouteTest()
+        public void AverageWayTimePerRouteTest()
         {
             int avg = (int)new int[] { w01 + w12 + w20, w03 + w30, w04 + w40 }.Average();
             var model = GetModel();
-            Assert.AreEqual(avg, model.AverageWaytimePerRoute());
+            Assert.AreEqual(avg, model.AverageWayTimePerRoute());
         }
 
         [TestMethod()]
