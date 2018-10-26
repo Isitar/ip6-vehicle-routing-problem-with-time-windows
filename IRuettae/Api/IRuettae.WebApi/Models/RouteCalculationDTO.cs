@@ -94,6 +94,7 @@ namespace IRuettae.WebApi.Models
                         Select(wp => routeCalculationResult.ConvertTime(wp.StartTime)).
                         Append(DateTime.MinValue).
                         Max();
+                    dto.AverageDurationPerRoute = or.AverageDurationPerRoute();
                 }
             }
             return dto;
