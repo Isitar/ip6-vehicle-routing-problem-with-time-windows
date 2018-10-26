@@ -50,10 +50,6 @@ namespace IRuettae.WebApi.Models
 
         public static explicit operator RouteCalculationDTO(RouteCalculation rc)
         {
-            var routeCalculationResult = JsonConvert.DeserializeObject<RouteCalculationResult>(rc.Result);
-            var or = routeCalculationResult.OptimizationResult;
-
-
             var dto = new RouteCalculationDTO
             {
                 StartTime = rc.StartTime,
@@ -71,22 +67,32 @@ namespace IRuettae.WebApi.Models
                 EndTime = rc.EndTime,
             };
 
-            dto.Cost = or.Cost();
-            dto.NumberOfNotVisitedFamilies = or.NumberOfNotVisitedFamilies();
-            dto.NumberOfAdditionalSantas = or.NumberOfAdditionalSantas();
-            dto.AdditionalSantaWorkTime = or.AdditionalSantaWorkTime();
-            dto.VisitTimeInUnavailabe = or.VisitTimeInUnavailabe();
-            dto.VisitTimeInDesired = or.VisitTimeInDesired();
-            dto.SantaWorkTime = or.SantaWorkTime();
-            dto.LongestDay = or.LongestDay();
-            dto.NumberOfNeededSantas = or.NumberOfNeededSantas();
-            dto.NumberOfRoutes = or.NumberOfRoutes();
-            dto.TotalWayTime = or.TotalWayTime();
-            dto.TotalVisitTime = or.TotalVisitTime();
-            dto.AverageWayTimePerRoute = or.AverageWayTimePerRoute();
-            dto.LatestVisit = or.Routes.SelectMany(r => r.Waypoints.Where(wp => wp.VisitId != -1)).
-                Select(wp => routeCalculationResult.ConvertTime(wp.StartTime)).
-                Max();
+            if (rc.Result != null)
+            {
+                var routeCalculationResult = JsonConvert.DeserializeObject<RouteCalculationResult>(rc.Result);
+                var or = routeCalculationResult.OptimizationResult;
+                if (or != null)
+                {
+                    // metrics
+                    dto.Cost = or.Cost();
+                    dto.NumberOfNotVisitedFamilies = or.NumberOfNotVisitedFamilies();
+                    dto.NumberOfAdditionalSantas = or.NumberOfAdditionalSantas();
+                    dto.AdditionalSantaWorkTime = or.AdditionalSantaWorkTime();
+                    dto.VisitTimeInUnavailabe = or.VisitTimeInUnavailabe();
+                    dto.VisitTimeInDesired = or.VisitTimeInDesired();
+                    dto.SantaWorkTime = or.SantaWorkTime();
+                    dto.LongestDay = or.LongestDay();
+                    dto.NumberOfNeededSantas = or.NumberOfNeededSantas();
+                    dto.NumberOfRoutes = or.NumberOfRoutes();
+                    dto.TotalWayTime = or.TotalWayTime();
+                    dto.TotalVisitTime = or.TotalVisitTime();
+                    dto.AverageWayTimePerRoute = or.AverageWayTimePerRoute();
+                    dto.LatestVisit = or.Routes.SelectMany(r => r.Waypoints.Where(wp => wp.VisitId != -1)).
+                        Select(wp => routeCalculationResult.ConvertTime(wp.StartTime)).
+                        Append(DateTime.MinValue).
+                        Max();
+                }
+            }
             return dto;
         }
     }
