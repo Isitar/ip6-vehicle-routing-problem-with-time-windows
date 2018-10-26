@@ -53,7 +53,7 @@ namespace IRuettae.ConsoleApp
             {
                 var sw = Stopwatch.StartNew();
 
-                var routeResult = Starter.Optimise(solverInputData, ClusteringOptimizationGoals.MinTimePerSanta, MIP_GAP: mip_gap);
+                var routeResult = Starter.Optimize(solverInputData, ClusteringOptimizationGoals.MinTimePerSanta, MIP_GAP: mip_gap);
                 sw.Stop();
                 ConsoleExt.WriteLine($"{i}/{numberOfRuns}: Elapsed s: {sw.ElapsedMilliseconds / 1000}", InfoColor);
 
@@ -127,7 +127,7 @@ namespace IRuettae.ConsoleApp
             };
 
             var solverInputData = new SolverInputData(santas, visitsDuration, visits, distances, dayDuration, santaBreaks);
-            Starter.Optimise(solverInputData, ClusteringOptimizationGoals.MinTimePerSanta);
+            Starter.Optimize(solverInputData, ClusteringOptimizationGoals.MinTimePerSanta);
         }
     }
 }

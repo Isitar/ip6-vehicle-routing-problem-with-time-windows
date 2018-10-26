@@ -48,7 +48,7 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Clustering
             {
                 VisitIds = new long[] { 0, 1, 2, 3, 4, 5 }
             };
-            var result = Starter.Optimise(solverInputData, ClusteringOptimizationGoals.MinTimePerSanta);
+            var result = Starter.Optimize(solverInputData, ClusteringOptimizationGoals.MinTimePerSanta);
             Assert.IsNotNull(result);
             Assert.AreEqual(5, result.Waypoints[0, 0].Count);
 
@@ -103,7 +103,7 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Clustering
             {
                 VisitIds = new long[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }
             };
-            var result = Starter.Optimise(solverInputData, ClusteringOptimizationGoals.MinTimePerSanta);
+            var result = Starter.Optimize(solverInputData, ClusteringOptimizationGoals.MinTimePerSanta);
             Assert.IsNotNull(result);
             var possibleRoutes = new[] { "0 | 0;5 | 0;6 | 0;7 | 0;8 | 0", "0 | 0;1 | 0;2 | 0;3 | 0;4 | 0" };
 

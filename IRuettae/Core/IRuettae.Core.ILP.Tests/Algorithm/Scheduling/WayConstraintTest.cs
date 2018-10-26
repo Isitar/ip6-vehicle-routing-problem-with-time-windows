@@ -65,7 +65,7 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
         public void TestRespectingWay()
         {
             var model = GetModel();
-            var calculatedRoute = Starter.Optimise(model);
+            var calculatedRoute = Starter.Optimize(model);
             Assert.IsNotNull(calculatedRoute);
 
             var waypoints = calculatedRoute.Waypoints[0, 0];
