@@ -21,81 +21,114 @@
         </th>
         <th></th>
     </tr>
-
+    <style>
+        .table td {
+            vertical-align: middle;
+        }
+    </style>
     @foreach (var item in Model)
     {
         <tr>
             <td class="@(item.State == RouteCalculationVM.RouteCalculationState.Finished ? "td-green" :
-                         (new []{RouteCalculationVM.RouteCalculationState.Running,
-                             RouteCalculationVM.RouteCalculationState.Ready
-                         }).Contains(item.State) ? "td-orange" : "td-red")"></td>
-            <td style="padding-top: 28px">
+                             (new []{RouteCalculationVM.RouteCalculationState.Running,
+                                 RouteCalculationVM.RouteCalculationState.Ready
+                             }).Contains(item.State) ? "td-orange" : "td-red")"></td>
+            <td>
                 @if (!string.IsNullOrEmpty(item.Result))
                 {
                     <input type="checkbox" class="form-control" name="compare[@item.Id]" data-id="@item.Id" style="height: 20px" />
                 }
             </td>
-            <td style="padding-top: 24px">
+            <td>
                 @Html.DisplayFor(modelItem => item.Year)
             </td>
-            <td style="white-space: nowrap; padding-top: 24px">
+            <td style="white-space: nowrap">
 
                 @if ((new[] { RouteCalculationVM.RouteCalculationState.Ready, RouteCalculationVM.RouteCalculationState.Running }).Contains(item.State))
                 {<i class="fas fa-spinner fa-pulse"></i><text>&nbsp;</text>}@Html.DisplayFor(modelItem => item.State)&nbsp;(@Html.DisplayFor(modelItem => item.Progress))
             </td>
-            <td style="padding-top: 18px">
-                <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-status-@item.Id" aria-expanded="False" aria-controls="collapse-status-@item.Id">Log anzeigen</button>
-                <div class="collapse" id="collapse-status-@item.Id">
-                    <table>
-                        <thead>
-                            <tr><th>Timestamp</th><th>Log</th></tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var status in item.StateText)
-                            {
-                                <tr><td>@status.CreationDate</td><td>@Html.Raw(((string)status.Log).Replace(Environment.NewLine, "<br />"))</td></tr>
-                            }
-                        </tbody>
-                    </table>
-
+            <td>
+                <button class="btn btn-link" data-toggle="modal" data-target="#modal-status-@item.Id" aria-expanded="False" aria-controls="modal-status-@item.Id">Log anzeigen</button>
+                <div class="modal fade" id="modal-status-@item.Id" role="dialog">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Logs</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <table>
+                                    <thead>
+                                        <tr><th>Timestamp</th><th>Log</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var status in item.StateText)
+                                        {
+                                            <tr><td>@status.CreationDate</td><td>@Html.Raw(((string)status.Log).Replace(Environment.NewLine, "<br />"))</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" data-dismiss="modal">Ok</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
             </td>
-            <td style="min-width: 200px; padding-top: 18px">
+            <td style="min-width: 200px">
                 @if (!string.IsNullOrEmpty(item.Result))
                 {
-                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-cl-@item.Id" aria-expanded="False" aria-controls="collapse-cl-@item.Id">Metriken anzeigen</button>
+                    <button class="btn btn-link" data-toggle="modal" data-target="#modal-cl-@item.Id" aria-expanded="False" aria-controls="modal-cl-@item.Id">Metriken anzeigen</button>
+                    <div class="modal fade" id="modal-cl-@item.Id" role="dialog">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">Logs</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="card card-body">
+                                        <dl>
+                                            <dt>@Html.DisplayNameFor(m => m.NumberOfSantas)</dt>
+                                            <dd>@item.NumberOfSantas</dd>
 
-                    <div class="collapse" id="collapse-cl-@item.Id">
-                        <div class="card card-body">
-                            <dl>
-                                <dt>@Html.DisplayNameFor(m => m.NumberOfSantas)</dt>
-                                <dd>@item.NumberOfSantas</dd>
+                                            <dt>@Html.DisplayNameFor(m => m.NumberOfRoutes)</dt>
+                                            <dd>@item.NumberOfRoutes</dd>
 
-                                <dt>@Html.DisplayNameFor(m => m.NumberOfRoutes)</dt>
-                                <dd>@item.NumberOfRoutes</dd>
+                                            <dt>@Html.DisplayNameFor(m => m.NumberOfVisits)</dt>
+                                            <dd>@item.NumberOfVisits</dd>
 
-                                <dt>@Html.DisplayNameFor(m => m.NumberOfVisits)</dt>
-                                <dd>@item.NumberOfVisits</dd>
+                                            <dt>@Html.DisplayNameFor(m => m.TotalWaytime)</dt>
+                                            <dd>@(Math.Round(item.TotalWaytime / 60)) Minuten</dd>
 
-                                <dt>@Html.DisplayNameFor(m => m.TotalWaytime)</dt>
-                                <dd>@(Math.Round(item.TotalWaytime / 60)) Minuten</dd>
+                                            <dt>@Html.DisplayNameFor(m => m.WaytimePerSanta)</dt>
+                                            <dd>@(Math.Round(item.WaytimePerSanta / 60)) Minuten</dd>
 
-                                <dt>@Html.DisplayNameFor(m => m.WaytimePerSanta)</dt>
-                                <dd>@(Math.Round(item.WaytimePerSanta / 60)) Minuten</dd>
+                                            <dt>@Html.DisplayNameFor(m => m.TotalVisitTime)</dt>
+                                            <dd>@(Math.Round(item.TotalVisitTime / 60)) Minuten</dd>
 
-                                <dt>@Html.DisplayNameFor(m => m.TotalVisitTime)</dt>
-                                <dd>@(Math.Round(item.TotalVisitTime / 60)) Minuten</dd>
+                                            <dt>@Html.DisplayNameFor(m => m.DesiredSeconds)</dt>
+                                            <dd>@(Math.Round(item.DesiredSeconds / 60)) Minuten</dd>
 
-                                <dt>@Html.DisplayNameFor(m => m.DesiredSeconds)</dt>
-                                <dd>@(Math.Round(item.DesiredSeconds / 60)) Minuten</dd>
+                                            <dt>@Html.DisplayNameFor(m => m.LongestDay)</dt>
+                                            <dd>@(Math.Round(item.LongestDay / 60)) Minuten </dd>
 
-                                <dt>@Html.DisplayNameFor(m => m.LongestDay)</dt>
-                                <dd>@(Math.Round(item.LongestDay / 60)) Minuten </dd>
+                                            <dt>@Html.DisplayNameFor(m => m.LatestVisit)</dt>
+                                            <dd>@item.LatestVisit.TimeOfDay</dd>
 
-                                <dt>@Html.DisplayNameFor(m => m.LatestVisit)</dt>
-                                <dd>@item.LatestVisit.TimeOfDay</dd>
-
-                            </dl>
+                                        </dl>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary" data-dismiss="modal">Ok</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 }
