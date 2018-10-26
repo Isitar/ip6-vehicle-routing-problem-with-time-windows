@@ -31,6 +31,17 @@ namespace IRuettae.Core.Models
         public Route[] Routes { get; set; }
 
         /// <summary>
+        /// Array containing all routes which have more than zero Waypoints
+        /// </summary>
+        public IEnumerable<Route> NonEmptyRoutes
+        {
+            get
+            {
+                return Routes.Where(r => r.Waypoints != null && r.Waypoints.Length > 0);
+            }
+        }
+
+        /// <summary>
         /// The input used to calculate this result
         /// </summary>
         public OptimizationInput OptimizationInput { get; set; }
@@ -77,7 +88,7 @@ namespace IRuettae.Core.Models
             var additionalSantaIds = Routes.Where(r => !OptimizationInput.Santas.Select(s => s.Id).Contains(r.SantaId))
                 .Select(r => r.SantaId)
                 .Distinct().ToList();
-            var additionalSantaRoutes = Routes.Where(r => additionalSantaIds.Contains(r.SantaId));
+            var additionalSantaRoutes = NonEmptyRoutes.Where(r => additionalSantaIds.Contains(r.SantaId));
             return additionalSantaRoutes.Select(r =>
                     r.Waypoints.Max(wp => wp.StartTime) - r.Waypoints.Min(wp => wp.StartTime))
                 .Sum();
@@ -134,22 +145,22 @@ namespace IRuettae.Core.Models
 
         public int SantaWorkTime()
         {
-            return Routes.Select(r => r.Waypoints.Max(wp => wp.StartTime) - r.Waypoints.Min(wp => wp.StartTime)).Sum();
+            return NonEmptyRoutes.Select(r => r.Waypoints.Max(wp => wp.StartTime) - r.Waypoints.Min(wp => wp.StartTime)).Sum();
         }
 
         public int LongestDay()
         {
-            return Routes.Select(r => r.Waypoints.Max(wp => wp.StartTime) - r.Waypoints.Min(wp => wp.StartTime)).Max();
+            return NonEmptyRoutes.Select(r => r.Waypoints.Max(wp => wp.StartTime) - r.Waypoints.Min(wp => wp.StartTime)).Append(0).Max();
         }
 
         public int NumberOfNeededSantas()
         {
-            return Routes.Select(FindDay).GroupBy(d => d).Select(g => g.Count()).Max();
+            return NonEmptyRoutes.Select(FindDay).GroupBy(d => d).Select(g => g.Count()).Append(0).Max();
         }
 
         public int NumberOfRoutes()
         {
-            return Routes.Length;
+            return NonEmptyRoutes.Count();
         }
 
         public int NumberOfVisits()
@@ -159,7 +170,7 @@ namespace IRuettae.Core.Models
 
         public int TotalWayTime()
         {
-            int totalTime = Routes.Select(r => r.Waypoints.Last().StartTime - r.Waypoints[0].StartTime).Sum();
+            int totalTime = NonEmptyRoutes.Select(r => r.Waypoints.Last().StartTime - r.Waypoints[0].StartTime).Sum();
             return totalTime - TotalVisitTime();
         }
 
@@ -171,12 +182,14 @@ namespace IRuettae.Core.Models
 
         public int AverageWayTimePerRoute()
         {
-            return TotalWayTime() / NumberOfRoutes();
+            int numberOfRoutes = NumberOfRoutes();
+            return numberOfRoutes > 0 ? TotalWayTime() / numberOfRoutes : 0;
         }
 
         public int AverageDurationPerRoute()
         {
-            return (TotalVisitTime() + TotalWayTime()) / NumberOfRoutes();
+            int numberOfRoutes = NumberOfRoutes();
+            return numberOfRoutes > 0 ? (TotalVisitTime() + TotalWayTime()) / numberOfRoutes : 0;
         }
 
         /// <summary>
