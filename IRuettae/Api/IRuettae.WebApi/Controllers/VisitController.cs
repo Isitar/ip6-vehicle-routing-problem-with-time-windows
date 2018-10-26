@@ -23,7 +23,7 @@ namespace IRuettae.WebApi.Controllers
         {
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
-                return dbSession.Query<Visit>().ToList().Select(v => (VisitDTO)v);
+                return dbSession.Query<Visit>().Select(v => (VisitDTO)v);
             }
         }
 
