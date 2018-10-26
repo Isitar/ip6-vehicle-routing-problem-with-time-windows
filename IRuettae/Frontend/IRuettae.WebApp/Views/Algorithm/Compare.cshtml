@@ -66,36 +66,50 @@
 <ul class="compare-container">
     <li class="item-labels">
         <div class="item-group-head">&nbsp;</div>
-        <div class="item-group">@Html.DisplayNameFor(m => m.NumberOfSantas)</div>
-        <div class="item-group">@Html.DisplayNameFor(m => m.NumberOfVisits)</div>
-        <div class="item-group">@Html.DisplayNameFor(m => m.NumberOfRoutes)</div>
-        <div class="item-group">@Html.DisplayNameFor(m => m.TotalVisitTime)</div>
-        <div class="item-group">@Html.DisplayNameFor(m => m.TotalWaytime)</div>
-        <div class="item-group">@Html.DisplayNameFor(m => m.WaytimePerSanta)</div>
-        <div class="item-group">@Html.DisplayNameFor(m => m.DesiredSeconds)</div>
+        <div class="item-group">@Html.DisplayNameFor(m => m.Cost)</div>
+        <div class="item-group">@Html.DisplayNameFor(m => m.NumberOfNotVisitedFamilies)</div>
+        <div class="item-group">@Html.DisplayNameFor(m => m.NumberOfAdditionalSantas)</div>
+        <div class="item-group">@Html.DisplayNameFor(m => m.AdditionalSantaWorkTime)</div>
+        <div class="item-group">@Html.DisplayNameFor(m => m.VisitTimeInUnavailable)</div>
+        <div class="item-group">@Html.DisplayNameFor(m => m.VisitTimeInDesired)</div>
+        <div class="item-group">@Html.DisplayNameFor(m => m.SantaWorkTime)</div>
         <div class="item-group">@Html.DisplayNameFor(m => m.LongestDay)</div>
-        <div class="item-group">@Html.DisplayNameFor(m => m.LatestVisit)</div>
+        <div class="item-group">@Html.DisplayNameFor(m => m.NumberOfNeededSantas)</div>
+        <div class="item-group">@Html.DisplayNameFor(m => m.NumberOfRoutes)</div>
+        <div class="item-group">@Html.DisplayNameFor(m => m.NumberOfVisits)</div>
+        <div class="item-group">@Html.DisplayNameFor(m => m.TotalWayTime)</div>
+        <div class="item-group">@Html.DisplayNameFor(m => m.TotalVisitTime)</div>
+        <div class="item-group">@Html.DisplayNameFor(m => m.AverageWayTimePerRoute)</div>
+        <div class="item-group">@Html.DisplayNameFor(m => m.AverageDurationPerRoute)</div>
+
     </li>
     <li class="spacer"></li>
     @foreach (var routeCalculationVM in Model)
     {
-    <li class="item-column">
-        <div class="item-group-head">
+        <li class="item-column">
+            <div class="item-group-head">
 
-            @*Berechnung #@routeCalculationVM.Id <small>@routeCalculationVM.ClusteringOptimizationFunction</small>*@
+                @*Berechnung #@routeCalculationVM.Id <small>@routeCalculationVM.ClusteringOptimizationFunction</small>*@
 
-            <a href="@Url.Action("Result", new {id = routeCalculationVM.Id})" class="btn btn-dark btn-sm"><i class="fa fa-eye"></i> Details</a>
-        </div>
-        <div class="item-group @(routeCalculationVM.NumberOfSantas == Model.Min(m => m.NumberOfSantas) ? "best-val" : "")">@routeCalculationVM.NumberOfSantas</div>
-        <div class="item-group @(routeCalculationVM.NumberOfVisits == Model.Min(m => m.NumberOfVisits) ? "best-val" : "")">@routeCalculationVM.NumberOfVisits</div>
-        <div class="item-group @(routeCalculationVM.NumberOfRoutes == Model.Min(m => m.NumberOfRoutes) ? "best-val" : "")">@routeCalculationVM.NumberOfRoutes</div>
-        <div class="item-group @(routeCalculationVM.TotalVisitTime == Model.Min(m => m.TotalVisitTime) ? "best-val" : "")">@(Math.Round(routeCalculationVM.TotalVisitTime / 60)) Minuten</div>
-        <div class="item-group @(routeCalculationVM.TotalWaytime == Model.Min(m => m.TotalWaytime) ? "best-val" : "")">@(Math.Round(routeCalculationVM.TotalWaytime / 60)) Minuten</div>
-        <div class="item-group @(routeCalculationVM.WaytimePerSanta == Model.Min(m => m.WaytimePerSanta) ? "best-val" : "")">@(Math.Round(routeCalculationVM.WaytimePerSanta / 60)) Minuten</div>
-        <div class="item-group @(routeCalculationVM.DesiredSeconds == Model.Max(m => m.DesiredSeconds) ? "best-val" : "")">@(routeCalculationVM.DesiredSeconds / 60) Minuten</div>
-        <div class="item-group @(routeCalculationVM.LongestDay == Model.Min(m => m.LongestDay) ? "best-val" : "")">@(Math.Round(routeCalculationVM.LongestDay / 60)) Minuten</div>
-        <div class="item-group @(routeCalculationVM.LatestVisit == Model.Min(m => m.LatestVisit) ? "best-val" : "")">@routeCalculationVM.LatestVisit.TimeOfDay</div>
-        @*<div class="item-group-footer"><a href="@Url.Action("Result",new {id=routeCalculationVM.Id})" class="btn btn-dark btn-sm"><i class="fa fa-eye"></i> Details</a></div>*@
-    </li>
+                <a href="@Url.Action("Result", new {id = routeCalculationVM.Id})" class="btn btn-dark btn-sm"><i class="fa fa-eye"></i> Details</a>
+            </div>
+            <div class="item-group @(routeCalculationVM.Cost == Model.Max(m => m.Cost) ? "best-val" : "")">@routeCalculationVM.Cost</div>
+            <div class="item-group @(routeCalculationVM.NumberOfNotVisitedFamilies == Model.Min(m => m.NumberOfNotVisitedFamilies) ? "best-val" : "")">@routeCalculationVM.NumberOfNotVisitedFamilies</div>
+            <div class="item-group @(routeCalculationVM.NumberOfAdditionalSantas == Model.Min(m => m.NumberOfAdditionalSantas) ? "best-val" : "")">@routeCalculationVM.NumberOfAdditionalSantas</div>
+            <div class="item-group @(routeCalculationVM.AdditionalSantaWorkTime == Model.Min(m => m.AdditionalSantaWorkTime) ? "best-val" : "")">@routeCalculationVM.AdditionalSantaWorkTime</div>
+            <div class="item-group @(routeCalculationVM.VisitTimeInUnavailable == Model.Min(m => m.VisitTimeInUnavailable) ? "best-val" : "")">@routeCalculationVM.VisitTimeInUnavailable</div>
+            <div class="item-group @(routeCalculationVM.VisitTimeInDesired == Model.Max(m => m.VisitTimeInDesired) ? "best-val" : "")">@routeCalculationVM.VisitTimeInDesired</div>
+            <div class="item-group @(routeCalculationVM.SantaWorkTime == Model.Min(m => m.SantaWorkTime) ? "best-val" : "")">@routeCalculationVM.SantaWorkTime</div>
+            <div class="item-group @(routeCalculationVM.LongestDay == Model.Min(m => m.LongestDay) ? "best-val" : "")">@routeCalculationVM.LongestDay</div>
+            <div class="item-group @(routeCalculationVM.NumberOfNeededSantas == Model.Min(m => m.NumberOfNeededSantas) ? "best-val" : "")">@routeCalculationVM.NumberOfNeededSantas</div>
+            <div class="item-group @(routeCalculationVM.NumberOfRoutes == Model.Min(m => m.NumberOfRoutes) ? "best-val" : "")">@routeCalculationVM.NumberOfRoutes</div>
+            <div class="item-group @(routeCalculationVM.NumberOfVisits == Model.Max(m => m.NumberOfVisits) ? "best-val" : "")">@routeCalculationVM.NumberOfVisits</div>
+            <div class="item-group @(routeCalculationVM.TotalWayTime == Model.Min(m => m.TotalWayTime) ? "best-val" : "")">@routeCalculationVM.TotalWayTime</div>
+            <div class="item-group @(routeCalculationVM.TotalVisitTime == Model.Min(m => m.TotalVisitTime) ? "best-val" : "")">@routeCalculationVM.TotalVisitTime</div>
+            <div class="item-group @(routeCalculationVM.AverageWayTimePerRoute == Model.Min(m => m.AverageWayTimePerRoute) ? "best-val" : "")">@routeCalculationVM.AverageWayTimePerRoute</div>
+            <div class="item-group @(routeCalculationVM.AverageDurationPerRoute == Model.Min(m => m.AverageDurationPerRoute) ? "best-val" : "")">@routeCalculationVM.AverageDurationPerRoute</div>
+
+            @*<div class="item-group-footer"><a href="@Url.Action("Result",new {id=routeCalculationVM.Id})" class="btn btn-dark btn-sm"><i class="fa fa-eye"></i> Details</a></div>*@
+        </li>
     }
 </ul>
