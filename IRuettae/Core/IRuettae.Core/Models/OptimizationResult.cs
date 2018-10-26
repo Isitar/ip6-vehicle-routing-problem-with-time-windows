@@ -52,7 +52,7 @@ namespace IRuettae.Core.Models
                                        + 400 * NumberOfAdditionalSantas()
                                        + (40d / hour) * AdditionalSantaWorkTime())
                                        + (120d / hour) * VisitTimeInUnavailabe()
-                                       - (20d / hour) * VisitTimeDesired()
+                                       - (20d / hour) * VisitTimeInDesired()
                                        + (40d / hour) * SantaWorkTime()
                                        + (30d / hour) * LongestDay()
                 );
@@ -98,7 +98,7 @@ namespace IRuettae.Core.Models
                     int endTime = startTime + visit.Value.Duration;
                     foreach (var (from, to) in visit.Value.Unavailable)
                     {
-                        unavailableSum += CalculateIntersection(startTime, endTime, from, to);
+                        unavailableSum += IntersectionLength(new[] { (startTime, endTime), (from, to) });
                     }
 
                 }
@@ -110,23 +110,20 @@ namespace IRuettae.Core.Models
         /// <summary>
         /// Returns how much the two intervals overlap
         /// </summary>
-        /// <param name="from1"></param>
-        /// <param name="to1"></param>
-        /// <param name="from2"></param>
-        /// <param name="to2"></param>
+        /// <param name="intervals"></param>
         /// <returns></returns>
-        private int CalculateIntersection(int from1, int to1, int from2, int to2)
+        private int IntersectionLength(IEnumerable<(int from, int to)> intervals)
         {
-            int startUnavailableTime = Math.Max(from1, from2);
-            int endUnavailableTime = Math.Min(to1, to2);
-            if (startUnavailableTime < endUnavailableTime)
+            int startIntersection = intervals.Max(interval => interval.from);
+            int endIntersection = intervals.Min(interval => interval.to);
+            if (startIntersection < endIntersection)
             {
-                return endUnavailableTime - startUnavailableTime;
+                return endIntersection - startIntersection;
             }
             return 0;
         }
 
-        public int VisitTimeDesired()
+        public int VisitTimeInDesired()
         {
             var desiredSum = 0;
 
@@ -142,7 +139,7 @@ namespace IRuettae.Core.Models
                     int endTime = startTime + visit.Value.Duration;
                     foreach (var (from, to) in visit.Value.Desired)
                     {
-                        desiredSum += CalculateIntersection(startTime, endTime, from, to);
+                        desiredSum += IntersectionLength(new[] { (startTime, endTime), (from, to) });
                     }
 
                 }
@@ -163,17 +160,17 @@ namespace IRuettae.Core.Models
 
         public int NumberOfNeededSantas()
         {
-            return Routes.Select(r => FindDay(r)).GroupBy(d => d).Select(g => g.Count()).Max();
+            return Routes.Select(FindDay).GroupBy(d => d).Select(g => g.Count()).Max();
         }
 
         public int NumberOfRoutes()
         {
-            return Routes.Count();
+            return Routes.Length;
         }
 
         public int NumberOfVisits()
         {
-            return OptimizationInput.Visits.Count();
+            return OptimizationInput.Visits.Length;
         }
 
         public int TotalWaytime()
@@ -205,11 +202,11 @@ namespace IRuettae.Core.Models
         /// <returns></returns>
         private (int from, int to) FindDay(Route route)
         {
-            foreach (var (from, to) in OptimizationInput.Days)
+            foreach (var day in OptimizationInput.Days)
             {
-                if (CalculateIntersection(route.Waypoints.First().StartTime, route.Waypoints.Last().StartTime, from, to) > 0)
+                if (IntersectionLength(new[] { (route.Waypoints.First().StartTime, route.Waypoints.Last().StartTime), day }) > 0)
                 {
-                    return (from, to);
+                    return day;
                 }
             }
             throw new ArgumentException("no matching day found");

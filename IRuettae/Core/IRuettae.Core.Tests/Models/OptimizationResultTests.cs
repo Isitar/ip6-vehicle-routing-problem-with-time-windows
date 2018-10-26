@@ -298,11 +298,11 @@ namespace IRuettae.Core.Models.Tests
         }
 
         [TestMethod()]
-        public void VisitTimeDesiredTest()
+        public void VisitTimeInDesiredTest()
         {
             var model = GetModel();
             var sum = 1 * hour + 15 * minute + 20 * minute;
-            Assert.AreEqual(sum, model.VisitTimeDesired());
+            Assert.AreEqual(sum, model.VisitTimeInDesired());
         }
 
         [TestMethod()]
