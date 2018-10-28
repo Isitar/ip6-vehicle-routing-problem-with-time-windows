@@ -15,7 +15,6 @@ namespace IRuettae.Core.ILP.Algorithm.Models
         public int TimeSliceDuration { get; set; }
 
         // Phase 1
-        public ClusteringOptimizationGoals ClusteringOptimizationFunction { get; set; } = ClusteringOptimizationGoals.MinAvgTimePerSanta;
         public double ClusteringMIPGap { get; set; }
         public long ClusteringTimeLimit { get; set; }
 

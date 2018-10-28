@@ -64,7 +64,6 @@ namespace IRuettae.WebApi.Controllers
                 var ilpData = new ILPStarterData()
                 {
                     TimeSliceDuration = algorithmStarter.TimeSliceDuration,
-                    ClusteringOptimizationFunction = ClusteringOptimizationGoals.OverallMinTime,
                     ClusteringMIPGap = Properties.Settings.Default.MIPGapClustering,
                     ClusteringTimeLimit = Properties.Settings.Default.TimelimitClustering,
                     SchedulingMIPGap = Properties.Settings.Default.MIPGapScheduling,
