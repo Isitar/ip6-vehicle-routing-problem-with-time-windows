@@ -108,7 +108,7 @@ namespace IRuettae.Preprocessing.Mapping
                     foreach (var desired in visit.Desired.Where(isCurrentDay))
                     {
                         (var startSlice, var endSlice) = toTimeslice(desired);
-                        for (int t = startSlice; t < endSlice; t++)
+                        for (int t = startSlice; t < endSlice && t < numberOfTimeslots; t++)
                         {
                             visitsVar[d][v, t] = VisitState.Desired;
                         }
@@ -118,7 +118,7 @@ namespace IRuettae.Preprocessing.Mapping
                     foreach (var unavailable in visit.Unavailable.Where(isCurrentDay))
                     {
                         (var startSlice, var endSlice) = toTimeslice(unavailable);
-                        for (int t = startSlice; t < endSlice; t++)
+                        for (int t = startSlice; t < endSlice && t < numberOfTimeslots; t++)
                         {
                             visitsVar[d][v, t] = VisitState.Unavailable;
                         }

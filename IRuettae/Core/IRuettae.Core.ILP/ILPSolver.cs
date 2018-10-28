@@ -148,7 +148,7 @@ namespace IRuettae.Core.ILP
             progress?.Invoke(this, new ProgressReport(0.99));
             consoleProgress?.Invoke(this, "Scheduling done");
             consoleProgress?.Invoke(this, $"Scheduling Result:{Environment.NewLine}" +
-                routeResults.Select(r => r.ToString()).Aggregate((acc, c) => acc + Environment.NewLine + c));
+                routeResults.Where(r => r != null).Select(r => r.ToString()).Aggregate((acc, c) => acc + Environment.NewLine + c));
 
             // construct new output elem
             var optimizationResult = new OptimizationResult()
