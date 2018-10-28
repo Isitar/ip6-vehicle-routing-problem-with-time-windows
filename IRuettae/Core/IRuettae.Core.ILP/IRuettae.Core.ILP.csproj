@@ -65,15 +65,13 @@
     <Compile Include="Algorithm\Clustering\Detail\SolverVariables.cs" />
     <Compile Include="Algorithm\Clustering\Detail\VariableBuilder.cs" />
     <Compile Include="Algorithm\Clustering\ClusteringILPSolver.cs" />
-    <Compile Include="Algorithm\Models\ClusteringOptimizationGoals.cs" />
     <Compile Include="Algorithm\Models\ILPStarterData.cs" />
     <Compile Include="Algorithm\Models\SchedulingOptimizationGoals.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\SolverData.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\SolverVariables.cs" />
-    <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\AbstractTargetFunctionBuilder.cs" />
+    <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\ITargetFunctionBuilder.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\ConstraintBuilder.cs" />
     <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\DefaultTargetFunctionBuilder.cs" />
-    <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\ITargetFunctionBuilder.cs" />
     <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\MinTimeOnlyTargetFunctionBuilder.cs" />
     <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\MixedTargetFunctionBuilder.cs" />
     <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\TryDesiredOnlyTargetFunctionBuilder.cs" />

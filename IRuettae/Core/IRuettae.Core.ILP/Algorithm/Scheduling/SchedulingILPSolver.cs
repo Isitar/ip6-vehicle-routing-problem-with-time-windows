@@ -17,7 +17,7 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
         private ResultState resultState = ResultState.NotSolved;
 
         private readonly GLS.Solver solver = new GLS.Solver("SantaProblem", GLS.Solver.SCIP_MIXED_INTEGER_PROGRAMMING);
-        private readonly AbstractTargetFunctionBuilder targetFunctionBuilder;
+        private readonly ITargetFunctionBuilder targetFunctionBuilder;
         private long timelimit = 0;
 
         /// <summary>

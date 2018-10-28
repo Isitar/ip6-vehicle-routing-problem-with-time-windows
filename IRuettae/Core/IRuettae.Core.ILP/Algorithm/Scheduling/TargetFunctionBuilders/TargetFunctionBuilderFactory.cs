@@ -9,7 +9,7 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling.TargetFunctionBuilders
 {
     internal static class TargetFunctionBuilderFactory
     {
-        public static AbstractTargetFunctionBuilder Create(SchedulingOptimizationGoals type)
+        public static ITargetFunctionBuilder Create(SchedulingOptimizationGoals type)
         {
             switch (type)
             {

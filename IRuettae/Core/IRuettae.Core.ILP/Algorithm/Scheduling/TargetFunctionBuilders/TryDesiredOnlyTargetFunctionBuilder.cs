@@ -3,11 +3,11 @@ using GLS = Google.OrTools.LinearSolver;
 
 namespace IRuettae.Core.ILP.Algorithm.Scheduling.TargetFunctionBuilders
 {
-    internal class TryDesiredOnlyTargetFunctionBuilder : AbstractTargetFunctionBuilder
+    internal class TryDesiredOnlyTargetFunctionBuilder : ITargetFunctionBuilder
     {
         private GLS.LinearExpr targetFunction = new GLS.LinearExpr();
 
-        public override void CreateTargetFunction(SolverData solverData)
+        public void CreateTargetFunction(SolverData solverData)
         {
             var factory = new TargetFunctionFactory(solverData);
 
