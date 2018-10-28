@@ -43,7 +43,8 @@ namespace IRuettae.ConsoleApp
         private static void ExportMPSVisits(int n_visits)
         {
             var solverInputData = Deserialize($"SerializedObjects/SolverInput{n_visits}Visits.serial");
-            Starter.SaveMps($"{n_visits}_mps.mps", solverInputData, SchedulingOptimizationGoals.Default);
+            var schedulingSolver = new SchedulingILPSolver(solverInputData);
+            schedulingSolver.ExportMPSAsFile($"{n_visits}_mps.mps");
         }
 
         private static void TestSerailDataVisits(string serialDataName, int numberOfRuns = 5)
@@ -54,7 +55,9 @@ namespace IRuettae.ConsoleApp
             {
                 var sw = Stopwatch.StartNew();
 
-                var route = Starter.Optimize(solverInputData);
+                var solver = new SchedulingILPSolver(solverInputData);
+                solver.Solve(0, 10 * 60 * 1000);
+                var route = solver.GetResult();
                 sw.Stop();
                 ConsoleExt.WriteLine($"{i}/{numberOfRuns}: Elapsed s: {sw.ElapsedMilliseconds / 1000}", OutputColor);
                 ConsoleExt.WriteLine($"SolutionVal: {route.SolutionValue}", ConsoleColor.Yellow);

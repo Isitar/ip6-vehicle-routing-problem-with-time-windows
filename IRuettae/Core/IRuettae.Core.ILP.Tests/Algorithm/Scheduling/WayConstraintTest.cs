@@ -1,5 +1,6 @@
 ﻿using System;
 using IRuettae.Core.ILP.Algorithm;
+using IRuettae.Core.ILP.Algorithm.Models;
 using IRuettae.Core.ILP.Algorithm.Scheduling;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -65,7 +66,11 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
         public void TestRespectingWay()
         {
             var model = GetModel();
-            var calculatedRoute = Starter.Optimize(model);
+            var solver = new SchedulingILPSolver(model);
+            var resultState = solver.Solve(0, 60000);
+            var calculatedRoute = solver.GetResult();
+
+
             Assert.IsNotNull(calculatedRoute);
 
             var waypoints = calculatedRoute.Waypoints[0, 0];

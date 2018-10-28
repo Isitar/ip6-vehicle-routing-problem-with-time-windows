@@ -7,6 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.ILP.Algorithm;
+using IRuettae.Core.ILP.Algorithm.Clustering;
 using IRuettae.Core.ILP.Algorithm.Models;
 using IRuettae.WebApi.Helpers;
 using SolverInputData = IRuettae.Core.ILP.Algorithm.Clustering.SolverInputData;
@@ -39,8 +40,9 @@ namespace IRuettae.ConsoleApp
         private static void ExportMPSVisits(int n_visits)
         {
             var solverInputData = Deserialize($"SerializedObjects/ClusteringSolverInput{n_visits}Visits.serial");
-            // solverInputData.DayDuration = solverInputData.DayDuration.Select(d => (int)(d / 0.7)).ToArray();
-            Starter.SaveMps($"New_{n_visits}_mps.mps", solverInputData, ClusteringOptimizationGoals.MinTimePerSanta);
+            
+            new ClusteringILPSolver(solverInputData).ExportMPSAsFile($"New_{n_visits}_mps.mps");
+            
             ConsoleExt.WriteLine($"Saved mps for {n_visits} visits", InfoColor);
         }
         private static void TestSerailDataVisits(string serialDataName, int numberOfRuns = 5)
@@ -52,8 +54,9 @@ namespace IRuettae.ConsoleApp
             for (int i = 1; i <= numberOfRuns; i++)
             {
                 var sw = Stopwatch.StartNew();
-
-                var routeResult = Starter.Optimize(solverInputData, ClusteringOptimizationGoals.MinTimePerSanta, MIP_GAP: mip_gap);
+                var solver = new ClusteringILPSolver(solverInputData);
+                solver.Solve(mip_gap, 10 * 60 * 1000);
+                var routeResult = solver.GetResult();
                 sw.Stop();
                 ConsoleExt.WriteLine($"{i}/{numberOfRuns}: Elapsed s: {sw.ElapsedMilliseconds / 1000}", InfoColor);
 
@@ -127,7 +130,8 @@ namespace IRuettae.ConsoleApp
             };
 
             var solverInputData = new SolverInputData(santas, visitsDuration, visits, distances, dayDuration, santaBreaks);
-            Starter.Optimize(solverInputData, ClusteringOptimizationGoals.MinTimePerSanta);
+            var solver = new ClusteringILPSolver(solverInputData);
+            solver.Solve(0, 60 * 1000);
         }
     }
 }

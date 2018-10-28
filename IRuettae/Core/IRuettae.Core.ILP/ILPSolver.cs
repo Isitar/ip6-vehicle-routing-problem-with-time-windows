@@ -48,7 +48,7 @@ namespace IRuettae.Core.ILP
             var clusteringSolverVariableBuilder = new ClusteringSolverVariableBuilder(input, starterData.TimeSliceDuration);
             var clusteringSolverInputData = clusteringSolverVariableBuilder.Build();
             var clusteringSolver =
-                new Algorithm.Clustering.Solver(clusteringSolverInputData);
+                new Algorithm.Clustering.ClusteringILPSolver(clusteringSolverInputData);
 
 
 #if WriteMPS && DEBUG
@@ -100,9 +100,9 @@ namespace IRuettae.Core.ILP
                 .AsParallel()
                 .Select(schedulingInputVariable =>
                 {
-                    var targetFunctionBuilder = Algorithm.Scheduling.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(SchedulingOptimizationGoals.Default);
+                   // var targetFunctionBuilder = Algorithm.Scheduling.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(SchedulingOptimizationGoals.Default);
                     var schedulingSolver =
-                        new Algorithm.Scheduling.Solver(schedulingInputVariable, targetFunctionBuilder);
+                        new Algorithm.Scheduling.SchedulingILPSolver(schedulingInputVariable, SchedulingOptimizationGoals.Default);
 
 #if WriteMPS && DEBUG
                     System.IO.File.WriteAllText($@"C:\Temp\iRuettae\ILP\Scheduling\{new Guid()}.mps", schedulingSolver.ExportMPS());

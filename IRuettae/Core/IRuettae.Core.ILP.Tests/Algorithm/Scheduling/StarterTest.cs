@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.ILP.Algorithm;
+using IRuettae.Core.ILP.Algorithm.Models;
 using IRuettae.Core.ILP.Algorithm.Scheduling;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -66,7 +67,9 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
         public void TestSolve()
         {
             var model = GetModel();
-            var actual = Starter.Optimize(model);
+            var solver = new SchedulingILPSolver(model);
+            var resultState = solver.Solve(0, 60000);
+            var actual = solver.GetResult();
             var expected = new Route(model.Santas.Length, model.Santas[0].GetLength(0))
             {
                 Waypoints = new List<Waypoint>[,] {
@@ -103,7 +106,10 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
         {
             var model = GetModel();
             // shouldn't throw an exception
-            Assert.IsNotNull(Starter.Optimize(model));
+            var solver = new SchedulingILPSolver(model);
+            var resultState = solver.Solve(0, 60000);
+            
+            Assert.AreNotEqual(ResultState.Infeasible, resultState);
         }
     }
 }

@@ -64,7 +64,7 @@
     <Compile Include="Algorithm\Clustering\Detail\SolverData.cs" />
     <Compile Include="Algorithm\Clustering\Detail\SolverVariables.cs" />
     <Compile Include="Algorithm\Clustering\Detail\VariableBuilder.cs" />
-    <Compile Include="Algorithm\Clustering\Solver.cs" />
+    <Compile Include="Algorithm\Clustering\ClusteringILPSolver.cs" />
     <Compile Include="Algorithm\Models\ClusteringOptimizationGoals.cs" />
     <Compile Include="Algorithm\Models\ILPStarterData.cs" />
     <Compile Include="Algorithm\Models\SchedulingOptimizationGoals.cs" />
@@ -73,6 +73,7 @@
     <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\AbstractTargetFunctionBuilder.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\ConstraintBuilder.cs" />
     <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\DefaultTargetFunctionBuilder.cs" />
+    <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\ITargetFunctionBuilder.cs" />
     <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\MinTimeOnlyTargetFunctionBuilder.cs" />
     <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\MixedTargetFunctionBuilder.cs" />
     <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\TryDesiredOnlyTargetFunctionBuilder.cs" />
@@ -80,13 +81,12 @@
     <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\TargetFunctionFactory.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\VariableBuilder.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\ResultBuilder.cs" />
-    <Compile Include="Algorithm\Scheduling\Solver.cs" />
+    <Compile Include="Algorithm\Scheduling\SchedulingILPSolver.cs" />
     <Compile Include="Algorithm\ISolver.cs" />
     <Compile Include="Algorithm\ResultState.cs" />
     <Compile Include="Algorithm\Route.cs" />
     <Compile Include="Algorithm\Clustering\SolverInputData.cs" />
     <Compile Include="Algorithm\Scheduling\SolverInputData.cs" />
-    <Compile Include="Algorithm\Starter.cs" />
     <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\TargetType.cs" />
     <Compile Include="Algorithm\VisitState.cs" />
     <Compile Include="Algorithm\Waypoint.cs" />

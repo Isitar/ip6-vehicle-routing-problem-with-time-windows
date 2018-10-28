@@ -55,7 +55,10 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
         public void TestTryDesiredOnly()
         {
             var model = GetModel();
-            var result = Starter.Optimize(model, SchedulingOptimizationGoals.TryDesiredOnly);
+            var solver = new SchedulingILPSolver(model, SchedulingOptimizationGoals.TryDesiredOnly);
+            var resultState = solver.Solve(0, 60000);
+            var result = solver.GetResult();
+            
 
             var wp = result.Waypoints[0, 0];
 

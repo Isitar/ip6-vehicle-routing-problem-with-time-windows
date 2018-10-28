@@ -119,7 +119,7 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering.Detail
                     foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
                         Solver.Add(santaWayFlow[source, destination] <= santaUsesWay[source, destination] * M);
-                        //Solver.Add(santaWayFlow[source, destination] >= santaUsesWay[source, destination]);
+                        //ClusteringILPSolver.Add(santaWayFlow[source, destination] >= santaUsesWay[source, destination]);
                     }
                 }
 
@@ -154,7 +154,7 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering.Detail
                     foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
                         Solver.Add(santaWayHasFlow[source, destination] <= santaWayFlow[source, destination]);
-                        //Solver.Add(santaWayFlow[source, destination] <= santaWayHasFlow[source, destination] * M); // this constraint makes it terrible slow
+                        //ClusteringILPSolver.Add(santaWayFlow[source, destination] <= santaWayHasFlow[source, destination] * M); // this constraint makes it terrible slow
                     }
                 }
 

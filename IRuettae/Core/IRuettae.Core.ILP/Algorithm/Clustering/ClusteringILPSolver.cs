@@ -9,7 +9,7 @@ using GLS = Google.OrTools.LinearSolver;
 
 namespace IRuettae.Core.ILP.Algorithm.Clustering
 {
-    internal class Solver : ISolver
+    public class ClusteringILPSolver : ISolver
     {
         private readonly SolverData solverData;
 
@@ -19,10 +19,10 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering
         private long timelimit = 0;
 
         private readonly GLS.Solver solver = new GLS.Solver("Santa Problem", GLS.Solver.SCIP_MIXED_INTEGER_PROGRAMMING);
-        //new GLS.Solver("SantaProblem", GLS.Solver.CBC_MIXED_INTEGER_PROGRAMMING);
+        //new GLS.ClusteringILPSolver("SantaProblem", GLS.ClusteringILPSolver.CBC_MIXED_INTEGER_PROGRAMMING);
 
 
-        public Solver(SolverInputData solverInputData)
+        public ClusteringILPSolver(SolverInputData solverInputData)
         {
             solverData = new SolverData(solverInputData, solver);
         }
@@ -33,6 +33,12 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering
             return SolveInternal();
         }
 
+        /// <summary>
+        /// Starts the solving process
+        /// </summary>
+        /// <param name="MIP_GAP">mip gap when to stop</param>
+        /// <param name="timelimit">timelimit in ms</param>
+        /// <returns></returns>
         public ResultState Solve(double MIP_GAP, long timelimit)
         {
             this.MIP_GAP = MIP_GAP;
@@ -241,6 +247,15 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering
 
             // return solver.ExportModelAsLpFormat(false);
             return solver.ExportModelAsMpsFormat(false, false);
+        }
+
+        /// <summary>
+        /// Exports the mps to the path as file
+        /// </summary>
+        /// <param name="path">where to save the mps</param>
+        public void ExportMPSAsFile(string path)
+        {
+            System.IO.File.WriteAllText(path, ExportMPS());
         }
 
         public string ImportMPS()

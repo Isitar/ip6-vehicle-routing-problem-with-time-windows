@@ -64,7 +64,7 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering.Detail
             var cols = solverData.SolverInputData.Visits.GetLength(1);
             solverData.Variables.SantaVisit = solverData.Solver.MakeBoolVarMatrix(rows, cols, "SantaVisit");
             solverData.Variables.SantaVisitBonus = solverData.Solver.MakeBoolVarMatrix(rows, cols, "SantaVisitBonus");
-            //solverData.Variables.SantaVisitFlow = solverData.Solver.MakeNumVarMatrix(rows, cols, 0, solverData.NumberOfVisits, "SantaVisitFlow");
+            //solverData.Variables.SantaVisitFlow = solverData.ClusteringILPSolver.MakeNumVarMatrix(rows, cols, 0, solverData.NumberOfVisits, "SantaVisitFlow");
         }
 
     }

@@ -60,7 +60,10 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
         public void TestMinTimeOnly()
         {
             var model = GetModel();
-            var result = Starter.Optimize(model, SchedulingOptimizationGoals.Default);
+            var solver = new SchedulingILPSolver(model);
+            solver.Solve(0, 60000);
+            var result = solver.GetResult();
+
 
             var waypoints = result.Waypoints[0, 0];
 

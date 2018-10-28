@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.ILP.Algorithm;
+using IRuettae.Core.ILP.Algorithm.Clustering;
 using IRuettae.Core.ILP.Algorithm.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SolverInputData = IRuettae.Core.ILP.Algorithm.Clustering.SolverInputData;
@@ -48,7 +49,10 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Clustering
             {
                 VisitIds = new long[] { 0, 1, 2, 3, 4, 5 }
             };
-            var result = Starter.Optimize(solverInputData, ClusteringOptimizationGoals.MinTimePerSanta);
+            var solver = new ClusteringILPSolver(solverInputData);
+            solver.Solve(0, 60000);
+            var result = solver.GetResult();
+          
             Assert.IsNotNull(result);
             Assert.AreEqual(5, result.Waypoints[0, 0].Count);
 
@@ -103,7 +107,10 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Clustering
             {
                 VisitIds = new long[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }
             };
-            var result = Starter.Optimize(solverInputData, ClusteringOptimizationGoals.MinTimePerSanta);
+            var solver = new ClusteringILPSolver(solverInputData);
+            solver.Solve(0, 60000);
+            var result = solver.GetResult();
+
             Assert.IsNotNull(result);
             var possibleRoutes = new[] { "0 | 0;5 | 0;6 | 0;7 | 0;8 | 0", "0 | 0;1 | 0;2 | 0;3 | 0;4 | 0" };
 

@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using IRuettae.Core.ILP.Algorithm.Models;
 using IRuettae.Core.ILP.Algorithm.Scheduling.Detail;
 using IRuettae.Core.ILP.Algorithm.Scheduling.TargetFunctionBuilders;
 using GLS = Google.OrTools.LinearSolver;
 
 namespace IRuettae.Core.ILP.Algorithm.Scheduling
 {
-    internal class Solver : ISolver
+    public class SchedulingILPSolver : ISolver
     {
         private readonly SolverData solverData;
         private double MIP_GAP = 0;
@@ -22,10 +23,10 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
         /// <summary>
         ///
         /// </summary>
-        public Solver(SolverInputData solverInputData, AbstractTargetFunctionBuilder targetFunctionBuilder)
+        public SchedulingILPSolver(SolverInputData solverInputData, SchedulingOptimizationGoals optimizationGoal = SchedulingOptimizationGoals.Default)
         {
             this.solverData = new SolverData(solverInputData, solver);
-            this.targetFunctionBuilder = targetFunctionBuilder;
+            this.targetFunctionBuilder = TargetFunctionBuilderFactory.Create(optimizationGoal);
         }
 
         public ResultState Solve()
@@ -238,6 +239,15 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
 
             // return solver.ExportModelAsLpFormat(false);
             return solver.ExportModelAsMpsFormat(false, false);
+        }
+
+        /// <summary>
+        /// Exports the mps to the path as file
+        /// </summary>
+        /// <param name="path">where to save the mps</param>
+        public void ExportMPSAsFile(string path)
+        {
+            System.IO.File.WriteAllText(path, ExportMPS());
         }
 
         public string ImportMPS()
