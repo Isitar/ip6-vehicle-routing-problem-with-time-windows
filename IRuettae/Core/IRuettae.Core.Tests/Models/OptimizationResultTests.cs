@@ -294,7 +294,7 @@ namespace IRuettae.Core.Models.Tests
         {
             var model = GetModel();
             var sum = 30 * minute + 1 * hour + 15 * minute;
-            Assert.AreEqual(sum, model.VisitTimeInUnavailabe());
+            Assert.AreEqual(sum, model.VisitTimeInUnavailable());
         }
 
         [TestMethod()]

@@ -62,7 +62,7 @@ namespace IRuettae.Core.Models
                                        +560 * NumberOfNotVisitedFamilies()
                                        + 400 * NumberOfAdditionalSantas()
                                        + (40d / hour) * AdditionalSantaWorkTime())
-                                       + (120d / hour) * VisitTimeInUnavailabe()
+                                       + (120d / hour) * VisitTimeInUnavailable()
                                        - (20d / hour) * VisitTimeInDesired()
                                        + (40d / hour) * SantaWorkTime()
                                        + (30d / hour) * LongestDay()
@@ -94,7 +94,7 @@ namespace IRuettae.Core.Models
                 .Sum();
         }
 
-        public int VisitTimeInUnavailabe()
+        public int VisitTimeInUnavailable()
         {
             var unavailableSum = 0;
             foreach (var route in Routes)

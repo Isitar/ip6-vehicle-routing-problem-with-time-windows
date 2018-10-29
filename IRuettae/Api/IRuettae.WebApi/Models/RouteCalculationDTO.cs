@@ -38,7 +38,7 @@ namespace IRuettae.WebApi.Models
         public virtual int NumberOfNotVisitedFamilies { get; set; }
         public virtual int NumberOfAdditionalSantas { get; set; }
         public virtual int AdditionalSantaWorkTime { get; set; }
-        public virtual int VisitTimeInUnavailabe { get; set; }
+        public virtual int VisitTimeInUnavailable { get; set; }
         public virtual int VisitTimeInDesired { get; set; }
         public virtual int SantaWorkTime { get; set; }
         public virtual int LongestDay { get; set; }
@@ -81,7 +81,7 @@ namespace IRuettae.WebApi.Models
                     dto.NumberOfNotVisitedFamilies = or.NumberOfNotVisitedFamilies();
                     dto.NumberOfAdditionalSantas = or.NumberOfAdditionalSantas();
                     dto.AdditionalSantaWorkTime = or.AdditionalSantaWorkTime();
-                    dto.VisitTimeInUnavailabe = or.VisitTimeInUnavailabe();
+                    dto.VisitTimeInUnavailable = or.VisitTimeInUnavailable();
                     dto.VisitTimeInDesired = or.VisitTimeInDesired();
                     dto.SantaWorkTime = or.SantaWorkTime();
                     dto.LongestDay = or.LongestDay();
