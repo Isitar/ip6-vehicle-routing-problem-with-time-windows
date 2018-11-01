@@ -105,22 +105,28 @@ namespace IRuettae.Preprocessing.Mapping
                     }
 
                     // set desired
-                    foreach (var desired in visit.Desired.Where(isCurrentDay))
+                    if (visit.Desired != null)
                     {
-                        (var startSlice, var endSlice) = toTimeslice(desired);
-                        for (int t = startSlice; t < endSlice && t < numberOfTimeslots; t++)
+                        foreach (var desired in visit.Desired.Where(isCurrentDay))
                         {
-                            visitsVar[d][v, t] = VisitState.Desired;
+                            (var startSlice, var endSlice) = toTimeslice(desired);
+                            for (int t = startSlice; t < endSlice && t < numberOfTimeslots; t++)
+                            {
+                                visitsVar[d][v, t] = VisitState.Desired;
+                            }
                         }
                     }
 
                     // set unavailable
-                    foreach (var unavailable in visit.Unavailable.Where(isCurrentDay))
+                    if (visit.Unavailable != null)
                     {
-                        (var startSlice, var endSlice) = toTimeslice(unavailable);
-                        for (int t = startSlice; t < endSlice && t < numberOfTimeslots; t++)
+                        foreach (var unavailable in visit.Unavailable.Where(isCurrentDay))
                         {
-                            visitsVar[d][v, t] = VisitState.Unavailable;
+                            (var startSlice, var endSlice) = toTimeslice(unavailable);
+                            for (int t = startSlice; t < endSlice && t < numberOfTimeslots; t++)
+                            {
+                                visitsVar[d][v, t] = VisitState.Unavailable;
+                            }
                         }
                     }
                 }
@@ -149,3 +155,4 @@ namespace IRuettae.Preprocessing.Mapping
         }
     }
 }
+

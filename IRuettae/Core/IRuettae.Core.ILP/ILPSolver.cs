@@ -100,7 +100,7 @@ namespace IRuettae.Core.ILP
                 .AsParallel()
                 .Select(schedulingInputVariable =>
                 {
-                   // var targetFunctionBuilder = Algorithm.Scheduling.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(SchedulingOptimizationGoals.Default);
+                    // var targetFunctionBuilder = Algorithm.Scheduling.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(SchedulingOptimizationGoals.Default);
                     var schedulingSolver =
                         new Algorithm.Scheduling.SchedulingILPSolver(schedulingInputVariable, SchedulingOptimizationGoals.Default);
 
@@ -154,7 +154,7 @@ namespace IRuettae.Core.ILP
             var optimizationResult = new OptimizationResult()
             {
                 OptimizationInput = input,
-                Routes = routeResults.Select(r => new Route
+                Routes = routeResults.Select(r => r != null ? new Route
                 {
                     SantaId = r.SantaIds[0],
                     Waypoints = r.Waypoints[0, 0].Select(origWp => new Waypoint
@@ -163,7 +163,7 @@ namespace IRuettae.Core.ILP
                         StartTime = origWp.StartTime * starterData.TimeSliceDuration
                     }).ToArray(),
 
-                }).ToArray(),
+                } : new Route()).ToArray(),
             };
 
             progress?.Invoke(this, new ProgressReport(1));
