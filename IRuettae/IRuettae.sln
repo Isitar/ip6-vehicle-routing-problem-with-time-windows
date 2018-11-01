@@ -51,6 +51,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Converter.Tests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core.Tests", "Core\IRuettae.Core.Tests\IRuettae.Core.Tests.csproj", "{F1342EB4-8A3B-4A47-AA84-5D6418F1D984}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Evaluator", "DebugApps\IRuettae.Evaluator\IRuettae.Evaluator.csproj", "{BC77765F-0F0A-47F9-8D86-7D2EAD6F496C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug With RealGoogle|Any CPU = Debug With RealGoogle|Any CPU
@@ -160,6 +162,12 @@ Global
 		{F1342EB4-8A3B-4A47-AA84-5D6418F1D984}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1342EB4-8A3B-4A47-AA84-5D6418F1D984}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1342EB4-8A3B-4A47-AA84-5D6418F1D984}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC77765F-0F0A-47F9-8D86-7D2EAD6F496C}.Debug With RealGoogle|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC77765F-0F0A-47F9-8D86-7D2EAD6F496C}.Debug With RealGoogle|Any CPU.Build.0 = Debug|Any CPU
+		{BC77765F-0F0A-47F9-8D86-7D2EAD6F496C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC77765F-0F0A-47F9-8D86-7D2EAD6F496C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC77765F-0F0A-47F9-8D86-7D2EAD6F496C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC77765F-0F0A-47F9-8D86-7D2EAD6F496C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -182,6 +190,7 @@ Global
 		{E6F0FFC6-7F26-4286-AE57-44411EB66118} = {4AFFAE11-44BE-4405-B3F8-A60826387129}
 		{623C71D4-1F01-4615-A64B-07154EC6DE57} = {6800792F-BAE0-49FD-AD84-142BBB895596}
 		{F1342EB4-8A3B-4A47-AA84-5D6418F1D984} = {4AFFAE11-44BE-4405-B3F8-A60826387129}
+		{BC77765F-0F0A-47F9-8D86-7D2EAD6F496C} = {F60824C4-90B4-4C99-BF8C-A185BCA036B0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46C1937C-3FE9-4F20-B1E3-E40616B3A48D}
