@@ -95,26 +95,27 @@ namespace IRuettae.Core.ILP
                 .Where(vb => vb.Visits != null && vb.Visits.Count > 1)
                 .Select(vb => vb.Build());
 
+            var schedulingTimelimit = starterData.SchedulingTimeLimit;
+            if (schedulingTimelimit == 0 && timelimit != 0)
+            {
+                // avoid surpassing timelimit
+                schedulingTimelimit = Math.Max(1, timelimit - (sw.ElapsedMilliseconds / 1000));
+            }
+            else if (sw.ElapsedMilliseconds < starterData.ClusteringTimeLimit)
+            {
+                schedulingTimelimit += (starterData.ClusteringTimeLimit - sw.ElapsedMilliseconds);
+            }
 
             var routeResults = schedulingInputVariables
                 .AsParallel()
                 .Select(schedulingInputVariable =>
                 {
-                    // var targetFunctionBuilder = Algorithm.Scheduling.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(SchedulingOptimizationGoals.Default);
-                    var schedulingSolver =
-                        new Algorithm.Scheduling.SchedulingILPSolver(schedulingInputVariable, SchedulingOptimizationGoals.Default);
+
+                    var schedulingSolver = new Algorithm.Scheduling.SchedulingILPSolver(schedulingInputVariable, SchedulingOptimizationGoals.Default);
 
 #if WriteMPS && DEBUG
                     System.IO.File.WriteAllText($@"C:\Temp\iRuettae\ILP\Scheduling\{new Guid()}.mps", schedulingSolver.ExportMPS());
 #endif
-
-                    var schedulingTimelimit = starterData.SchedulingTimeLimit;
-                    if (schedulingTimelimit == 0 && timelimit != 0)
-                    {
-                        // avoid surpassing timelimit
-                        schedulingTimelimit = Math.Max(1, timelimit - (sw.ElapsedMilliseconds / 1000));
-                    }
-
                     var schedulingResultState = schedulingSolver.Solve(starterData.SchedulingMIPGap, schedulingTimelimit);
                     if (!(new[] { ResultState.Feasible, ResultState.Optimal }).Contains(schedulingResultState))
                     {

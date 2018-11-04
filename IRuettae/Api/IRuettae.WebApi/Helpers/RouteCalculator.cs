@@ -120,11 +120,6 @@ namespace IRuettae.WebApi.Helpers
 
                 #endregion Run
 
-
-                #region metrics
-
-                #endregion metrics
-
                 routeCalculation.EndTime = DateTime.Now;
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();

@@ -131,7 +131,7 @@ namespace IRuettae.WebApi.Controllers
                         Visit = (VisitDTO)v,
                         VisitStartTime = routeCalculationResult.ConvertTime(wp.StartTime),
                         VisitEndtime = routeCalculationResult.ConvertTime(wp.StartTime).AddSeconds(v.Duration),
-                        SantaName = dbSession.Get<Santa>(routeCalculationResult.VisitMap[r.SantaId])?.Name,
+                        SantaName = dbSession.Get<Santa>(routeCalculationResult.SantaMap[r.SantaId])?.Name,
                     };
                 }).ToList()).ToList();
 

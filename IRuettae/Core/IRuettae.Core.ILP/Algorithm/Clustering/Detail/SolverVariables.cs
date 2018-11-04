@@ -7,6 +7,11 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering.Detail
         /// <summary>
         /// [Santa,Visit] if santa visits this Visit
         /// </summary>
+        public GLS.Variable[] SantaUsed { get; set; }
+
+        /// <summary>
+        /// [Santa,Visit] if santa visits this Visit
+        /// </summary>
         public GLS.Variable[,] SantaVisit { get; set; }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using IRuettae.Core;
 using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm.Models;
 using IRuettae.Core.Models;
+using Newtonsoft.Json;
 
 namespace IRuettae.Evaluator
 {
@@ -79,10 +81,15 @@ namespace IRuettae.Evaluator
             Console.WriteLine("Starting the algorithm now");
             BigHr();
             OptimizationInput input;
+            (int, int)[] coordinates = null;
+            string savepath = $"{DateTime.Now:yy-MM-dd-HH-mm-ss}";
+            int timelimit = 0;
             switch (datasetSelection)
             {
                 case 1:
-                    input = DatasetFactory.DataSet1();
+                    (input, coordinates) = DatasetFactory.DataSet1();
+                    timelimit = 10 * 60 * 1000;
+                    savepath += "_Dataset_1";
                     break;
             }
 
@@ -90,22 +97,30 @@ namespace IRuettae.Evaluator
             switch (algorithmSelection)
             {
                 case 1:
-                    solver = new ILPSolver(input, new ILPStarterData {
+                    solver = new ILPSolver(input, new ILPStarterData
+                    {
                         ClusteringMIPGap = 0,
-                        SchedulingMIPGap = 0,
+                        SchedulingMIPGap = 2,
 
-                        ClusteringTimeLimit = 60 * 1000,
-                        SchedulingTimeLimit = 180 * 1000,
-                        TimeSliceDuration = 120 });
+                        ClusteringTimeLimit = (long)(0.7 * timelimit),
+                        SchedulingTimeLimit = (long)(0.3 * timelimit),
+                        TimeSliceDuration = 120
+                    });
+                    savepath += "_ILP";
                     break;
             }
 
-            var result = solver.Solve(4 * 60 * 1000, (sender, report) => Console.WriteLine($"Progress: {report}"),
+            var result = solver.Solve(timelimit, (sender, report) => Console.WriteLine($"Progress: {report}"),
                 (sender, s) => Console.WriteLine($"Info: {s}"));
             BigHr();
+            
+            File.WriteAllText(savepath +".json", JsonConvert.SerializeObject(result));
             Console.WriteLine();
             Console.WriteLine("Done solving");
+            Console.WriteLine($"TimeElapsed [s]: {result.TimeElapsed}");
             Console.WriteLine($"Target function value: {result.Cost()}");
+            ResultDrawer.DrawResult(savepath, result, coordinates);
+
             Console.ReadLine();
         }
 
