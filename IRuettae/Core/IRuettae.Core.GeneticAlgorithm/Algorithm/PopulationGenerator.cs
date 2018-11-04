@@ -8,13 +8,13 @@ using System.Security.Cryptography;
 
 namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 {
-    static class PopulationGenerator
+    public static class PopulationGenerator
     {
-        public static List<int>[] Generate(OptimizationInput input, int numberOfIndividuals, int numberOfSantas)
+        public static List<int>[] Generate(OptimizationInput input, int numberOfIndividuals, int numberOfRouteSeparators)
         {
             var elements = new List<int>();
             elements.AddRange(input.Visits.Select(v => v.Id));
-            elements.AddRange(Enumerable.Range(-numberOfSantas, numberOfSantas));
+            elements.AddRange(Enumerable.Range(-numberOfRouteSeparators, numberOfRouteSeparators));
 
             var population = new List<int>[numberOfIndividuals];
             for (int i = 0; i < numberOfIndividuals; i++)
@@ -30,7 +30,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        public static void Shuffle<T>(this IList<T> list)
+        private static void Shuffle<T>(this IList<T> list)
         {
             RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
             int n = list.Count;
