@@ -10,11 +10,12 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 {
     public static class PopulationGenerator
     {
-        public static List<int>[] Generate(OptimizationInput input, int numberOfIndividuals, int numberOfRouteSeparators)
+        public static List<int>[] Generate(OptimizationInput input, int numberOfIndividuals, int maxNumberOfSantas)
         {
+            var numberOfSeparators = input.Days.Length * maxNumberOfSantas - 1;
             var elements = new List<int>();
             elements.AddRange(input.Visits.Select(v => v.Id));
-            elements.AddRange(Enumerable.Range(-numberOfRouteSeparators, numberOfRouteSeparators));
+            elements.AddRange(Enumerable.Range(-numberOfSeparators, numberOfSeparators));
 
             var population = new List<int>[numberOfIndividuals];
             for (int i = 0; i < numberOfIndividuals; i++)
