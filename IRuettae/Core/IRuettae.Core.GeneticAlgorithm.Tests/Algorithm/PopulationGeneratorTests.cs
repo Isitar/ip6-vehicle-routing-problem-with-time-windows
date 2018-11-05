@@ -15,9 +15,9 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Tests
         [TestMethod()]
         public void TestGenerate()
         {
-            var input = new OptimizationInput();
+            var input = new OptimizationInput()
             {
-                input.Visits = new Visit[]
+                Visits = new Visit[]
                 {
                     new Visit
                     {
@@ -39,21 +39,27 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Tests
                     {
                         Id = 5,
                     }
-                };
+                },
+                Days = new(int, int)[]
+                {
+                    (1,2),
+                    (2,3),
+                }
             };
 
             int numberOfVisits = 5;
             int numberOfIndividuals = 10;
-            int numberOfRouteSeparators = 4;
-            var actual = PopulationGenerator.Generate(input, numberOfIndividuals, numberOfRouteSeparators);
+            int maxNumberOfSantas = 4;
+            int numberOfSeparators = input.Days.Length * maxNumberOfSantas - 1;
+            var actual = PopulationGenerator.Generate(input, numberOfIndividuals, maxNumberOfSantas);
 
             Assert.AreEqual(numberOfIndividuals, actual.Length);
             for (int i = 0; i < actual.Length; i++)
             {
                 var individual = actual[i];
-                Assert.AreEqual(numberOfVisits + numberOfRouteSeparators, individual.Count);
-                Assert.AreEqual(numberOfVisits + numberOfRouteSeparators, individual.Distinct().Count());
-                Assert.AreEqual(numberOfRouteSeparators, individual.Where(e => e < 0).Count());
+                Assert.AreEqual(numberOfVisits + numberOfSeparators, individual.Count);
+                Assert.AreEqual(numberOfVisits + numberOfSeparators, individual.Distinct().Count());
+                Assert.AreEqual(numberOfSeparators, individual.Where(e => e < 0).Count());
                 Assert.IsTrue(individual.Contains(1));
                 Assert.IsTrue(individual.Contains(2));
                 Assert.IsTrue(individual.Contains(3));
