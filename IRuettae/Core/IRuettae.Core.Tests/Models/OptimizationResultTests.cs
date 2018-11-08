@@ -298,6 +298,14 @@ namespace IRuettae.Core.Models.Tests
         }
 
         [TestMethod()]
+        public void WayTimeOutsideBusinessHoursTest()
+        {
+            var model = GetModel();
+            var sum = 1 * hour + 30 * minute + 30 * minute;
+            Assert.AreEqual(sum, model.WayTimeOutsideBusinessHours());
+        }
+
+        [TestMethod()]
         public void VisitTimeInDesiredTest()
         {
             var model = GetModel();

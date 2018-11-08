@@ -63,6 +63,7 @@ namespace IRuettae.Core.Models
                                        + 400 * NumberOfAdditionalSantas()
                                        + (40d / hour) * AdditionalSantaWorkTime())
                                        + (120d / hour) * VisitTimeInUnavailable()
+                                       + (120d / hour) * WayTimeOutsideBusinessHours()
                                        - (20d / hour) * VisitTimeInDesired()
                                        + (40d / hour) * SantaWorkTime()
                                        + (30d / hour) * LongestDay()
@@ -101,7 +102,6 @@ namespace IRuettae.Core.Models
             {
                 foreach (var waypoint in route.Waypoints)
                 {
-
                     var visit = OptimizationInput.Visits.Cast<Visit?>().FirstOrDefault(v => v != null && v.Value.Id == waypoint.VisitId);
                     if (!visit.HasValue) { continue; }
 
@@ -111,11 +111,35 @@ namespace IRuettae.Core.Models
                     {
                         unavailableSum += IntersectionLength(new[] { (startTime, endTime), (from, to) });
                     }
-
                 }
             }
 
             return unavailableSum;
+        }
+
+        public int WayTimeOutsideBusinessHours()
+        {
+            var sum = 0;
+            foreach (var route in NonEmptyRoutes)
+            {
+                var day = FindDay(route);
+
+                // home, with duration = 0
+                var endOfPreviousVisit = route.Waypoints[0].StartTime;
+                foreach (var waypoint in route.Waypoints.Skip(1))
+                {
+                    var way = (from: endOfPreviousVisit, to: waypoint.StartTime);
+                    sum += (way.to - way.from) - IntersectionLength(new[] { day, way });
+
+                    var visit = OptimizationInput.Visits.Cast<Visit?>().FirstOrDefault(v => v != null && v.Value.Id == waypoint.VisitId);
+                    if (visit.HasValue)
+                    {
+                        endOfPreviousVisit = waypoint.StartTime + visit.Value.Duration;
+                    }
+                }
+            }
+
+            return sum;
         }
 
         public int VisitTimeInDesired()
@@ -126,7 +150,6 @@ namespace IRuettae.Core.Models
             {
                 foreach (var waypoint in route.Waypoints)
                 {
-
                     var visit = OptimizationInput.Visits.Cast<Visit?>().FirstOrDefault(v => v != null && v.Value.Id == waypoint.VisitId);
                     if (!visit.HasValue) { continue; }
 
@@ -136,7 +159,6 @@ namespace IRuettae.Core.Models
                     {
                         desiredSum += IntersectionLength(new[] { (startTime, endTime), (from, to) });
                     }
-
                 }
             }
 
