@@ -14,7 +14,7 @@ using SolverInputData = IRuettae.Core.ILP.Algorithm.Clustering.SolverInputData;
 
 namespace IRuettae.ConsoleApp
 {
-    public class TestNewSolution
+    public class TestILPClustering
     {
         private const ConsoleColor InfoColor = ConsoleColor.Cyan;
         private const ConsoleColor ResultColor = ConsoleColor.Green;
@@ -40,9 +40,9 @@ namespace IRuettae.ConsoleApp
         private static void ExportMPSVisits(int n_visits)
         {
             var solverInputData = Deserialize($"SerializedObjects/ClusteringSolverInput{n_visits}Visits.serial");
-            
+
             new ClusteringILPSolver(solverInputData).ExportMPSAsFile($"New_{n_visits}_mps.mps");
-            
+
             ConsoleExt.WriteLine($"Saved mps for {n_visits} visits", InfoColor);
         }
         private static void TestSerailDataVisits(string serialDataName, int numberOfRuns = 5)

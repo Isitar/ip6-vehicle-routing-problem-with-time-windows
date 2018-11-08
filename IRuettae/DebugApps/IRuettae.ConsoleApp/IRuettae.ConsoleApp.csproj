@@ -59,12 +59,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleExt.cs" />
-    <Compile Include="ImportCSV.cs" />
+    <Compile Include="Helpers\ConsoleExt.cs" />
+    <Compile Include="Programs\ImportCSV.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Test.cs" />
-    <Compile Include="TestNewSolution.cs" />
+    <Compile Include="Programs\TestILPScheduling.cs" />
+    <Compile Include="Programs\TestILPClustering.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
