@@ -53,6 +53,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core.Tests", "Core
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core.Manual", "Core\IRuettae.Core.Manual\IRuettae.Core.Manual.csproj", "{AD56F730-28E1-4FED-9587-79079A4DE9C6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core.Manual.Test", "Core\IRuettae.Core.Manual.Test\IRuettae.Core.Manual.Test.csproj", "{181D744F-637D-4124-AE8A-ED2F3DCD0A66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug With RealGoogle|Any CPU = Debug With RealGoogle|Any CPU
@@ -168,6 +170,12 @@ Global
 		{AD56F730-28E1-4FED-9587-79079A4DE9C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD56F730-28E1-4FED-9587-79079A4DE9C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD56F730-28E1-4FED-9587-79079A4DE9C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{181D744F-637D-4124-AE8A-ED2F3DCD0A66}.Debug With RealGoogle|Any CPU.ActiveCfg = Debug|Any CPU
+		{181D744F-637D-4124-AE8A-ED2F3DCD0A66}.Debug With RealGoogle|Any CPU.Build.0 = Debug|Any CPU
+		{181D744F-637D-4124-AE8A-ED2F3DCD0A66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{181D744F-637D-4124-AE8A-ED2F3DCD0A66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{181D744F-637D-4124-AE8A-ED2F3DCD0A66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{181D744F-637D-4124-AE8A-ED2F3DCD0A66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

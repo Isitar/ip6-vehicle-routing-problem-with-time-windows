@@ -48,7 +48,7 @@ namespace IRuettae.Core.Manual
 
         private List<Route> CreateRoutes()
         {
-            var routes = new List<Route>();
+            var routes = new List<Route>(starterData.Routes.Length);
 
             foreach (var (santaId, day, visits) in starterData.Routes)
             {
@@ -60,6 +60,7 @@ namespace IRuettae.Core.Manual
                 if (visits.Length == 0)
                 {
                     // empty route
+                    route.Waypoints = new Waypoint[0];
                     routes.Add(route);
                     continue;
                 }
@@ -79,6 +80,9 @@ namespace IRuettae.Core.Manual
                     waypoints.Add(CreateNextWaypoint(waypoints[waypoints.Count - 1], visit));
                 }
                 waypoints.Add(CreateNextWaypoint(waypoints[waypoints.Count - 1], Constants.VisitIdHome));
+
+                route.Waypoints = waypoints.ToArray();
+                routes.Add(route);
             }
 
             return routes;
@@ -90,7 +94,7 @@ namespace IRuettae.Core.Manual
             {
                 VisitId = visitId,
             };
-            var previousVisit = input.Visits.Cast<Visit?>().First(v => v != null && v.Value.Id == previousWaypoint.VisitId);
+            var previousVisit = input.Visits.Cast<Visit?>().FirstOrDefault(v => v != null && v.Value.Id == previousWaypoint.VisitId);
             var visit = input.Visits.Cast<Visit?>().FirstOrDefault(v => v != null && v.Value.Id == visitId);
             if (previousWaypoint.VisitId == Constants.VisitIdHome)
             {
@@ -100,7 +104,7 @@ namespace IRuettae.Core.Manual
             else if (visitId == Constants.VisitIdHome)
             {
                 // visit to home
-                waypoint.StartTime = previousWaypoint.StartTime + previousVisit.Value.WayCostToHome;
+                waypoint.StartTime = previousWaypoint.StartTime + previousVisit.Value.Duration + previousVisit.Value.WayCostToHome;
             }
             else
             {
