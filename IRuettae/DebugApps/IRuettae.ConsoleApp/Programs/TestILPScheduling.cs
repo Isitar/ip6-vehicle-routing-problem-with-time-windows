@@ -16,7 +16,7 @@ using Newtonsoft.Json.Linq;
 
 namespace IRuettae.ConsoleApp
 {
-    internal class Test
+    internal class TestILPScheduling
     {
         private const ConsoleColor OutputColor = ConsoleColor.Green;
         internal static void Run(string[] args)
