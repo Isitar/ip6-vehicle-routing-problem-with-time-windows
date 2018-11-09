@@ -26,9 +26,12 @@ namespace IRuettae.Evaluator
 
         static readonly Dictionary<int, string> datasetDictionary = new Dictionary<int, string>()
         {
-            {1,"10 visits, 2 santas"},
-            {2, "10 visits, 2 santas, 5 desired d1, 5 desired d2" },
-            {3, "10 visits, 2 santas, 5 unavailable d1, 5 unavailable d2" },
+            {1, "10 visits, 1 santa 2 days"},
+            {2, "10 visits, 1 santas, 2 days 5 desired d1, 5 desired d2" },
+            {3, "10 visits, 1 santas, 2 days 5 unavailable d1, 5 unavailable d2" },
+            {4, "20 visits, 2 santas"},
+            {5, "20 visits, 2 santas, 2 days, 10 desired d1, 10 desired d2" },
+            {6, "20 visits, 2 santas, 2 days, 10 unavailable d1, 10 unavailable d2" },
         };
 
         static void Main(string[] args)
@@ -113,8 +116,8 @@ namespace IRuettae.Evaluator
             var result = solver.Solve(timelimit, (sender, report) => Console.WriteLine($"Progress: {report}"),
                 (sender, s) => Console.WriteLine($"Info: {s}"));
             BigHr();
-            
-            File.WriteAllText(savepath +".json", JsonConvert.SerializeObject(result));
+
+            File.WriteAllText(savepath + ".json", JsonConvert.SerializeObject(result));
             Console.WriteLine();
             Console.WriteLine("Done solving");
             Console.WriteLine($"TimeElapsed [s]: {result.TimeElapsed}");
