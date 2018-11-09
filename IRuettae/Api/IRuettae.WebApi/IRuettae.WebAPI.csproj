@@ -177,6 +177,8 @@
     <Compile Include="Helpers\EventTextWriter.cs" />
     <Compile Include="Helpers\RouteCalculator.cs" />
     <Compile Include="Helpers\RouteCalculationResult.cs" />
+    <Compile Include="Helpers\SolverFactory.cs" />
+    <Compile Include="Helpers\StarterDataDeserializer.cs" />
     <Compile Include="Helpers\VisitWayCreator.cs" />
     <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
     <Compile Include="Models\AlgorithmStarter.cs" />

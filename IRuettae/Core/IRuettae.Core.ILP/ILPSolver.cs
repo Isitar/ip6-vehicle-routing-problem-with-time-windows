@@ -34,11 +34,11 @@ namespace IRuettae.Core.ILP
             this.starterData = starterData;
         }
 
-        public OptimizationResult Solve(int timelimit, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
+        public OptimizationResult Solve(long timelimitMiliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
         {
-            if (timelimit < starterData.ClusteringTimeLimit + starterData.SchedulingTimeLimit)
+            if (timelimitMiliseconds < starterData.ClusteringTimeLimitMiliseconds + starterData.SchedulingTimeLimitMiliseconds)
             {
-                throw new ArgumentException("overall timelimit must be at least the sum of ClusteringTimeLimit and SchedulingTimeLimit");
+                throw new ArgumentException("overall timelimitMiliseconds must be at least the sum of ClusteringTimeLimit and SchedulingTimeLimit");
             }
 
             consoleProgress?.Invoke(this, "Solving started");
@@ -54,14 +54,14 @@ namespace IRuettae.Core.ILP
 #if WriteMPS && DEBUG
             System.IO.File.WriteAllText($@"C:\Temp\iRuettae\ILP\Clustering\{new Guid()}.mps", clusterinSolver.ExportMPS());
 #endif
-            var clusteringTimeLimit = starterData.ClusteringTimeLimit;
-            if (clusteringTimeLimit == 0)
+            var clusteringTimeLimitMiliseconds = starterData.ClusteringTimeLimitMiliseconds;
+            if (clusteringTimeLimitMiliseconds == 0)
             {
                 // avoid surpassing timelimit
-                clusteringTimeLimit = timelimit;
+                clusteringTimeLimitMiliseconds = timelimitMiliseconds;
             }
 
-            var phase1ResultState = clusteringSolver.Solve(starterData.ClusteringMIPGap, clusteringTimeLimit);
+            var phase1ResultState = clusteringSolver.Solve(starterData.ClusteringMIPGap, clusteringTimeLimitMiliseconds);
             if (!(new[] { ResultState.Feasible, ResultState.Optimal }).Contains(phase1ResultState))
             {
                 return null;
@@ -108,14 +108,14 @@ namespace IRuettae.Core.ILP
                     System.IO.File.WriteAllText($@"C:\Temp\iRuettae\ILP\Scheduling\{new Guid()}.mps", schedulingSolver.ExportMPS());
 #endif
 
-                    var schedulingTimelimit = starterData.SchedulingTimeLimit;
-                    if (schedulingTimelimit == 0 && timelimit != 0)
+                    var schedulingTimelimitMiliseconds = starterData.SchedulingTimeLimitMiliseconds;
+                    if (schedulingTimelimitMiliseconds == 0 && timelimitMiliseconds != 0)
                     {
                         // avoid surpassing timelimit
-                        schedulingTimelimit = Math.Max(1, timelimit - (sw.ElapsedMilliseconds / 1000));
+                        schedulingTimelimitMiliseconds = Math.Max(1, timelimitMiliseconds - sw.ElapsedMilliseconds);
                     }
 
-                    var schedulingResultState = schedulingSolver.Solve(starterData.SchedulingMIPGap, schedulingTimelimit);
+                    var schedulingResultState = schedulingSolver.Solve(starterData.SchedulingMIPGap, schedulingTimelimitMiliseconds);
                     if (!(new[] { ResultState.Feasible, ResultState.Optimal }).Contains(schedulingResultState))
                     {
                         return null;

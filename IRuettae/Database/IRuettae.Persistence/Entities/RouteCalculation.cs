@@ -23,6 +23,7 @@ namespace IRuettae.Persistence.Entities
         public virtual int NumberOfVisits { get; set; }
         public virtual string SantaJson { get; set; }
         public virtual string VisitsJson { get; set; }
+        public virtual long TimeLimitMiliseconds { get; set; }
 
         // Algorithm specific data
         public virtual AlgorithmType Algorithm { get; set; }
