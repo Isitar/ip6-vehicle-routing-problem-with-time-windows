@@ -32,6 +32,12 @@ namespace IRuettae.Evaluator
             {4, "20 visits, 2 santas"},
             {5, "20 visits, 2 santas, 2 days, 10 desired d1, 10 desired d2" },
             {6, "20 visits, 2 santas, 2 days, 10 unavailable d1, 10 unavailable d2" },
+            {7, "Real example 2017" },
+            {8, "Real example 2018" },
+            {9, "50 visits, 5 santas, 2 days, 15 desired d1, 15 desired d2, 11 unavailable d1, 11 unavailable d2" },
+            {10, "100 visits, 10 santas, 2 days, 35 desired d1, 35 desired d2, 20 unavailable d1, 20 unavailable d2" },
+            {11, "200 visits, 20 santas, 2 days, 75 desired d1, 75 desired d2, 40 unavailable d1, 40 unavailable d2" },
+            {12, "1000 visits, 100 santas, 2 days, 300 desired d1, 300 desired d2, 150 unavailable d1, 150 unavailable d2" },
         };
 
         static void Main(string[] args)
@@ -92,10 +98,55 @@ namespace IRuettae.Evaluator
                 case 1:
                     (input, coordinates) = DatasetFactory.DataSet1();
                     timelimit = 10 * 60 * 1000;
-                    savepath += "_Dataset_1";
+                    break;
+                case 2:
+                    (input, coordinates) = DatasetFactory.DataSet2();
+                    timelimit = 10 * 60 * 1000;
+                    break;
+                case 3:
+                    (input, coordinates) = DatasetFactory.DataSet3();
+                    timelimit = 10 * 60 * 1000;
+                    break;
+                case 4:
+                    (input, coordinates) = DatasetFactory.DataSet4();
+                    timelimit = 10 * 60 * 1000;
+                    break;
+                case 5:
+                    (input, coordinates) = DatasetFactory.DataSet5();
+                    timelimit = 10 * 60 * 1000;
+                    break;
+                case 6:
+                    (input, coordinates) = DatasetFactory.DataSet6();
+                    timelimit = 10 * 60 * 1000;
+                    break;
+                case 7:
+                    throw new NotImplementedException();
+                    (input, coordinates) = DatasetFactory.DataSet7();
+                    timelimit = 10 * 60 * 1000;
+                    break;
+                case 8:
+                    throw new NotImplementedException();
+                    (input, coordinates) = DatasetFactory.DataSet8();
+                    timelimit = 10 * 60 * 1000;
+                    break;
+                case 9:
+                    (input, coordinates) = DatasetFactory.DataSet9();
+                    timelimit = 10 * 60 * 1000;
+                    break;
+                case 10:
+                    (input, coordinates) = DatasetFactory.DataSet10();
+                    timelimit = 10 * 60 * 1000;
+                    break;
+                case 11:
+                    (input, coordinates) = DatasetFactory.DataSet11();
+                    timelimit = 10 * 60 * 1000;
+                    break;
+                case 12:
+                    (input, coordinates) = DatasetFactory.DataSet12();
+                    timelimit = 10 * 60 * 1000;
                     break;
             }
-
+            savepath += $"_Dataset_{datasetSelection}";
             ISolver solver = null;
             switch (algorithmSelection)
             {
