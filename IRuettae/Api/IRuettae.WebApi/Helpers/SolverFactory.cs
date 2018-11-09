@@ -5,6 +5,7 @@ using System.Web;
 using IRuettae.Core;
 using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm.Models;
+using IRuettae.Core.Manual;
 using IRuettae.Core.Models;
 
 namespace IRuettae.WebApi.Helpers
@@ -17,6 +18,8 @@ namespace IRuettae.WebApi.Helpers
             {
                 case ILPStarterData ilp:
                     return new ILPSolver(input, ilp);
+                case ManualStarterData manual:
+                    return new ManualSolver(input, manual);
             }
             return null;
         }
