@@ -17,6 +17,7 @@ namespace IRuettae.DatasetGenerator
 
             Console.WriteLine("Please input only correct values, no exception handling here!");
             SmallHr();
+            
             Console.Write("Map-Width [number]: ");
             int width = int.Parse(Console.ReadLine());
             Console.Write("Map-Height [number]: ");
@@ -48,14 +49,15 @@ namespace IRuettae.DatasetGenerator
                 new DatasetGenerator(width, height, numberOfVisits, numberOfDays, numberOfSantas, desired, unavailable)
                     .Generate(methodName);
 
-            Console.WriteLine(output);
+            //Console.WriteLine(output);
             BigHr();
             Console.WriteLine("Save? [y/n]");
             if (Console.ReadLine().ToUpper().Equals("Y"))
             {
                 File.WriteAllText($"{methodName}.cs", output);
             }
-            Console.ReadLine();
+            Console.WriteLine("Press any key to exit...");
+            Console.Read();
         }
 
         private static void SmallHr()

@@ -100,12 +100,16 @@ namespace IRuettae.DatasetGenerator
                     x = random.Next(0, mapWidth);
                     y = random.Next(0, mapHeight);
                 }
-                
+
                 coordinates[i] = (x, y);
             }
 
+            var avgDistance = coordinates.Average(c => coordinates.Select(c2 => Distance(c, c2)).Average());
+            int[] visitDurations = Enumerable.Range(0, numberOfVisits).Select(v => random.Next(1200, 3600)).ToArray();
 
-
+            var avgVisitsPerRoute = numberOfVisits / (numberOfSantas * numberOfDays);
+            var workingDayDuration =
+                Math.Ceiling((1.5 * (avgVisitsPerRoute * visitDurations.Average() + (avgVisitsPerRoute + 1) * avgDistance)) / 3600d);
 
             var sb = new StringBuilder();
             sb.AppendLine("/// <summary>");
@@ -124,7 +128,7 @@ namespace IRuettae.DatasetGenerator
             sb.AppendLine("\t{");
             sb.AppendLine($"\t\t{string.Join($",{Environment.NewLine}\t\t", coordinates.Select(c => $"({c.x},{c.y})"))}");
             sb.AppendLine("\t};");
-            sb.AppendLine("\tconst int workingDayDuration = 12 * Hour;");
+            sb.AppendLine($"\tconst int workingDayDuration = {(int)workingDayDuration} * Hour;");
             sb.AppendLine("\tvar input = new OptimizationInput");
             sb.AppendLine("\t{");
             sb.AppendLine($"\t\tDays = new[] {{{string.Join(", ", Enumerable.Range(0, numberOfDays).Select(x => $"({x * 24}* Hour, {x * 24}*Hour + workingDayDuration)"))} }},");
@@ -180,7 +184,7 @@ namespace IRuettae.DatasetGenerator
                         }
                     }
 
-                    return $"\t\t\tnew Visit{{Duration = {random.Next(1200, 3600)}, Id={v},WayCostFromHome={Distance(coordinates[0], coordinates[v + 1])}, WayCostToHome={Distance(coordinates[0], coordinates[v + 1])},Unavailable ={unavailableString},Desired = {desiredString}}}";
+                    return $"\t\t\tnew Visit{{Duration = {visitDurations[v]}, Id={v},WayCostFromHome={Distance(coordinates[0], coordinates[v + 1])}, WayCostToHome={Distance(coordinates[0], coordinates[v + 1])},Unavailable ={unavailableString},Desired = {desiredString}}}";
                 })));
             sb.AppendLine("\t\t}");
             sb.AppendLine("\t};");
