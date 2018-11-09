@@ -58,7 +58,7 @@ namespace IRuettae.Evaluator
                     new Santa {Id = 0},
                 },
                 Visits = new[] {
-                    new Visit{Duration = 1453,Id = 0,WayCostFromHome = 1721,WayCostToHome = 1721,Unavailable = new (int from, int to)[0],Desired = new (int from, int to)[0]},
+                    new Visit{Duration = 1453,Id = 0,WayCostFromHome = 1721,WayCostToHome = 1721,Unavailable = new (int from, int to)[0],Desired = new [] { (1,2) }},
                     new Visit{Duration = 1325,Id = 1,WayCostFromHome = 2300,WayCostToHome = 2760,Unavailable = new (int from, int to)[0],Desired = new (int from, int to)[0]},
                     new Visit{Duration = 3386,Id = 2,WayCostFromHome = 3075,WayCostToHome = 2768,Unavailable = new (int from, int to)[0],Desired = new (int from, int to)[0]},
                     new Visit{Duration = 2784,Id = 3,WayCostFromHome = 1862,WayCostToHome = 1862,Unavailable = new (int from, int to)[0],Desired = new (int from, int to)[0]},
