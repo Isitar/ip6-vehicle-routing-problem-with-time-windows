@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IRuettae.Core.Manual
 {
-    public class ManualStarterData
+    public class ManualStarterData : IStarterData
     {
         public (int santaId, int day, int[] visitIds)[] Routes { get; set; }
     }

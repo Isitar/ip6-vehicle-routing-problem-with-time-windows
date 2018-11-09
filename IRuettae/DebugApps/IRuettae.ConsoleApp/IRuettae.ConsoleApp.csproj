@@ -102,6 +102,10 @@
       <Project>{bf1a0257-88b9-4e46-83eb-5c8836b3486a}</Project>
       <Name>IRuettae.WebAPI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Converter\IRuettae.Converter\IRuettae.Converter.csproj">
+      <Project>{3653EA67-0CA2-40FC-B027-1DF812F7BC7C}</Project>
+      <Name>IRuettae.Converter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\IRuettae.Core.ILP\IRuettae.Core.ILP.csproj">
       <Project>{d56e9df6-b3a9-4b97-82e4-f3cd401bbe7c}</Project>
       <Name>IRuettae.Core.ILP</Name>
@@ -109,6 +113,10 @@
     <ProjectReference Include="..\..\Core\IRuettae.Core.Manual\IRuettae.Core.Manual.csproj">
       <Project>{AD56F730-28E1-4FED-9587-79079A4DE9C6}</Project>
       <Name>IRuettae.Core.Manual</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\IRuettae.Core\IRuettae.Core.csproj">
+      <Project>{E6F0FFC6-7F26-4286-AE57-44411EB66118}</Project>
+      <Name>IRuettae.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Database\IRuettae.Persistence\IRuettae.Persistence.csproj">
       <Project>{48D4BEDB-21DD-4BA9-8B15-7327F2A87EA3}</Project>
