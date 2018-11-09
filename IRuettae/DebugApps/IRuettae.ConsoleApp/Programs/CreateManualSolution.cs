@@ -18,6 +18,9 @@ namespace IRuettae.ConsoleApp.Programs
 
         internal static void Run(string[] args)
         {
+            // Note: in case of Exceptions in RouteCalculator,
+            // you may want to remove the update of the visit duration in RouteCalculator
+
             // Real solution of 2017
             var year = 2017;
             var starterVisitId = 12;
@@ -60,6 +63,7 @@ namespace IRuettae.ConsoleApp.Programs
                     Days = days,
                     SantaJson = "",
                     VisitsJson = "",
+                    TimeLimitMiliseconds = 10000,
                     StarterVisitId = starterVisitId,
                     State = RouteCalculationState.Creating,
                     TimePerChild = timePerChild,
