@@ -61,37 +61,46 @@ namespace IRuettae.DatasetGenerator
                 (int x, int y) clusterpoint;
                 double clusterWidth;
                 double clusterHeight;
-                if (rnd <= 45)
+                var x = -1;
+                var y = -1;
+                if (rnd <= 90)
                 {
-                    clusterpoint = clusterpoint1;
-                    clusterWidth = clusterPointWidth;
-                    clusterHeight = clusterPointHeight;
-                }
-                else if (rnd <= 90)
-                {
-                    clusterpoint = clusterpoint2;
-                    clusterWidth = clusterPointWidth;
-                    clusterHeight = clusterPointHeight;
+
+
+                    if (rnd <= 45)
+                    {
+                        clusterpoint = clusterpoint1;
+                        clusterWidth = clusterPointWidth;
+                        clusterHeight = clusterPointHeight;
+                    }
+                    else
+
+                    {
+                        clusterpoint = clusterpoint2;
+                        clusterWidth = clusterPointWidth;
+                        clusterHeight = clusterPointHeight;
+                    }
+
+                    while (x < 0 || x > mapWidth)
+                    {
+                        x = (int)GaussianRandomGenerator.RandomGauss(clusterpoint.x, clusterWidth / 3);
+                    }
+
+
+                    while (y < 0 || y > mapHeight)
+                    {
+                        y = (int)GaussianRandomGenerator.RandomGauss(clusterpoint.y, clusterHeight / 3);
+                    }
                 }
                 else
                 {
-                    clusterpoint = (mapWidth / 2, mapHeight / 2);
-                    clusterWidth = mapWidth / 2d * 0.9;
-                    clusterHeight = mapHeight / 2d * 0.9;
+                    //clusterpoint = (mapWidth / 2, mapHeight / 2);
+                    //clusterWidth = mapWidth / 2d * 0.9;
+                    //clusterHeight = mapHeight / 2d * 0.9;
+                    x = random.Next(0, mapWidth);
+                    y = random.Next(0, mapHeight);
                 }
-
-                var x = -1;
-                while (x < 0 || x > mapWidth)
-                {
-                    x = (int)GaussianRandomGenerator.RandomGauss(clusterpoint.x, clusterWidth / 3);
-                }
-
-                var y = -1;
-                while (y < 0 || y > mapHeight)
-                {
-                    y = (int)GaussianRandomGenerator.RandomGauss(clusterpoint.y, clusterHeight / 3);
-                }
-
+                
                 coordinates[i] = (x, y);
             }
 
