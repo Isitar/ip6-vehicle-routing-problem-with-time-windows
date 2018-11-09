@@ -21,8 +21,8 @@ namespace IRuettae.DatasetGenerator
         /// <summary>
         /// Generates a dataset with the given parameters
         /// </summary>
-        /// /// <param name="mapWidth">x upper bound</param>
-        /// /// <param name="mapHeight">y upper bound</param>
+        /// <param name="mapWidth">x upper bound</param>
+        /// <param name="mapHeight">y upper bound</param>
         /// <param name="numberOfVisits">how many visits total (excluding starting point)</param>
         /// <param name="numberOfDays">how many working days</param>
         /// <param name="numberOfSantas">how many santas for one day</param>
@@ -98,7 +98,7 @@ namespace IRuettae.DatasetGenerator
             }
 
             sb.AppendLine("/// </summary>");
-            sb.AppendLine("public static (OptimizationInput input, (int x, int y)[] coordinates) DataSet1()");
+            sb.AppendLine($"public static (OptimizationInput input, (int x, int y)[] coordinates) {name}()");
             sb.AppendLine("{");
 
             sb.AppendLine("\t// Coordinates of points");
