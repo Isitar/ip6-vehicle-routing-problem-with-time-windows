@@ -80,10 +80,19 @@ namespace IRuettae.DatasetGenerator
                     clusterHeight = mapHeight / 2d * 0.9;
                 }
 
+                var x = -1;
+                while (x < 0 || x > mapWidth)
+                {
+                    x = (int)GaussianRandomGenerator.RandomGauss(clusterpoint.x, clusterWidth / 3);
+                }
 
-                coordinates[i] = ((int, int))(
-                    GaussianRandomGenerator.RandomGauss(clusterpoint.x, clusterWidth / 3),
-                    GaussianRandomGenerator.RandomGauss(clusterpoint.y, clusterHeight / 3));
+                var y = -1;
+                while (y < 0 || y > mapHeight)
+                {
+                    y = (int)GaussianRandomGenerator.RandomGauss(clusterpoint.y, clusterHeight / 3);
+                }
+
+                coordinates[i] = (x, y);
             }
 
 
@@ -104,7 +113,7 @@ namespace IRuettae.DatasetGenerator
             sb.AppendLine("\t// Coordinates of points");
             sb.AppendLine("\tvar coordinates = new[]");
             sb.AppendLine("\t{");
-            sb.AppendLine($"\t{string.Join($",{Environment.NewLine}\t\t", coordinates.Select(c => $"({c.x},{c.y})"))}");
+            sb.AppendLine($"\t\t{string.Join($",{Environment.NewLine}\t\t", coordinates.Select(c => $"({c.x},{c.y})"))}");
             sb.AppendLine("\t};");
             sb.AppendLine("\tconst int workingDayDuration = 12 * Hour;");
             sb.AppendLine("\tvar input = new OptimizationInput");
