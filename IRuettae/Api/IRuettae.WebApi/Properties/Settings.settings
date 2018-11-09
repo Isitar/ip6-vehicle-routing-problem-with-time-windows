@@ -8,10 +8,10 @@
     <Setting Name="GoogleSearchRegion" Type="System.String" Scope="Application">
       <Value Profile="(Default)">CH</Value>
     </Setting>
-    <Setting Name="TimelimitScheduling" Type="System.Int64" Scope="Application">
+    <Setting Name="TimelimitSchedulingMiliseconds" Type="System.Int64" Scope="Application">
       <Value Profile="(Default)">7200000</Value>
     </Setting>
-    <Setting Name="TimelimitClustering" Type="System.Int64" Scope="Application">
+    <Setting Name="TimelimitClusteringMiliseconds" Type="System.Int64" Scope="Application">
       <Value Profile="(Default)">36000000</Value>
     </Setting>
     <Setting Name="MIPGapScheduling" Type="System.Double" Scope="Application">
@@ -19,6 +19,9 @@
     </Setting>
     <Setting Name="MIPGapClustering" Type="System.Double" Scope="Application">
       <Value Profile="(Default)">0.001</Value>
+    </Setting>
+    <Setting Name="TimeLimitMiliseconds" Type="System.Int64" Scope="Application">
+      <Value Profile="(Default)">43200000</Value>
     </Setting>
   </Settings>
 </SettingsFile>
