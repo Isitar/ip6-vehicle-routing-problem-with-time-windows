@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace IRuettae.DatasetGenerator
 {
@@ -58,14 +56,14 @@ namespace IRuettae.DatasetGenerator
             {
                 int rnd = random.Next(0, 100);
 
-                (int x, int y) clusterpoint;
-                double clusterWidth;
-                double clusterHeight;
+                
                 var x = -1;
                 var y = -1;
                 if (rnd <= 90)
                 {
-
+                    (int x, int y) clusterpoint;
+                    double clusterWidth;
+                    double clusterHeight;
 
                     if (rnd <= 45)
                     {
