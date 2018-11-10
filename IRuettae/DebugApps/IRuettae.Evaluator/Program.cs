@@ -176,9 +176,9 @@ namespace IRuettae.Evaluator
                     {
                         ClusteringMIPGap = 0,
                         SchedulingMIPGap = 0,
-
-                        ClusteringTimeLimit = (long)(0.7 * timelimit),
-                        SchedulingTimeLimit = (long)(0.3 * timelimit),
+                        
+                        ClusteringTimeLimitMiliseconds = (long)(0.7 * timelimit),
+                        SchedulingTimeLimitMiliseconds = (long)(0.3 * timelimit),
                         TimeSliceDuration = 120
                     });
                     savepath += "_ILP";
