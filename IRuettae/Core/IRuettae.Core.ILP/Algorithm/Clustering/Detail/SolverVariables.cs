@@ -5,7 +5,7 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering.Detail
     internal class SolverVariables
     {
         /// <summary>
-        /// [Santa,Visit] if santa visits this Visit
+        /// [Santa] is santa used
         /// </summary>
         public GLS.Variable[] SantaUsed { get; set; }
 
@@ -29,7 +29,7 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering.Detail
         /// floating [Santa] = RouteTime
         /// </summary>
         public GLS.Variable[] SantaRouteCost { get; set; }
-        
+
         /// <summary>
         /// [santa][source,destination] if santa uses this way (calculated by spanningTree)
         /// </summary>
