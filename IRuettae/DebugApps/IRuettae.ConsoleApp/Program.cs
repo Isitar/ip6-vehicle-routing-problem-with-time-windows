@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IRuettae.ConsoleApp.Programs;
 
 namespace IRuettae.ConsoleApp
 {
@@ -10,8 +11,7 @@ namespace IRuettae.ConsoleApp
     {
         static void Main(string[] args)
         {
-            //Test.Run(args);
-            TestNewSolution.Test();
+            CreateManualSolution.Run(args);
             Console.WriteLine("Program has finished, press enter to close it.");
             Console.ReadLine();
         }

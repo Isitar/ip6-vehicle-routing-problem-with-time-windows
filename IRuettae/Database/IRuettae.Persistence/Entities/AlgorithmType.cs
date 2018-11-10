@@ -9,5 +9,6 @@ namespace IRuettae.Persistence.Entities
     public enum AlgorithmType
     {
         ILP,
+        Manual,
     }
 }

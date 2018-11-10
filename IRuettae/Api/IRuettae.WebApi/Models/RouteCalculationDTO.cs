@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using IRuettae.Core.Models;
 using IRuettae.Persistence.Entities;
 using Newtonsoft.Json;
 
@@ -38,7 +39,7 @@ namespace IRuettae.WebApi.Models
         public virtual int NumberOfNotVisitedFamilies { get; set; }
         public virtual int NumberOfAdditionalSantas { get; set; }
         public virtual int AdditionalSantaWorkTime { get; set; }
-        public virtual int VisitTimeInUnavailabe { get; set; }
+        public virtual int VisitTimeInUnavailable { get; set; }
         public virtual int VisitTimeInDesired { get; set; }
         public virtual int SantaWorkTime { get; set; }
         public virtual int LongestDay { get; set; }
@@ -81,7 +82,7 @@ namespace IRuettae.WebApi.Models
                     dto.NumberOfNotVisitedFamilies = or.NumberOfNotVisitedFamilies();
                     dto.NumberOfAdditionalSantas = or.NumberOfAdditionalSantas();
                     dto.AdditionalSantaWorkTime = or.AdditionalSantaWorkTime();
-                    dto.VisitTimeInUnavailabe = or.VisitTimeInUnavailabe();
+                    dto.VisitTimeInUnavailable = or.VisitTimeInUnavailable();
                     dto.VisitTimeInDesired = or.VisitTimeInDesired();
                     dto.SantaWorkTime = or.SantaWorkTime();
                     dto.LongestDay = or.LongestDay();
@@ -90,7 +91,7 @@ namespace IRuettae.WebApi.Models
                     dto.TotalWayTime = or.TotalWayTime();
                     dto.TotalVisitTime = or.TotalVisitTime();
                     dto.AverageWayTimePerRoute = or.AverageWayTimePerRoute();
-                    dto.LatestVisit = or.Routes.SelectMany(r => r.Waypoints.Where(wp => wp.VisitId != -1)).
+                    dto.LatestVisit = or.Routes.SelectMany(r => r.Waypoints.Where(wp => wp.VisitId != Constants.VisitIdHome)).
                         Select(wp => routeCalculationResult.ConvertTime(wp.StartTime)).
                         Append(DateTime.MinValue).
                         Max();

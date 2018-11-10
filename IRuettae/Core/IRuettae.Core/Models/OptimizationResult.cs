@@ -62,7 +62,8 @@ namespace IRuettae.Core.Models
                                        +560 * NumberOfNotVisitedFamilies()
                                        + 400 * NumberOfAdditionalSantas()
                                        + (40d / hour) * AdditionalSantaWorkTime())
-                                       + (120d / hour) * VisitTimeInUnavailabe()
+                                       + (120d / hour) * VisitTimeInUnavailable()
+                                       + (120d / hour) * WayTimeOutsideBusinessHours()
                                        - (20d / hour) * VisitTimeInDesired()
                                        + (40d / hour) * SantaWorkTime()
                                        + (30d / hour) * LongestDay()
@@ -71,13 +72,13 @@ namespace IRuettae.Core.Models
 
         public int NumberOfNotVisitedFamilies()
         {
-            var visitedVisits = Routes.SelectMany(r => r.Waypoints.Select(w => w.VisitId));
+            var visitedVisits = NonEmptyRoutes.SelectMany(r => r.Waypoints.Select(w => w.VisitId));
             return OptimizationInput.Visits.Count(v => !visitedVisits.Contains(v.Id));
         }
 
         public int NumberOfAdditionalSantas()
         {
-            var additionalSantaIds = Routes.Where(r => !OptimizationInput.Santas.Select(s => s.Id).Contains(r.SantaId))
+            var additionalSantaIds = NonEmptyRoutes.Where(r => !OptimizationInput.Santas.Select(s => s.Id).Contains(r.SantaId))
                 .Select(r => r.SantaId)
                 .Distinct().ToList();
             return additionalSantaIds.Count;
@@ -85,7 +86,7 @@ namespace IRuettae.Core.Models
 
         public int AdditionalSantaWorkTime()
         {
-            var additionalSantaIds = Routes.Where(r => !OptimizationInput.Santas.Select(s => s.Id).Contains(r.SantaId))
+            var additionalSantaIds = NonEmptyRoutes.Where(r => !OptimizationInput.Santas.Select(s => s.Id).Contains(r.SantaId))
                 .Select(r => r.SantaId)
                 .Distinct().ToList();
             var additionalSantaRoutes = NonEmptyRoutes.Where(r => additionalSantaIds.Contains(r.SantaId));
@@ -94,14 +95,13 @@ namespace IRuettae.Core.Models
                 .Sum();
         }
 
-        public int VisitTimeInUnavailabe()
+        public int VisitTimeInUnavailable()
         {
             var unavailableSum = 0;
-            foreach (var route in Routes)
+            foreach (var route in NonEmptyRoutes)
             {
                 foreach (var waypoint in route.Waypoints)
                 {
-
                     var visit = OptimizationInput.Visits.Cast<Visit?>().FirstOrDefault(v => v != null && v.Value.Id == waypoint.VisitId);
                     if (!visit.HasValue) { continue; }
 
@@ -111,22 +111,45 @@ namespace IRuettae.Core.Models
                     {
                         unavailableSum += IntersectionLength(new[] { (startTime, endTime), (from, to) });
                     }
-
                 }
             }
 
             return unavailableSum;
         }
 
+        public int WayTimeOutsideBusinessHours()
+        {
+            var sum = 0;
+            foreach (var route in NonEmptyRoutes)
+            {
+                var day = FindDay(route);
+
+                // home, with duration = 0
+                var endOfPreviousVisit = route.Waypoints[0].StartTime;
+                foreach (var waypoint in route.Waypoints.Skip(1))
+                {
+                    var way = (from: endOfPreviousVisit, to: waypoint.StartTime);
+                    sum += (way.to - way.from) - IntersectionLength(new[] { day, way });
+
+                    var visit = OptimizationInput.Visits.Cast<Visit?>().FirstOrDefault(v => v != null && v.Value.Id == waypoint.VisitId);
+                    if (visit.HasValue)
+                    {
+                        endOfPreviousVisit = waypoint.StartTime + visit.Value.Duration;
+                    }
+                }
+            }
+
+            return sum;
+        }
+
         public int VisitTimeInDesired()
         {
             var desiredSum = 0;
 
-            foreach (var route in Routes)
+            foreach (var route in NonEmptyRoutes)
             {
                 foreach (var waypoint in route.Waypoints)
                 {
-
                     var visit = OptimizationInput.Visits.Cast<Visit?>().FirstOrDefault(v => v != null && v.Value.Id == waypoint.VisitId);
                     if (!visit.HasValue) { continue; }
 
@@ -136,7 +159,6 @@ namespace IRuettae.Core.Models
                     {
                         desiredSum += IntersectionLength(new[] { (startTime, endTime), (from, to) });
                     }
-
                 }
             }
 
@@ -176,7 +198,7 @@ namespace IRuettae.Core.Models
 
         public int TotalVisitTime()
         {
-            var visitedVisits = Routes.SelectMany(r => r.Waypoints.Select(w => w.VisitId));
+            var visitedVisits = NonEmptyRoutes.SelectMany(r => r.Waypoints.Select(w => w.VisitId));
             return OptimizationInput.Visits.Where(v => visitedVisits.Contains(v.Id)).Select(v => v.Duration).Sum();
         }
 

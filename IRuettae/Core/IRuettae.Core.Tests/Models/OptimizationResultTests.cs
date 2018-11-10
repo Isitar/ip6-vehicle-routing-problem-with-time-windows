@@ -180,7 +180,7 @@ namespace IRuettae.Core.Models.Tests
                         {
                             new Waypoint
                             {
-                                VisitId=-1,
+                                VisitId=Constants.VisitIdHome,
                                 StartTime=day1Start-2*hour,
                             },
                             // way=1h=w01
@@ -203,7 +203,7 @@ namespace IRuettae.Core.Models.Tests
                             // way=30min=w20
                             new Waypoint
                             {
-                                VisitId=-1,
+                                VisitId=Constants.VisitIdHome,
                                 StartTime=day1End+90*minute,
                             }
                         }
@@ -217,7 +217,7 @@ namespace IRuettae.Core.Models.Tests
                         {
                             new Waypoint
                             {
-                                VisitId=-1,
+                                VisitId=Constants.VisitIdHome,
                                 StartTime=day1Start,
                             },
                             // way=2h=w03
@@ -232,7 +232,7 @@ namespace IRuettae.Core.Models.Tests
                             // way=2h=w030
                             new Waypoint
                             {
-                                VisitId=-1,
+                                VisitId=Constants.VisitIdHome,
                                 StartTime=day1End,
                             }
                         }
@@ -245,7 +245,7 @@ namespace IRuettae.Core.Models.Tests
                         {
                             new Waypoint
                             {
-                                VisitId=-1,
+                                VisitId=Constants.VisitIdHome,
                                 StartTime=day2Start+45*minute,
                             },
                             // way=15min=w04
@@ -258,7 +258,7 @@ namespace IRuettae.Core.Models.Tests
                             // way=40min=w40
                             new Waypoint
                             {
-                                VisitId=-1,
+                                VisitId=Constants.VisitIdHome,
                                 StartTime=day2Start+2*hour,
                             }
                         }
@@ -294,7 +294,15 @@ namespace IRuettae.Core.Models.Tests
         {
             var model = GetModel();
             var sum = 30 * minute + 1 * hour + 15 * minute;
-            Assert.AreEqual(sum, model.VisitTimeInUnavailabe());
+            Assert.AreEqual(sum, model.VisitTimeInUnavailable());
+        }
+
+        [TestMethod()]
+        public void WayTimeOutsideBusinessHoursTest()
+        {
+            var model = GetModel();
+            var sum = 1 * hour + 30 * minute + 30 * minute;
+            Assert.AreEqual(sum, model.WayTimeOutsideBusinessHours());
         }
 
         [TestMethod()]
