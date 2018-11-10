@@ -49,7 +49,7 @@ namespace IRuettae.Evaluator
         {
             var result =
                 JsonConvert.DeserializeObject<OptimizationResult>(File.ReadAllText("18-11-10-00-31-22_Dataset_3_ILP.json"));
-           
+
             ResultDrawer.DrawResult("debug.gif", result, DatasetFactory.DataSet3().coordinates);
         }
 
@@ -65,9 +65,8 @@ namespace IRuettae.Evaluator
                 Console.WriteLine($"{algorithm.Key}: {algorithm.Value}");
             }
 
-            int algorithmSelection = 0;
-
-            while (algorithmSelection == 0)
+            int algorithmSelection;
+            do
             {
                 Console.Write("Enter number: ");
                 var enteredNumber = Console.ReadLine();
@@ -77,7 +76,7 @@ namespace IRuettae.Evaluator
                     algorithmSelection = 0;
                     Console.WriteLine("Please enter a valid number");
                 }
-            }
+            } while (algorithmSelection == 0);
 
             Console.WriteLine($"You selected {AlgorithmsDictionary[algorithmSelection]}");
             SmallHr();
@@ -88,18 +87,19 @@ namespace IRuettae.Evaluator
                 Console.WriteLine($"{dataset.Key}: {dataset.Value}");
             }
 
-            int datasetSelection = 0;
+            int datasetSelection;
 
-            while (datasetSelection == 0)
+            do
             {
                 Console.Write("Enter number: ");
                 var enteredNumber = Console.ReadLine();
-                if (!(int.TryParse(enteredNumber, out datasetSelection) && DatasetDictionary.ContainsKey(datasetSelection)))
+                if (!(int.TryParse(enteredNumber, out datasetSelection) &&
+                      DatasetDictionary.ContainsKey(datasetSelection)))
                 {
                     datasetSelection = 0;
                     Console.WriteLine("Please enter a valid number");
                 }
-            }
+            } while (datasetSelection == 0);
 
             Console.WriteLine($"You selected dataset {datasetSelection}: {DatasetDictionary[datasetSelection]}");
             SmallHr();
@@ -173,7 +173,7 @@ namespace IRuettae.Evaluator
                     {
                         ClusteringMIPGap = 0,
                         SchedulingMIPGap = 0,
-                        
+
                         ClusteringTimeLimitMiliseconds = (long)(0.7 * timelimit),
                         SchedulingTimeLimitMiliseconds = (long)(0.3 * timelimit),
                         TimeSliceDuration = 120
