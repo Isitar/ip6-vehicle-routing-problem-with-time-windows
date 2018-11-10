@@ -19,6 +19,7 @@ namespace IRuettae.Persistence.Mappings
             Map(x => x.NumberOfVisits);
             Map(x => x.SantaJson).CustomSqlType("LONGTEXT");
             Map(x => x.VisitsJson).CustomSqlType("LONGTEXT");
+            Map(x => x.TimeLimitMiliseconds);
 
             Map(x => x.Algorithm);
             Map(x => x.AlgorithmData).CustomSqlType("LONGTEXT");

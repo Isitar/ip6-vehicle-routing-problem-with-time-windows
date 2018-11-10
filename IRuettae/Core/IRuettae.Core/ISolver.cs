@@ -12,6 +12,6 @@ namespace IRuettae.Core
     /// </summary>
     public interface ISolver
     {
-        OptimizationResult Solve(int timelimit, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress);
+        OptimizationResult Solve(long timelimitMiliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress);
     }
 }

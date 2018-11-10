@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IRuettae.Persistence.Entities
+namespace IRuettae.Core.Models
 {
-    public enum AlgorithmType
+    public static class Constants
     {
-        ILP,
-        Manual,
+        public const int VisitIdHome = -1;
     }
 }

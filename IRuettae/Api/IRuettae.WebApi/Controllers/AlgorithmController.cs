@@ -37,9 +37,9 @@ namespace IRuettae.WebApi.Controllers
                 {
                     TimeSliceDuration = algorithmStarter.TimeSliceDuration,
                     ClusteringMIPGap = Properties.Settings.Default.MIPGapClustering,
-                    ClusteringTimeLimit = Properties.Settings.Default.TimelimitClustering,
+                    ClusteringTimeLimitMiliseconds = Properties.Settings.Default.TimelimitClusteringMiliseconds,
                     SchedulingMIPGap = Properties.Settings.Default.MIPGapScheduling,
-                    SchedulingTimeLimit = Properties.Settings.Default.TimelimitScheduling,
+                    SchedulingTimeLimitMiliseconds = Properties.Settings.Default.TimelimitSchedulingMiliseconds,
                 };
 
                 var ilpSolver = new ILPSolver(optimizationInput, starterData);
@@ -65,15 +65,16 @@ namespace IRuettae.WebApi.Controllers
                 {
                     TimeSliceDuration = algorithmStarter.TimeSliceDuration,
                     ClusteringMIPGap = Properties.Settings.Default.MIPGapClustering,
-                    ClusteringTimeLimit = Properties.Settings.Default.TimelimitClustering,
+                    ClusteringTimeLimitMiliseconds = Properties.Settings.Default.TimelimitClusteringMiliseconds,
                     SchedulingMIPGap = Properties.Settings.Default.MIPGapScheduling,
-                    SchedulingTimeLimit = Properties.Settings.Default.TimelimitScheduling,
+                    SchedulingTimeLimitMiliseconds = Properties.Settings.Default.TimelimitSchedulingMiliseconds,
                 };
                 rc = new RouteCalculation
                 {
                     Days = algorithmStarter.Days,
                     SantaJson = "",
                     VisitsJson = "",
+                    TimeLimitMiliseconds = Properties.Settings.Default.TimeLimitMiliseconds,
                     StarterVisitId = algorithmStarter.StarterId,
                     State = RouteCalculationState.Creating,
                     TimePerChild = algorithmStarter.TimePerChild,
@@ -125,7 +126,7 @@ namespace IRuettae.WebApi.Controllers
 
                 var ret = routeCalculationResult.OptimizationResult.Routes.Select(r => r.Waypoints.Select(wp =>
                 {
-                    var v = dbSession.Get<Visit>(wp.VisitId == -1 ? routeCalculation.StarterVisitId : routeCalculationResult.VisitMap[wp.VisitId]);
+                    var v = dbSession.Get<Visit>(wp.VisitId == Constants.VisitIdHome ? routeCalculation.StarterVisitId : routeCalculationResult.VisitMap[wp.VisitId]);
                     return new
                     {
                         Visit = (VisitDTO)v,

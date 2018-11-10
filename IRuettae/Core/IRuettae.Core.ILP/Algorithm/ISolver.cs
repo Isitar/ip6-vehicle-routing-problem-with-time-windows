@@ -9,7 +9,7 @@ namespace IRuettae.Core.ILP.Algorithm
     public interface ISolver
     {
         ResultState Solve();
-        ResultState Solve(double MIP_GAP, long timelimit);
+        ResultState Solve(double MIP_GAP, long timelimitMiliseconds);
         string ExportMPS();
         string ImportMPS();
         Route GetResult();

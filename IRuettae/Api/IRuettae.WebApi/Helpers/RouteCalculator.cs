@@ -3,8 +3,6 @@ using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Linq;
 using IRuettae.Converter;
-using IRuettae.Core.ILP;
-using IRuettae.Core.ILP.Algorithm.Models;
 using IRuettae.Core.Models;
 using IRuettae.Persistence.Entities;
 using IRuettae.WebApi.Persistence;
@@ -62,10 +60,11 @@ namespace IRuettae.WebApi.Helpers
                 var dbSession = SessionFactory.Instance.OpenSession();
                 var routeCalculation = dbSession.Get<RouteCalculation>(routeCalculationId);
 
-                var santas = dbSession.Query<Santa>().ToList();
+                var santas = dbSession.Query<Santa>().OrderBy(s => s.Id).ToList();
 
                 var visits = dbSession.Query<Visit>()
                     .Where(v => v.Year == routeCalculation.Year && v.Id != routeCalculation.StarterVisitId)
+                    .OrderBy(v => v.Id)
                     .ToList();
 
                 visits.ForEach(v =>
@@ -90,8 +89,8 @@ namespace IRuettae.WebApi.Helpers
 
                 routeCalculation.StartTime = DateTime.Now;
 
-                var ilpData = JsonConvert.DeserializeObject<ILPStarterData>(routeCalculation.AlgorithmData);
-                var solver = new ILPSolver(optimizationInput, ilpData);
+                var starterData = StarterDataDeserializer.Deserialize(routeCalculation.Algorithm, routeCalculation.AlgorithmData);
+                var solver = SolverFactory.GetSolver(optimizationInput, starterData);
 
                 // note: Progress<> is not suitable here as it may use multiple threads
                 var consoleProgress = new EventHandler<string>(OnConsoleProgressOnProgressChanged);
@@ -101,7 +100,7 @@ namespace IRuettae.WebApi.Helpers
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
 
-                var optimizationResult = solver.Solve((int) (ilpData.ClusteringTimeLimit + ilpData.SchedulingTimeLimit),
+                var optimizationResult = solver.Solve(routeCalculation.TimeLimitMiliseconds,
                     progress, consoleProgress);
 
                 // refresh session as changes where made in other sessions (progress)
@@ -129,7 +128,7 @@ namespace IRuettae.WebApi.Helpers
                 var dbSession = SessionFactory.Instance.OpenSession();
                 var routeCalculation = dbSession.Get<RouteCalculation>(routeCalculationId);
                 routeCalculation.State = RouteCalculationState.Cancelled;
-                routeCalculation.StateText.Add(new RouteCalculationLog {Log = $"Error: {e.Message}"});
+                routeCalculation.StateText.Add(new RouteCalculationLog { Log = $"Error: {e.Message}" });
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
             }
@@ -146,7 +145,7 @@ namespace IRuettae.WebApi.Helpers
             {
                 var dbSession = SessionFactory.Instance.OpenSession();
                 var routeCalculation = dbSession.Get<RouteCalculation>(routeCalculationId);
-                routeCalculation.StateText.Add(new RouteCalculationLog {Log = message});
+                routeCalculation.StateText.Add(new RouteCalculationLog { Log = message });
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
             }
