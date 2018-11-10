@@ -42,6 +42,22 @@ namespace IRuettae.Evaluator
 
         static void Main(string[] args)
         {
+            EvaluateAlgorithm();
+            //TestResultDrawer();
+            Console.Write("Press any key to exit: ");
+            Console.Read();
+        }
+
+        private static void TestResultDrawer()
+        {
+            var result =
+                JsonConvert.DeserializeObject<OptimizationResult>(File.ReadAllText("18-11-10-00-31-22_Dataset_3_ILP.json"));
+           
+            ResultDrawer.DrawResult("debug.gif", result, DatasetFactory.DataSet3().coordinates);
+        }
+
+        private static void EvaluateAlgorithm()
+        {
             BigHr();
             Console.WriteLine("Program written to evaluate the different optimisation algorithms.");
             Console.WriteLine();
@@ -51,18 +67,21 @@ namespace IRuettae.Evaluator
             {
                 Console.WriteLine($"{algorithm.Key}: {algorithm.Value}");
             }
+
             int algorithmSelection = 0;
 
             while (algorithmSelection == 0)
             {
                 Console.Write("Enter number: ");
                 var enteredNumber = Console.ReadLine();
-                if (!(int.TryParse(enteredNumber, out algorithmSelection) && algorithmsDictionary.ContainsKey(algorithmSelection)))
+                if (!(int.TryParse(enteredNumber, out algorithmSelection) &&
+                      algorithmsDictionary.ContainsKey(algorithmSelection)))
                 {
                     algorithmSelection = 0;
                     Console.WriteLine("Please enter a valid number");
                 }
             }
+
             Console.WriteLine($"You selected {algorithmsDictionary[algorithmSelection]}");
             SmallHr();
             Console.WriteLine();
@@ -71,6 +90,7 @@ namespace IRuettae.Evaluator
             {
                 Console.WriteLine($"{dataset.Key}: {dataset.Value}");
             }
+
             int datasetSelection = 0;
 
             while (datasetSelection == 0)
@@ -109,25 +129,25 @@ namespace IRuettae.Evaluator
                     break;
                 case 4:
                     (input, coordinates) = DatasetFactory.DataSet4();
-                    timelimit = 10 * 60 * 1000;
+                    timelimit = 20 * 60 * 1000;
                     break;
                 case 5:
                     (input, coordinates) = DatasetFactory.DataSet5();
-                    timelimit = 10 * 60 * 1000;
+                    timelimit = 20 * 60 * 1000;
                     break;
                 case 6:
                     (input, coordinates) = DatasetFactory.DataSet6();
-                    timelimit = 10 * 60 * 1000;
+                    timelimit = 20 * 60 * 1000;
                     break;
                 case 7:
                     throw new NotImplementedException();
-                    (input, coordinates) = DatasetFactory.DataSet7();
-                    timelimit = 10 * 60 * 1000;
+                    //(input, coordinates) = DatasetFactory.DataSet7();
+                    //timelimit = 10 * 60 * 1000;
                     break;
                 case 8:
                     throw new NotImplementedException();
-                    (input, coordinates) = DatasetFactory.DataSet8();
-                    timelimit = 10 * 60 * 1000;
+                    //(input, coordinates) = DatasetFactory.DataSet8();
+                    //timelimit = 10 * 60 * 1000;
                     break;
                 case 9:
                     (input, coordinates) = DatasetFactory.DataSet9();
@@ -146,6 +166,7 @@ namespace IRuettae.Evaluator
                     timelimit = 10 * 60 * 1000;
                     break;
             }
+
             savepath += $"_Dataset_{datasetSelection}";
             ISolver solver = null;
             switch (algorithmSelection)
@@ -154,7 +175,7 @@ namespace IRuettae.Evaluator
                     solver = new ILPSolver(input, new ILPStarterData
                     {
                         ClusteringMIPGap = 0,
-                        SchedulingMIPGap = 2,
+                        SchedulingMIPGap = 0,
 
                         ClusteringTimeLimit = (long)(0.7 * timelimit),
                         SchedulingTimeLimit = (long)(0.3 * timelimit),
@@ -174,8 +195,6 @@ namespace IRuettae.Evaluator
             Console.WriteLine($"TimeElapsed [s]: {result.TimeElapsed}");
             Console.WriteLine($"Target function value: {result.Cost()}");
             ResultDrawer.DrawResult(savepath, result, coordinates);
-
-            Console.ReadLine();
         }
 
         private static void SmallHr()

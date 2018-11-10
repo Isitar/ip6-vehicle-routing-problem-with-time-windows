@@ -31,6 +31,8 @@ namespace IRuettae.Evaluator
 
             var colorIndex = 0;
 
+            var font = new Font("Arial", 24);
+
             foreach (var route in result.NonEmptyRoutes)
             {
                 var pen = new Pen(Colors[colorIndex], 5);
@@ -39,9 +41,10 @@ namespace IRuettae.Evaluator
                 int? lastY = null;
                 foreach (var waypoint in route.Waypoints.OrderBy(wp => wp.StartTime))
                 {
-                    var (x, y) = coordinates[waypoint.VisitId == -1 ? 0 : waypoint.VisitId];
+                    var (x, y) = coordinates[waypoint.VisitId == -1 ? 0 : waypoint.VisitId + 1];
                     y = img.Height - y;
-                    g.DrawEllipse(pen, x - CircleRadius/2, y - CircleRadius/2, CircleRadius, CircleRadius);
+                    g.DrawEllipse(pen, x - CircleRadius / 2, y - CircleRadius / 2, CircleRadius, CircleRadius);
+                    g.DrawString(waypoint.VisitId.ToString(), font, pen.Brush, x, y);
                     if (lastX.HasValue)
                     {
                         g.DrawLine(pen, x, y, lastX.Value, lastY.Value);
