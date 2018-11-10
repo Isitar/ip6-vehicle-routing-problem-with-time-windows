@@ -60,10 +60,11 @@ namespace IRuettae.WebApi.Helpers
                 var dbSession = SessionFactory.Instance.OpenSession();
                 var routeCalculation = dbSession.Get<RouteCalculation>(routeCalculationId);
 
-                var santas = dbSession.Query<Santa>().ToList();
+                var santas = dbSession.Query<Santa>().OrderBy(s => s.Id).ToList();
 
                 var visits = dbSession.Query<Visit>()
                     .Where(v => v.Year == routeCalculation.Year && v.Id != routeCalculation.StarterVisitId)
+                    .OrderBy(v => v.Id)
                     .ToList();
 
                 visits.ForEach(v =>

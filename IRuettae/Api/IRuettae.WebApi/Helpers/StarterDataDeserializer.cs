@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using IRuettae.Core;
 using IRuettae.Core.ILP.Algorithm.Models;
+using IRuettae.Core.Manual;
 using IRuettae.Persistence.Entities;
 using Newtonsoft.Json;
 
@@ -20,6 +21,8 @@ namespace IRuettae.WebApi.Helpers
             {
                 case AlgorithmType.ILP:
                     return JsonConvert.DeserializeObject<ILPStarterData>(algorithmData);
+                case AlgorithmType.Manual:
+                    return JsonConvert.DeserializeObject<ManualStarterData>(algorithmData);
             }
             return null;
         }
