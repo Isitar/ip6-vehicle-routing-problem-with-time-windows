@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using IRuettae.Core;
 using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm.Models;
@@ -17,14 +14,14 @@ namespace IRuettae.Evaluator
         /// <summary>
         /// Dictionary used for selection
         /// </summary>
-        static readonly Dictionary<int, string> algorithmsDictionary = new Dictionary<int, string>()
+        static readonly Dictionary<int, string> AlgorithmsDictionary = new Dictionary<int, string>()
         {
             {1,"ILP"},
             {2, "GA" },
             {3, "LocalSolver" },
         };
 
-        static readonly Dictionary<int, string> datasetDictionary = new Dictionary<int, string>()
+        static readonly Dictionary<int, string> DatasetDictionary = new Dictionary<int, string>()
         {
             {1, "10 visits, 1 santa 2 days"},
             {2, "10 visits, 1 santas, 2 days 5 desired d1, 5 desired d2" },
@@ -63,7 +60,7 @@ namespace IRuettae.Evaluator
             Console.WriteLine();
 
             Console.WriteLine("Pleace choose which algorithm to evaluate");
-            foreach (var algorithm in algorithmsDictionary)
+            foreach (var algorithm in AlgorithmsDictionary)
             {
                 Console.WriteLine($"{algorithm.Key}: {algorithm.Value}");
             }
@@ -75,18 +72,18 @@ namespace IRuettae.Evaluator
                 Console.Write("Enter number: ");
                 var enteredNumber = Console.ReadLine();
                 if (!(int.TryParse(enteredNumber, out algorithmSelection) &&
-                      algorithmsDictionary.ContainsKey(algorithmSelection)))
+                      AlgorithmsDictionary.ContainsKey(algorithmSelection)))
                 {
                     algorithmSelection = 0;
                     Console.WriteLine("Please enter a valid number");
                 }
             }
 
-            Console.WriteLine($"You selected {algorithmsDictionary[algorithmSelection]}");
+            Console.WriteLine($"You selected {AlgorithmsDictionary[algorithmSelection]}");
             SmallHr();
             Console.WriteLine();
             Console.WriteLine("Please select the dataset");
-            foreach (var dataset in datasetDictionary)
+            foreach (var dataset in DatasetDictionary)
             {
                 Console.WriteLine($"{dataset.Key}: {dataset.Value}");
             }
@@ -97,14 +94,14 @@ namespace IRuettae.Evaluator
             {
                 Console.Write("Enter number: ");
                 var enteredNumber = Console.ReadLine();
-                if (!(int.TryParse(enteredNumber, out datasetSelection) && datasetDictionary.ContainsKey(datasetSelection)))
+                if (!(int.TryParse(enteredNumber, out datasetSelection) && DatasetDictionary.ContainsKey(datasetSelection)))
                 {
                     datasetSelection = 0;
                     Console.WriteLine("Please enter a valid number");
                 }
             }
 
-            Console.WriteLine($"You selected dataset {datasetSelection}: {datasetDictionary[datasetSelection]}");
+            Console.WriteLine($"You selected dataset {datasetSelection}: {DatasetDictionary[datasetSelection]}");
             SmallHr();
             Console.WriteLine();
             Console.WriteLine("Starting the algorithm now");
