@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
 using IRuettae.Core.Models;
 
 namespace IRuettae.Core.GeneticAlgorithm.Algorithm
@@ -13,13 +14,13 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         private readonly Dictionary<int, int> alleleToVisitIdMapping;
         private List<int> santaIds = new List<int>();
 
-        public Decoder(OptimizationInput input, Dictionary<int, int> alleleToVisitIdMap)
+        public Decoder(OptimizationInput input, Dictionary<int, int> alleleToVisitIdMapping)
         {
             this.input = input;
-            this.alleleToVisitIdMapping = alleleToVisitIdMap;
+            this.alleleToVisitIdMapping = alleleToVisitIdMapping;
         }
 
-        public Route[] Decode(List<int> genotype)
+        public Route[] Decode(Genotype genotype)
         {
             // preparation
             var routesPerDay = CountRoutes(genotype) / input.Days.Length;
@@ -60,7 +61,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             }
         }
 
-        private Route GetRoute(List<int> genotype, ref int currentGenPos, int startTimeOfDay)
+        private Route GetRoute(Genotype genotype, ref int currentGenPos, int startTimeOfDay)
         {
             var waypoints = new List<Waypoint>();
             // add start at home
@@ -117,7 +118,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             };
         }
 
-        private int CountRoutes(List<int> genotype)
+        private int CountRoutes(Genotype genotype)
         {
             return genotype.Where(PopulationGenerator.IsSeparator).Count() + 1;
         }
