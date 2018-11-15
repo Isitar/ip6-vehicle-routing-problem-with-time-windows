@@ -31,14 +31,13 @@ namespace IRuettae.Core.Models
         public Route[] Routes { get; set; }
 
         /// <summary>
-        /// Array containing all routes which contain at least one visit of a family
+        /// Array containing all routes which contain at least one visit
         /// </summary>
         public IEnumerable<Route> NonEmptyRoutes
         {
             get
             {
-                var breaks = OptimizationInput.Visits == null ? new List<int>() : OptimizationInput.Visits.Where(v => v.IsBreak).Select(v => v.Id).ToList();
-                return Routes.Where(r => r.Waypoints != null && r.Waypoints.Where(wp => wp.VisitId != Constants.VisitIdHome && !breaks.Contains(wp.VisitId)).Count() > 0);
+                return Routes.Where(r => r.Waypoints != null && r.Waypoints.Where(wp => wp.VisitId != Constants.VisitIdHome).Count() > 0);
             }
         }
 
