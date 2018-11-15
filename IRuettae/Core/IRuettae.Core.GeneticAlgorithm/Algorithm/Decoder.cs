@@ -10,12 +10,13 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
     public class Decoder
     {
         private readonly OptimizationInput input;
+        private readonly Dictionary<int, int> alleleToVisitIdMap;
         private List<int> santaIds = new List<int>();
-        private const int HomeVisitId = -1;
 
-        public Decoder(OptimizationInput input)
+        public Decoder(OptimizationInput input, Dictionary<int, int> alleleToVisitIdMap)
         {
             this.input = input;
+            this.alleleToVisitIdMap = alleleToVisitIdMap;
         }
 
         public Route[] Decode(List<int> genotype)
@@ -26,10 +27,9 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 
             var routes = new List<Route>();
             int currentGenPos = 0;
-            int routePerDayCounter;
             foreach (var (from, _) in input.Days)
             {
-                routePerDayCounter = 0;
+                var routePerDayCounter = 0;
                 while (routePerDayCounter < routesPerDay)
                 {
                     var r = GetRoute(genotype, ref currentGenPos, from);
@@ -67,11 +67,11 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             waypoints.Add(new Waypoint()
             {
                 StartTime = startTimeOfDay,
-                VisitId = HomeVisitId,
+                VisitId = Constants.VisitIdHome,
             });
-            while (currentGenPos < genotype.Count && !IsSeparator(genotype[currentGenPos]))
+            while (currentGenPos < genotype.Count && !PopulationGenerator.IsSeparator(genotype[currentGenPos]))
             {
-                int visitId = genotype[currentGenPos];
+                int visitId = GetVisitId(genotype[currentGenPos]);
                 var previousWaypoint = waypoints.Last();
                 int startTime = previousWaypoint.StartTime;
                 if (waypoints.Count == 1)
@@ -108,7 +108,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
                 waypoints.Add(new Waypoint()
                 {
                     StartTime = previousWaypoint.StartTime + input.Visits[previousWaypoint.VisitId].Duration + input.Visits[previousWaypoint.VisitId].WayCostToHome,
-                    VisitId = HomeVisitId,
+                    VisitId = Constants.VisitIdHome,
                 });
             }
             return new Route()
@@ -119,12 +119,12 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 
         private int CountRoutes(List<int> genotype)
         {
-            return genotype.Where(IsSeparator).Count() + 1;
+            return genotype.Where(PopulationGenerator.IsSeparator).Count() + 1;
         }
 
-        public static bool IsSeparator(int gene)
+        public int GetVisitId(int allele)
         {
-            return gene < 0;
+            return alleleToVisitIdMap[allele];
         }
     }
 }

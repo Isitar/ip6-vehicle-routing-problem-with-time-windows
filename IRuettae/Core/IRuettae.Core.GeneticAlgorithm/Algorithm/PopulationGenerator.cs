@@ -5,47 +5,62 @@ using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.Models;
 using System.Security.Cryptography;
+using IRuettae.Core.GeneticAlgorithm.Algorithm.Helpers;
+using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
 
 namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 {
-    public static class PopulationGenerator
+    public class PopulationGenerator
     {
-        public static List<int>[] Generate(OptimizationInput input, int numberOfIndividuals, int maxNumberOfSantas)
+        /// <summary>
+        /// Returns generated genotypes and mapping from allele to visitId
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="numberOfIndividuals"></param>
+        /// <param name="maxNumberOfSantas"></param>
+        /// <returns></returns>
+        public static (Genotype[], Dictionary<int, int>) Generate(OptimizationInput input, int numberOfIndividuals, int maxNumberOfSantas)
         {
             var numberOfSeparators = input.Days.Length * maxNumberOfSantas - 1;
-            var elements = new List<int>();
-            elements.AddRange(input.Visits.Select(v => v.Id));
+            var alleleToVisitIdMap = CreateAlleles(input, numberOfSeparators);
+
+            var elements = new Genotype();
+            elements.AddRange(alleleToVisitIdMap.Keys);
             elements.AddRange(Enumerable.Range(-numberOfSeparators, numberOfSeparators));
 
-            var population = new List<int>[numberOfIndividuals];
+            var population = new Genotype[numberOfIndividuals];
             for (int i = 0; i < numberOfIndividuals; i++)
             {
                 elements.Shuffle();
-                population[i] = new List<int>(elements);
+                population[i] = new Genotype(elements);
             }
-            return population;
+            return (population, alleleToVisitIdMap);
         }
 
-        /// <summary>
-        /// Source: https://stackoverflow.com/questions/273313/randomize-a-listt
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list"></param>
-        private static void Shuffle<T>(this IList<T> list)
+        private static Dictionary<int, int> CreateAlleles(OptimizationInput input, int numberOfSeparators)
         {
-            RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
-            int n = list.Count;
-            while (n > 1)
+            var alleleToVisitIdMap = new Dictionary<int, int>();
+            // normal visits
+            foreach (var visitId in input.Visits.Where(v => !v.IsBreak).Select(v => v.Id))
             {
-                byte[] box = new byte[1];
-                do provider.GetBytes(box);
-                while (!(box[0] < n * (Byte.MaxValue / n)));
-                int k = (box[0] % n);
-                n--;
-                T value = list[k];
-                list[k] = list[n];
-                list[n] = value;
+                alleleToVisitIdMap.Add(visitId, visitId);
             }
+            // breaks
+            var nextVisitId = input.Visits.Select(v => v.Id).Append(0).Max() + 1;
+            foreach (var breakId in input.Visits.Where(v => !v.IsBreak).Select(v => v.Id))
+            {
+                alleleToVisitIdMap.Add(breakId, breakId);
+                foreach (var _ in input.Days.Skip(1))
+                {
+                    alleleToVisitIdMap.Add(nextVisitId++, breakId);
+                }
+            }
+            return alleleToVisitIdMap;
+        }
+
+        public static bool IsSeparator(int allele)
+        {
+            return allele < 0;
         }
     }
 }
