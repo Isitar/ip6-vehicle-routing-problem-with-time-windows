@@ -49,7 +49,7 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering.Detail
                 for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
                 {
                     var desired = Convert.ToInt32(solverData.SolverInputData.Visits[day, visit] == VisitState.Desired);
-                    Solver.Add(solverData.Variables.SantaVisitBonus[santa, visit] == desired * solverData.Variables.SantaVisit[santa,visit]);
+                    Solver.Add(solverData.Variables.SantaVisitBonus[santa, visit] == desired * solverData.Variables.SantaVisit[santa, visit]);
                 }
             }
         }
@@ -273,6 +273,33 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering.Detail
             FirstVisitByFirstSanta();
             ATSP_OverallSum();
             ATSP_FixingSantaUsesWay();
+            //SantaUsage();
+        }
+
+        private void SantaUsage()
+        {
+
+            var realSantaCount = solverData.SolverInputData.Santas.GetLength(1);
+            var realDayCount = solverData.SolverInputData.Santas.GetLength(0);
+            for (int d = 0; d < realDayCount; d++)
+            {
+                for (int s = 1; s < realSantaCount; s++)
+                {
+                    Solver.Add(solverData.Variables.SantaUsed[d * realSantaCount + s] <=
+                               solverData.Variables.SantaUsed[d * realSantaCount + s - 1]);
+                }
+            }
+
+            for (int s = 0; s < solverData.NumberOfSantas; s++)
+            {
+                for (int v = 0; v < solverData.NumberOfVisits; v++)
+                {
+                    Solver.Add(solverData.Variables.SantaUsed[s] >= solverData.Variables.SantaVisit[s, v]);
+                }
+
+                Solver.Add(solverData.Variables.SantaUsed[s] <= 1);
+            }
+
         }
 
         private void ATSP_FixingSantaUsesWay()

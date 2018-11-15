@@ -19,6 +19,7 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering.Detail
             CreateSantaVisit();
             CreateSantaRouteAndVisitTime();
             CreateSantaUsesWay();
+            solverData.Variables.SantaUsed = solverData.Solver.MakeBoolVarArray(solverData.NumberOfSantas, "Santa used");
         }
 
         private void CreateSantaUsesWay()

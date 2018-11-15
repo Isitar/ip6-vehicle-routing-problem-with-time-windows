@@ -12,7 +12,7 @@ namespace IRuettae.WebApi.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.8.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.6.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -44,18 +44,18 @@ namespace IRuettae.WebApi.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("7200000")]
-        public long TimelimitScheduling {
+        public long TimelimitSchedulingMiliseconds {
             get {
-                return ((long)(this["TimelimitScheduling"]));
+                return ((long)(this["TimelimitSchedulingMiliseconds"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("36000000")]
-        public long TimelimitClustering {
+        public long TimelimitClusteringMiliseconds {
             get {
-                return ((long)(this["TimelimitClustering"]));
+                return ((long)(this["TimelimitClusteringMiliseconds"]));
             }
         }
         
@@ -74,6 +74,15 @@ namespace IRuettae.WebApi.Properties {
         public double MIPGapClustering {
             get {
                 return ((double)(this["MIPGapClustering"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("43200000")]
+        public long TimeLimitMiliseconds {
+            get {
+                return ((long)(this["TimeLimitMiliseconds"]));
             }
         }
     }
