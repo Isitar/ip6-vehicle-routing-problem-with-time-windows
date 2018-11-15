@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
 {
+    /// <summary>
+    /// Class to hold a list of alleles
+    /// </summary>
     public class Genotype : List<int>
     {
         public Genotype() : base()
