@@ -27,9 +27,9 @@ namespace IRuettae.Core.GeneticAlgorithm
             this.starterData = starterData;
         }
 
-        public OptimizationResult Solve(int timelimit, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
+        public OptimizationResult Solve(long timelimitMiliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
         {
-            return null;
+            throw new NotImplementedException();
         }
     }
 }
