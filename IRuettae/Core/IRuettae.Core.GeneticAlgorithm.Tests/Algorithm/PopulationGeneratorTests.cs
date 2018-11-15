@@ -38,6 +38,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Tests
                     new Visit
                     {
                         Id = 5,
+                        IsBreak = true,
                     }
                 },
                 Days = new(int, int)[]
@@ -47,24 +48,31 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Tests
                 }
             };
 
-            int numberOfVisits = 5;
+            int numberOfVisits = 4;
+            int numberOfBreaks = 1;
             int numberOfIndividuals = 10;
             int maxNumberOfSantas = 4;
             int numberOfSeparators = input.Days.Length * maxNumberOfSantas - 1;
-            var actual = PopulationGenerator.Generate(input, numberOfIndividuals, maxNumberOfSantas);
+            int expectedNumberOfGenes = numberOfVisits + numberOfSeparators + numberOfBreaks * input.Days.Length;
+            var (actual, mapping) = PopulationGenerator.Generate(input, numberOfIndividuals, maxNumberOfSantas);
 
             Assert.AreEqual(numberOfIndividuals, actual.Length);
             for (int i = 0; i < actual.Length; i++)
             {
                 var individual = actual[i];
-                Assert.AreEqual(numberOfVisits + numberOfSeparators, individual.Count);
-                Assert.AreEqual(numberOfVisits + numberOfSeparators, individual.Distinct().Count());
+                Assert.AreEqual(expectedNumberOfGenes, individual.Count);
+                Assert.AreEqual(expectedNumberOfGenes, individual.Distinct().Count());
                 Assert.AreEqual(numberOfSeparators, individual.Where(e => e < 0).Count());
                 Assert.IsTrue(individual.Contains(1));
                 Assert.IsTrue(individual.Contains(2));
                 Assert.IsTrue(individual.Contains(3));
                 Assert.IsTrue(individual.Contains(4));
                 Assert.IsTrue(individual.Contains(5));
+                // cloned break must map to original break
+                Assert.IsTrue(individual
+                    .Where(allel => !PopulationGenerator.IsSeparator(allel) && !new[] { 1, 2, 3, 4, 5 }.Contains(allel))
+                    .Select(allel => mapping[allel])
+                    .First() == 5);
             }
         }
     }

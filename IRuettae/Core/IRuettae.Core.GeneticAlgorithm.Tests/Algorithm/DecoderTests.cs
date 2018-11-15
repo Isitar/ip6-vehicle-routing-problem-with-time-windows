@@ -117,8 +117,17 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Tests
         [TestMethod()]
         public void TestDecode()
         {
-            var decoder = new Decoder(GetInput());
-            var genotyp = new List<int>() { 0, 1, -2, 4, -2, -2, 2, -2, -2, 3 };
+            var mapping = new Dictionary<int, int>()
+            {
+                {0, 0},
+                {1, 1},
+                {2, 2},
+                {3, 3},
+                {4, 4},
+                {5, 4},
+            };
+            var decoder = new Decoder(GetInput(), mapping);
+            var genotyp = new List<int>() { 0, 1, -2, 4, -123, -2, 2, -2, 5, -2, 3 };
             var actual = decoder.Decode(genotyp);
 
             Assert.AreEqual(6, actual.Length);

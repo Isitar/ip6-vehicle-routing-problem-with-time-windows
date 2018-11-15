@@ -47,7 +47,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             }
             // breaks
             var nextVisitId = input.Visits.Select(v => v.Id).Append(0).Max() + 1;
-            foreach (var breakId in input.Visits.Where(v => !v.IsBreak).Select(v => v.Id))
+            foreach (var breakId in input.Visits.Where(v => v.IsBreak).Select(v => v.Id))
             {
                 alleleToVisitIdMapping.Add(breakId, breakId);
                 foreach (var _ in input.Days.Skip(1))
