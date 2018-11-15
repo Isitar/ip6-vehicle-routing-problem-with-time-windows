@@ -22,10 +22,10 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         public static (Genotype[], Dictionary<int, int>) Generate(OptimizationInput input, int numberOfIndividuals, int maxNumberOfSantas)
         {
             var numberOfSeparators = input.Days.Length * maxNumberOfSantas - 1;
-            var alleleToVisitIdMap = CreateAlleles(input, numberOfSeparators);
+            var alleleToVisitIdMapping = CreateAlleles(input, numberOfSeparators);
 
             var elements = new Genotype();
-            elements.AddRange(alleleToVisitIdMap.Keys);
+            elements.AddRange(alleleToVisitIdMapping.Keys);
             elements.AddRange(Enumerable.Range(-numberOfSeparators, numberOfSeparators));
 
             var population = new Genotype[numberOfIndividuals];
@@ -34,28 +34,28 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
                 elements.Shuffle();
                 population[i] = new Genotype(elements);
             }
-            return (population, alleleToVisitIdMap);
+            return (population, alleleToVisitIdMapping);
         }
 
         private static Dictionary<int, int> CreateAlleles(OptimizationInput input, int numberOfSeparators)
         {
-            var alleleToVisitIdMap = new Dictionary<int, int>();
+            var alleleToVisitIdMapping = new Dictionary<int, int>();
             // normal visits
             foreach (var visitId in input.Visits.Where(v => !v.IsBreak).Select(v => v.Id))
             {
-                alleleToVisitIdMap.Add(visitId, visitId);
+                alleleToVisitIdMapping.Add(visitId, visitId);
             }
             // breaks
             var nextVisitId = input.Visits.Select(v => v.Id).Append(0).Max() + 1;
             foreach (var breakId in input.Visits.Where(v => !v.IsBreak).Select(v => v.Id))
             {
-                alleleToVisitIdMap.Add(breakId, breakId);
+                alleleToVisitIdMapping.Add(breakId, breakId);
                 foreach (var _ in input.Days.Skip(1))
                 {
-                    alleleToVisitIdMap.Add(nextVisitId++, breakId);
+                    alleleToVisitIdMapping.Add(nextVisitId++, breakId);
                 }
             }
-            return alleleToVisitIdMap;
+            return alleleToVisitIdMapping;
         }
 
         public static bool IsSeparator(int allele)

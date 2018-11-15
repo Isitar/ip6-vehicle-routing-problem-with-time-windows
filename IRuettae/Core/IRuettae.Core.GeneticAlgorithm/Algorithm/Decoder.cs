@@ -10,13 +10,13 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
     public class Decoder
     {
         private readonly OptimizationInput input;
-        private readonly Dictionary<int, int> alleleToVisitIdMap;
+        private readonly Dictionary<int, int> alleleToVisitIdMapping;
         private List<int> santaIds = new List<int>();
 
         public Decoder(OptimizationInput input, Dictionary<int, int> alleleToVisitIdMap)
         {
             this.input = input;
-            this.alleleToVisitIdMap = alleleToVisitIdMap;
+            this.alleleToVisitIdMapping = alleleToVisitIdMap;
         }
 
         public Route[] Decode(List<int> genotype)
@@ -124,7 +124,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 
         public int GetVisitId(int allele)
         {
-            return alleleToVisitIdMap[allele];
+            return alleleToVisitIdMapping[allele];
         }
     }
 }
