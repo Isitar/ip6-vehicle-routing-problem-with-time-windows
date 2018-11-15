@@ -149,6 +149,8 @@ namespace IRuettae.Core.Models.Tests
                     {
                         Id = 5,
                         Duration = 100 * hour,
+                        IsBreak = true,
+                        SantaId = 100,
                     }
                 };
                 input.Days = new(int, int)[]
@@ -273,6 +275,94 @@ namespace IRuettae.Core.Models.Tests
         {
             var model = GetModel();
             Assert.AreEqual(1, model.NumberOfNotVisitedFamilies());
+        }
+
+        [TestMethod()]
+        public void NumberOfNotVisitedFamiliesTest_Empty()
+        {
+            var input = new OptimizationInput()
+            {
+                Santas = new Santa[]
+                {
+                    new Santa
+                    {
+                        Id = 100,
+                    },
+                },
+                Visits = new Visit[]
+                {
+                    new Visit
+                    {
+                        Id = 1,
+                        IsBreak = true,
+                        SantaId = 100,
+                    }
+                },
+                Days = new(int, int)[0],
+                RouteCosts = new int[0, 0],
+            };
+
+            var model = new OptimizationResult
+            {
+                OptimizationInput = input,
+                Routes = new Route[]
+                {
+                    // day1
+                    // break, home, break, break, home, break
+                    new Route
+                    {
+                        SantaId=100,
+                        Waypoints=new Waypoint[]
+                        {
+                            new Waypoint
+                            {
+                                VisitId=1,
+                                StartTime=day1Start-3*hour,
+                            },
+                            new Waypoint
+                            {
+                                VisitId=Constants.VisitIdHome,
+                                StartTime=day1Start-2*hour,
+                            },
+                            new Waypoint
+                            {
+                                VisitId=1,
+                                StartTime=day1Start-1*hour,
+                            },
+                            new Waypoint
+                            {
+                                VisitId=1,
+                                StartTime=day1End-1*hour,
+                            },
+                            new Waypoint
+                            {
+                                VisitId=Constants.VisitIdHome,
+                                StartTime=day1End+90*minute,
+                            },
+                            new Waypoint
+                            {
+                                VisitId=1,
+                                StartTime=day1End+2*hour,
+                            },
+                        }
+                    },
+                    // day2, only one break
+                    new Route
+                    {
+                        SantaId=100,
+                        Waypoints=new Waypoint[]
+                        {
+                            new Waypoint
+                            {
+                                VisitId=1,
+                                StartTime=day2Start+2*hour,
+                            },
+                        }
+                    },
+                }
+            };
+
+            Assert.AreEqual(0, model.NumberOfNotVisitedFamilies());
         }
 
         [TestMethod()]
