@@ -149,6 +149,13 @@ namespace IRuettae.Core.Models.Tests
                     {
                         Id = 5,
                         Duration = 100 * hour,
+                        IsBreak = false,
+                        SantaId = -1,
+                    },
+                    new Visit // break will not be done
+                    {
+                        Id = 6,
+                        Duration = 100 * hour,
                         IsBreak = true,
                         SantaId = 100,
                     }
@@ -278,7 +285,14 @@ namespace IRuettae.Core.Models.Tests
         }
 
         [TestMethod()]
-        public void NumberOfNotVisitedFamiliesTest_Empty()
+        public void NumberOfMissingBreaksTest()
+        {
+            var model = GetModel();
+            Assert.AreEqual(1, model.NumberOfMissingBreaks());
+        }
+
+        [TestMethod()]
+        public void NumberOfMissingBreaksTest_Empty()
         {
             var input = new OptimizationInput()
             {
@@ -362,7 +376,7 @@ namespace IRuettae.Core.Models.Tests
                 }
             };
 
-            Assert.AreEqual(0, model.NumberOfNotVisitedFamilies());
+            Assert.AreEqual(0, model.NumberOfMissingBreaks());
         }
 
         [TestMethod()]
@@ -439,7 +453,7 @@ namespace IRuettae.Core.Models.Tests
         public void NumberOfVisitsTest()
         {
             var model = GetModel();
-            Assert.AreEqual(5, model.NumberOfVisits());
+            Assert.AreEqual(6, model.NumberOfVisits());
         }
 
         [TestMethod()]

@@ -37,6 +37,7 @@ namespace IRuettae.WebApi.Models
         // Metrics
         public virtual int Cost { get; set; }
         public virtual int NumberOfNotVisitedFamilies { get; set; }
+        public virtual int NumberOfMissingBreaks { get; set; }
         public virtual int NumberOfAdditionalSantas { get; set; }
         public virtual int AdditionalSantaWorkTime { get; set; }
         public virtual int VisitTimeInUnavailable { get; set; }
@@ -80,6 +81,7 @@ namespace IRuettae.WebApi.Models
                     // metrics
                     dto.Cost = or.Cost();
                     dto.NumberOfNotVisitedFamilies = or.NumberOfNotVisitedFamilies();
+                    dto.NumberOfMissingBreaks = or.NumberOfMissingBreaks();
                     dto.NumberOfAdditionalSantas = or.NumberOfAdditionalSantas();
                     dto.AdditionalSantaWorkTime = or.AdditionalSantaWorkTime();
                     dto.VisitTimeInUnavailable = or.VisitTimeInUnavailable();

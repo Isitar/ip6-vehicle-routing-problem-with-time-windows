@@ -37,7 +37,7 @@ namespace IRuettae.Core.Models
         {
             get
             {
-                var breaks = OptimizationInput.Visits.Where(v => v.IsBreak).Select(v => v.Id).ToArray();
+                var breaks = OptimizationInput.Visits == null ? new List<int>() : OptimizationInput.Visits.Where(v => v.IsBreak).Select(v => v.Id).ToList();
                 return Routes.Where(r => r.Waypoints != null && r.Waypoints.Where(wp => wp.VisitId != Constants.VisitIdHome && !breaks.Contains(wp.VisitId)).Count() > 0);
             }
         }
@@ -61,6 +61,7 @@ namespace IRuettae.Core.Models
             const int hour = 3600;
             return (int)(Math.Ceiling(
                                        +560 * NumberOfNotVisitedFamilies()
+                                       + 560 * NumberOfMissingBreaks()
                                        + 400 * NumberOfAdditionalSantas()
                                        + (40d / hour) * AdditionalSantaWorkTime())
                                        + (120d / hour) * VisitTimeInUnavailable()
@@ -70,8 +71,13 @@ namespace IRuettae.Core.Models
                                        + (30d / hour) * LongestDay()
                 );
         }
-
         public int NumberOfNotVisitedFamilies()
+        {
+            var visitedVisits = NonEmptyRoutes.SelectMany(r => r.Waypoints.Select(w => w.VisitId));
+            return OptimizationInput.Visits.Count(v => !v.IsBreak && !visitedVisits.Contains(v.Id));
+        }
+
+        public int NumberOfMissingBreaks()
         {
             var santaBreaks = new Dictionary<int, int>();
             foreach (var v in OptimizationInput.Visits.Where(v => v.IsBreak))
@@ -83,12 +89,9 @@ namespace IRuettae.Core.Models
                 santaBreaks.Add(v.SantaId, v.Id);
             }
 
-            int notVisitedBreaks = NonEmptyRoutes.Where(r =>
+            return NonEmptyRoutes.Where(r =>
                     santaBreaks.ContainsKey(r.SantaId)
                     && !r.Waypoints.Any(wp => wp.VisitId == santaBreaks[r.SantaId])).Count();
-
-            var visitedVisits = NonEmptyRoutes.SelectMany(r => r.Waypoints.Select(w => w.VisitId));
-            return notVisitedBreaks + OptimizationInput.Visits.Count(v => !v.IsBreak && !visitedVisits.Contains(v.Id));
         }
 
         public int NumberOfAdditionalSantas()
