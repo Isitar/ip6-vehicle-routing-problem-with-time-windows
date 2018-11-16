@@ -45,6 +45,7 @@
     <Compile Include="Algorithm\Models\GenAlgStarterData.cs" />
     <Compile Include="Algorithm\Models\Genotype.cs" />
     <Compile Include="Algorithm\PopulationGenerator.cs" />
+    <Compile Include="Algorithm\RepairOperation.cs" />
     <Compile Include="GenAlgSolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

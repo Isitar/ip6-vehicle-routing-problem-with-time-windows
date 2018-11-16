@@ -20,5 +20,10 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
         public Genotype(IEnumerable<int> collection) : base(collection)
         {
         }
+
+        public int CountRoutes()
+        {
+            return this.Where(PopulationGenerator.IsSeparator).Count() + 1;
+        }
     }
 }

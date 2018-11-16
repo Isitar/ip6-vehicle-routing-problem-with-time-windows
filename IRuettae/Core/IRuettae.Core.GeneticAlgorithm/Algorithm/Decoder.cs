@@ -23,7 +23,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         public Route[] Decode(Genotype genotype)
         {
             // preparation
-            var routesPerDay = CountRoutes(genotype) / input.Days.Length;
+            var routesPerDay = genotype.CountRoutes() / input.Days.Length;
             GenerateSantaIdList(routesPerDay);
 
             var routes = new List<Route>();
@@ -116,11 +116,6 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             {
                 Waypoints = waypoints.ToArray(),
             };
-        }
-
-        private int CountRoutes(Genotype genotype)
-        {
-            return genotype.Where(PopulationGenerator.IsSeparator).Count() + 1;
         }
 
         public int GetVisitId(int allele)
