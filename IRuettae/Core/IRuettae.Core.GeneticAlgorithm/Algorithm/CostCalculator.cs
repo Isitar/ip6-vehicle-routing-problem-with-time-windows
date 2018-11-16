@@ -22,7 +22,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             this.result = temporaryResult;
         }
 
-        private void RecalculatateCost(List<Genotype> population)
+        public void RecalculatateCost(IEnumerable<Genotype> population)
         {
             foreach (var individual in population)
             {

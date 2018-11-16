@@ -60,6 +60,23 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// Repairs the given genotype in place
         /// </summary>
         /// <param name="genotype"></param>
+        public void Repair(List<Genotype> population)
+        {
+            if (!needRepair)
+            {
+                return;
+            }
+
+            foreach (var individual in population)
+            {
+                Repair(individual);
+            }
+        }
+
+        /// <summary>
+        /// Repairs the given genotype in place
+        /// </summary>
+        /// <param name="genotype"></param>
         public void Repair(Genotype genotype)
         {
             if (!needRepair)

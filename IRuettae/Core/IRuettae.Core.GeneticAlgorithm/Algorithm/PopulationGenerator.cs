@@ -12,13 +12,14 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
     public class PopulationGenerator
     {
         /// <summary>
-        /// Returns generated genotypes and mapping from allele to visitId
+        /// Returns generated genotypes and mapping from allele to visitId.
+        /// The returned Genotypes are already repaired.
         /// </summary>
         /// <param name="input"></param>
         /// <param name="numberOfIndividuals"></param>
         /// <param name="maxNumberOfSantas"></param>
         /// <returns>Population and the AlleleToVisitIdMapping</returns>
-        public static (Genotype[], Dictionary<int, int>) Generate(OptimizationInput input, int numberOfIndividuals, int maxNumberOfSantas)
+        public static (List<Genotype>, Dictionary<int, int>) Generate(OptimizationInput input, int numberOfIndividuals, int maxNumberOfSantas)
         {
             var numberOfSeparators = input.Days.Length * maxNumberOfSantas - 1;
             var alleleToVisitIdMapping = CreateAlleles(input, numberOfSeparators);
@@ -27,11 +28,14 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             elements.AddRange(alleleToVisitIdMapping.Keys);
             elements.AddRange(Enumerable.Range(-numberOfSeparators, numberOfSeparators));
 
-            var population = new Genotype[numberOfIndividuals];
+            var repairOperation = new RepairOperation(input, alleleToVisitIdMapping);
+            var population = new List<Genotype>(numberOfIndividuals);
             for (int i = 0; i < numberOfIndividuals; i++)
             {
                 elements.Shuffle();
-                population[i] = new Genotype(elements);
+                var genotype = new Genotype(elements);
+                repairOperation.Repair(genotype);
+                population.Add(genotype);
             }
             return (population, alleleToVisitIdMapping);
         }
