@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.Models;
+using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
 
 namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Tests
 {
@@ -127,7 +128,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Tests
                 {5, 4},
             };
             var decoder = new Decoder(GetInput(), mapping);
-            var genotyp = new List<int>() { 0, 1, -2, 4, -123, -2, 2, -2, 5, -2, 3 };
+            var genotyp = new Genotype { 0, 1, -2, 4, -123, -2, 2, -2, 5, -2, 3 };
             var actual = decoder.Decode(genotyp);
 
             Assert.AreEqual(6, actual.Length);

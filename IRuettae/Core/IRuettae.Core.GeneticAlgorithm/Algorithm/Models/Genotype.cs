@@ -25,5 +25,23 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
         {
             return this.Where(PopulationGenerator.IsSeparator).Count() + 1;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+            return this.SequenceEqual((Genotype)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            if (Count > 0)
+            {
+                return this[0];
+            }
+            return 0;
+        }
     }
 }

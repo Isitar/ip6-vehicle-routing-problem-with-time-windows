@@ -19,7 +19,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         {
             this.input = input;
             this.alleleToVisitIdMapping = alleleToVisitIdMapping;
-            needRepair = input.Visits.Where(IsBreak).Count() > 0;
+            needRepair = input.Visits.Where(v => v.IsBreak).Count() > 0;
             breakMapping = new Dictionary<int, int[]>();
             if (needRepair)
             {
@@ -81,19 +81,27 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         {
             var ret = new List<Genotype>[input.Days.Length];
             {
+                for (int i = 0; i < ret.Length; i++)
+                {
+                    ret[i] = new List<Genotype>();
+                }
+
                 var routesPerDay = genotype.CountRoutes() / input.Days.Length;
                 int day = 0;
                 int santa = 0;
                 for (int i = 0; i < genotype.Count; i++)
                 {
                     ret[day].Add(new Genotype());
-                    while (!PopulationGenerator.IsSeparator(genotype[i]) && i < genotype.Count) ;
+                    while (i < genotype.Count && !PopulationGenerator.IsSeparator(genotype[i]))
                     {
                         ret[day][santa].Add(genotype[i]);
                         i++;
                     }
-                    // Add separator
-                    ret[day][santa].Add(genotype[i]);
+                    if (i < genotype.Count)
+                    {
+                        // Add separator
+                        ret[day][santa].Add(genotype[i]);
+                    }
 
                     santa++;
                     if (santa >= routesPerDay)

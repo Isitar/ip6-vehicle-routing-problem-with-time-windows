@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Algorithm\DecoderTests.cs" />
     <Compile Include="Algorithm\PopulationGeneratorTests.cs" />
+    <Compile Include="Algorithm\RepairOperationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
