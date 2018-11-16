@@ -17,6 +17,17 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Tests
         {
             var input = new OptimizationInput()
             {
+                Santas = new Santa[]
+                {
+                    new Santa
+                    {
+                        Id = 100,
+                    },
+                    new Santa
+                    {
+                        Id = 200,
+                    },
+                },
                 Visits = new Visit[]
                 {
                     new Visit
@@ -39,6 +50,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Tests
                     {
                         Id = 5,
                         IsBreak = true,
+                        SantaId = 100,
                     }
                 },
                 Days = new(int, int)[]
@@ -51,13 +63,13 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Tests
             int numberOfVisits = 4;
             int numberOfBreaks = 1;
             int numberOfIndividuals = 10;
-            int maxNumberOfSantas = 4;
+            int maxNumberOfSantas = 5;
             int numberOfSeparators = input.Days.Length * maxNumberOfSantas - 1;
             int expectedNumberOfGenes = numberOfVisits + numberOfSeparators + numberOfBreaks * input.Days.Length;
             var (actual, mapping) = PopulationGenerator.Generate(input, numberOfIndividuals, maxNumberOfSantas);
 
-            Assert.AreEqual(numberOfIndividuals, actual.Length);
-            for (int i = 0; i < actual.Length; i++)
+            Assert.AreEqual(numberOfIndividuals, actual.Count);
+            for (int i = 0; i < actual.Count; i++)
             {
                 var individual = actual[i];
                 Assert.AreEqual(expectedNumberOfGenes, individual.Count);
