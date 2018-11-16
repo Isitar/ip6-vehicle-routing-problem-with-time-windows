@@ -13,12 +13,16 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
     /// </summary>
     public class Genotype : List<int>
     {
+        public int SolutionValue { get; set; }
+
         public Genotype() : base()
         {
         }
+
         public Genotype(int capacity) : base(capacity)
         {
         }
+
         public Genotype(IEnumerable<int> collection) : base(collection)
         {
         }
