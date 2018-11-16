@@ -8,6 +8,8 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
 {
     /// <summary>
     /// Class to hold a list of alleles
+    /// The size and the alleles should not change,
+    /// but the order of the alleles can change.
     /// </summary>
     public class Genotype : List<int>
     {
@@ -21,6 +23,10 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
         {
         }
 
+        /// <summary>
+        /// Returns the number of Routes which are encoded in this genotype
+        /// </summary>
+        /// <returns></returns>
         public int CountRoutes()
         {
             return this.Where(PopulationGenerator.IsSeparator).Count() + 1;

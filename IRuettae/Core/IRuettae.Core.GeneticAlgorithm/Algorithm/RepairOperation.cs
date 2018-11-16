@@ -8,26 +8,45 @@ using IRuettae.Core.Models;
 
 namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 {
+    /// <summary>
+    /// Class used to repair invalid genotypes
+    /// </summary>
     public class RepairOperation
     {
+        /// <summary>
+        /// Are repairs generally needed?
+        /// This will be determined from the OptimizationInput.
+        /// </summary>
         private readonly bool needRepair;
-        private readonly OptimizationInput input;
-        private readonly Dictionary<int, int> alleleToVisitIdMapping;
+        /// <summary>
+        /// List of breaks per santa.
+        /// The breaks are ordered by day.
+        /// [santa][day]
+        /// </summary>
         private readonly Dictionary<int, int[]> breakMapping;
+        private readonly OptimizationInput input;
 
         public RepairOperation(OptimizationInput input, Dictionary<int, int> alleleToVisitIdMapping)
         {
+            if (alleleToVisitIdMapping == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             this.input = input;
-            this.alleleToVisitIdMapping = alleleToVisitIdMapping;
             needRepair = input.Visits.Where(v => v.IsBreak).Count() > 0;
             breakMapping = new Dictionary<int, int[]>();
             if (needRepair)
             {
-                CreateBreakMapping();
+                CreateBreakMapping(alleleToVisitIdMapping);
             }
         }
 
-        private void CreateBreakMapping()
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="alleleToVisitIdMapping">not null</param>
+        private void CreateBreakMapping(Dictionary<int, int> alleleToVisitIdMapping)
         {
             foreach (var santa in input.Santas.Where(s => input.Visits.Any(v => v.SantaId == s.Id)))
             {
@@ -37,6 +56,10 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             }
         }
 
+        /// <summary>
+        /// Repairs the given genotype in place
+        /// </summary>
+        /// <param name="genotype"></param>
         public void Repair(Genotype genotype)
         {
             if (!needRepair)
@@ -47,6 +70,11 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             RepairBreaks(genotype);
         }
 
+        /// <summary>
+        /// Makes sure, the breaks of a santa are in every route.
+        /// If not, the break will be moved into the middle of the route.
+        /// </summary>
+        /// <param name="genotype"></param>
         private void RepairBreaks(Genotype genotype)
         {
             var split = SplitGenotyp(genotype);
@@ -63,7 +91,9 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
                         // Is the break missing in this route?
                         if (!split[day][santa].Contains(expectedAllele))
                         {
+                            // Remove break at wrong place
                             RemoveAllele(split, expectedAllele);
+                            // Add to with place
                             split[day][santa].Insert(split[day][santa].Count / 2, expectedAllele);
                         }
                     }

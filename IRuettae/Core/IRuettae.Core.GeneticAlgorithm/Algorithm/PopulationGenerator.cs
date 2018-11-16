@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.Models;
-using System.Security.Cryptography;
 using IRuettae.Core.GeneticAlgorithm.Algorithm.Helpers;
 using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
 
@@ -18,7 +17,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <param name="input"></param>
         /// <param name="numberOfIndividuals"></param>
         /// <param name="maxNumberOfSantas"></param>
-        /// <returns></returns>
+        /// <returns>Population and the AlleleToVisitIdMapping</returns>
         public static (Genotype[], Dictionary<int, int>) Generate(OptimizationInput input, int numberOfIndividuals, int maxNumberOfSantas)
         {
             var numberOfSeparators = input.Days.Length * maxNumberOfSantas - 1;
