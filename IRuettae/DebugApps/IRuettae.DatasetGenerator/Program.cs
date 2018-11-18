@@ -50,7 +50,7 @@ namespace IRuettae.DatasetGenerator
             Console.WriteLine("Save? [y/n]");
             if (Console.ReadLine().ToUpper().Equals("Y"))
             {
-                File.WriteAllText($"{methodName}.cs", output);
+                File.WriteAllText($"DatasetFactory.{methodName}.cs", output);
             }
             Console.WriteLine("Press any key to exit...");
             Console.Read();
