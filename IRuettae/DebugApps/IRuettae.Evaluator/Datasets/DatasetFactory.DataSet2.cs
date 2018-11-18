@@ -13,17 +13,17 @@ public static (OptimizationInput input, (int x, int y)[] coordinates) DataSet2()
 	// Coordinates of points
 	var coordinates = new[]
 	{
-		(1268,1352),
-		(358,3013),
-		(2855,2621),
-		(1169,1121),
-		(2468,2818),
-		(1452,999),
-		(2698,3226),
-		(2946,3836),
-		(1555,887),
-		(1549,1125),
-		(1587,570)
+		(1058,917),
+		(3131,2414),
+		(2502,2728),
+		(1323,1651),
+		(926,1198),
+		(3297,2574),
+		(2437,3298),
+		(347,1533),
+		(2169,2277),
+		(2871,2771),
+		(2786,2714)
 	};
 	const int workingDayDuration = 9 * Hour;
 	var input = new OptimizationInput
@@ -32,16 +32,16 @@ public static (OptimizationInput input, (int x, int y)[] coordinates) DataSet2()
 
 		RouteCosts = new[,]
 		{
-			{ 0, 2527, 2058, 2118, 2291, 2349, 2715, 2439, 2232, 2734 },
-			{ 2527, 0, 2256, 434, 2144, 625, 1218, 2167, 1985, 2411 },
-			{ 2058, 2256, 0, 2137, 308, 2601, 3244, 451, 380, 691 },
-			{ 2118, 434, 2137, 0, 2083, 468, 1124, 2135, 1926, 2414 },
-			{ 2291, 2144, 308, 2083, 0, 2551, 3206, 152, 159, 449 },
-			{ 2349, 625, 2601, 468, 2551, 0, 658, 2603, 2394, 2879 },
-			{ 2715, 1218, 3244, 1124, 3206, 658, 0, 3260, 3049, 3537 },
-			{ 2439, 2167, 451, 2135, 152, 2603, 3260, 0, 238, 318 },
-			{ 2232, 1985, 380, 1926, 159, 2394, 3049, 238, 0, 556 },
-			{ 2734, 2411, 691, 2414, 449, 2879, 3537, 318, 556, 0 }
+			{ 0, 703, 1962, 2518, 230, 1123, 2920, 971, 441, 457 },
+			{ 703, 0, 1596, 2196, 809, 573, 2464, 560, 371, 284 },
+			{ 1962, 1596, 0, 602, 2179, 1988, 983, 1052, 1910, 1808 },
+			{ 2518, 2196, 602, 0, 2741, 2587, 668, 1645, 2501, 2399 },
+			{ 230, 809, 2179, 2741, 0, 1124, 3128, 1166, 469, 529 },
+			{ 1123, 573, 1988, 2587, 1124, 0, 2735, 1055, 682, 680 },
+			{ 2920, 2464, 983, 668, 3128, 2735, 0, 1968, 2811, 2709 },
+			{ 971, 560, 1052, 1645, 1166, 1055, 1968, 0, 858, 756 },
+			{ 441, 371, 1910, 2501, 469, 682, 2811, 858, 0, 102 },
+			{ 457, 284, 1808, 2399, 529, 680, 2709, 756, 102, 0 }
 		},
 
 		Santas = new[]
@@ -51,16 +51,16 @@ public static (OptimizationInput input, (int x, int y)[] coordinates) DataSet2()
 
 		Visits = new[]
 		{
-			new Visit{Duration = 3199, Id=0,WayCostFromHome=1893, WayCostToHome=1893,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 1395.53446920382, (0 * Hour + 1395.53446920382) + 22543.1773491167)}},
-			new Visit{Duration = 1625, Id=1,WayCostFromHome=2031, WayCostToHome=2031,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 6042.89268725687, (0 * Hour + 6042.89268725687) + 24512.4975474144)}},
-			new Visit{Duration = 1841, Id=2,WayCostFromHome=251, WayCostToHome=251,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 3043.14349793752, (0 * Hour + 3043.14349793752) + 6006.8365804082)}},
-			new Visit{Duration = 2432, Id=3,WayCostFromHome=1894, WayCostToHome=1894,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 3790.50977758164, (0 * Hour + 3790.50977758164) + 24040.8037182134)}},
-			new Visit{Duration = 2676, Id=4,WayCostFromHome=398, WayCostToHome=398,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 4578.40194602853, (0 * Hour + 4578.40194602853) + 20286.7140171075)}},
-			new Visit{Duration = 1450, Id=5,WayCostFromHome=2357, WayCostToHome=2357,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 3504.87695240256, (24 * Hour + 3504.87695240256) + 16122.5685884583)}},
-			new Visit{Duration = 2408, Id=6,WayCostFromHome=2997, WayCostToHome=2997,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 12364.1446891619, (24 * Hour + 12364.1446891619) + 11325.04609648)}},
-			new Visit{Duration = 2629, Id=7,WayCostFromHome=546, WayCostToHome=546,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 3302.35623168923, (24 * Hour + 3302.35623168923) + 19500.7740623605)}},
-			new Visit{Duration = 1556, Id=8,WayCostFromHome=361, WayCostToHome=361,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 13099.1445864608, (24 * Hour + 13099.1445864608) + 16748.3446495274)}},
-			new Visit{Duration = 3199, Id=9,WayCostFromHome=844, WayCostToHome=844,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 3428.0610987341, (24 * Hour + 3428.0610987341) + 25175.5882566416)}}
+			new Visit{Duration = 2972, Id=0,WayCostFromHome=2557, WayCostToHome=2557,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 18869, (0 * Hour + 18869) + 8915)}},
+			new Visit{Duration = 2600, Id=1,WayCostFromHome=2316, WayCostToHome=2316,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 194, (0 * Hour + 194) + 19647)}},
+			new Visit{Duration = 3281, Id=2,WayCostFromHome=780, WayCostToHome=780,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 5159, (0 * Hour + 5159) + 15658)}},
+			new Visit{Duration = 1257, Id=3,WayCostFromHome=310, WayCostToHome=310,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 5936, (0 * Hour + 5936) + 24594)}},
+			new Visit{Duration = 1484, Id=4,WayCostFromHome=2785, WayCostToHome=2785,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 121, (0 * Hour + 121) + 30239)}},
+			new Visit{Duration = 3211, Id=5,WayCostFromHome=2751, WayCostToHome=2751,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 1890, (24 * Hour + 1890) + 12048)}},
+			new Visit{Duration = 2961, Id=6,WayCostFromHome=940, WayCostToHome=940,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 4606, (24 * Hour + 4606) + 26031)}},
+			new Visit{Duration = 2072, Id=7,WayCostFromHome=1756, WayCostToHome=1756,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 1240, (24 * Hour + 1240) + 24346)}},
+			new Visit{Duration = 1329, Id=8,WayCostFromHome=2593, WayCostToHome=2593,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 16964, (24 * Hour + 16964) + 6948)}},
+			new Visit{Duration = 3093, Id=9,WayCostFromHome=2493, WayCostToHome=2493,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 4276, (24 * Hour + 4276) + 5035)}}
 		}
 	};
 	return (input, coordinates);
