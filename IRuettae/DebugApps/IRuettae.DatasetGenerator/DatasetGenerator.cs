@@ -156,6 +156,7 @@ namespace IRuettae.DatasetGenerator
                 {
                     string desiredString = "new (int from, int to)[0]";
                     int desiredDayIndex = -1;
+                    var workingDayDurationSeconds = workingDayDuration * 3600;
                     if (numberOfDesired.Sum() > 0)
                     {
                         desiredDayIndex = 0;
@@ -166,9 +167,9 @@ namespace IRuettae.DatasetGenerator
 
                         numberOfDesired[desiredDayIndex]--;
                         var deltaFactor = 1 - random.NextDouble();
-                        var desiredTime = deltaFactor * (workingDayDuration - visitDurations[v]) + visitDurations[v];
+                        var desiredTime = deltaFactor * (workingDayDurationSeconds  - visitDurations[v]) + visitDurations[v];
                         var startFactor = 1 - random.NextDouble();
-                        var start = $"{desiredDayIndex * 24} * Hour + {(workingDayDuration - desiredTime) * startFactor}";
+                        var start = $"{desiredDayIndex * 24} * Hour + {(workingDayDurationSeconds - desiredTime) * startFactor}";
                         desiredString = $"new [] {{({start}, ({start}) + {desiredTime})}}";
                     }
 
@@ -186,9 +187,9 @@ namespace IRuettae.DatasetGenerator
                             numberOfUnavailable[unavailableDayIndex]--;
 
                             var deltaFactor = 1 - random.NextDouble();
-                            var unavailableTime = deltaFactor * (workingDayDuration - visitDurations[v]) + visitDurations[v];
+                            var unavailableTime = deltaFactor * (workingDayDurationSeconds - visitDurations[v]) + visitDurations[v];
                             var startFactor = 1 - random.NextDouble();
-                            var start = $"{unavailableDayIndex * 24} * Hour + {(workingDayDuration - unavailableTime) * startFactor}";
+                            var start = $"{unavailableDayIndex * 24} * Hour + {(workingDayDurationSeconds - unavailableTime) * startFactor}";
                             unavailableString = $"new [] {{({start}, ({start}) + {unavailableTime})}}";
                         }
                     }
