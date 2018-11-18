@@ -95,7 +95,7 @@ namespace IRuettae.Core.ILP
                 .Where(vb => vb.Visits != null && vb.Visits.Count > 1)
                 .Select(vb => vb.Build());
 
-
+            
             var routeResults = schedulingInputVariables
                 .AsParallel()
                 .Select(schedulingInputVariable =>
@@ -107,7 +107,9 @@ namespace IRuettae.Core.ILP
                     System.IO.File.WriteAllText($@"C:\Temp\iRuettae\ILP\Scheduling\{new Guid()}.mps", schedulingSolver.ExportMPS());
 #endif
 
-                    var schedulingTimelimitMiliseconds = starterData.SchedulingTimeLimitMiliseconds;
+
+                    var clusteringExtraTime = clusteringTimeLimitMiliseconds - sw.ElapsedMilliseconds;
+                    var schedulingTimelimitMiliseconds = starterData.SchedulingTimeLimitMiliseconds + clusteringExtraTime;
                     if (schedulingTimelimitMiliseconds == 0 && timelimitMiliseconds != 0)
                     {
                         // avoid surpassing timelimit

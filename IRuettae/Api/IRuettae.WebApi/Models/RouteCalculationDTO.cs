@@ -37,6 +37,7 @@ namespace IRuettae.WebApi.Models
         // Metrics
         public virtual int Cost { get; set; }
         public virtual int NumberOfNotVisitedFamilies { get; set; }
+        public virtual int NumberOfMissingBreaks { get; set; }
         public virtual int NumberOfAdditionalSantas { get; set; }
         public virtual int AdditionalSantaWorkTime { get; set; }
         public virtual int VisitTimeInUnavailable { get; set; }
@@ -80,6 +81,7 @@ namespace IRuettae.WebApi.Models
                     // metrics
                     dto.Cost = or.Cost();
                     dto.NumberOfNotVisitedFamilies = or.NumberOfNotVisitedFamilies();
+                    dto.NumberOfMissingBreaks = or.NumberOfMissingBreaks();
                     dto.NumberOfAdditionalSantas = or.NumberOfAdditionalSantas();
                     dto.AdditionalSantaWorkTime = or.AdditionalSantaWorkTime();
                     dto.VisitTimeInUnavailable = or.VisitTimeInUnavailable();
@@ -91,10 +93,11 @@ namespace IRuettae.WebApi.Models
                     dto.TotalWayTime = or.TotalWayTime();
                     dto.TotalVisitTime = or.TotalVisitTime();
                     dto.AverageWayTimePerRoute = or.AverageWayTimePerRoute();
-                    dto.LatestVisit = or.Routes.SelectMany(r => r.Waypoints.Where(wp => wp.VisitId != Constants.VisitIdHome)).
-                        Select(wp => routeCalculationResult.ConvertTime(wp.StartTime)).
-                        Append(DateTime.MinValue).
-                        Max();
+                    dto.LatestVisit = or.Routes.SelectMany(r => r.Waypoints
+                        .Where(wp => wp.VisitId != Constants.VisitIdHome))
+                        .Select(wp => routeCalculationResult.ConvertTime(wp.StartTime))
+                        .Append(DateTime.MinValue)
+                        .OrderBy(t => t - t.TimeOfDay).Last();
                     dto.AverageDurationPerRoute = or.AverageDurationPerRoute();
                 }
             }

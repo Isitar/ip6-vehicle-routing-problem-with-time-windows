@@ -48,6 +48,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DatasetFactory.cs" />
+    <Compile Include="Datasets\DatasetFactory.DataSet1.cs" />
+    <Compile Include="Datasets\DatasetFactory.DataSet10.cs" />
+    <Compile Include="Datasets\DatasetFactory.DataSet11.cs" />
+    <Compile Include="Datasets\DatasetFactory.DataSet12.cs" />
+    <Compile Include="Datasets\DatasetFactory.DataSet2.cs" />
+    <Compile Include="Datasets\DatasetFactory.DataSet3.cs" />
+    <Compile Include="Datasets\DatasetFactory.DataSet4.cs" />
+    <Compile Include="Datasets\DatasetFactory.DataSet5.cs" />
+    <Compile Include="Datasets\DatasetFactory.DataSet6.cs" />
+    <Compile Include="Datasets\DatasetFactory.DataSet9.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultDrawer.cs" />

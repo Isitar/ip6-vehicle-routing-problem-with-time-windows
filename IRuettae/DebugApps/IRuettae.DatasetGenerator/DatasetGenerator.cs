@@ -92,9 +92,6 @@ namespace IRuettae.DatasetGenerator
                 }
                 else
                 {
-                    //clusterpoint = (mapWidth / 2, mapHeight / 2);
-                    //clusterWidth = mapWidth / 2d * 0.9;
-                    //clusterHeight = mapHeight / 2d * 0.9;
                     x = random.Next(0, mapWidth);
                     y = random.Next(0, mapHeight);
                 }
@@ -110,6 +107,11 @@ namespace IRuettae.DatasetGenerator
                 Math.Ceiling((1.5 * (avgVisitsPerRoute * visitDurations.Average() + (avgVisitsPerRoute + 1) * avgDistance)) / 3600d);
 
             var sb = new StringBuilder();
+            sb.AppendLine("using IRuettae.Core.Models;");
+            sb.AppendLine("namespace IRuettae.Evaluator");
+            sb.AppendLine("{");
+            sb.AppendLine("internal partial class DatasetFactory");
+            sb.AppendLine("{");
             sb.AppendLine("/// <summary>");
             sb.AppendLine($"/// {numberOfVisits} Visits, {numberOfDays} Days, {numberOfSantas} Santas");
             for (int i = 0; i < numberOfDays; i++)
@@ -154,6 +156,7 @@ namespace IRuettae.DatasetGenerator
                 {
                     string desiredString = "new (int from, int to)[0]";
                     int desiredDayIndex = -1;
+                    var workingDayDurationSeconds = workingDayDuration * 3600;
                     if (numberOfDesired.Sum() > 0)
                     {
                         desiredDayIndex = 0;
@@ -163,7 +166,11 @@ namespace IRuettae.DatasetGenerator
                         }
 
                         numberOfDesired[desiredDayIndex]--;
-                        desiredString = $"new [] {{({desiredDayIndex * 24} * Hour,  {desiredDayIndex * 24} * Hour + workingDayDuration)}}";
+                        var deltaFactor = 1 - random.NextDouble();
+                        var desiredTime = Math.Ceiling(deltaFactor * (workingDayDurationSeconds  - visitDurations[v]) + visitDurations[v]);
+                        var startFactor = 1 - random.NextDouble();
+                        var start = $"{desiredDayIndex * 24} * Hour + {Math.Ceiling((workingDayDurationSeconds - desiredTime) * startFactor)}";
+                        desiredString = $"new [] {{({start}, ({start}) + {desiredTime})}}";
                     }
 
                     var unavailableString = "new (int from, int to)[0]";
@@ -178,7 +185,12 @@ namespace IRuettae.DatasetGenerator
                         if (unavailableDayIndex < numberOfUnavailable.Length)
                         {
                             numberOfUnavailable[unavailableDayIndex]--;
-                            unavailableString = $"new [] {{({unavailableDayIndex * 24} * Hour,  {unavailableDayIndex * 24} * Hour + workingDayDuration)}}";
+
+                            var deltaFactor = 1 - random.NextDouble();
+                            var unavailableTime = Math.Ceiling(deltaFactor * (workingDayDurationSeconds - visitDurations[v]) + visitDurations[v]);
+                            var startFactor = 1 - random.NextDouble();
+                            var start = $"{unavailableDayIndex * 24} * Hour + {Math.Ceiling((workingDayDurationSeconds - unavailableTime) * startFactor)}";
+                            unavailableString = $"new [] {{({start}, ({start}) + {unavailableTime})}}";
                         }
                     }
 
@@ -187,6 +199,8 @@ namespace IRuettae.DatasetGenerator
             sb.AppendLine("\t\t}");
             sb.AppendLine("\t};");
             sb.AppendLine("\treturn (input, coordinates);");
+            sb.AppendLine("}");
+            sb.AppendLine("}");
             sb.AppendLine("}");
             return sb.ToString();
         }
