@@ -137,9 +137,8 @@ namespace IRuettae.Evaluator
                     timelimit = 20 * 60 * 1000;
                     break;
                 case 7:
-                    throw new NotImplementedException();
-                    //(input, coordinates) = DatasetFactory.DataSet7();
-                    //timelimit = 90 * 60 * 1000;
+                    (input, coordinates) = DatasetFactory.DataSet7();
+                    timelimit = 90 * 60 * 1000;
                     break;
                 case 8:
                     throw new NotImplementedException();
