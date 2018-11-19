@@ -4,6 +4,7 @@ using System.IO;
 using IRuettae.Core;
 using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm.Models;
+using IRuettae.Core.LocalSolver;
 using IRuettae.Core.Models;
 using Newtonsoft.Json;
 
@@ -179,6 +180,9 @@ namespace IRuettae.Evaluator
                         TimeSliceDuration = 120
                     });
                     savepath += "_ILP";
+                    break;
+                case 3:
+                    solver= new IRuettae.Core.LocalSolver.Solver(input);
                     break;
             }
 
