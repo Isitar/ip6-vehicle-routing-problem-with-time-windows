@@ -6,8 +6,6 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
     [Serializable]
     public class SolverInputData
     {
-        private readonly int[] presolved;
-
         /// <summary>
         /// [day][santa,timeslice] is available
         /// </summary>
