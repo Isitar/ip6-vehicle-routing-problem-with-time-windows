@@ -31,8 +31,9 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
         public int[] SantaIds { get; }
         public int[] Presolved { get; }
         public int TimeSliceLength { get; }
+        public int[] DayStarts { get; }
 
-        public SolverInputData(bool[][,] santas, int[] visitsDuration, VisitState[][,] visits, int[,] distances, int[] visitIds, int[] santaIds, int[] presolved, int timeSliceLength)
+        public SolverInputData(bool[][,] santas, int[] visitsDuration, VisitState[][,] visits, int[,] distances, int[] visitIds, int[] santaIds, int[] presolved, int timeSliceLength, int[] dayStarts)
         {
             
             Santas = santas;
@@ -43,6 +44,7 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
             SantaIds = santaIds;
             Presolved = presolved;
             TimeSliceLength = timeSliceLength;
+            DayStarts = dayStarts;
         }
 
         public bool IsValid()

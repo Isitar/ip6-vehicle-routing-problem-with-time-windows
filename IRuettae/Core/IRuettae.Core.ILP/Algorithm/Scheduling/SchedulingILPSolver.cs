@@ -109,6 +109,8 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
                 solver.Add(targetFunction <= totalTimePresolved * 40);
             }
 
+            var minWayTime = solverData.Input.Distances.Cast<int>().Where(i => i > 0).Min();
+            solver.Add(targetFunction >= (minWayTime * (solverData.NumberOfVisits + 1) + solverData.Input.VisitsDuration.Sum()) * 40);
             PrintDebugRessourcesAfter();
         }
 
