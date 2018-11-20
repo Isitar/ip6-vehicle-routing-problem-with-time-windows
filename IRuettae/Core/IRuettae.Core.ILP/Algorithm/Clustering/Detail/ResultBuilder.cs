@@ -36,8 +36,7 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering.Detail
                         }
                     }
 
-                    var waypoints = new List<Waypoint>();
-                    waypoints.Add(new Waypoint(0,0));
+                    var waypoints = new List<Waypoint> {new Waypoint(0, 0)};
                     var uesWay = solverData.Variables.SantaUsesWay[santaIndex];
                     for (int i = 1; i < numberOfVisits; i++)
                     {
