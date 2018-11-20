@@ -16,6 +16,7 @@ namespace IRuettae.Preprocessing.Mapping
 
         private readonly int timeslotLength;
         private readonly OptimizationInput input;
+        private readonly int[] presolved;
 
         private const int TwentyFourHours = 24 * 60 * 60;
 
@@ -24,13 +25,14 @@ namespace IRuettae.Preprocessing.Mapping
         /// </summary>
         public List<(int Start, int End)> Days { get; set; }
 
-        public SchedulingSolverVariableBuilder(int timeslotLength, OptimizationInput input)
+        public SchedulingSolverVariableBuilder(int timeslotLength, OptimizationInput input, int[] presolved)
         {
             Santas = input.Santas.ToList();
             Visits = input.Visits.ToList();
             Days = input.Days.ToList();
             this.timeslotLength = timeslotLength;
             this.input = input;
+            this.presolved = presolved;
         }
 
         /// <summary>
@@ -151,7 +153,7 @@ namespace IRuettae.Preprocessing.Mapping
             distances[0, 0] = 0;
 
             int[] visitLength = Visits.Select(v => SecondsToTimeslice(v.Duration)).Prepend(0).ToArray();
-            return new SolverInputData(santasVar, visitLength, visitsVar, distances, Visits.Select(v => v.Id).ToArray(), Santas.Select(s => s.Id).ToArray());
+            return new SolverInputData(santasVar, visitLength, visitsVar, distances, Visits.Select(v => v.Id).ToArray(), Santas.Select(s => s.Id).ToArray(), presolved);
         }
     }
 }

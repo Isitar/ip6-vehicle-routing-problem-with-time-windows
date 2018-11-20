@@ -29,15 +29,18 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
 
         public int[] VisitIds { get; }
         public int[] SantaIds { get; }
+        public int[] Presolved { get; }
 
-        public SolverInputData(bool[][,] santas, int[] visitsDuration, VisitState[][,] visits, int[,] distances, int[] visitIds, int[] santaIds)
+        public SolverInputData(bool[][,] santas, int[] visitsDuration, VisitState[][,] visits, int[,] distances, int[] visitIds, int[] santaIds, int[] presolved)
         {
+            
             Santas = santas;
             VisitsDuration = visitsDuration;
             Visits = visits;
             Distances = distances;
             VisitIds = visitIds;
             SantaIds = santaIds;
+            Presolved = presolved;
         }
 
         public bool IsValid()
