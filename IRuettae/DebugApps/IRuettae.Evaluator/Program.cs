@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using IRuettae.Core;
 using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm.Models;
@@ -39,10 +40,12 @@ namespace IRuettae.Evaluator
 
         static void Main(string[] args)
         {
-            EvaluateAlgorithm();
-            //TestResultDrawer();
-            Console.Write("Press any key to exit: ");
-            Console.Read();
+            do
+            {
+                EvaluateAlgorithm();
+                Console.Write("New run? [Y/N]: ");
+
+            } while (Console.ReadLine().ToUpper().Equals("Y"));
         }
 
         private static void TestResultDrawer()
@@ -186,6 +189,14 @@ namespace IRuettae.Evaluator
             BigHr();
 
             File.WriteAllText(savepath + ".json", JsonConvert.SerializeObject(result));
+
+            var summary = new StringBuilder();
+            summary.AppendLine($"Solver{algorithmSelection}: {AlgorithmsDictionary[algorithmSelection]}");
+            summary.AppendLine($"Dataset{datasetSelection}: {DatasetDictionary[datasetSelection]}");
+            summary.AppendLine($"TimeElapsed [s]: {result.TimeElapsed}");
+            summary.AppendLine($"Cost: {result.Cost()}");
+
+            File.WriteAllText(savepath + ".txt", summary.ToString());
             Console.WriteLine();
             Console.WriteLine("Done solving");
             Console.WriteLine($"TimeElapsed [s]: {result.TimeElapsed}");
