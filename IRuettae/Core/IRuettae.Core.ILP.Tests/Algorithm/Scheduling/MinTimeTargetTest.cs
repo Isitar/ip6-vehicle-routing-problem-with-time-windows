@@ -59,7 +59,7 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
                 0, 1, 1,
             };
 
-            return new SolverInputData(santas, visitLength, visits, distances, new[] { 0, 1, 2 }, new[] { 0 });
+            return new SolverInputData(santas, visitLength, visits, distances, new[] { 0, 1, 2 }, new[] { 0 }, new int[0], 1);
         }
 
 
@@ -67,7 +67,7 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
         public void TestMinTimeOnly()
         {
             var model = GetModel();
-            var solver = new SchedulingILPSolver(model, SchedulingOptimizationGoals.MinTimeOnly);
+            var solver = new SchedulingILPSolver(model);
             solver.Solve(0, 60000);
             var result = solver.GetResult();
 

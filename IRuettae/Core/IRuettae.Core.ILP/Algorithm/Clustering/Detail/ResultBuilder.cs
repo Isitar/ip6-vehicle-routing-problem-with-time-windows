@@ -23,8 +23,22 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering.Detail
             {
                 foreach (var day in Enumerable.Range(0, realNumberOfDays))
                 {
-                    var waypoints = new List<Waypoint>();
 
+                    
+                    //foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
+                    //{
+                    //    foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
+                    //    {
+                    //        var value = solverData.Variables.SantaUsesWay[santa][source, destination].SolutionValue();
+                    //        if (Math.Abs(value) > 0.0001)
+                    //        {
+                    //            Debug.WriteLine($"S: {source}  |  D: {destination}");
+                    //        }
+                    //    }
+
+                    //}
+                    var waypoints = new List<Waypoint>();
+                    
                     foreach (var visit in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
                         if (Math.Abs(solverData.Variables.SantaVisit[day * realNumberOfSantas + santa, visit].SolutionValue() - 1) < 0.0001)

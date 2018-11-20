@@ -101,7 +101,7 @@ namespace IRuettae.Core.ILP
                 .Select(schedulingInputVariable =>
                 {
 
-                    var schedulingSolver = new Algorithm.Scheduling.SchedulingILPSolver(schedulingInputVariable, SchedulingOptimizationGoals.Default);
+                    var schedulingSolver = new Algorithm.Scheduling.SchedulingILPSolver(schedulingInputVariable);
 
 #if WriteMPS && DEBUG
                     System.IO.File.WriteAllText($@"C:\Temp\iRuettae\ILP\Scheduling\{new Guid()}.mps", schedulingSolver.ExportMPS());

@@ -47,30 +47,30 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
                 0, 1, 1,
             };
 
-            return new SolverInputData(santas, visitLength, visits, distances, new[] { 0, 1, 2 }, new[] { 0 });
+            return new SolverInputData(santas, visitLength, visits, distances, new[] { 0, 1, 2 }, new[] { 0 }, new int[0], 1);
         }
 
 
-        [TestMethod]
-        public void TestTryDesiredOnly()
-        {
-            var model = GetModel();
-            var solver = new SchedulingILPSolver(model, SchedulingOptimizationGoals.TryDesiredOnly);
-            var resultState = solver.Solve(0, 60000);
-            var result = solver.GetResult();
+        //[TestMethod]
+        //public void TestTryDesiredOnly()
+        //{
+        //    var model = GetModel();
+        //    var solver = new SchedulingILPSolver(model, SchedulingOptimizationGoals.TryDesiredOnly);
+        //    var resultState = solver.Solve(0, 60000);
+        //    var result = solver.GetResult();
             
 
-            var wp = result.Waypoints[0, 0];
+        //    var wp = result.Waypoints[0, 0];
 
-            Assert.AreEqual(1, wp[1].StartTime);
-            Assert.AreEqual(4, wp[2].StartTime);
+        //    Assert.AreEqual(1, wp[1].StartTime);
+        //    Assert.AreEqual(4, wp[2].StartTime);
 
-            var firstWaypoint = wp.First();
-            var lastWaypoint = wp.Last();
-            var duration = lastWaypoint.StartTime - firstWaypoint.StartTime;
+        //    var firstWaypoint = wp.First();
+        //    var lastWaypoint = wp.Last();
+        //    var duration = lastWaypoint.StartTime - firstWaypoint.StartTime;
 
-            // one longer than neccessary
-            Assert.AreEqual(7, duration);
-        }
+        //    // one longer than neccessary
+        //    Assert.AreEqual(7, duration);
+        //}
     }
 }
