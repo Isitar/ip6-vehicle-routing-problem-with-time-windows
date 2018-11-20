@@ -87,7 +87,7 @@ namespace IRuettae.Core.ILP
                         RouteCosts = input.RouteCosts,
                     };
 
-                    schedulingSovlerVariableBuilders.Add(new SchedulingSolverVariableBuilder(starterData.TimeSliceDuration, schedulingOptimizationInput));
+                    schedulingSovlerVariableBuilders.Add(new SchedulingSolverVariableBuilder(starterData.TimeSliceDuration, schedulingOptimizationInput, cluster.OrderBy(wp => wp.StartTime).Select(wp => wp.Visit).ToArray()));
                 }
             }
 
@@ -95,7 +95,7 @@ namespace IRuettae.Core.ILP
                 .Where(vb => vb.Visits != null && vb.Visits.Count > 1)
                 .Select(vb => vb.Build());
 
-            
+
             var routeResults = schedulingInputVariables
                 .AsParallel()
                 .Select(schedulingInputVariable =>
@@ -119,7 +119,40 @@ namespace IRuettae.Core.ILP
                     var schedulingResultState = schedulingSolver.Solve(starterData.SchedulingMIPGap, schedulingTimelimitMiliseconds);
                     if (!(new[] { ResultState.Feasible, ResultState.Optimal }).Contains(schedulingResultState))
                     {
-                        return null;
+
+                        var realWaypointList = new List<Algorithm.Waypoint>();
+
+                        // take presolved and return it
+                        for (int i = 0; i < schedulingInputVariable.Presolved.Length; i++)
+                        {
+                            var i1 = i;
+                            var currVisit = input.Visits.FirstOrDefault(v => v.Id == schedulingInputVariable.Presolved[i1] - 1);
+
+                            var timeStamp = 0;
+                            if (i > 0)
+                            {
+                                var lastVisit = input.Visits.FirstOrDefault(v => v.Id == schedulingInputVariable.Presolved[i - 1] - 1);
+
+                                timeStamp = realWaypointList.Last().StartTime + lastVisit.Duration;
+                                timeStamp += i > 1
+                                    ? input.RouteCosts[lastVisit.Id, currVisit.Id]
+                                    : currVisit.WayCostFromHome;
+                            }
+
+                            realWaypointList.Add(new Algorithm.Waypoint(currVisit.Equals(default(Visit)) ? Constants.VisitIdHome : currVisit.Id,
+                                timeStamp));
+                        }
+                        var absolutlyLastVisit = input.Visits.FirstOrDefault(v => v.Id == schedulingInputVariable.Presolved[schedulingInputVariable.Presolved.Length -1] - 1);
+                        realWaypointList.Add(new Algorithm.Waypoint(Constants.VisitIdHome, realWaypointList.Last().StartTime + absolutlyLastVisit.Duration + absolutlyLastVisit.WayCostToHome));
+
+                        return new Algorithm.Route(1,1)
+                        {
+                            SantaIds = schedulingInputVariable.SantaIds,
+                            Waypoints = new[,]
+                            {
+                                {realWaypointList}
+                            }
+                        };
                     }
 
                     var route = schedulingSolver.GetResult();
@@ -149,6 +182,7 @@ namespace IRuettae.Core.ILP
             progress?.Invoke(this, new ProgressReport(0.99));
             consoleProgress?.Invoke(this, "Scheduling done");
             consoleProgress?.Invoke(this, $"Scheduling Result:{Environment.NewLine}" +
+
                 routeResults.Where(r => r != null).Select(r => r.ToString()).Aggregate((acc, c) => acc + Environment.NewLine + c));
 
             // construct new output elem

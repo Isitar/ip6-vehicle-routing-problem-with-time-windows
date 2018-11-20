@@ -114,7 +114,7 @@ namespace IRuettae.Evaluator
             {
                 case 1:
                     (input, coordinates) = DatasetFactory.DataSet1();
-                    timelimit = 10 * 60 * 1000;
+                    timelimit = 10 *  1000;
                     break;
                 case 2:
                     (input, coordinates) = DatasetFactory.DataSet2();
