@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using IRuettae.Core.ILP.Algorithm.Models;
 using IRuettae.Core.ILP.Algorithm.Scheduling.Detail;
@@ -17,16 +18,14 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
         private ResultState resultState = ResultState.NotSolved;
 
         private readonly GLS.Solver solver = new GLS.Solver("SantaProblem", GLS.Solver.SCIP_MIXED_INTEGER_PROGRAMMING);
-        private readonly ITargetFunctionBuilder targetFunctionBuilder;
         private long timelimitMiliseconds = 0;
 
         /// <summary>
         ///
         /// </summary>
-        public SchedulingILPSolver(SolverInputData solverInputData, SchedulingOptimizationGoals optimizationGoal = SchedulingOptimizationGoals.Default)
+        public SchedulingILPSolver(SolverInputData solverInputData)
         {
             this.solverData = new SolverData(solverInputData, solver);
-            this.targetFunctionBuilder = TargetFunctionBuilderFactory.Create(optimizationGoal);
         }
 
         public ResultState Solve()
@@ -86,8 +85,32 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
         {
             PrintDebugRessourcesBefore("AddTargetFunction");
 
-            targetFunctionBuilder.CreateTargetFunction(solverData);
+            var factory = new TargetFunctionFactory(solverData);
+            var targetFunction = new GLS.LinearExpr();
+            targetFunction += factory.CreateTargetFunction(TargetType.MinTime, 40);
+            targetFunction += factory.CreateTargetFunction(TargetType.TryVisitDesired, 20);
 
+            solverData.Solver.Minimize(targetFunction);
+
+
+            // constraint target function based on presolved solution
+            if (solverData.Input.Presolved.Length > 0)
+            {
+                var totalTimePresolved = 0;
+                
+                for (int i = 1; i < solverData.Input.Presolved.Length; i++)
+                {
+                    var currVisit = solverData.Input.Presolved[i];
+                    totalTimePresolved += solverData.Input.VisitsDuration[i];
+                    totalTimePresolved += solverData.Input.Distances[i-1, i];
+                }
+
+                totalTimePresolved += solverData.Input.Distances[solverData.Input.Presolved.Length - 1, 0];
+                solver.Add(targetFunction <= totalTimePresolved * 40);
+            }
+
+            var minWayTime = solverData.Input.Distances.Cast<int>().Where(i => i > 0).Min();
+            solver.Add(targetFunction >= (minWayTime * (solverData.NumberOfVisits + 1) + solverData.Input.VisitsDuration.Sum()) * 40);
             PrintDebugRessourcesAfter();
         }
 
@@ -101,7 +124,11 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
             {
                 solver.SetTimeLimit(timelimitMiliseconds);
             }
+#if DEBUG
             solver.EnableOutput();
+#else
+            solver.SuppressOutput();
+#endif
             resultState = FromGoogleResultState(solver.Solve(param));
 
             PrintDebugRessourcesAfter();

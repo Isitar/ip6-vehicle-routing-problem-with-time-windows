@@ -58,7 +58,7 @@ namespace IRuettae.Core.Models
         public int Cost()
         {
             const int hour = 3600;
-            return (int)(Math.Ceiling(
+         return (int)(Math.Ceiling(
                                        +560 * NumberOfNotVisitedFamilies()
                                        + 560 * NumberOfMissingBreaks()
                                        + 400 * NumberOfAdditionalSantas()
@@ -88,9 +88,8 @@ namespace IRuettae.Core.Models
                 santaBreaks.Add(v.SantaId, v.Id);
             }
 
-            return NonEmptyRoutes.Where(r =>
-                    santaBreaks.ContainsKey(r.SantaId)
-                    && !r.Waypoints.Any(wp => wp.VisitId == santaBreaks[r.SantaId])).Count();
+            return NonEmptyRoutes.Count(r => santaBreaks.ContainsKey(r.SantaId)
+                    && r.Waypoints.All(wp => wp.VisitId != santaBreaks[r.SantaId]));
         }
 
         public int NumberOfAdditionalSantas()
@@ -255,8 +254,9 @@ namespace IRuettae.Core.Models
         /// <returns></returns>
         private static int IntersectionLength(IEnumerable<(int from, int to)> intervals)
         {
-            int startIntersection = intervals.Max(interval => interval.from);
-            int endIntersection = intervals.Min(interval => interval.to);
+            var intervalList = intervals.ToList();
+            int startIntersection = intervalList.Max(interval => interval.from);
+            int endIntersection = intervalList.Min(interval => interval.to);
             if (startIntersection < endIntersection)
             {
                 return endIntersection - startIntersection;

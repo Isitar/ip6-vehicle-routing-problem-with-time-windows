@@ -122,8 +122,11 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering
             {
                 solver.SetTimeLimit(timelimit);
             }
-
+#if DEBUG
             solver.EnableOutput();
+#else
+            solver.SuppressOutput();
+#endif
             resultState = FromGoogleResultState(solver.Solve(param));
 
             PrintDebugRessourcesAfter();

@@ -69,13 +69,7 @@
     <Compile Include="Algorithm\Models\SchedulingOptimizationGoals.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\SolverData.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\SolverVariables.cs" />
-    <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\ITargetFunctionBuilder.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\ConstraintBuilder.cs" />
-    <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\DefaultTargetFunctionBuilder.cs" />
-    <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\MinTimeOnlyTargetFunctionBuilder.cs" />
-    <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\MixedTargetFunctionBuilder.cs" />
-    <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\TryDesiredOnlyTargetFunctionBuilder.cs" />
-    <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\TargetFunctionBuilderFactory.cs" />
     <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\TargetFunctionFactory.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\VariableBuilder.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\ResultBuilder.cs" />
