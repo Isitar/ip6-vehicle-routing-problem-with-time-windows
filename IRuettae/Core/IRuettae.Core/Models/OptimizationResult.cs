@@ -58,7 +58,7 @@ namespace IRuettae.Core.Models
         public int Cost()
         {
             const int hour = 3600;
-         return (int)(Math.Ceiling(
+            return (int)(Math.Ceiling(
                                        +560 * NumberOfNotVisitedFamilies()
                                        + 560 * NumberOfMissingBreaks()
                                        + 400 * NumberOfAdditionalSantas()
@@ -68,7 +68,7 @@ namespace IRuettae.Core.Models
                                        - (20d / hour) * VisitTimeInDesired()
                                        + (40d / hour) * SantaWorkTime()
                                        + (30d / hour) * LongestDay()
-                );
+            );
         }
         public int NumberOfNotVisitedFamilies()
         {
