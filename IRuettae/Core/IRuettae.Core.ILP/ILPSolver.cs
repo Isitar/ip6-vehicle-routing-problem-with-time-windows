@@ -108,7 +108,7 @@ namespace IRuettae.Core.ILP
 #endif
 
 
-                    var clusteringExtraTime = clusteringTimeLimitMiliseconds - sw.ElapsedMilliseconds;
+                    var clusteringExtraTime = Math.Max(0, clusteringTimeLimitMiliseconds - sw.ElapsedMilliseconds);
                     var schedulingTimelimitMiliseconds = starterData.SchedulingTimeLimitMiliseconds + clusteringExtraTime;
                     if (schedulingTimelimitMiliseconds == 0 && timelimitMiliseconds != 0)
                     {
