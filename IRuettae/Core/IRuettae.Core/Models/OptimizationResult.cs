@@ -37,7 +37,7 @@ namespace IRuettae.Core.Models
         {
             get
             {
-                return Routes.Where(r => r.Waypoints != null && r.Waypoints.Where(wp => wp.VisitId != Constants.VisitIdHome).Count() > 0);
+                return Routes.Where(r => r.Waypoints != null && r.Waypoints.Any(wp => wp.VisitId != Constants.VisitIdHome));
             }
         }
 
@@ -252,11 +252,10 @@ namespace IRuettae.Core.Models
         /// </summary>
         /// <param name="intervals"></param>
         /// <returns></returns>
-        private static int IntersectionLength(IEnumerable<(int from, int to)> intervals)
+        private static int IntersectionLength(IReadOnlyCollection<(int from, int to)> intervals)
         {
-            var intervalList = intervals.ToList();
-            int startIntersection = intervalList.Max(interval => interval.from);
-            int endIntersection = intervalList.Min(interval => interval.to);
+            int startIntersection = intervals.Max(interval => interval.from);
+            int endIntersection = intervals.Min(interval => interval.to);
             if (startIntersection < endIntersection)
             {
                 return endIntersection - startIntersection;
