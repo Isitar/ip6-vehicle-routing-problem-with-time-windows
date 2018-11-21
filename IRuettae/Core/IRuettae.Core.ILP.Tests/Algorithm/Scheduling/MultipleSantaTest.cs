@@ -48,7 +48,7 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
                 0, 1, 1,
             };
 
-            return new SolverInputData(santas, visitLength, visits, distances, new[] { 0, 1, 2 }, new[] { 0, 1 }, new int[0], 1, new[] { 0 });
+            return new SolverInputData(santas, visitLength, visits, distances, new[] { 0, 1, 2 }, new[] { 0, 1 }, new int[0], new[] { 0 });
         }
 
 

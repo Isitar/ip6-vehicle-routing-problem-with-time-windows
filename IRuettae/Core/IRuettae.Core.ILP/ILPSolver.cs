@@ -162,7 +162,7 @@ namespace IRuettae.Core.ILP
                                 wp.Visit = wp.Visit == 0
                                     ? Constants.VisitIdHome
                                     : schedulingInputVariable.VisitIds[wp.Visit - 1];
-                                wp.StartTime *= schedulingInputVariable.TimeSliceLength;
+                                wp.StartTime *= starterData.TimeSliceDuration;
                                 wp.StartTime += schedulingInputVariable.DayStarts[jCopy];
                                 realWaypointList.Add(wp);
                             });
