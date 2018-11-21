@@ -61,7 +61,6 @@
   <ItemGroup>
     <Compile Include="Algorithm\Clustering\ATSPTests.cs" />
     <Compile Include="Algorithm\Scheduling\DefaultTargetTest.cs" />
-    <Compile Include="Algorithm\Scheduling\TryDesiredTargetTest.cs" />
     <Compile Include="Algorithm\Scheduling\MultipleSantaTest.cs" />
     <Compile Include="Algorithm\RouteTest.cs" />
     <Compile Include="Algorithm\Scheduling\StarterTest.cs" />

@@ -60,7 +60,7 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
                 0, 1, 2, 2, 2,
             };
 
-            return new SolverInputData(santas, visitLength, visits, distances, new[] { 0, 1, 2, 3, 4 }, new[] { 0 },new int[0],1, new[] { 0 });
+            return new SolverInputData(santas, visitLength, visits, distances, new[] { 0, 1, 2, 3, 4 }, new[] { 0 }, new int[0], new[] { 0 });
         }
 
         [TestMethod]
@@ -108,7 +108,7 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
             // shouldn't throw an exception
             var solver = new SchedulingILPSolver(model);
             var resultState = solver.Solve(0, 60000);
-            
+
             Assert.AreNotEqual(ResultState.Infeasible, resultState);
         }
     }

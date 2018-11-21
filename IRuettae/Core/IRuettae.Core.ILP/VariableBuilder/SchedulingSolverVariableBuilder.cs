@@ -153,7 +153,7 @@ namespace IRuettae.Preprocessing.Mapping
             distances[0, 0] = 0;
 
             int[] visitLength = Visits.Select(v => SecondsToTimeslice(v.Duration)).Prepend(0).ToArray();
-            return new SolverInputData(santasVar, visitLength, visitsVar, distances, Visits.Select(v => v.Id).ToArray(), Santas.Select(s => s.Id).ToArray(), presolved, timeslotLength, Days.Select(d => d.Start).ToArray());
+            return new SolverInputData(santasVar, visitLength, visitsVar, distances, Visits.Select(v => v.Id).ToArray(), Santas.Select(s => s.Id).ToArray(), presolved, Days.Select(d => d.Start).ToArray());
         }
     }
 }
