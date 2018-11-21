@@ -7,12 +7,19 @@ namespace IRuettae.Evaluator
          * Queries
          *
          * Coords
+         *
+            SELECT Concat('(', Round(100000 * (lat - 47.36), 0), ',', Round(100000 * (`Long` - 8.28), 0), '),')
+            FROM visit
+            WHERE Id = 12;
+
             SELECT Concat('(',Round(100000*(lat-47.36),0),',',Round(100000*(`Long`-8.28),0),'),')
             from visit
             WHERE Id <= 35 AND id != 12
             order by id;
          *
          * RouteCost
+         *
+         *
          *  SELECT From_id, concat('{',group_concat(Duration, ''),'},')
             from way
             WHERE TRUE
@@ -63,6 +70,7 @@ namespace IRuettae.Evaluator
             // Coordinates of points
             var coordinates = new[]
             {
+                (1626,1536),
                 (1662,1472),
                 (1439,1542),
                 (1574,1681),
