@@ -34,8 +34,9 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 
             while (child.Count < count)
             {
+                DeleteNeighbour(neighbours, previousAllele);
                 var insertAllele = FindNextAllele(neighbours, previousAllele);
-                DeleteAllele(neighbours, previousAllele);
+                neighbours.Remove(previousAllele);
                 child.Add(insertAllele);
                 previousAllele = insertAllele;
             }
@@ -50,7 +51,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <param name="neighbours"></param>
         /// <param name="previousAllele"></param>
         /// <returns></returns>
-        private static int FindNextAllele(Dictionary<int, List<int>> neighbours, int previousAllele)
+        private static int FindNextAllele(Dictionary<int, ISet<int>> neighbours, int previousAllele)
         {
             var lowestNumberOfNeighbours = int.MaxValue;
             int? nextAllele = null;
@@ -74,15 +75,14 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         }
 
         /// <summary>
-        /// Removes every occurence of allele in neighbours.
-        /// Precondition: neighbours has a value for key=allele.
+        /// Removes every occurence of allele in every list of neighbours.
+        /// Post condition: neighbours[allele] still exists
         /// </summary>
         /// <param name="neighbours"></param>
         /// <param name="allele"></param>
-        private static void DeleteAllele(Dictionary<int, List<int>> neighbours, int allele)
+        /// <returns></returns>
+        private static void DeleteNeighbour(Dictionary<int, ISet<int>> neighbours, int allele)
         {
-            neighbours.Remove(allele);
-
             foreach (var key in neighbours.Keys)
             {
                 neighbours[key].Remove(allele);
@@ -99,13 +99,13 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <param name="parent1"></param>
         /// <param name="parent2"></param>
         /// <returns></returns>
-        private static Dictionary<int, List<int>> GetNeighbours(Genotype parent1, Genotype parent2)
+        private static Dictionary<int, ISet<int>> GetNeighbours(Genotype parent1, Genotype parent2)
         {
             // allele to neighbours
-            var neighbours = new Dictionary<int, List<int>>();
+            var neighbours = new Dictionary<int, ISet<int>>();
             foreach (var allele in parent1)
             {
-                neighbours[allele] = new List<int>();
+                neighbours[allele] = new SortedSet<int>();
             }
 
             void addNeightbour(int pos, int posNeighbour)
