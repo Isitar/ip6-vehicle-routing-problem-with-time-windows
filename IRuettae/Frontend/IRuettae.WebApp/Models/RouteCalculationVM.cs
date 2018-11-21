@@ -52,6 +52,9 @@ namespace IRuettae.WebApp.Models
         [DisplayName("Anzahl nicht besuchter Familien")]
         public virtual int NumberOfNotVisitedFamilies { get; set; }
 
+        [DisplayName("Anzahl ausgelassener Pausen")]
+        public virtual int NumberOfMissingBreaks { get; set; }
+
         [DisplayName("Anzahl zusätzlich benötigter Chläuse")]
         public virtual int NumberOfAdditionalSantas { get; set; }
 
@@ -86,7 +89,7 @@ namespace IRuettae.WebApp.Models
         [DisplayName("Totale Besuchszeit")]
         public virtual int TotalVisitTime { get; set; }
 
-        
+
         [DisplayName("Durchschnittliche Wegzeit")]
         public virtual int AverageWayTimePerRoute { get; set; }
 

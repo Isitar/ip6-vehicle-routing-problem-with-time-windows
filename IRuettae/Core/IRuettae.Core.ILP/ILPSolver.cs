@@ -16,29 +16,20 @@ namespace IRuettae.Core.ILP
 {
     public class ILPSolver : ISolver
     {
-        private const bool ExportMPS = false;
-
         private readonly OptimizationInput input;
         private readonly ILPStarterData starterData;
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="input"></param>
-        /// <param name="timeSliceDuration">in seconds</param>
-        /// <param name="clusteringMIPGap">from 0 - 1</param>
-        /// <param name="schedulingMIPGap">from 0 - 1</param>
         public ILPSolver(OptimizationInput input, ILPStarterData starterData)
         {
             this.input = input;
             this.starterData = starterData;
         }
 
-        public OptimizationResult Solve(int timelimit, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
+        public OptimizationResult Solve(long timelimitMiliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
         {
-            if (timelimit < starterData.ClusteringTimeLimit + starterData.SchedulingTimeLimit)
+            if (timelimitMiliseconds < starterData.ClusteringTimeLimitMiliseconds + starterData.SchedulingTimeLimitMiliseconds)
             {
-                throw new ArgumentException("overall timelimit must be at least the sum of ClusteringTimeLimit and SchedulingTimeLimit");
+                throw new ArgumentException("overall timelimitMiliseconds must be at least the sum of ClusteringTimeLimit and SchedulingTimeLimit");
             }
 
             consoleProgress?.Invoke(this, "Solving started");
@@ -54,14 +45,14 @@ namespace IRuettae.Core.ILP
 #if WriteMPS && DEBUG
             System.IO.File.WriteAllText($@"C:\Temp\iRuettae\ILP\Clustering\{new Guid()}.mps", clusterinSolver.ExportMPS());
 #endif
-            var clusteringTimeLimit = starterData.ClusteringTimeLimit;
-            if (clusteringTimeLimit == 0)
+            var clusteringTimeLimitMiliseconds = starterData.ClusteringTimeLimitMiliseconds;
+            if (clusteringTimeLimitMiliseconds == 0)
             {
                 // avoid surpassing timelimit
-                clusteringTimeLimit = timelimit;
+                clusteringTimeLimitMiliseconds = timelimitMiliseconds;
             }
 
-            var phase1ResultState = clusteringSolver.Solve(starterData.ClusteringMIPGap, clusteringTimeLimit);
+            var phase1ResultState = clusteringSolver.Solve(starterData.ClusteringMIPGap, clusteringTimeLimitMiliseconds);
             if (!(new[] { ResultState.Feasible, ResultState.Optimal }).Contains(phase1ResultState))
             {
                 return null;
@@ -87,7 +78,7 @@ namespace IRuettae.Core.ILP
                         RouteCosts = input.RouteCosts,
                     };
 
-                    schedulingSovlerVariableBuilders.Add(new SchedulingSolverVariableBuilder(starterData.TimeSliceDuration, schedulingOptimizationInput));
+                    schedulingSovlerVariableBuilders.Add(new SchedulingSolverVariableBuilder(starterData.TimeSliceDuration, schedulingOptimizationInput, cluster.OrderBy(wp => wp.StartTime).Select(wp => wp.Visit).ToArray()));
                 }
             }
 
@@ -100,25 +91,59 @@ namespace IRuettae.Core.ILP
                 .AsParallel()
                 .Select(schedulingInputVariable =>
                 {
-                   // var targetFunctionBuilder = Algorithm.Scheduling.TargetFunctionBuilders.TargetFunctionBuilderFactory.Create(SchedulingOptimizationGoals.Default);
-                    var schedulingSolver =
-                        new Algorithm.Scheduling.SchedulingILPSolver(schedulingInputVariable, SchedulingOptimizationGoals.Default);
+
+                    var schedulingSolver = new Algorithm.Scheduling.SchedulingILPSolver(schedulingInputVariable);
 
 #if WriteMPS && DEBUG
                     System.IO.File.WriteAllText($@"C:\Temp\iRuettae\ILP\Scheduling\{new Guid()}.mps", schedulingSolver.ExportMPS());
 #endif
 
-                    var schedulingTimelimit = starterData.SchedulingTimeLimit;
-                    if (schedulingTimelimit == 0 && timelimit != 0)
+
+                    var clusteringExtraTime = Math.Max(0, clusteringTimeLimitMiliseconds - sw.ElapsedMilliseconds);
+                    var schedulingTimelimitMiliseconds = starterData.SchedulingTimeLimitMiliseconds + clusteringExtraTime;
+                    if (schedulingTimelimitMiliseconds == 0 && timelimitMiliseconds != 0)
                     {
                         // avoid surpassing timelimit
-                        schedulingTimelimit = Math.Max(1, timelimit - (sw.ElapsedMilliseconds / 1000));
+                        schedulingTimelimitMiliseconds = Math.Max(1, timelimitMiliseconds - sw.ElapsedMilliseconds);
                     }
 
-                    var schedulingResultState = schedulingSolver.Solve(starterData.SchedulingMIPGap, schedulingTimelimit);
+                    var schedulingResultState = schedulingSolver.Solve(starterData.SchedulingMIPGap, schedulingTimelimitMiliseconds);
                     if (!(new[] { ResultState.Feasible, ResultState.Optimal }).Contains(schedulingResultState))
                     {
-                        return null;
+
+                        var realWaypointList = new List<Algorithm.Waypoint>();
+
+                        // take presolved and return it
+                        for (int i = 0; i < schedulingInputVariable.Presolved.Length; i++)
+                        {
+                            var i1 = i;
+                            var currVisit = input.Visits.FirstOrDefault(v => v.Id == schedulingInputVariable.Presolved[i1] - 1);
+
+                            var timeStamp = schedulingInputVariable.DayStarts[0];
+                            if (i > 0)
+                            {
+                                var lastVisit = input.Visits.FirstOrDefault(v => v.Id == schedulingInputVariable.Presolved[i - 1] - 1);
+
+                                timeStamp = realWaypointList.Last().StartTime + lastVisit.Duration;
+                                timeStamp += i > 1
+                                    ? input.RouteCosts[lastVisit.Id, currVisit.Id]
+                                    : currVisit.WayCostFromHome;
+                            }
+
+                            realWaypointList.Add(new Algorithm.Waypoint(currVisit.Equals(default(Visit)) ? Constants.VisitIdHome : currVisit.Id,
+                                timeStamp));
+                        }
+                        var absolutlyLastVisit = input.Visits.FirstOrDefault(v => v.Id == schedulingInputVariable.Presolved[schedulingInputVariable.Presolved.Length - 1] - 1);
+                        realWaypointList.Add(new Algorithm.Waypoint(Constants.VisitIdHome, realWaypointList.Last().StartTime + absolutlyLastVisit.Duration + absolutlyLastVisit.WayCostToHome));
+
+                        return new Algorithm.Route(1, 1)
+                        {
+                            SantaIds = schedulingInputVariable.SantaIds,
+                            Waypoints = new[,]
+                            {
+                                {realWaypointList}
+                            }
+                        };
                     }
 
                     var route = schedulingSolver.GetResult();
@@ -130,17 +155,20 @@ namespace IRuettae.Core.ILP
                             var realWaypointList = new List<Algorithm.Waypoint>();
 
                             var waypointList = route.Waypoints[i, j];
+                            // copy for later lambda expression
+                            var jCopy = j;
                             waypointList.ForEach(wp =>
                             {
                                 wp.Visit = wp.Visit == 0
-                                    ? -1
+                                    ? Constants.VisitIdHome
                                     : schedulingInputVariable.VisitIds[wp.Visit - 1];
+                                wp.StartTime *= starterData.TimeSliceDuration;
+                                wp.StartTime += schedulingInputVariable.DayStarts[jCopy];
                                 realWaypointList.Add(wp);
                             });
                             route.Waypoints[i, j] = realWaypointList;
                         }
                     }
-
                     return route;
                 })
                 .ToList();
@@ -154,16 +182,16 @@ namespace IRuettae.Core.ILP
             var optimizationResult = new OptimizationResult()
             {
                 OptimizationInput = input,
-                Routes = routeResults.Select(r => new Route
+                Routes = routeResults.Select(r => r != null ? new Route
                 {
                     SantaId = r.SantaIds[0],
                     Waypoints = r.Waypoints[0, 0].Select(origWp => new Waypoint
                     {
                         VisitId = origWp.Visit,
-                        StartTime = origWp.StartTime * starterData.TimeSliceDuration
+                        StartTime = origWp.StartTime
                     }).ToArray(),
 
-                }).ToArray(),
+                } : new Route()).ToArray(),
             };
 
             progress?.Invoke(this, new ProgressReport(1));

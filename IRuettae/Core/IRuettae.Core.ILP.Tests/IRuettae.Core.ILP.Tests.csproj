@@ -7,8 +7,8 @@
     <ProjectGuid>{648BD52D-DEA2-491C-B7D9-9DC959F537DE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>IRuettae.Core.Tests</RootNamespace>
-    <AssemblyName>IRuettae.Core.Tests</AssemblyName>
+    <RootNamespace>IRuettae.Core.ILP.Tests</RootNamespace>
+    <AssemblyName>IRuettae.Core.ILP.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -61,7 +61,6 @@
   <ItemGroup>
     <Compile Include="Algorithm\Clustering\ATSPTests.cs" />
     <Compile Include="Algorithm\Scheduling\DefaultTargetTest.cs" />
-    <Compile Include="Algorithm\Scheduling\TryDesiredTargetTest.cs" />
     <Compile Include="Algorithm\Scheduling\MultipleSantaTest.cs" />
     <Compile Include="Algorithm\RouteTest.cs" />
     <Compile Include="Algorithm\Scheduling\StarterTest.cs" />

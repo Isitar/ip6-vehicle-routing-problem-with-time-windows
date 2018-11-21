@@ -149,6 +149,15 @@ namespace IRuettae.Core.Models.Tests
                     {
                         Id = 5,
                         Duration = 100 * hour,
+                        IsBreak = false,
+                        SantaId = -1,
+                    },
+                    new Visit // break will not be done
+                    {
+                        Id = 6,
+                        Duration = 100 * hour,
+                        IsBreak = true,
+                        SantaId = 100,
                     }
                 };
                 input.Days = new(int, int)[]
@@ -180,7 +189,7 @@ namespace IRuettae.Core.Models.Tests
                         {
                             new Waypoint
                             {
-                                VisitId=-1,
+                                VisitId=Constants.VisitIdHome,
                                 StartTime=day1Start-2*hour,
                             },
                             // way=1h=w01
@@ -203,7 +212,7 @@ namespace IRuettae.Core.Models.Tests
                             // way=30min=w20
                             new Waypoint
                             {
-                                VisitId=-1,
+                                VisitId=Constants.VisitIdHome,
                                 StartTime=day1End+90*minute,
                             }
                         }
@@ -217,7 +226,7 @@ namespace IRuettae.Core.Models.Tests
                         {
                             new Waypoint
                             {
-                                VisitId=-1,
+                                VisitId=Constants.VisitIdHome,
                                 StartTime=day1Start,
                             },
                             // way=2h=w03
@@ -232,7 +241,7 @@ namespace IRuettae.Core.Models.Tests
                             // way=2h=w030
                             new Waypoint
                             {
-                                VisitId=-1,
+                                VisitId=Constants.VisitIdHome,
                                 StartTime=day1End,
                             }
                         }
@@ -245,7 +254,7 @@ namespace IRuettae.Core.Models.Tests
                         {
                             new Waypoint
                             {
-                                VisitId=-1,
+                                VisitId=Constants.VisitIdHome,
                                 StartTime=day2Start+45*minute,
                             },
                             // way=15min=w04
@@ -258,7 +267,7 @@ namespace IRuettae.Core.Models.Tests
                             // way=40min=w40
                             new Waypoint
                             {
-                                VisitId=-1,
+                                VisitId=Constants.VisitIdHome,
                                 StartTime=day2Start+2*hour,
                             }
                         }
@@ -273,6 +282,101 @@ namespace IRuettae.Core.Models.Tests
         {
             var model = GetModel();
             Assert.AreEqual(1, model.NumberOfNotVisitedFamilies());
+        }
+
+        [TestMethod()]
+        public void NumberOfMissingBreaksTest()
+        {
+            var model = GetModel();
+            Assert.AreEqual(1, model.NumberOfMissingBreaks());
+        }
+
+        [TestMethod()]
+        public void NumberOfMissingBreaksTest_Empty()
+        {
+            var input = new OptimizationInput()
+            {
+                Santas = new Santa[]
+                {
+                    new Santa
+                    {
+                        Id = 100,
+                    },
+                },
+                Visits = new Visit[]
+                {
+                    new Visit
+                    {
+                        Id = 1,
+                        IsBreak = true,
+                        SantaId = 100,
+                    }
+                },
+                Days = new(int, int)[0],
+                RouteCosts = new int[0, 0],
+            };
+
+            var model = new OptimizationResult
+            {
+                OptimizationInput = input,
+                Routes = new Route[]
+                {
+                    // day1
+                    // break, home, break, break, home, break
+                    new Route
+                    {
+                        SantaId=100,
+                        Waypoints=new Waypoint[]
+                        {
+                            new Waypoint
+                            {
+                                VisitId=1,
+                                StartTime=day1Start-3*hour,
+                            },
+                            new Waypoint
+                            {
+                                VisitId=Constants.VisitIdHome,
+                                StartTime=day1Start-2*hour,
+                            },
+                            new Waypoint
+                            {
+                                VisitId=1,
+                                StartTime=day1Start-1*hour,
+                            },
+                            new Waypoint
+                            {
+                                VisitId=1,
+                                StartTime=day1End-1*hour,
+                            },
+                            new Waypoint
+                            {
+                                VisitId=Constants.VisitIdHome,
+                                StartTime=day1End+90*minute,
+                            },
+                            new Waypoint
+                            {
+                                VisitId=1,
+                                StartTime=day1End+2*hour,
+                            },
+                        }
+                    },
+                    // day2, only one break
+                    new Route
+                    {
+                        SantaId=100,
+                        Waypoints=new Waypoint[]
+                        {
+                            new Waypoint
+                            {
+                                VisitId=1,
+                                StartTime=day2Start+2*hour,
+                            },
+                        }
+                    },
+                }
+            };
+
+            Assert.AreEqual(0, model.NumberOfMissingBreaks());
         }
 
         [TestMethod()]
@@ -294,7 +398,15 @@ namespace IRuettae.Core.Models.Tests
         {
             var model = GetModel();
             var sum = 30 * minute + 1 * hour + 15 * minute;
-            Assert.AreEqual(sum, model.VisitTimeInUnavailabe());
+            Assert.AreEqual(sum, model.VisitTimeInUnavailable());
+        }
+
+        [TestMethod()]
+        public void WayTimeOutsideBusinessHoursTest()
+        {
+            var model = GetModel();
+            var sum = 1 * hour + 30 * minute + 30 * minute;
+            Assert.AreEqual(sum, model.WayTimeOutsideBusinessHours());
         }
 
         [TestMethod()]
@@ -341,7 +453,7 @@ namespace IRuettae.Core.Models.Tests
         public void NumberOfVisitsTest()
         {
             var model = GetModel();
-            Assert.AreEqual(5, model.NumberOfVisits());
+            Assert.AreEqual(6, model.NumberOfVisits());
         }
 
         [TestMethod()]
