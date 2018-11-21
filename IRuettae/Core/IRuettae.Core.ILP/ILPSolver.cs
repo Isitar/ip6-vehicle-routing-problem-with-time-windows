@@ -19,13 +19,6 @@ namespace IRuettae.Core.ILP
         private readonly OptimizationInput input;
         private readonly ILPStarterData starterData;
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="input"></param>
-        /// <param name="timeSliceDuration">in seconds</param>
-        /// <param name="clusteringMIPGap">from 0 - 1</param>
-        /// <param name="schedulingMIPGap">from 0 - 1</param>
         public ILPSolver(OptimizationInput input, ILPStarterData starterData)
         {
             this.input = input;
