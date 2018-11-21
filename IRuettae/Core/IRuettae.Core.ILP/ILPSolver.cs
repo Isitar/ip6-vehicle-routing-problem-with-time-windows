@@ -16,18 +16,9 @@ namespace IRuettae.Core.ILP
 {
     public class ILPSolver : ISolver
     {
-        private const bool ExportMPS = false;
-
         private readonly OptimizationInput input;
         private readonly ILPStarterData starterData;
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="input"></param>
-        /// <param name="timeSliceDuration">in seconds</param>
-        /// <param name="clusteringMIPGap">from 0 - 1</param>
-        /// <param name="schedulingMIPGap">from 0 - 1</param>
         public ILPSolver(OptimizationInput input, ILPStarterData starterData)
         {
             this.input = input;
@@ -142,10 +133,10 @@ namespace IRuettae.Core.ILP
                             realWaypointList.Add(new Algorithm.Waypoint(currVisit.Equals(default(Visit)) ? Constants.VisitIdHome : currVisit.Id,
                                 timeStamp));
                         }
-                        var absolutlyLastVisit = input.Visits.FirstOrDefault(v => v.Id == schedulingInputVariable.Presolved[schedulingInputVariable.Presolved.Length -1] - 1);
+                        var absolutlyLastVisit = input.Visits.FirstOrDefault(v => v.Id == schedulingInputVariable.Presolved[schedulingInputVariable.Presolved.Length - 1] - 1);
                         realWaypointList.Add(new Algorithm.Waypoint(Constants.VisitIdHome, realWaypointList.Last().StartTime + absolutlyLastVisit.Duration + absolutlyLastVisit.WayCostToHome));
 
-                        return new Algorithm.Route(1,1)
+                        return new Algorithm.Route(1, 1)
                         {
                             SantaIds = schedulingInputVariable.SantaIds,
                             Waypoints = new[,]
@@ -164,6 +155,7 @@ namespace IRuettae.Core.ILP
                             var realWaypointList = new List<Algorithm.Waypoint>();
 
                             var waypointList = route.Waypoints[i, j];
+                            // copy for later lambda expression
                             var jCopy = j;
                             waypointList.ForEach(wp =>
                             {
@@ -196,7 +188,7 @@ namespace IRuettae.Core.ILP
                     Waypoints = r.Waypoints[0, 0].Select(origWp => new Waypoint
                     {
                         VisitId = origWp.Visit,
-                        StartTime = origWp.StartTime 
+                        StartTime = origWp.StartTime
                     }).ToArray(),
 
                 } : new Route()).ToArray(),

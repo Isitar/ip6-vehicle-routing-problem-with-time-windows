@@ -12,6 +12,8 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
 {
     public class SchedulingILPSolver : ISolver
     {
+        private const int WaytimeWeight = 40;
+        private const int DesiredWeight = 20;
         private readonly SolverData solverData;
         private double MIP_GAP = 0;
         private bool hasModel = false;
@@ -87,8 +89,8 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
 
             var factory = new TargetFunctionFactory(solverData);
             var targetFunction = new GLS.LinearExpr();
-            targetFunction += factory.CreateTargetFunction(TargetType.MinTime, 40);
-            targetFunction += factory.CreateTargetFunction(TargetType.TryVisitDesired, 20);
+            targetFunction += factory.CreateTargetFunction(TargetType.MinTime, WaytimeWeight);
+            targetFunction += factory.CreateTargetFunction(TargetType.TryVisitDesired, DesiredWeight);
 
             solverData.Solver.Minimize(targetFunction);
 
@@ -100,17 +102,16 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
                 
                 for (int i = 1; i < solverData.Input.Presolved.Length; i++)
                 {
-                    var currVisit = solverData.Input.Presolved[i];
                     totalTimePresolved += solverData.Input.VisitsDuration[i];
                     totalTimePresolved += solverData.Input.Distances[i-1, i];
                 }
 
                 totalTimePresolved += solverData.Input.Distances[solverData.Input.Presolved.Length - 1, 0];
-                solver.Add(targetFunction <= totalTimePresolved * 40);
+                solver.Add(targetFunction <= totalTimePresolved * WaytimeWeight);
             }
 
             var minWayTime = solverData.Input.Distances.Cast<int>().Where(i => i > 0).Min();
-            solver.Add(targetFunction >= (minWayTime * (solverData.NumberOfVisits + 1) + solverData.Input.VisitsDuration.Sum()) * 40);
+            solver.Add(targetFunction >= (minWayTime * (solverData.NumberOfVisits + 1) + solverData.Input.VisitsDuration.Sum()) * WaytimeWeight);
             PrintDebugRessourcesAfter();
         }
 
