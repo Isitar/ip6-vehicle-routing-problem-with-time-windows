@@ -9,16 +9,24 @@ using localsolver;
 
 namespace IRuettae.Core.LocalSolver
 {
+    /// <summary>
+    /// IRuettae Solver using LocalSolver
+    /// </summary>
     public class Solver : ISolver
     {
         private readonly OptimizationInput input;
 
+        /// <summary>
+        /// Instanciates a new LocalSolver.Solver class with the given opzimization input
+        /// </summary>
+        /// <param name="input">the optimization input being used to solve the problem</param>
         public Solver(OptimizationInput input)
         {
             this.input = input;
         }
 
-        public OptimizationResult Solve(long timelimit, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
+        /// <inheritdoc />
+        public OptimizationResult Solve(long timelimitMiliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
         {
             var sw = Stopwatch.StartNew();
             var result = new OptimizationResult
@@ -26,9 +34,9 @@ namespace IRuettae.Core.LocalSolver
                 OptimizationInput = input
             };
 
-            using (var localsolver = new localsolver.LocalSolver())
+            using (var localSolver = new localsolver.LocalSolver())
             {
-                var model = localsolver.GetModel();
+                var model = localSolver.GetModel();
                 var numberOfSantas = input.Santas.Length * input.Days.Length;
                 var numberOfDays = input.Days.Length;
                 var santaUsed = new LSExpression[numberOfSantas];
@@ -46,7 +54,6 @@ namespace IRuettae.Core.LocalSolver
                     visitSequences[k] = model.List(numberOfVisits);
 
                 model.Constraint(model.Partition(visitSequences));
-
 
                 var distanceArray = model.Array(input.RouteCosts);
                 var distanceFromHomeArray = model.Array(input.Visits.Select(v => v.WayCostFromHome).ToArray());
@@ -168,10 +175,10 @@ namespace IRuettae.Core.LocalSolver
                 model.Close();
 
                 // Parameterizes the solver.
-                var phase = localsolver.CreatePhase();
+                var phase = localSolver.CreatePhase();
                 phase.SetTimeLimit((int)((timelimit - sw.ElapsedMilliseconds) / 1000));
 
-                localsolver.Solve();
+                localSolver.Solve();
                 result.Routes = new Route[numberOfSantas];
                 for (int i = 0; i < numberOfSantas; i++)
                 {
