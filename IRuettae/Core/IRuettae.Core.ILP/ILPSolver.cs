@@ -155,6 +155,7 @@ namespace IRuettae.Core.ILP
                             var realWaypointList = new List<Algorithm.Waypoint>();
 
                             var waypointList = route.Waypoints[i, j];
+                            // copy for later lambda expression
                             var jCopy = j;
                             waypointList.ForEach(wp =>
                             {
