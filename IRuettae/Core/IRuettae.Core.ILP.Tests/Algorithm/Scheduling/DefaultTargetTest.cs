@@ -55,21 +55,5 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
             return new SolverInputData(santas, visitLength, visits, distances, new[] { 0, 1, 2 }, new[] { 0 }, new int[0], 1, new[] { 0 });
         }
 
-
-        [TestMethod]
-        public void TestMinTimeOnly()
-        {
-            var model = GetModel();
-            var solver = new SchedulingILPSolver(model);
-            solver.Solve(0, 60000);
-            var result = solver.GetResult();
-
-
-            var waypoints = result.Waypoints[0, 0];
-
-            // three timeslots in desired should be worth more than one timeslot duration
-            Assert.AreEqual(waypoints[1].Visit, 2);
-            Assert.AreEqual(waypoints[2].Visit, 1);
-        }
     }
 }
