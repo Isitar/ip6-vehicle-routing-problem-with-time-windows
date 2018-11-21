@@ -124,7 +124,11 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
             {
                 solver.SetTimeLimit(timelimitMiliseconds);
             }
+#if DEBUG
             solver.EnableOutput();
+#else
+            solver.SuppressOutput();
+#endif
             resultState = FromGoogleResultState(solver.Solve(param));
 
             PrintDebugRessourcesAfter();
