@@ -22,6 +22,7 @@ namespace IRuettae.Evaluator
             {2, "GA" },
             {3, "LocalSolver" },
             {10,"ILP Fast"},
+            {20, "GA Fast" },
             {30, "LocalSolver Fast" },
         };
 
