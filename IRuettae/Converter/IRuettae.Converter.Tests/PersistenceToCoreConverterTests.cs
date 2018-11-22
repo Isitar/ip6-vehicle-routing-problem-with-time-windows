@@ -207,9 +207,9 @@ namespace IRuettae.Converter.Tests
 
             // unavailable
             const int hour = 3600;
-            var unavailableDay1Before = (int.MinValue, 0);
-            var unavailableBetween = (5 * hour, 24 * hour);
-            var unavailableDay2After = (29 * hour, int.MaxValue);
+            var unavailableDay1Before = (int.MinValue, -1);
+            var unavailableBetween = (5 * hour + 1, 24 * hour - 1);
+            var unavailableDay2After = (29 * hour + 1, int.MaxValue);
             var expected = new Core.Models.OptimizationInput
             {
                 Santas = new Core.Models.Santa[]
@@ -260,7 +260,7 @@ namespace IRuettae.Converter.Tests
                         WayCostToHome = w20.Duration,
                     }
                 },
-                Days = new(int, int)[2]
+                Days = new (int, int)[2]
                 {
                     (0 * hour, 5 * hour),
                     (24 * hour, 29 * hour),
@@ -601,8 +601,8 @@ namespace IRuettae.Converter.Tests
             }
 
             const int hour = 3600;
-            var unavailableDay1Before = (int.MinValue, 0);
-            var unavailableDay1After = (5 * hour, int.MaxValue);
+            var unavailableDay1Before = (int.MinValue, -1);
+            var unavailableDay1After = (5 * hour + 1, int.MaxValue);
             var expected = new Core.Models.OptimizationInput
             {
                 Santas = new Core.Models.Santa[2]
@@ -683,7 +683,7 @@ namespace IRuettae.Converter.Tests
                     }
                 },
 
-                Days = new(int, int)[1]
+                Days = new (int, int)[1]
                 {
                     (0 * hour, 5 * hour)
                 },
@@ -700,5 +700,6 @@ namespace IRuettae.Converter.Tests
             AssertOptimizationInputEqual(expected, actual);
 
         }
+
     }
 }
