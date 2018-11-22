@@ -163,7 +163,6 @@ namespace IRuettae.Core.LocalSolver
                                 );
                             });
                             return model.Sum(model.Range(0, nDesired), desiredIntersection);
-                            //return model.If(nDesired == 0, 0, model.Sum(model.Range(0, nDesired), desiredIntersection));
                         });
                         santaDesiredDuration[s] = model.Sum(model.Range(0, c), visitDesiredDurationSelector);
 
@@ -192,7 +191,6 @@ namespace IRuettae.Core.LocalSolver
                                 //);
                             });
                             return model.Sum(model.Range(0, nUnavailable), unavailableIntersection);
-                            //return model.If(nUnavailable == 0, 0, model.Sum(model.Range(0, nUnavailable), unavailableIntersection));
                         });
                         santaUnavailableDuration[s] = model.Sum(model.Range(0, c), visitUnavailableDurationSelector);
 
@@ -233,7 +231,7 @@ namespace IRuettae.Core.LocalSolver
                     var visitStartingTimes = santaVisitStartingTimes[i];
                     var route = new Route
                     {
-                        SantaId = i % numberOfDays,
+                        SantaId = i % input.Santas.Length,
                         Waypoints = Enumerable.Range(0, visitIds.Length).Select(j =>
                              new Waypoint
                              {
