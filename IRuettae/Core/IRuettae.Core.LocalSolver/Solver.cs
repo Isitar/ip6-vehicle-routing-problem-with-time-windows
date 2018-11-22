@@ -74,7 +74,8 @@ namespace IRuettae.Core.LocalSolver
                 var visitsOnlyDesired = input
                     .Visits
                     .Select(v =>
-                        v.Desired.Select(d => model.Array(new[] { d.from, d.to }))
+                        v.Desired.Length == 0 ? new[] { new[] { 0, -1 } } : // fake arr
+                        v.Desired.Select(d => new[] { d.from, d.to }).ToArray()
                         )
                     .ToArray();
 
@@ -124,7 +125,6 @@ namespace IRuettae.Core.LocalSolver
                         var visitDesiredDurationSelector = model.Function(i =>
                         {
                             var v = sequence[i];
-                            var desireds = model.Array(visitDesiredArray[v]);
                             var nDesired = visitDesiredCountArray[v];
 
                             var visitStart = model.Call(visitStartingTimeSelector, i, i - 1);
@@ -133,10 +133,9 @@ namespace IRuettae.Core.LocalSolver
                             var desiredsIntersection = model.Function((n) =>
                             {
                                 // desired start
-                                var desiredsN = model.Array(desireds[n]);
-                                var x = desiredsN[0];
+                                var x = model.If(nDesired == 0, model.Int(0, 0), model.At(visitDesiredArray, v, n, model.Int(0, 0)));
                                 // desired end
-                                var y = desiredsN[1];
+                                var y = model.If(nDesired == 0, model.Int(0, 0), model.At(visitDesiredArray, v, n, model.Int(1, 1)));
                                 //return model.Max(model.Min(y, visitEnd) - model.Max(x, visitStart), 0);
                                 return model.If(model.Or(y < visitStart, x > visitEnd),
                                     // if no intersection    
@@ -153,35 +152,7 @@ namespace IRuettae.Core.LocalSolver
 
                         santaDesiredDuration[s] = model.Sum(model.Range(0, c), visitDesiredDurationSelector);
 
-                        //// unavailable
-                        //var inUnavailableSlotSelector = model.Function(i =>
-                        //{
-                        //    var visitIndex = sequence[i].GetIntValue();
-                        //    var visit = input.Visits[visitIndex];
-                        //    if (visit.Unavailable.Length == 0) return model.Int(0, 0);
-                        //    var x = visitStartingTime[sequence[i]].GetValue();
-                        //    var y = x + visit.Duration;
-
-                        //    foreach (var unavailable in visit.Unavailable)
-                        //    {
-                        //        var a = unavailable.from;
-                        //        var b = unavailable.to;
-
-                        //        // check intersection
-                        //        if ((y < a) || (x > b))
-                        //        {
-                        //            continue;
-                        //        }
-
-                        //        return model.Min(b, visitStartingTime[sequence[i]]) - model.Max(a,
-                        //                   visitStartingTime[sequence[i]] + visitDurationArray[sequence[i]]);
-                        //    }
-
-                        //    return model.Int(0, 0);
-
-                        //});
-                        //var timeInUnavailableSlot = model.Array(model.Range(1, c), inUnavailableSlotSelector);
-                        //    santaUnavailableDuration[s] = model.Int(0, 0);// timeInUnavailableSlot;
+                        // unavailable
 
                         //santaWaitingTime[s] = model.Sum(waitingTime);
 
@@ -209,26 +180,47 @@ namespace IRuettae.Core.LocalSolver
                 phase.SetTimeLimit((int)((timelimitMiliseconds - sw.ElapsedMilliseconds) / 1000));
 
                 localSolver.Solve();
+
                 result.Routes = new Route[numberOfSantas];
                 for (int i = 0; i < numberOfSantas; i++)
                 {
                     var visitIds = visitSequences[i].GetCollectionValue()
                         .Select(v => (int)v).ToArray();
-                    var visitStartingTimes = santaVisitStartingTimes[i].GetCollectionValue().Select(s => (int)s).ToArray();
+
+                    var visitStartingTimes = santaVisitStartingTimes[i];
                     var route = new Route
                     {
                         SantaId = i % numberOfDays,
                         Waypoints = Enumerable.Range(0, visitIds.Length).Select(j =>
                              new Waypoint
                              {
-                                 StartTime = visitStartingTimes[j],
+                                 StartTime = (int)visitStartingTimes.GetArrayValue().GetIntValue(j),
                                  VisitId = visitIds[j],
                              }).ToArray()
                     };
+                    var sortedWaypoints = route.Waypoints.OrderBy(wp => wp.StartTime).ToList();
+                    var wayCostFromHome = input.Visits
+                        .First(v => v.Id == sortedWaypoints.First().VisitId)
+                        .WayCostFromHome;
+                    var lastVisit = input.Visits.First(v => v.Id == sortedWaypoints.Last().VisitId);
+
+
+                    route.Waypoints = route.Waypoints
+                        .Prepend(new Waypoint
+                        {
+                            StartTime = sortedWaypoints.First().StartTime - wayCostFromHome,
+                            VisitId = Constants.VisitIdHome
+                        })
+                        .Append(new Waypoint
+                        {
+                            StartTime = sortedWaypoints.Last().StartTime + lastVisit.Duration + lastVisit.WayCostToHome,
+                            VisitId = Constants.VisitIdHome
+                        }).ToArray();
+
                     result.Routes[i] = route;
                 }
             }
-            result.TimeElapsed = sw.ElapsedMilliseconds;
+            result.TimeElapsed = sw.ElapsedMilliseconds / 1000;
             sw.Stop();
             return result;
 
