@@ -188,9 +188,14 @@ namespace IRuettae.Evaluator
                     });
                     savepath += "_ILP";
                     break;
+                case 30:
+                    timelimit /= 60;
+                    goto case 3;
                 case 3:
-                    solver= new IRuettae.Core.LocalSolver.Solver(input);
+                    solver = new IRuettae.Core.LocalSolver.Solver(input);
+                    savepath += "_LocalSolver";
                     break;
+
             }
 
             var result = solver.Solve(timelimit, (sender, report) => Console.WriteLine($"Progress: {report}"),
