@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Helpers
 {
-    internal static class ExtensionMethods
+    public static class ExtensionMethods
     {
         /// <summary>
         /// Randomly shuffels a List.
@@ -49,7 +49,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Helpers
 
             // scale
             var generatedValue = Math.Abs(BitConverter.ToInt32(data, 0));
-            var mod = generatedValue % (max - min);
+            var mod = generatedValue % (max + 1 - min);
             return min + mod;
         }
     }

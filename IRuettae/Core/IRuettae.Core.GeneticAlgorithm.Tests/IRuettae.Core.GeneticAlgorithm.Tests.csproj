@@ -56,8 +56,10 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Algorithm\BinaryTournamentSelectionTests.cs" />
     <Compile Include="Algorithm\DecoderTests.cs" />
     <Compile Include="Algorithm\Helpers\TestNumberGenerator.cs" />
+    <Compile Include="Algorithm\Helpers\ExtensionMethodsTests.cs" />
     <Compile Include="Algorithm\Helpers\TestNumberGeneratorTests.cs" />
     <Compile Include="Algorithm\PopulationGeneratorTests.cs" />
     <Compile Include="Algorithm\RecombinationOperationTests.cs" />
