@@ -47,8 +47,10 @@ namespace IRuettae.Core.LocalSolver
             using (var localSolver = new localsolver.LocalSolver())
             {
                 var model = localSolver.GetModel();
-                var numberOfSantas = input.Santas.Length * input.Days.Length;
+                var numberOfFakeSantas = input.Visits.Length - input.Santas.Length;
+                var numberOfSantas = (input.Santas.Length + numberOfFakeSantas) * input.Days.Length;
                 var numberOfDays = input.Days.Length;
+
                 var santaUsed = new LSExpression[numberOfSantas];
                 var visitSequences = new LSExpression[numberOfSantas];
                 var santaWalkingTime = new LSExpression[numberOfSantas];
@@ -103,9 +105,9 @@ namespace IRuettae.Core.LocalSolver
                 consoleProgress?.Invoke(this, "Begin solving");
                 for (int day = 0; day < numberOfDays; day++)
                 {
-                    for (int santa = 0; santa < input.Santas.Length; santa++)
+                    for (int santa = 0; santa < input.Santas.Length + numberOfFakeSantas; santa++)
                     {
-                        var s = input.Santas.Length * day + santa;
+                        var s = (input.Santas.Length + numberOfFakeSantas) * day + santa;
                         var sequence = visitSequences[s];
                         var c = model.Count(sequence);
 
@@ -200,14 +202,29 @@ namespace IRuettae.Core.LocalSolver
 
                 var maxRoute = model.Max(santaRouteTime);
                 const int hour = 3600;
+                var additionalSantaCount = model.Float(0, 0);
+                var additionalSantaRouteTime = model.Float(0, 0);
+                for (int d = 0; d < numberOfDays; d++)
+                {
+                    for (int i = 0; i < numberOfFakeSantas; i++)
+                    {
+                        var index = d * (input.Santas.Length + numberOfFakeSantas) + input.Santas.Length + i;
+                        additionalSantaCount += santaUsed[index];
+                        additionalSantaRouteTime += santaRouteTime[index];
+                    }
+                }
+
+
                 var costFunction =
                     1000000 * model.Sum(santaOvertime) +
+                    400 * additionalSantaCount +
+                    (40d / hour) * additionalSantaRouteTime +
                     (120d / hour) * model.Sum(santaUnavailableDuration) +
                     (-20d / hour) * model.Sum(santaDesiredDuration) +
                     (40d / hour) * model.Sum(santaRouteTime) +
                     (30d / hour) * maxRoute;
                 var minWayTime = input.RouteCosts.Cast<int>().Where(i => i > 0).Min();
-                
+
                 model.Constraint(costFunction >= (minWayTime * (numberOfVisits + 1)) * 40d / hour // min walking time
                                  + input.Visits.Select(v => v.Duration).Sum() * (20d / hour) //every visit in desired
                                  );
@@ -215,10 +232,10 @@ namespace IRuettae.Core.LocalSolver
 
                 model.Close();
                 consoleProgress?.Invoke(this, "Done modeling");
-                
+
                 var phase = localSolver.CreatePhase();
                 phase.SetTimeLimit((int)((timelimitMiliseconds - sw.ElapsedMilliseconds) / 1000));
-                
+
 
                 localSolver.Solve();
                 consoleProgress?.Invoke(this, "Done solving");
@@ -227,11 +244,11 @@ namespace IRuettae.Core.LocalSolver
                 {
                     var visitIds = visitSequences[i].GetCollectionValue()
                         .Select(v => (int)v).ToArray();
-
+                    if (visitIds.Length == 0) { continue; }
                     var visitStartingTimes = santaVisitStartingTimes[i];
                     var route = new Route
                     {
-                        SantaId = i % input.Santas.Length,
+                        SantaId = i % (input.Santas.Length + numberOfFakeSantas),
                         Waypoints = Enumerable.Range(0, visitIds.Length).Select(j =>
                              new Waypoint
                              {
