@@ -169,7 +169,7 @@ namespace IRuettae.Evaluator
                     break;
             }
 
-            savepath += $"_Dataset_{datasetSelection}";
+            savepath += $"_DataSet_{datasetSelection}";
             ISolver solver = null;
             switch (algorithmSelection)
             {
