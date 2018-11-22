@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using IRuettae.Core;
 using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm.Models;
@@ -19,6 +21,9 @@ namespace IRuettae.Evaluator
             {1,"ILP"},
             {2, "GA" },
             {3, "LocalSolver" },
+            {10,"ILP Fast"},
+            {20, "GA Fast" },
+            {30, "LocalSolver Fast" },
         };
 
         static readonly Dictionary<int, string> DatasetDictionary = new Dictionary<int, string>()
@@ -39,10 +44,12 @@ namespace IRuettae.Evaluator
 
         static void Main(string[] args)
         {
-            EvaluateAlgorithm();
-            //TestResultDrawer();
-            Console.Write("Press any key to exit: ");
-            Console.Read();
+            do
+            {
+                EvaluateAlgorithm();
+                Console.Write("New run? [Y/N]: ");
+
+            } while (Console.ReadLine().ToUpper().Equals("Y"));
         }
 
         private static void TestResultDrawer()
@@ -137,37 +144,39 @@ namespace IRuettae.Evaluator
                     timelimit = 20 * 60 * 1000;
                     break;
                 case 7:
-                    throw new NotImplementedException();
-                    //(input, coordinates) = DatasetFactory.DataSet7();
-                    //timelimit = 10 * 60 * 1000;
+                    (input, coordinates) = DatasetFactory.DataSet7();
+                    timelimit = 90 * 60 * 1000;
                     break;
                 case 8:
                     throw new NotImplementedException();
                     //(input, coordinates) = DatasetFactory.DataSet8();
-                    //timelimit = 10 * 60 * 1000;
+                    //timelimit = 90 * 60 * 1000;
                     break;
                 case 9:
                     (input, coordinates) = DatasetFactory.DataSet9();
-                    timelimit = 10 * 60 * 1000;
+                    timelimit = 90 * 60 * 1000;
                     break;
                 case 10:
                     (input, coordinates) = DatasetFactory.DataSet10();
-                    timelimit = 10 * 60 * 1000;
+                    timelimit = 120 * 60 * 1000;
                     break;
                 case 11:
                     (input, coordinates) = DatasetFactory.DataSet11();
-                    timelimit = 10 * 60 * 1000;
+                    timelimit = 120 * 60 * 1000;
                     break;
                 case 12:
                     (input, coordinates) = DatasetFactory.DataSet12();
-                    timelimit = 10 * 60 * 1000;
+                    timelimit = 120 * 60 * 1000;
                     break;
             }
 
-            savepath += $"_Dataset_{datasetSelection}";
+            savepath += $"_DataSet_{datasetSelection}";
             ISolver solver = null;
             switch (algorithmSelection)
             {
+                case 10:
+                    timelimit /= 60;
+                    goto case 1;
                 case 1:
                     solver = new ILPSolver(input, new ILPStarterData
                     {
@@ -182,16 +191,65 @@ namespace IRuettae.Evaluator
                     break;
             }
 
+            AddUnavailableBetweenDays(input);
             var result = solver.Solve(timelimit, (sender, report) => Console.WriteLine($"Progress: {report}"),
                 (sender, s) => Console.WriteLine($"Info: {s}"));
             BigHr();
 
             File.WriteAllText(savepath + ".json", JsonConvert.SerializeObject(result));
+
+            var summary = new StringBuilder();
+            summary.AppendLine($"Solver{algorithmSelection}: {AlgorithmsDictionary[algorithmSelection]}");
+            summary.AppendLine($"Dataset{datasetSelection}: {DatasetDictionary[datasetSelection]}");
+            summary.AppendLine($"TimeElapsed [s]: {result.TimeElapsed}");
+            summary.AppendLine($"Cost: {result.Cost()}");
+            summary.AppendLine($"NumberOfNotVisitedFamilies: { result.NumberOfNotVisitedFamilies()}");
+            summary.AppendLine($"NumberOfMissingBreaks: { result.NumberOfMissingBreaks()}");
+            summary.AppendLine($"NumberOfAdditionalSantas: { result.NumberOfAdditionalSantas()}");
+            summary.AppendLine($"AdditionalSantaWorkTime: { result.AdditionalSantaWorkTime()}");
+            summary.AppendLine($"VisitTimeInUnavailable: { result.VisitTimeInUnavailable()}");
+            summary.AppendLine($"WayTimeOutsideBusinessHours: { result.WayTimeOutsideBusinessHours()}");
+            summary.AppendLine($"VisitTimeInDesired: { result.VisitTimeInDesired()}");
+            summary.AppendLine($"SantaWorkTime: { result.SantaWorkTime()}");
+            summary.AppendLine($"LongestDay: { result.LongestDay()}");
+
+            File.WriteAllText(savepath + ".txt", summary.ToString());
             Console.WriteLine();
             Console.WriteLine("Done solving");
-            Console.WriteLine($"TimeElapsed [s]: {result.TimeElapsed}");
-            Console.WriteLine($"Target function value: {result.Cost()}");
+            Console.WriteLine(summary.ToString());
             ResultDrawer.DrawResult(savepath, result, coordinates);
+        }
+
+        private static void AddUnavailableBetweenDays(OptimizationInput input)
+        {
+            var orderedDays = input.Days.OrderBy(d => d.@from).ToList();
+            var unavailabilities = new List<(int from, int to)>();
+            (int from, int to) lastDay = orderedDays.First();
+
+            // before first day
+            unavailabilities.Add((int.MinValue, lastDay.@from - 1));
+
+            // between days
+            foreach (var day in orderedDays.Skip(1))
+            {
+                if (Math.Abs(day.@from - lastDay.to) > 1)
+                {
+                    unavailabilities.Add((lastDay.to + 1, day.@from - 1));
+                }
+
+                lastDay = day;
+            }
+
+            // after last day
+            unavailabilities.Add((lastDay.to + 1, int.MaxValue));
+
+            // add to visits
+            for (int i = 0; i < input.Visits.Count(); i++)
+            {
+                var newUnavailable = new List<(int from, int to)>(input.Visits[i].Unavailable);
+                newUnavailable.AddRange(unavailabilities);
+                input.Visits[i].Unavailable = newUnavailable.ToArray();
+            }
         }
 
         private static void SmallHr()

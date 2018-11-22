@@ -37,7 +37,7 @@ namespace IRuettae.Core.Models
         {
             get
             {
-                return Routes.Where(r => r.Waypoints != null && r.Waypoints.Where(wp => wp.VisitId != Constants.VisitIdHome).Count() > 0);
+                return Routes.Where(r => r.Waypoints != null && r.Waypoints.Any(wp => wp.VisitId != Constants.VisitIdHome));
             }
         }
 
@@ -68,7 +68,7 @@ namespace IRuettae.Core.Models
                                        - (20d / hour) * VisitTimeInDesired()
                                        + (40d / hour) * SantaWorkTime()
                                        + (30d / hour) * LongestDay()
-                );
+            );
         }
         public int NumberOfNotVisitedFamilies()
         {
@@ -88,9 +88,8 @@ namespace IRuettae.Core.Models
                 santaBreaks.Add(v.SantaId, v.Id);
             }
 
-            return NonEmptyRoutes.Where(r =>
-                    santaBreaks.ContainsKey(r.SantaId)
-                    && !r.Waypoints.Any(wp => wp.VisitId == santaBreaks[r.SantaId])).Count();
+            return NonEmptyRoutes.Count(r => santaBreaks.ContainsKey(r.SantaId)
+                    && r.Waypoints.All(wp => wp.VisitId != santaBreaks[r.SantaId]));
         }
 
         public int NumberOfAdditionalSantas()
@@ -253,7 +252,7 @@ namespace IRuettae.Core.Models
         /// </summary>
         /// <param name="intervals"></param>
         /// <returns></returns>
-        private static int IntersectionLength(IEnumerable<(int from, int to)> intervals)
+        private static int IntersectionLength(IReadOnlyCollection<(int from, int to)> intervals)
         {
             int startIntersection = intervals.Max(interval => interval.from);
             int endIntersection = intervals.Min(interval => interval.to);

@@ -112,7 +112,14 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Clustering
             var result = solver.GetResult();
 
             Assert.IsNotNull(result);
-            var possibleRoutes = new[] { "0 | 0;5 | 0;6 | 0;7 | 0;8 | 0", "0 | 0;1 | 0;2 | 0;3 | 0;4 | 0" };
+            var possibleRoutes = new[] {
+                "0 | 0;5 | 1;6 | 2;7 | 3;8 | 4",
+                "0 | 0;5 | 1;6 | 2;8 | 3;7 | 4",
+                
+                "0 | 0;1 | 1;2 | 2;3 | 3;4 | 4",
+                "0 | 0;1 | 1;2 | 2;4 | 3;3 | 4",
+
+            };
 
             var route1 = string.Join(";", result.Waypoints[0, 0]);
             var route2 = string.Join(";", result.Waypoints[0, 1]);

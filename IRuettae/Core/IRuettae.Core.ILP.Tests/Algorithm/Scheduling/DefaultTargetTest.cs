@@ -52,12 +52,11 @@ namespace IRuettae.Core.ILP.Tests.Algorithm.Scheduling
                 0, 1, 2,
             };
 
-            return new SolverInputData(santas, visitLength, visits, distances, new[] { 0, 1, 2 }, new[] { 0 });
+            return new SolverInputData(santas, visitLength, visits, distances, new[] { 0, 1, 2 }, new[] { 0 }, new int[0], new[] { 0 });
         }
 
-
         [TestMethod]
-        public void TestMinTimeOnly()
+        public void TestTargetFunctionWorksCorrect()
         {
             var model = GetModel();
             var solver = new SchedulingILPSolver(model);
