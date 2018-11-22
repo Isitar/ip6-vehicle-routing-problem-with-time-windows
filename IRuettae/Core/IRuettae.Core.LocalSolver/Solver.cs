@@ -196,7 +196,7 @@ namespace IRuettae.Core.LocalSolver
                         santaRouteTime[s] = santaWalkingTime[s] + santaVisitDurations[s];
 
                         // constraint
-                        model.Constraint(santaRouteTime[s] <= input.Days[currDayIndex].to - input.Days[currDayIndex].from + santaOvertime[s]);
+                        model.Constraint(model.If(santaUsed[s], visitStartingTime[c-1] + visitDurationArray[sequence[c-1]] + distanceToHomeArray[sequence[c-1]], 0) <= input.Days[currDayIndex].to + santaOvertime[s]);
                     }
                 }
 
@@ -216,10 +216,11 @@ namespace IRuettae.Core.LocalSolver
 
 
                 var costFunction =
-                    1000000 * model.Sum(santaOvertime) +
+                    
                     400 * additionalSantaCount +
                     (40d / hour) * additionalSantaRouteTime +
                     (120d / hour) * model.Sum(santaUnavailableDuration) +
+                    (240d / hour) * model.Sum(santaOvertime) +
                     (-20d / hour) * model.Sum(santaDesiredDuration) +
                     (40d / hour) * model.Sum(santaRouteTime) +
                     (30d / hour) * maxRoute;
