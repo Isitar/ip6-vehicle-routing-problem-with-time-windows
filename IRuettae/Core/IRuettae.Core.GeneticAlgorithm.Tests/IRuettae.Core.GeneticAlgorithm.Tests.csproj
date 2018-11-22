@@ -57,6 +57,8 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Algorithm\DecoderTests.cs" />
+    <Compile Include="Algorithm\Helpers\TestNumberGenerator.cs" />
+    <Compile Include="Algorithm\Helpers\TestNumberGeneratorTests.cs" />
     <Compile Include="Algorithm\PopulationGeneratorTests.cs" />
     <Compile Include="Algorithm\RecombinationOperationTests.cs" />
     <Compile Include="Algorithm\RepairOperationTests.cs" />
