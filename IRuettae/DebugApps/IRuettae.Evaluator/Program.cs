@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using IRuettae.Core;
 using IRuettae.Core.ILP;
@@ -189,6 +190,7 @@ namespace IRuettae.Evaluator
                     break;
             }
 
+            AddUnavailableBetweenDays(input);
             var result = solver.Solve(timelimit, (sender, report) => Console.WriteLine($"Progress: {report}"),
                 (sender, s) => Console.WriteLine($"Info: {s}"));
             BigHr();
@@ -215,6 +217,38 @@ namespace IRuettae.Evaluator
             Console.WriteLine("Done solving");
             Console.WriteLine(summary.ToString());
             ResultDrawer.DrawResult(savepath, result, coordinates);
+        }
+
+        private static void AddUnavailableBetweenDays(OptimizationInput input)
+        {
+            var orderedDays = input.Days.OrderBy(d => d.@from).ToList();
+            var unavailabilities = new List<(int from, int to)>();
+            (int from, int to) lastDay = orderedDays.First();
+
+            // before first day
+            unavailabilities.Add((int.MinValue, lastDay.@from - 1));
+
+            // between days
+            foreach (var day in orderedDays.Skip(1))
+            {
+                if (Math.Abs(day.@from - lastDay.to) > 1)
+                {
+                    unavailabilities.Add((lastDay.to + 1, day.@from - 1));
+                }
+
+                lastDay = day;
+            }
+
+            // after last day
+            unavailabilities.Add((lastDay.to + 1, int.MaxValue));
+
+            // add to visits
+            for (int i = 0; i < input.Visits.Count(); i++)
+            {
+                var newUnavailable = new List<(int from, int to)>(input.Visits[i].Unavailable);
+                newUnavailable.AddRange(unavailabilities);
+                input.Visits[i].Unavailable = newUnavailable.ToArray();
+            }
         }
 
         private static void SmallHr()
