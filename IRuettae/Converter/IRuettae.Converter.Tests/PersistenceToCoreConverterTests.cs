@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IRuettae.Core.Models;
 using IRuettae.Persistence.Entities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Visit = IRuettae.Core.Models.Visit;
 
 namespace IRuettae.Converter.Tests
 {
@@ -207,9 +209,9 @@ namespace IRuettae.Converter.Tests
 
             // unavailable
             const int hour = 3600;
-            var unavailableDay1Before = (int.MinValue, 0);
-            var unavailableBetween = (5 * hour, 24 * hour);
-            var unavailableDay2After = (29 * hour, int.MaxValue);
+            var unavailableDay1Before = (int.MinValue, -1);
+            var unavailableBetween = (5 * hour + 1, 24 * hour - 1);
+            var unavailableDay2After = (29 * hour + 1, int.MaxValue);
             var expected = new Core.Models.OptimizationInput
             {
                 Santas = new Core.Models.Santa[]
@@ -260,7 +262,7 @@ namespace IRuettae.Converter.Tests
                         WayCostToHome = w20.Duration,
                     }
                 },
-                Days = new(int, int)[2]
+                Days = new (int, int)[2]
                 {
                     (0 * hour, 5 * hour),
                     (24 * hour, 29 * hour),
@@ -601,8 +603,8 @@ namespace IRuettae.Converter.Tests
             }
 
             const int hour = 3600;
-            var unavailableDay1Before = (int.MinValue, 0);
-            var unavailableDay1After = (5 * hour, int.MaxValue);
+            var unavailableDay1Before = (int.MinValue, -1);
+            var unavailableDay1After = (5 * hour + 1, int.MaxValue);
             var expected = new Core.Models.OptimizationInput
             {
                 Santas = new Core.Models.Santa[2]
@@ -683,7 +685,7 @@ namespace IRuettae.Converter.Tests
                     }
                 },
 
-                Days = new(int, int)[1]
+                Days = new (int, int)[1]
                 {
                     (0 * hour, 5 * hour)
                 },
@@ -699,6 +701,270 @@ namespace IRuettae.Converter.Tests
 
             AssertOptimizationInputEqual(expected, actual);
 
+        }
+
+        [TestMethod]
+        public void TestUnavailableBetweenGap0()
+        {
+            var input = new OptimizationInput
+            {
+                Visits = new[]
+                {
+                    new Visit()
+                    {
+                        Id = 0,
+                        Duration = 1,
+                        SantaId = -1,
+                        Desired = new (int, int)[0],
+                        Unavailable = new (int, int)[0],
+                        IsBreak = false,
+                        WayCostFromHome = 1,
+                        WayCostToHome = 1,
+                    },
+                    new Visit()
+                    {
+                        Id = 1,
+                        Duration = 1,
+                        SantaId = -1,
+                        Desired = new (int, int)[0],
+                        Unavailable = new (int, int)[0],
+                        IsBreak = false,
+                        WayCostFromHome = 1,
+                        WayCostToHome = 1,
+                    },
+                    new Visit()
+                    {
+                        Id = 2,
+                        Duration = 1,
+                        SantaId = -1,
+                        Desired = new (int, int)[0],
+                        Unavailable = new (int, int)[0],
+                        IsBreak = false,
+                        WayCostFromHome = 1,
+                        WayCostToHome = 1,
+                    }
+                },
+                Days = new[]
+                {
+                    (0,500),
+                    (500,600),
+                    (700,800),
+                }
+            };
+
+            PersistenceToCoreConverter.AddUnavailableBetweenDays(input);
+            var expectedUnavailable = new[]
+            {
+                (int.MinValue, -1),
+                (601, 699),
+                (801, int.MaxValue),
+            };
+
+            foreach (var visit in input.Visits)
+            {
+                Assert.AreEqual(expectedUnavailable.Length, visit.Unavailable.Length);
+                Assert.IsTrue(visit.Unavailable.All(u => expectedUnavailable.Contains(u)));
+                Assert.IsTrue(expectedUnavailable.All(u => visit.Unavailable.Contains(u)));
+            }
+        }
+        [TestMethod]
+        public void TestUnavailableBetweenGap1()
+        {
+            var input = new OptimizationInput
+            {
+                Visits = new[]
+                {
+                    new Visit()
+                    {
+                        Id = 0,
+                        Duration = 1,
+                        SantaId = -1,
+                        Desired = new (int, int)[0],
+                        Unavailable = new (int, int)[0],
+                        IsBreak = false,
+                        WayCostFromHome = 1,
+                        WayCostToHome = 1,
+                    },
+                    new Visit()
+                    {
+                        Id = 1,
+                        Duration = 1,
+                        SantaId = -1,
+                        Desired = new (int, int)[0],
+                        Unavailable = new (int, int)[0],
+                        IsBreak = false,
+                        WayCostFromHome = 1,
+                        WayCostToHome = 1,
+                    },
+                    new Visit()
+                    {
+                        Id = 2,
+                        Duration = 1,
+                        SantaId = -1,
+                        Desired = new (int, int)[0],
+                        Unavailable = new (int, int)[0],
+                        IsBreak = false,
+                        WayCostFromHome = 1,
+                        WayCostToHome = 1,
+                    }
+                },
+                Days = new []
+                {
+                    (0,500),
+                    (501,600),
+                    (700,800),
+                }
+            };
+
+            PersistenceToCoreConverter.AddUnavailableBetweenDays(input);
+            var expectedUnavailable = new[]
+            {
+                (int.MinValue, -1),
+                (601, 699),
+                (801, int.MaxValue),
+            };
+
+            foreach (var visit in input.Visits)
+            {
+                Assert.AreEqual(expectedUnavailable.Length, visit.Unavailable.Length);
+                Assert.IsTrue(visit.Unavailable.All(u => expectedUnavailable.Contains(u)));
+                Assert.IsTrue(expectedUnavailable.All(u => visit.Unavailable.Contains(u)));
+            }
+            
+        }
+
+
+        [TestMethod]
+        public void TestUnavailableBetweenGap2()
+        {
+            var input = new OptimizationInput
+            {
+                Visits = new[]
+                {
+                    new Visit()
+                    {
+                        Id = 0,
+                        Duration = 1,
+                        SantaId = -1,
+                        Desired = new (int, int)[0],
+                        Unavailable = new (int, int)[0],
+                        IsBreak = false,
+                        WayCostFromHome = 1,
+                        WayCostToHome = 1,
+                    },
+                    new Visit()
+                    {
+                        Id = 1,
+                        Duration = 1,
+                        SantaId = -1,
+                        Desired = new (int, int)[0],
+                        Unavailable = new (int, int)[0],
+                        IsBreak = false,
+                        WayCostFromHome = 1,
+                        WayCostToHome = 1,
+                    },
+                    new Visit()
+                    {
+                        Id = 2,
+                        Duration = 1,
+                        SantaId = -1,
+                        Desired = new (int, int)[0],
+                        Unavailable = new (int, int)[0],
+                        IsBreak = false,
+                        WayCostFromHome = 1,
+                        WayCostToHome = 1,
+                    }
+                },
+                Days = new[]
+                {
+                    (0,500),
+                    (502,600),
+                    (700,800),
+                }
+            };
+
+            PersistenceToCoreConverter.AddUnavailableBetweenDays(input);
+            var expectedUnavailable = new[]
+            {
+                (int.MinValue, -1),
+                (501, 501),
+                (601, 699),
+                (801, int.MaxValue),
+            };
+
+            foreach (var visit in input.Visits)
+            {
+                Assert.AreEqual(expectedUnavailable.Length, visit.Unavailable.Length);
+                Assert.IsTrue(visit.Unavailable.All(u => expectedUnavailable.Contains(u)));
+                Assert.IsTrue(expectedUnavailable.All(u => visit.Unavailable.Contains(u)));
+            }
+
+        }
+
+        [TestMethod]
+        public void TestUnavailableBetweenGap3()
+        {
+            var input = new OptimizationInput
+            {
+                Visits = new[]
+                {
+                    new Visit()
+                    {
+                        Id = 0,
+                        Duration = 1,
+                        SantaId = -1,
+                        Desired = new (int, int)[0],
+                        Unavailable = new (int, int)[0],
+                        IsBreak = false,
+                        WayCostFromHome = 1,
+                        WayCostToHome = 1,
+                    },
+                    new Visit()
+                    {
+                        Id = 1,
+                        Duration = 1,
+                        SantaId = -1,
+                        Desired = new (int, int)[0],
+                        Unavailable = new (int, int)[0],
+                        IsBreak = false,
+                        WayCostFromHome = 1,
+                        WayCostToHome = 1,
+                    },
+                    new Visit()
+                    {
+                        Id = 2,
+                        Duration = 1,
+                        SantaId = -1,
+                        Desired = new (int, int)[0],
+                        Unavailable = new (int, int)[0],
+                        IsBreak = false,
+                        WayCostFromHome = 1,
+                        WayCostToHome = 1,
+                    }
+                },
+                Days = new[]
+                {
+                    (0,500),
+                    (503,600),
+                    (700,800),
+                }
+            };
+
+            PersistenceToCoreConverter.AddUnavailableBetweenDays(input);
+            var expectedUnavailable = new[]
+            {
+                (int.MinValue, -1),
+                (501, 502),
+                (601, 699),
+                (801, int.MaxValue),
+            };
+
+            foreach (var visit in input.Visits)
+            {
+                Assert.AreEqual(expectedUnavailable.Length, visit.Unavailable.Length);
+                Assert.IsTrue(visit.Unavailable.All(u => expectedUnavailable.Contains(u)));
+                Assert.IsTrue(expectedUnavailable.All(u => visit.Unavailable.Contains(u)));
+            }
         }
     }
 }
