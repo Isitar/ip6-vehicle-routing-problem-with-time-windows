@@ -50,6 +50,7 @@
     <Compile Include="Algorithm\PopulationGenerator.cs" />
     <Compile Include="Algorithm\RecombinationOperation.cs" />
     <Compile Include="Algorithm\RepairOperation.cs" />
+    <Compile Include="Algorithm\TournamentSelection.cs" />
     <Compile Include="GenAlgSolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
