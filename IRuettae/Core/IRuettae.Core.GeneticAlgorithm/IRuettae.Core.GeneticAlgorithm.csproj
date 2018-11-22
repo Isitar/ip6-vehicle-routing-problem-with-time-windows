@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithm\BinaryTournamentSelection.cs" />
     <Compile Include="Algorithm\CostCalculator.cs" />
     <Compile Include="Algorithm\Decoder.cs" />
     <Compile Include="Algorithm\EvolutionOperation.cs" />
@@ -50,7 +51,6 @@
     <Compile Include="Algorithm\PopulationGenerator.cs" />
     <Compile Include="Algorithm\RecombinationOperation.cs" />
     <Compile Include="Algorithm\RepairOperation.cs" />
-    <Compile Include="Algorithm\TournamentSelection.cs" />
     <Compile Include="GenAlgSolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
