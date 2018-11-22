@@ -61,11 +61,13 @@ namespace IRuettae.Core.LocalSolver
                 var santaVisitStartingTimes = new LSExpression[numberOfSantas];
                 var numberOfVisits = input.Visits.Length;
                 var santaOvertime = new LSExpression[numberOfSantas];
+                var santaWaitBeforeStart = new LSExpression[numberOfSantas];
 
                 for (int k = 0; k < numberOfSantas; k++)
                 {
                     visitSequences[k] = model.List(numberOfVisits);
                     santaOvertime[k] = model.Int(0, int.MaxValue);
+                    santaWaitBeforeStart[k] = model.Int(0, Int32.MaxValue);
                 }
 
                 model.Constraint(model.Partition(visitSequences));
@@ -129,7 +131,7 @@ namespace IRuettae.Core.LocalSolver
                         var currDayIndex = day; // copy because used in lambda expression
                         var visitStartingTimeSelector = model.Function((i, prev) =>
                             model.If(i == 0,
-                                input.Days[currDayIndex].from + distanceFromHomeArray[sequence[i]],
+                                input.Days[currDayIndex].from + santaWaitBeforeStart[s] + distanceFromHomeArray[sequence[i]],
                                 prev + visitDurationArray[sequence[i - 1]] + distanceArray[sequence[i - 1], sequence[i]]
                                 )
                         );
@@ -220,7 +222,7 @@ namespace IRuettae.Core.LocalSolver
                     400 * additionalSantaCount +
                     (40d / hour) * additionalSantaRouteTime +
                     (120d / hour) * model.Sum(santaUnavailableDuration) +
-                    (240d / hour) * model.Sum(santaOvertime) +
+                    (120d / hour) * model.Sum(santaOvertime) +
                     (-20d / hour) * model.Sum(santaDesiredDuration) +
                     (40d / hour) * model.Sum(santaRouteTime) +
                     (30d / hour) * maxRoute;
@@ -284,11 +286,11 @@ namespace IRuettae.Core.LocalSolver
                 consoleProgress?.Invoke(this, $"routeTime: : {string.Join(",", santaRouteTime.Select(s => s.GetIntValue().ToString()).ToArray())}");
                 consoleProgress?.Invoke(this, $"longestRoute: : {maxRoute.GetIntValue()}");
                 consoleProgress?.Invoke(this, $"overtime: : {string.Join(",", santaOvertime.Select(o => o.GetIntValue()))}");
+                consoleProgress?.Invoke(this, $"santaWaitBeforeStart: : {string.Join(",", santaWaitBeforeStart.Select(o => o.GetIntValue()))}");
             }
             result.TimeElapsed = sw.ElapsedMilliseconds / 1000;
             sw.Stop();
             return result;
-
         }
     }
 }
