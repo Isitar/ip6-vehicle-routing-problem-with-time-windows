@@ -113,7 +113,7 @@ namespace IRuettae.Converter
             return input;
         }
 
-        private static void AddUnavailableBetweenDays(OptimizationInput input)
+        public static void AddUnavailableBetweenDays(OptimizationInput input)
         {
             var orderedDays = input.Days.OrderBy(d => d.from).ToList();
             var unavailabilities = new List<(int from, int to)>();
