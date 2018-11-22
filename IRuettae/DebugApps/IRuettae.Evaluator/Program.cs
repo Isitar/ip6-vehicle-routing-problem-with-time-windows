@@ -21,6 +21,8 @@ namespace IRuettae.Evaluator
             {1,"ILP"},
             {2, "GA" },
             {3, "LocalSolver" },
+            {10,"ILP Fast"},
+            {30, "LocalSolver Fast" },
         };
 
         static readonly Dictionary<int, string> DatasetDictionary = new Dictionary<int, string>()
@@ -171,6 +173,9 @@ namespace IRuettae.Evaluator
             ISolver solver = null;
             switch (algorithmSelection)
             {
+                case 10:
+                    timelimit /= 60;
+                    goto case 1;
                 case 1:
                     solver = new ILPSolver(input, new ILPStarterData
                     {
@@ -199,12 +204,20 @@ namespace IRuettae.Evaluator
             summary.AppendLine($"Dataset{datasetSelection}: {DatasetDictionary[datasetSelection]}");
             summary.AppendLine($"TimeElapsed [s]: {result.TimeElapsed}");
             summary.AppendLine($"Cost: {result.Cost()}");
+            summary.AppendLine($"NumberOfNotVisitedFamilies: { result.NumberOfNotVisitedFamilies()}");
+            summary.AppendLine($"NumberOfMissingBreaks: { result.NumberOfMissingBreaks()}");
+            summary.AppendLine($"NumberOfAdditionalSantas: { result.NumberOfAdditionalSantas()}");
+            summary.AppendLine($"AdditionalSantaWorkTime: { result.AdditionalSantaWorkTime()}");
+            summary.AppendLine($"VisitTimeInUnavailable: { result.VisitTimeInUnavailable()}");
+            summary.AppendLine($"WayTimeOutsideBusinessHours: { result.WayTimeOutsideBusinessHours()}");
+            summary.AppendLine($"VisitTimeInDesired: { result.VisitTimeInDesired()}");
+            summary.AppendLine($"SantaWorkTime: { result.SantaWorkTime()}");
+            summary.AppendLine($"LongestDay: { result.LongestDay()}");
 
             File.WriteAllText(savepath + ".txt", summary.ToString());
             Console.WriteLine();
             Console.WriteLine("Done solving");
-            Console.WriteLine($"TimeElapsed [s]: {result.TimeElapsed}");
-            Console.WriteLine($"Target function value: {result.Cost()}");
+            Console.WriteLine(summary.ToString());
             ResultDrawer.DrawResult(savepath, result, coordinates);
         }
 
