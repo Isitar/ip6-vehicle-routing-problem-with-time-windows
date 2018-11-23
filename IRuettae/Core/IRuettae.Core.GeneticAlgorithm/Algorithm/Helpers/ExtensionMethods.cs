@@ -17,11 +17,11 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Helpers
         public static void Shuffle<T>(this IList<T> list)
         {
             var provider = RandomFactory.Instance;
-            int n = list.Count;
+            var n = list.Count;
             while (n > 1)
             {
                 n--;
-                int k = provider.NextInt(0, n);
+                var k = provider.NextInt(0, n);
                 T value = list[k];
                 list[k] = list[n];
                 list[n] = value;
