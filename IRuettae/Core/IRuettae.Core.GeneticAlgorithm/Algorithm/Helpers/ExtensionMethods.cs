@@ -45,8 +45,23 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Helpers
 
             // scale
             var generatedValue = Math.Abs(BitConverter.ToInt32(data, 0));
-            var mod = generatedValue % (max + 1 - min);
-            return min + mod;
+
+            // conversion to long is neccessary,
+            // because the difference between int.min and int.max is bigger than int.max
+            long mod = generatedValue % ((long)max + 1 - min);
+            return min + (int)mod;
+        }
+
+        /// <summary>
+        /// Returns a random number between 0 and 1.
+        /// Note: This function is focussed on performance
+        /// and therefore it may have an imbalance in the probability of distrubution.
+        /// </summary>
+        /// <param name="random">not null</param>
+        /// <returns></returns>
+        public static double NextProbability(this RandomNumberGenerator random)
+        {
+            return (double)random.NextInt(0, int.MaxValue) / int.MaxValue;
         }
     }
 }
