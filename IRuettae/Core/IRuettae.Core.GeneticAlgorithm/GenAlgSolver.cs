@@ -38,6 +38,12 @@ namespace IRuettae.Core.GeneticAlgorithm
             Log("Solving started");
             Log(new ProgressReport(0.01));
 
+            // adjust timelimit if unlimited
+            if (timelimitMiliseconds == 0)
+            {
+                timelimitMiliseconds = long.MaxValue;
+            }
+
             // init population
             var (population, mapping) = PopulationGenerator.Generate(input, starterData.PopulationSize, starterData.MaxNumberOfSantas);
             var decoder = new Decoder(input, mapping);
@@ -71,8 +77,8 @@ namespace IRuettae.Core.GeneticAlgorithm
 
                 // log current solution
                 var currentBestCost = GetMinCost(population);
-                Debug.WriteLine($"Current best cost is currentBestCost");
-                if (bestCost < currentBestCost)
+                Debug.WriteLine($"Current best cost is {currentBestCost}");
+                if (currentBestCost < bestCost)
                 {
                     bestCost = currentBestCost;
                     Log($"Found better solution in generation {generation} with cost={bestCost}");
