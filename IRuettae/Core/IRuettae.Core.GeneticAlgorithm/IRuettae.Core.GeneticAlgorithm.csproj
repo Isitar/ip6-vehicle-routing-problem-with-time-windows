@@ -48,6 +48,7 @@
     <Compile Include="Algorithm\Helpers\RandomFactory.cs" />
     <Compile Include="Algorithm\Models\GenAlgStarterData.cs" />
     <Compile Include="Algorithm\Models\Genotype.cs" />
+    <Compile Include="Algorithm\MutationOperation.cs" />
     <Compile Include="Algorithm\PopulationGenerator.cs" />
     <Compile Include="Algorithm\RecombinationOperation.cs" />
     <Compile Include="Algorithm\RepairOperation.cs" />

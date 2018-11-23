@@ -10,7 +10,8 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 {
     public class EvolutionOperation
     {
-        private readonly BinaryTournamentSelection selection = new BinaryTournamentSelection(RandomFactory.Instance);
+        private readonly BinaryTournamentSelection selectionOperation = new BinaryTournamentSelection(RandomFactory.Instance);
+        private readonly MutationOperation mutationOperation = new MutationOperation(RandomFactory.Instance);
         private readonly GenAlgStarterData starterData;
 
         public EvolutionOperation(GenAlgStarterData starterData)
@@ -24,8 +25,11 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             population.Sort((i1, i2) => i1.Cost.CompareTo(i2.Cost));
 
             // Evolve
-            var parents = selection.Select(population, population.Count - 1);
+            var parents = selectionOperation.Select(population, population.Count - 1);
             var newPopulation = parents.Select(p => RecombinationOperation.Recombinate(p.Item1, p.Item2)).ToList();
+
+            // Mutate
+            mutationOperation.Mutate(newPopulation, starterData.MutationProbability);
 
             // Elitism
             newPopulation.Add(population[0]);
