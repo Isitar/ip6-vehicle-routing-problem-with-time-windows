@@ -76,6 +76,10 @@
       <Project>{3653ea67-0ca2-40fc-b027-1df812f7bc7c}</Project>
       <Name>IRuettae.Converter</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\IRuettae.Core.GeneticAlgorithm\IRuettae.Core.GeneticAlgorithm.csproj">
+      <Project>{48054F06-CCF2-4F00-BF6A-70F44C86BEF5}</Project>
+      <Name>IRuettae.Core.GeneticAlgorithm</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\IRuettae.Core.ILP\IRuettae.Core.ILP.csproj">
       <Project>{d56e9df6-b3a9-4b97-82e4-f3cd401bbe7c}</Project>
       <Name>IRuettae.Core.ILP</Name>

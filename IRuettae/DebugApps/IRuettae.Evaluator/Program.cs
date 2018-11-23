@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using IRuettae.Core;
+using IRuettae.Core.GeneticAlgorithm;
+using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
 using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm.Models;
 using IRuettae.Core.Models;
@@ -174,6 +176,14 @@ namespace IRuettae.Evaluator
             ISolver solver = null;
             switch (algorithmSelection)
             {
+                case 20:
+                    timelimit /= 60;
+                    solver = new GenAlgSolver(input, GenAlgStarterData.GetDefault(input));
+                    break;
+                case 2:
+                    timelimit = 0;
+                    solver = new GenAlgSolver(input, GenAlgStarterData.GetDefault(input));
+                    break;
                 case 10:
                     timelimit /= 60;
                     goto case 1;
@@ -192,8 +202,17 @@ namespace IRuettae.Evaluator
             }
 
             AddUnavailableBetweenDays(input);
-            var result = solver.Solve(timelimit, (sender, report) => Console.WriteLine($"Progress: {report}"),
-                (sender, s) => Console.WriteLine($"Info: {s}"));
+
+            OptimizationResult result = null;
+            using (var tw = new StreamWriter(savepath + "-log.txt", true))
+            {
+                result = solver.Solve(timelimit, (sender, report) => Console.WriteLine($"Progress: {report}"),
+                    (sender, s) =>
+                    {
+                        Console.WriteLine($"Info: {s}"); tw.WriteLine(s);
+                    });
+            }
+
             BigHr();
 
             File.WriteAllText(savepath + ".json", JsonConvert.SerializeObject(result));
