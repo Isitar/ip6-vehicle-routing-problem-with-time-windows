@@ -181,7 +181,7 @@ namespace IRuettae.Core.Models.Tests
                 OptimizationInput = input,
                 Routes = new Route[]
                 {
-                    // day1, visits visit 0 & 1
+                    // day1, visits visit 1 & 2
                     new Route
                     {
                         SantaId=100,
