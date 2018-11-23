@@ -50,7 +50,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <param name="individual">not null</param>
         private void PositionMutate(Genotype individual)
         {
-            var mutationSize = GetMutationSize(1, individual.Count / 10d);
+            var mutationSize = GetMutationSize(1, individual.Count / 4d);
             while (mutationSize-- > 0)
             {
                 var position1 = rng.NextInt(0, individual.Count - 1);
