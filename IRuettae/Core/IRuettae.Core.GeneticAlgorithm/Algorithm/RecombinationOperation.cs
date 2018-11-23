@@ -86,6 +86,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         {
             foreach (var key in neighbours.Keys)
             {
+                // slightly faster deletion than with remove
                 var list = neighbours[key];
                 var index = list.IndexOf(allele);
                 if (index < 0)
@@ -93,9 +94,11 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
                     continue;
                 }
 
-                // overwrite with last
+                // overwrite index with last
                 var lastIndex = list.Count - 1;
                 list[index] = list[lastIndex];
+
+                // delete last
                 list.RemoveAt(lastIndex);
             }
         }
@@ -113,7 +116,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         private static Dictionary<int, List<int>> GetNeighbours(Genotype parent1, Genotype parent2)
         {
             // allele to neighbours
-            var neighbours = new Dictionary<int, ICollection<int>>();
+            var neighbours = new Dictionary<int, ISet<int>>();
             foreach (var allele in parent1)
             {
                 neighbours[allele] = new SortedSet<int>();
