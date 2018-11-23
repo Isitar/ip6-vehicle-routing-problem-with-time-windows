@@ -67,7 +67,7 @@ namespace IRuettae.Core.LocalSolver
                 {
                     visitSequences[k] = model.List(numberOfVisits);
                     santaOvertime[k] = model.Int(0, int.MaxValue);
-                    santaWaitBeforeStart[k] = model.Int(0, Int32.MaxValue);
+                    santaWaitBeforeStart[k] = model.Int(0, int.MaxValue);
                 }
 
                 model.Constraint(model.Partition(visitSequences));
@@ -125,7 +125,7 @@ namespace IRuettae.Core.LocalSolver
 
                         // visiting
                         var visitDurationSelector = model.Function(i => visitDurationArray[sequence[i]]);
-                        santaVisitDurations[s] = model.Sum(model.Range(1, c), visitDurationSelector);
+                        santaVisitDurations[s] = model.Sum(model.Range(0, c), visitDurationSelector);
 
                         // time slot
                         var currDayIndex = day; // copy because used in lambda expression
@@ -133,7 +133,7 @@ namespace IRuettae.Core.LocalSolver
                             model.If(i == 0,
                                 input.Days[currDayIndex].from + santaWaitBeforeStart[s] + distanceFromHomeArray[sequence[i]],
                                 prev + visitDurationArray[sequence[i - 1]] + distanceArray[sequence[i - 1], sequence[i]]
-                                )
+                            )
                         );
 
                         var visitStartingTime = model.Array(model.Range(0, c), visitStartingTimeSelector);
@@ -151,9 +151,11 @@ namespace IRuettae.Core.LocalSolver
                             var desiredIntersection = model.Function((n) =>
                             {
                                 // desired start
-                                var x = model.If(nDesired == 0, model.Int(0, 0), model.At(visitDesiredArray, v, n, model.Int(0, 0)));
+                                var x = model.If(nDesired == 0, model.Int(0, 0),
+                                        model.At(visitDesiredArray, v, n, model.Int(0, 0)));
                                 // desired end
-                                var y = model.If(nDesired == 0, model.Int(0, 0), model.At(visitDesiredArray, v, n, model.Int(1, 1)));
+                                var y = model.If(nDesired == 0, model.Int(0, 0),
+                                        model.At(visitDesiredArray, v, n, model.Int(1, 1)));
 
                                 return model.If(model.Or(y < visitStart, x > visitEnd),
                                     // if no intersection    
@@ -165,6 +167,7 @@ namespace IRuettae.Core.LocalSolver
                             return model.Sum(model.Range(0, nDesired), desiredIntersection);
                         });
                         santaDesiredDuration[s] = model.Sum(model.Range(0, c), visitDesiredDurationSelector);
+
 
                         // unavailable
                         var visitUnavailableDurationSelector = model.Function(i =>
@@ -198,7 +201,7 @@ namespace IRuettae.Core.LocalSolver
                         santaRouteTime[s] = santaWalkingTime[s] + santaVisitDurations[s];
 
                         // constraint
-                        model.Constraint(model.If(santaUsed[s], visitStartingTime[c-1] + visitDurationArray[sequence[c-1]] + distanceToHomeArray[sequence[c-1]], 0) <= input.Days[currDayIndex].to + santaOvertime[s]);
+                        model.Constraint(model.If(santaUsed[s], visitStartingTime[c - 1] + visitDurationArray[sequence[c - 1]] + distanceToHomeArray[sequence[c - 1]], 0) <= input.Days[currDayIndex].to + santaOvertime[s]);
                     }
                 }
 
@@ -217,15 +220,14 @@ namespace IRuettae.Core.LocalSolver
                 }
 
 
-                var costFunction =
-                    
+                var costFunction = model.Ceil(
                     400 * additionalSantaCount +
                     (40d / hour) * additionalSantaRouteTime +
                     (120d / hour) * model.Sum(santaUnavailableDuration) +
                     (120d / hour) * model.Sum(santaOvertime) +
                     (-20d / hour) * model.Sum(santaDesiredDuration) +
                     (40d / hour) * model.Sum(santaRouteTime) +
-                    (30d / hour) * maxRoute;
+                    (30d / hour) * maxRoute);
                 var minWayTime = input.RouteCosts.Cast<int>().Where(i => i > 0).Min();
 
                 model.Constraint(costFunction >= (minWayTime * (numberOfVisits + 1)) * 40d / hour // min walking time
@@ -287,6 +289,19 @@ namespace IRuettae.Core.LocalSolver
                 consoleProgress?.Invoke(this, $"longestRoute: : {maxRoute.GetIntValue()}");
                 consoleProgress?.Invoke(this, $"overtime: : {string.Join(",", santaOvertime.Select(o => o.GetIntValue()))}");
                 consoleProgress?.Invoke(this, $"santaWaitBeforeStart: : {string.Join(",", santaWaitBeforeStart.Select(o => o.GetIntValue()))}");
+                consoleProgress?.Invoke(this, $"santaVisitduartions: : {string.Join(",", santaWalkingTime.Select(o => o.GetIntValue()))}");
+                consoleProgress?.Invoke(this, $"santawalkingtime: : {string.Join(",", santaVisitDurations.Select(o => o.GetIntValue()))}");
+
+                
+                for (int i = 0; i < numberOfSantas; i++)
+                {
+                    consoleProgress?.Invoke(this, $"Santa {i} visit sequence: {string.Join(",", visitSequences[i].GetCollectionValue().ToArray())} ");
+                    consoleProgress?.Invoke(this, $"Santa {i} visit starting time: {string.Join(",", santaVisitStartingTimes[i].GetArrayValue())} ");
+
+                }
+
+
+
             }
             result.TimeElapsed = sw.ElapsedMilliseconds / 1000;
             sw.Stop();
