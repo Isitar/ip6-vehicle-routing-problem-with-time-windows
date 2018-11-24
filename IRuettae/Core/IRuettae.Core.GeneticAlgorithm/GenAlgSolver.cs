@@ -77,7 +77,8 @@ namespace IRuettae.Core.GeneticAlgorithm
 
                 // log current solution
                 var currentBestCost = GetMinCost(population);
-                Debug.WriteLine($"Current best cost is {currentBestCost}");
+                //Debug.WriteLine($"Current best cost is {currentBestCost} (generation={generation})");
+                //Debug.WriteLine($"Current stdev is {StdDev(population.Select(i => (double)i.Cost))}");
                 if (currentBestCost < bestCost)
                 {
                     bestCost = currentBestCost;
@@ -125,6 +126,25 @@ namespace IRuettae.Core.GeneticAlgorithm
         public int GetMinCost(IEnumerable<Genotype> population)
         {
             return population.Select(i => i.Cost).Min();
+        }
+
+        // Todo: remove
+        public static double StdDev(IEnumerable<double> values)
+        {
+            double ret = 0;
+            int count = values.Count();
+            if (count > 1)
+            {
+                //Compute the Average
+                double avg = values.Average();
+
+                //Perform the Sum of (value-avg)^2
+                double sum = values.Sum(d => (d - avg) * (d - avg));
+
+                //Put it all together
+                ret = Math.Sqrt(sum / count);
+            }
+            return ret;
         }
     }
 }
