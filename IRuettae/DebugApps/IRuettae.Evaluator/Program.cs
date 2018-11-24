@@ -13,21 +13,32 @@ namespace IRuettae.Evaluator
 {
     class Program
     {
+        private enum Algorithms
+        {
+            ILP = 1,
+            GA = 2,
+            LocalSolver = 3,
+            ILPFast = 10,
+            GAFast = 20,
+            LocalSolverFast = 30,
+        }
+
         /// <summary>
         /// Dictionary used for selection
         /// </summary>
-        static readonly Dictionary<int, string> AlgorithmsDictionary = new Dictionary<int, string>()
+        static readonly Dictionary<Algorithms, string> AlgorithmsDictionary = new Dictionary<Algorithms, string>()
         {
-            {1,"ILP"},
-            {2, "GA" },
-            {3, "LocalSolver" },
-            {10,"ILP Fast"},
-            {20, "GA Fast" },
-            {30, "LocalSolver Fast" },
+            {Algorithms.ILP,"ILP"},
+            {Algorithms.GA, "GA" },
+            {Algorithms.LocalSolver, "LocalSolver" },
+            {Algorithms.ILPFast,"ILP Fast"},
+            {Algorithms.GAFast, "GA Fast" },
+            {Algorithms.LocalSolverFast, "LocalSolver Fast" },
         };
 
         static readonly Dictionary<int, string> DatasetDictionary = new Dictionary<int, string>()
         {
+            {0, "All Datasets"},
             {1, "10 visits, 1 santa 2 days"},
             {2, "10 visits, 1 santas, 2 days 5 desired d1, 5 desired d2" },
             {3, "10 visits, 1 santas, 2 days 5 unavailable d1, 5 unavailable d2" },
@@ -66,56 +77,87 @@ namespace IRuettae.Evaluator
             Console.WriteLine("Program written to evaluate the different optimisation algorithms.");
             Console.WriteLine();
 
-            Console.WriteLine("Pleace choose which algorithm to evaluate");
-            foreach (var algorithm in AlgorithmsDictionary)
-            {
-                Console.WriteLine($"{algorithm.Key}: {algorithm.Value}");
-            }
+            var algorithmSelection = QueryAlgorithmSelection();
 
-            int algorithmSelection;
-            do
-            {
-                Console.Write("Enter number: ");
-                var enteredNumber = Console.ReadLine();
-                if (!(int.TryParse(enteredNumber, out algorithmSelection) &&
-                      AlgorithmsDictionary.ContainsKey(algorithmSelection)))
-                {
-                    algorithmSelection = 0;
-                    Console.WriteLine("Please enter a valid number");
-                }
-            } while (algorithmSelection == 0);
-
-            Console.WriteLine($"You selected {AlgorithmsDictionary[algorithmSelection]}");
             SmallHr();
             Console.WriteLine();
-            Console.WriteLine("Please select the dataset");
-            foreach (var dataset in DatasetDictionary)
-            {
-                Console.WriteLine($"{dataset.Key}: {dataset.Value}");
-            }
 
-            int datasetSelection;
+            var datasetSelection = QueryDatasetSelection();
 
-            do
-            {
-                Console.Write("Enter number: ");
-                var enteredNumber = Console.ReadLine();
-                if (!(int.TryParse(enteredNumber, out datasetSelection) &&
-                      DatasetDictionary.ContainsKey(datasetSelection)))
-                {
-                    datasetSelection = 0;
-                    Console.WriteLine("Please enter a valid number");
-                }
-            } while (datasetSelection == 0);
+            SmallHr();
+            Console.WriteLine();
 
-            Console.WriteLine($"You selected dataset {datasetSelection}: {DatasetDictionary[datasetSelection]}");
+            var runs = QueryNumberOfRuns();
+
             SmallHr();
             Console.WriteLine();
             Console.WriteLine("Starting the algorithm now");
             BigHr();
+
+
+            for (int i = 0; i < runs; i++)
+            {
+                foreach (var dataset in datasetSelection)
+                {
+                    var (input, coordinates, timelimit) = GetDataset(dataset);
+
+                    string savepath = $"{DateTime.Now:yy-MM-dd-HH-mm-ss}_DataSet_{datasetSelection}";
+                    ISolver solver = null;
+                    switch (algorithmSelection)
+                    {
+                        case Algorithms.ILPFast:
+                            timelimit /= 60;
+                            goto case Algorithms.ILP;
+                        case Algorithms.ILP:
+                            solver = new ILPSolver(input, new ILPStarterData
+                            {
+                                ClusteringMIPGap = 0,
+                                SchedulingMIPGap = 0,
+
+                                ClusteringTimeLimitMiliseconds = (long)(0.7 * timelimit),
+                                SchedulingTimeLimitMiliseconds = (long)(0.3 * timelimit),
+                                TimeSliceDuration = 120
+                            });
+                            savepath += "_ILP";
+                            break;
+                    }
+
+                    AddUnavailableBetweenDays(input);
+
+                    var result = solver.Solve(timelimit, (sender, report) => Console.WriteLine($"Progress: {report}"),
+                        (sender, s) => Console.WriteLine($"Info: {s}"));
+                    BigHr();
+
+                    File.WriteAllText(savepath + ".json", JsonConvert.SerializeObject(result));
+
+                    var summary = new StringBuilder();
+                    summary.AppendLine($"Solver: {AlgorithmsDictionary[algorithmSelection]}");
+                    summary.AppendLine($"Dataset{datasetSelection}: {DatasetDictionary[dataset]}");
+                    summary.AppendLine($"TimeElapsed [s]: {result.TimeElapsed}");
+                    summary.AppendLine($"Cost: {result.Cost()}");
+                    summary.AppendLine($"NumberOfNotVisitedFamilies: { result.NumberOfNotVisitedFamilies()}");
+                    summary.AppendLine($"NumberOfMissingBreaks: { result.NumberOfMissingBreaks()}");
+                    summary.AppendLine($"NumberOfAdditionalSantas: { result.NumberOfAdditionalSantas()}");
+                    summary.AppendLine($"AdditionalSantaWorkTime: { result.AdditionalSantaWorkTime()}");
+                    summary.AppendLine($"VisitTimeInUnavailable: { result.VisitTimeInUnavailable()}");
+                    summary.AppendLine($"WayTimeOutsideBusinessHours: { result.WayTimeOutsideBusinessHours()}");
+                    summary.AppendLine($"VisitTimeInDesired: { result.VisitTimeInDesired()}");
+                    summary.AppendLine($"SantaWorkTime: { result.SantaWorkTime()}");
+                    summary.AppendLine($"LongestDay: { result.LongestDay()}");
+
+                    File.WriteAllText(savepath + ".txt", summary.ToString());
+                    Console.WriteLine();
+                    Console.WriteLine("Done solving");
+                    Console.WriteLine(summary.ToString());
+                    ResultDrawer.DrawResult(savepath, result, coordinates);
+                }
+            }
+        }
+
+        private static (OptimizationInput, (int, int)[] coordinates, int timelimit) GetDataset(int datasetSelection)
+        {
             OptimizationInput input;
             (int, int)[] coordinates = null;
-            string savepath = $"{DateTime.Now:yy-MM-dd-HH-mm-ss}";
             int timelimit = 0;
             switch (datasetSelection)
             {
@@ -170,54 +212,87 @@ namespace IRuettae.Evaluator
                     break;
             }
 
-            savepath += $"_DataSet_{datasetSelection}";
-            ISolver solver = null;
-            switch (algorithmSelection)
-            {
-                case 10:
-                    timelimit /= 60;
-                    goto case 1;
-                case 1:
-                    solver = new ILPSolver(input, new ILPStarterData
-                    {
-                        ClusteringMIPGap = 0,
-                        SchedulingMIPGap = 0,
+            return (input, coordinates, timelimit);
+        }
 
-                        ClusteringTimeLimitMiliseconds = (long)(0.7 * timelimit),
-                        SchedulingTimeLimitMiliseconds = (long)(0.3 * timelimit),
-                        TimeSliceDuration = 120
-                    });
-                    savepath += "_ILP";
-                    break;
+        private static Algorithms QueryAlgorithmSelection()
+        {
+            Console.WriteLine("Pleace choose which algorithm to evaluate");
+            foreach (var algorithm in AlgorithmsDictionary)
+            {
+                Console.WriteLine($"{(int)algorithm.Key}: {algorithm.Value}");
             }
 
-            AddUnavailableBetweenDays(input);
-            var result = solver.Solve(timelimit, (sender, report) => Console.WriteLine($"Progress: {report}"),
-                (sender, s) => Console.WriteLine($"Info: {s}"));
-            BigHr();
+            Algorithms algorithmSelection;
+            do
+            {
+                Console.Write("Enter number: ");
+                var enteredNumber = Console.ReadLine();
 
-            File.WriteAllText(savepath + ".json", JsonConvert.SerializeObject(result));
+                if (!(Enum.TryParse<Algorithms>(enteredNumber, out algorithmSelection) &&
+                      AlgorithmsDictionary.ContainsKey(algorithmSelection)))
+                {
+                    algorithmSelection = 0;
+                    Console.WriteLine("Please enter a valid number");
+                }
+            } while (algorithmSelection == 0);
 
-            var summary = new StringBuilder();
-            summary.AppendLine($"Solver{algorithmSelection}: {AlgorithmsDictionary[algorithmSelection]}");
-            summary.AppendLine($"Dataset{datasetSelection}: {DatasetDictionary[datasetSelection]}");
-            summary.AppendLine($"TimeElapsed [s]: {result.TimeElapsed}");
-            summary.AppendLine($"Cost: {result.Cost()}");
-            summary.AppendLine($"NumberOfNotVisitedFamilies: { result.NumberOfNotVisitedFamilies()}");
-            summary.AppendLine($"NumberOfMissingBreaks: { result.NumberOfMissingBreaks()}");
-            summary.AppendLine($"NumberOfAdditionalSantas: { result.NumberOfAdditionalSantas()}");
-            summary.AppendLine($"AdditionalSantaWorkTime: { result.AdditionalSantaWorkTime()}");
-            summary.AppendLine($"VisitTimeInUnavailable: { result.VisitTimeInUnavailable()}");
-            summary.AppendLine($"WayTimeOutsideBusinessHours: { result.WayTimeOutsideBusinessHours()}");
-            summary.AppendLine($"VisitTimeInDesired: { result.VisitTimeInDesired()}");
-            summary.AppendLine($"SantaWorkTime: { result.SantaWorkTime()}");
-            summary.AppendLine($"LongestDay: { result.LongestDay()}");
+            Console.WriteLine($"You selected {AlgorithmsDictionary[algorithmSelection]}");
+            return algorithmSelection;
+        }
 
-            File.WriteAllText(savepath + ".txt", summary.ToString());
-            Console.WriteLine();
-            Console.WriteLine("Done solving");
-            Console.WriteLine(summary.ToString());
-            ResultDrawer.DrawResult(savepath, result, coordinates);
+        private static IEnumerable<int> QueryDatasetSelection()
+        {
+            Console.WriteLine("Please select the dataset");
+            foreach (var dataset in DatasetDictionary)
+            {
+                Console.WriteLine($"{dataset.Key}: {dataset.Value}");
+            }
+
+            const int invalidSelection = -1;
+            var datasetSelection = invalidSelection;
+            do
+            {
+                Console.Write("Enter number: ");
+                var enteredNumber = Console.ReadLine();
+                if (!(int.TryParse(enteredNumber, out datasetSelection) &&
+                      DatasetDictionary.ContainsKey(datasetSelection)))
+                {
+                    datasetSelection = invalidSelection;
+                    Console.WriteLine("Please enter a valid number");
+                }
+            } while (datasetSelection == invalidSelection);
+
+            Console.WriteLine($"You selected dataset {datasetSelection}: {DatasetDictionary[datasetSelection]}");
+
+            if (datasetSelection == 0)
+            {
+                return DatasetDictionary.Keys.Where(k => k != 0);
+            }
+            else
+            {
+                return new[] { datasetSelection };
+            }
+        }
+
+        private static int QueryNumberOfRuns()
+        {
+            var runs = 1;
+            do
+            {
+                Console.Write("Enter number of runs: ");
+                var enteredNumber = Console.ReadLine();
+                int.TryParse(enteredNumber, out runs);
+                if (runs < 0)
+                {
+                    runs = 0;
+                    Console.WriteLine("Please enter a positive number");
+                }
+            } while (runs == 0);
+
+            Console.WriteLine($"Number of runs: {runs}");
+
+            return runs;
         }
 
         private static void AddUnavailableBetweenDays(OptimizationInput input)
