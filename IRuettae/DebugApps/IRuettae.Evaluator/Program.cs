@@ -122,13 +122,13 @@ namespace IRuettae.Evaluator
                             });
                             savepath += "_ILP";
                             break;
+                        case Algorithms.GA:
+                            timelimit = 0;
+                            goto case Algorithms.GAFast;
                         case Algorithms.GAFast:
                             timelimit /= 60;
                             solver = new GenAlgSolver(input, GenAlgStarterData.GetDefault(input));
-                            break;
-                        case Algorithms.GA:
-                            timelimit = 0;
-                            solver = new GenAlgSolver(input, GenAlgStarterData.GetDefault(input));
+                            savepath += "_GA";
                             break;
                     }
 
