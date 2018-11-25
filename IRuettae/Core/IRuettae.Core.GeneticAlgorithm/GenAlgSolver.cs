@@ -64,7 +64,8 @@ namespace IRuettae.Core.GeneticAlgorithm
             // evolution
             var repairOperation = new RepairOperation(input, mapping);
             var evolutionOperation = new EvolutionOperation(starterData);
-            for (long generation = 0; generation < starterData.MaxNumberOfGenerations && sw.ElapsedMilliseconds < timelimitMiliseconds; generation++)
+            long generation = 0;
+            for (; generation < starterData.MaxNumberOfGenerations && sw.ElapsedMilliseconds < timelimitMiliseconds; generation++)
             {
                 // evolve
                 evolutionOperation.Evolve(population);
@@ -82,10 +83,13 @@ namespace IRuettae.Core.GeneticAlgorithm
                 if (currentBestCost < bestCost)
                 {
                     bestCost = currentBestCost;
-                    Log($"Found better solution in generation {generation} with cost={bestCost}");
+                    //Log($"Found better solution in generation {generation} with cost={bestCost}");
+                    //Debug.WriteLine($"Found better solution in generation {generation} with cost={bestCost}");
                 }
             }
 
+            //Log($"Finished at generation {generation} with cost={bestCost}");
+            Debug.WriteLine($"Finished at generation {generation} with cost={bestCost}");
             Log(new ProgressReport(0.99));
 
             // build result

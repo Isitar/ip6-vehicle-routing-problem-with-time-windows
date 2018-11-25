@@ -33,7 +33,8 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
                 }
 
                 var individual = population[i];
-                if (rng.NextProbability() > probabilityPositionMutation)
+                var p = rng.NextProbability();
+                if (p > 0.5)
                 {
                     PositionMutate(individual);
                 }
@@ -47,7 +48,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <summary>
         ///
         /// </summary>
-        /// <param name="individual">not null</param>
+        /// <param name="individual">not null and size > 0</param>
         private void PositionMutate(Genotype individual)
         {
             var mutationSize = GetMutationSize(1, individual.Count / 4d);
@@ -66,7 +67,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <summary>
         ///
         /// </summary>
-        /// <param name="individual">not null</param>
+        /// <param name="individual">not null > 0</param>
         private void InversionMutate(Genotype individual)
         {
             var count = individual.Count;

@@ -23,7 +23,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
         {
             return new GenAlgStarterData()
             {
-                MaxNumberOfSantas = input.Santas.Length + 1,
+                MaxNumberOfSantas = input.Visits.Length,
             };
         }
     }
