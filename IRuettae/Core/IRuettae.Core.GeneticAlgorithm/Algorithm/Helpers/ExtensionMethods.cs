@@ -32,7 +32,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Helpers
         /// Returns a random number between min and max.
         /// Note: This function is focussed on performance
         /// and therefore it may have an imbalance in the probability of distrubution.
-        /// Precondition: min < max
+        /// Precondition: min <= max
         /// </summary>
         /// <param name="random">not null</param>
         /// <param name="min">lowest possible return value</param>
