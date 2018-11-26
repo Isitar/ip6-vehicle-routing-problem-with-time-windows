@@ -20,42 +20,46 @@ namespace IRuettae.Core.LocalSolver.Tests
             //    |/
             //    H
 
-
-            var input = new OptimizationInput()
+            const int hour = 3600;
+            var input = new OptimizationInput
             {
                 Visits = new[]
                 {
-                    new Visit()
+                    new Visit
                     {
                         Id = 0,
-                        Duration = 4,
+                        Duration = 4 * hour,
                         Desired = new (int from, int to)[0],
                         Unavailable = new (int from, int to)[0],
-                        WayCostToHome = 3,
-                        WayCostFromHome = 3
+                        WayCostToHome = 3*hour,
+                        WayCostFromHome = 3*hour
                     },
-                    new Visit()
+                    new Visit
                     {
                         Id = 1,
-                        Duration = 5,
+                        Duration = 5*hour,
                         Desired = new (int from, int to)[0],
                         Unavailable = new (int from, int to)[0],
-                        WayCostToHome = 2,
-                        WayCostFromHome = 2,
+                        WayCostToHome = 2*hour,
+                        WayCostFromHome = 2*hour,
                     },
                 },
                 Santas = new[] { new Santa { Id = 0 }, },
-                Days = new (int from, int to)[] { (0, 100) },
+                Days = new (int from, int to)[] { (0, 100*hour) },
                 RouteCosts = new[,]
                 {
-                    {0, 1},
-                    {1, 0},
+                    {0, hour},
+                    {hour, 0},
                 },
             };
 
             var solver = new Solver(input);
-            var output = solver.Solve(1000L, null, null);
+            var output = solver.Solve(3000L, null, null);
             Assert.IsNotNull(output);
+            Assert.IsNotNull(output.Routes);
+            Assert.IsTrue(output.NonEmptyRoutes.Any());
+
+            Assert.AreEqual(1050, output.Cost());
         }
     }
 }
