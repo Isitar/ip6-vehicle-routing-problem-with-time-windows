@@ -116,14 +116,13 @@ namespace IRuettae.Core.Models
             var unavailableSum = 0;
             foreach (var route in NonEmptyRoutes)
             {
-                foreach (var waypoint in route.Waypoints)
+                foreach (var waypoint in route.Waypoints.Where(wp => wp.VisitId >= 0))
                 {
-                    var visit = OptimizationInput.Visits.Cast<Visit?>().FirstOrDefault(v => v != null && v.Value.Id == waypoint.VisitId);
-                    if (!visit.HasValue) { continue; }
+                    var visit = OptimizationInput.Visits[waypoint.VisitId];
 
                     int startTime = waypoint.StartTime;
-                    int endTime = startTime + visit.Value.Duration;
-                    foreach (var (from, to) in visit.Value.Unavailable)
+                    int endTime = startTime + visit.Duration;
+                    foreach (var (from, to) in visit.Unavailable)
                     {
                         unavailableSum += IntersectionLength(new[] { (startTime, endTime), (from, to) });
                     }
@@ -147,11 +146,13 @@ namespace IRuettae.Core.Models
                     var way = (from: endOfPreviousVisit, to: waypoint.StartTime);
                     sum += (way.to - way.from) - IntersectionLength(new[] { day, way });
 
-                    var visit = OptimizationInput.Visits.Cast<Visit?>().FirstOrDefault(v => v != null && v.Value.Id == waypoint.VisitId);
-                    if (visit.HasValue)
+                    var id = waypoint.VisitId;
+                    if (id < 0)
                     {
-                        endOfPreviousVisit = waypoint.StartTime + visit.Value.Duration;
+                        continue;
                     }
+
+                    endOfPreviousVisit = waypoint.StartTime + OptimizationInput.Visits[id].Duration;
                 }
             }
 
@@ -164,14 +165,13 @@ namespace IRuettae.Core.Models
 
             foreach (var route in NonEmptyRoutes)
             {
-                foreach (var waypoint in route.Waypoints)
+                foreach (var waypoint in route.Waypoints.Where(wp => wp.VisitId >= 0))
                 {
-                    var visit = OptimizationInput.Visits.Cast<Visit?>().FirstOrDefault(v => v != null && v.Value.Id == waypoint.VisitId);
-                    if (!visit.HasValue) { continue; }
+                    var visit = OptimizationInput.Visits[waypoint.VisitId];
 
                     int startTime = waypoint.StartTime;
-                    int endTime = startTime + visit.Value.Duration;
-                    foreach (var (from, to) in visit.Value.Desired)
+                    int endTime = startTime + visit.Duration;
+                    foreach (var (from, to) in visit.Desired)
                     {
                         desiredSum += IntersectionLength(new[] { (startTime, endTime), (from, to) });
                     }
