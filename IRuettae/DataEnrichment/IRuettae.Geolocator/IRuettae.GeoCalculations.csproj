@@ -66,6 +66,7 @@
     <Compile Include="RouteCalculation\DebugRouteCalculator.cs" />
     <Compile Include="RouteCalculation\GoogleRouteCalculator.cs" />
     <Compile Include="RouteCalculation\IRouteCalculator.cs" />
+    <Compile Include="RouteCalculation\OpenRouteServiceCalculator.cs" />
     <Compile Include="RouteCalculation\RouteNotFoundException.cs" />
   </ItemGroup>
   <ItemGroup />

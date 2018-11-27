@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="NominatimGeocoderTest.cs" />
     <Compile Include="GoogleGeocoderTest.cs" />
+    <Compile Include="OpenRouteServiceCalculatorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
