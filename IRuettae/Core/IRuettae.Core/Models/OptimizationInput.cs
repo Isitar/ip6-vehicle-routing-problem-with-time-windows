@@ -37,5 +37,7 @@ namespace IRuettae.Core.Models
         public int SumVisitDuration() => Visits.Sum(v => v.Duration);
         public int MinWayDuration() => Math.Min(RouteCosts.Cast<int>().Min(rc => rc), Visits.Select(v => Math.Min(v.WayCostFromHome, v.WayCostToHome)).Min());
         public int MaxWayDuration() => Math.Max(RouteCosts.Cast<int>().Max(rc => rc), Visits.Select(v => Math.Max(v.WayCostFromHome, v.WayCostToHome)).Max());
+
+        public int MaxDesired() => Visits.Sum(v => Math.Min(v.Desired.Any() ? v.Desired.Select(d => d.to - d.@from).Max() : 0, v.Duration));
     }
 }

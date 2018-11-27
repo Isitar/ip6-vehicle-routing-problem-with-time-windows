@@ -211,7 +211,7 @@ namespace IRuettae.Evaluator
                     timelimit = 120 * 60 * 1000;
                     break;
             }
-
+            
             return (input, coordinates, timelimit);
         }
 
