@@ -83,13 +83,14 @@ namespace IRuettae.Core.GeneticAlgorithm
                 if (currentBestCost < bestCost)
                 {
                     bestCost = currentBestCost;
-                    //Log($"Found better solution in generation {generation} with cost={bestCost}");
+                    Log($"Found better solution in generation {generation} with cost={bestCost}");
                     //Debug.WriteLine($"Found better solution in generation {generation} with cost={bestCost}");
                 }
             }
 
-            //Log($"Finished at generation {generation} with cost={bestCost}");
-            Debug.WriteLine($"Finished at generation {generation} with cost={bestCost}");
+            Log($"Finished at generation {generation} with cost={bestCost}");
+            Log($"Current stdev is {StdDev(population.Select(i => (double)i.Cost))}");
+            //Debug.WriteLine($"Finished at generation {generation} with cost={bestCost}");
             Log(new ProgressReport(0.99));
 
             // build result
