@@ -32,22 +32,23 @@ namespace IRuettae.Evaluator
 
          * Visits
          *
-            SELECT
+           SET @RowNumber = 0;
+           SELECT
               CONCAT('new Visit{Duration=',v.Duration,
-                     ', Id=',ROW_NUMBER() OVER(ORDER BY Id) -1,
+                     ', Id=', (@RowNumber:=@RowNumber + 1) -1 ,
                      ',WayCostFromHome=',wHome.Duration,
                      ', WayCostToHome=',wToHome.Duration,
                      ',Unavailable =',CASE WHEN unavailablePeriod.Id IS NULL THEN 'new (int from, int to)[0]'
                                       ELSE
                                         concat('new [] {(',unix_timestamp(unavailablePeriod.Start) - unix_timestamp('2017-12-08 17:00:00'), ',',unix_timestamp(unavailablePeriod.End) - unix_timestamp('2017-12-08 17:00:00'),')}')
                                       END,
-                     ',Desired =',CASE WHEN unavailablePeriod.Id IS NULL THEN 'new (int from, int to)[0]'
+                     ',Desired =',CASE WHEN desiredPeriod.Id IS NULL THEN 'new (int from, int to)[0]'
                                   ELSE
                                     concat('new [] {(',unix_timestamp(desiredPeriod.Start) - unix_timestamp('2017-12-08 17:00:00'), ',',unix_timestamp(desiredPeriod.End) - unix_timestamp('2017-12-08 17:00:00'),')}')
                                   END,
                      '},')
 
-              ,v.*
+             
             FROM visit v
               JOIN way wHome ON v.Id = wHome.To_id AND wHome.From_id = 12
               JOIN way wToHome ON v.Id = wToHome.From_id AND wToHome.To_id = 12
@@ -166,9 +167,9 @@ namespace IRuettae.Evaluator
                     new Visit{Duration=1500, Id=4,WayCostFromHome=483, WayCostToHome=437,Unavailable =new (int from, int to)[0],Desired =new (int from, int to)[0]},
                     new Visit{Duration=1200, Id=5,WayCostFromHome=337, WayCostToHome=375,Unavailable =new (int from, int to)[0],Desired =new (int from, int to)[0]},
                     new Visit{Duration=1800, Id=6,WayCostFromHome=316, WayCostToHome=336,Unavailable =new [] {(0,14400)},Desired =new [] {(86400,100800)}},
-                    new Visit{Duration=1500, Id=7,WayCostFromHome=142, WayCostToHome=139,Unavailable =new (int from, int to)[0],Desired =new (int from, int to)[0]},
-                    new Visit{Duration=1500, Id=8,WayCostFromHome=306, WayCostToHome=328,Unavailable =new (int from, int to)[0],Desired =new (int from, int to)[0]},
-                    new Visit{Duration=1800, Id=9,WayCostFromHome=242, WayCostToHome=224,Unavailable =new (int from, int to)[0],Desired =new (int from, int to)[0]},
+                    new Visit{Duration=1500, Id=7,WayCostFromHome=142, WayCostToHome=139,Unavailable =new (int from, int to)[0],Desired =new [] {(86400,100800)}},
+                    new Visit{Duration=1500, Id=8,WayCostFromHome=306, WayCostToHome=328,Unavailable =new (int from, int to)[0],Desired =new [] {(86400,100800)}},
+                    new Visit{Duration=1800, Id=9,WayCostFromHome=242, WayCostToHome=224,Unavailable =new (int from, int to)[0],Desired =new [] {(86400,100800)}},
                     new Visit{Duration=2100, Id=10,WayCostFromHome=130, WayCostToHome=148,Unavailable =new [] {(0,14400)},Desired =new [] {(86400,100800)}},
                     new Visit{Duration=1800, Id=11,WayCostFromHome=381, WayCostToHome=358,Unavailable =new [] {(0,14400)},Desired =new [] {(86400,100800)}},
                     new Visit{Duration=1200, Id=12,WayCostFromHome=358, WayCostToHome=295,Unavailable =new (int from, int to)[0],Desired =new (int from, int to)[0]},
@@ -184,15 +185,16 @@ namespace IRuettae.Evaluator
                     new Visit{Duration=1500, Id=22,WayCostFromHome=534, WayCostToHome=604,Unavailable =new (int from, int to)[0],Desired =new (int from, int to)[0]},
                     new Visit{Duration=1800, Id=23,WayCostFromHome=1073, WayCostToHome=1142,Unavailable =new [] {(86400,100800)},Desired =new [] {(3600,14400)}},
                     new Visit{Duration=1500, Id=24,WayCostFromHome=956, WayCostToHome=1020,Unavailable =new [] {(86400,100800)},Desired =new [] {(7200,14400)}},
-                    new Visit{Duration=1500, Id=25,WayCostFromHome=937, WayCostToHome=1004,Unavailable =new (int from, int to)[0],Desired =new (int from, int to)[0]},
-                    new Visit{Duration=1500, Id=26,WayCostFromHome=1020, WayCostToHome=1097,Unavailable =new (int from, int to)[0],Desired =new (int from, int to)[0]},
+                    new Visit{Duration=1500, Id=25,WayCostFromHome=937, WayCostToHome=1004,Unavailable =new (int from, int to)[0],Desired =new [] {(0,14400)}},
+                    new Visit{Duration=1500, Id=26,WayCostFromHome=1020, WayCostToHome=1097,Unavailable =new (int from, int to)[0],Desired =new [] {(0,14400)}},
                     new Visit{Duration=2400, Id=27,WayCostFromHome=254, WayCostToHome=220,Unavailable =new (int from, int to)[0],Desired =new (int from, int to)[0]},
-                    new Visit{Duration=1500, Id=28,WayCostFromHome=389, WayCostToHome=463,Unavailable =new (int from, int to)[0],Desired =new (int from, int to)[0]},
+                    new Visit{Duration=1500, Id=28,WayCostFromHome=389, WayCostToHome=463,Unavailable =new (int from, int to)[0],Desired =new [] {(0,14400)}},
                     new Visit{Duration=2400, Id=29,WayCostFromHome=212, WayCostToHome=201,Unavailable =new [] {(86400,100800)},Desired =new [] {(0,14400)}},
                     new Visit{Duration=1500, Id=30,WayCostFromHome=87, WayCostToHome=78,Unavailable =new [] {(86400,100800)},Desired =new [] {(0,14400)}},
-                    new Visit{Duration=1500, Id=31,WayCostFromHome=326, WayCostToHome=251,Unavailable =new (int from, int to)[0],Desired =new (int from, int to)[0]},
-                    new Visit{Duration=1500, Id=32,WayCostFromHome=907, WayCostToHome=931,Unavailable =new (int from, int to)[0],Desired =new (int from, int to)[0]},
+                    new Visit{Duration=1500, Id=31,WayCostFromHome=326, WayCostToHome=251,Unavailable =new (int from, int to)[0],Desired =new [] {(0,14400)}},
+                    new Visit{Duration=1500, Id=32,WayCostFromHome=907, WayCostToHome=931,Unavailable =new (int from, int to)[0],Desired =new [] {(0,14400)}},
                     new Visit{Duration=1800, Id=33,WayCostFromHome=884, WayCostToHome=895,Unavailable =new (int from, int to)[0],Desired =new (int from, int to)[0]},
+
                 }
             };
             return (input, coordinates);
