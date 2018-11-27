@@ -31,5 +31,11 @@ namespace IRuettae.Core.Models
         /// x -> y is on position [x,y]
         /// </summary>
         public int[,] RouteCosts { get; set; }
+
+        public int NumberOfSantas() => Santas.Length;
+        public int NumberOfVisits() => Visits.Length;
+        public int SumVisitDuration() => Visits.Sum(v => v.Duration);
+        public int MinWayDuration() => Math.Min(RouteCosts.Cast<int>().Min(rc => rc), Visits.Select(v => Math.Min(v.WayCostFromHome, v.WayCostToHome)).Min());
+        public int MaxWayDuration() => Math.Max(RouteCosts.Cast<int>().Max(rc => rc), Visits.Select(v => Math.Max(v.WayCostFromHome, v.WayCostToHome)).Max());
     }
 }
