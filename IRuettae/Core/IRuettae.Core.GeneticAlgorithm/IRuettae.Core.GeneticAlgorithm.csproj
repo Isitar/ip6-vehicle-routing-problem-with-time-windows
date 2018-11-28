@@ -46,6 +46,7 @@
     <Compile Include="Algorithm\EvolutionOperation.cs" />
     <Compile Include="Algorithm\Helpers\ExtensionMethods.cs" />
     <Compile Include="Algorithm\Helpers\RandomFactory.cs" />
+    <Compile Include="Algorithm\Helpers\SimplifiedOptimizationResult.cs" />
     <Compile Include="Algorithm\Models\GenAlgStarterData.cs" />
     <Compile Include="Algorithm\Models\Genotype.cs" />
     <Compile Include="Algorithm\MutationOperation.cs" />

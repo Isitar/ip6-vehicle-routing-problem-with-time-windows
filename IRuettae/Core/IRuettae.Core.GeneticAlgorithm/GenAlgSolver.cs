@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using IRuettae.Core.GeneticAlgorithm.Algorithm;
+using IRuettae.Core.GeneticAlgorithm.Algorithm.Helpers;
 using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
 using IRuettae.Core.Models;
 using Route = IRuettae.Core.Models.Route;
@@ -53,7 +54,7 @@ namespace IRuettae.Core.GeneticAlgorithm
             {
                 OptimizationInput = input,
             };
-            var costCalculator = new CostCalculator(decoder, result);
+            var costCalculator = new CostCalculator(decoder, new SimplifiedOptimizationResult(result));
             costCalculator.RecalculatateCost(population);
 
             // Log characteristics of inital population
