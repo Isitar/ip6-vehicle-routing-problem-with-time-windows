@@ -24,7 +24,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Tests.Algorithm
                 4,5,2,1,3,
             };
 
-            var actual = RecombinationOperation.Recombinate(parent1, parent2);
+            var actual = RecombinationOperation.EdgeRecombinationCrossover(parent1, parent2);
             var expected = new Genotype()
             {
                 5,4,1,2,3
@@ -45,7 +45,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Tests.Algorithm
                 1,2,3,4,5,
             };
 
-            var actual = RecombinationOperation.Recombinate(parent1, parent2);
+            var actual = RecombinationOperation.EdgeRecombinationCrossover(parent1, parent2);
             var expected = new Genotype()
             {
                 1,2,3,4,5,
@@ -66,7 +66,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Tests.Algorithm
                 5,4,3,2,1,
             };
 
-            var actual = RecombinationOperation.Recombinate(parent1, parent2);
+            var actual = RecombinationOperation.EdgeRecombinationCrossover(parent1, parent2);
             var expected = new Genotype()
             {
                 5,4,3,2,1,
@@ -87,7 +87,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Tests.Algorithm
                 5,4,3,2,1,
             };
 
-            var actual = RecombinationOperation.Recombinate(parent1, parent2);
+            var actual = RecombinationOperation.EdgeRecombinationCrossover(parent1, parent2);
             var expected = new Genotype()
             {
                 1,2,3,4,5,
@@ -108,7 +108,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Tests.Algorithm
                 1,2,3,4,5,
             };
 
-            var actual = RecombinationOperation.Recombinate(parent1, parent2);
+            var actual = RecombinationOperation.EdgeRecombinationCrossover(parent1, parent2);
             var expected = new Genotype()
             {
                 5,4,3,2,1,

@@ -12,6 +12,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
     {
         private readonly BinaryTournamentSelection selectionOperation = new BinaryTournamentSelection(RandomFactory.Instance);
         private readonly MutationOperation mutationOperation = new MutationOperation(RandomFactory.Instance);
+        private readonly RecombinationOperation recombinationOperation = new RecombinationOperation(RandomFactory.Instance);
         private readonly GenAlgStarterData starterData;
 
         public EvolutionOperation(GenAlgStarterData starterData)
@@ -26,7 +27,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 
             // Evolve
             var parents = selectionOperation.Select(population, population.Count - 1);
-            var newPopulation = parents.Select(p => RecombinationOperation.Recombinate(p.Item1, p.Item2)).ToList();
+            var newPopulation = parents.Select(p => recombinationOperation.Recombinate(p.Item1, p.Item2)).ToList();
 
             // Mutate
             mutationOperation.Mutate(newPopulation, starterData.MutationProbability);

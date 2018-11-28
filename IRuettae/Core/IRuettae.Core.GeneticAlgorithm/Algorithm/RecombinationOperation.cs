@@ -1,14 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using IRuettae.Core.GeneticAlgorithm.Algorithm.Helpers;
 using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
 
 namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 {
     public class RecombinationOperation
     {
+        private const double probabilityOrderBasedCrossover = 0.5;
+        private const double probabilityEdgeRecombinationCrossover = 1.0 - probabilityOrderBasedCrossover;
+        private RandomNumberGenerator rng;
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="rng">not null</param>
+        public RecombinationOperation(RandomNumberGenerator rng)
+        {
+            this.rng = rng;
+        }
+
         /// <summary>
         /// Precondition: parent1 and parent2 contain the same alleles.
         /// Postcondition: child contains the same alleles as parent1.
@@ -16,7 +31,96 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <param name="parent1"></param>
         /// <param name="parent2"></param>
         /// <returns></returns>
-        public static Genotype Recombinate(Genotype parent1, Genotype parent2)
+        public Genotype Recombinate(Genotype parent1, Genotype parent2)
+        {
+            if (rng.NextProbability() < probabilityOrderBasedCrossover)
+            {
+                return OrderBasedCrossover(parent1, parent2);
+
+            }
+            else
+            {
+                return EdgeRecombinationCrossover(parent1, parent2);
+            }
+        }
+
+        /// <summary>
+        /// Precondition: parent1 and parent2 contain the same alleles.
+        /// Postcondition: child contains the same alleles as parent1.
+        /// </summary>
+        /// <param name="parent1"></param>
+        /// <param name="parent2"></param>
+        /// <returns></returns>
+        public Genotype OrderBasedCrossover(Genotype parent1, Genotype parent2)
+        {
+            var count = parent1.Count;
+            if (count <= 1)
+            {
+                return parent1;
+            }
+            var numberOfPositions = rng.NextInt(Math.Max(1, count / 4), Math.Max(1, count * 3 / 4));
+            var selectedAlleles = new HashSet<int>();
+            for (int i = 0; i < numberOfPositions; i++)
+            {
+                var selectedAllele = parent2[rng.NextInt(0, count - 1)];
+                if (selectedAlleles.Contains(selectedAllele))
+                {
+                    // already selected, try again
+                    i--;
+                }
+                else
+                {
+                    selectedAlleles.Add(selectedAllele);
+                }
+            }
+
+
+            // copy alleles from parent1 which are not selected
+            var child = new List<int?>(count);
+            for (int i = 0; i < count; i++)
+            {
+                var allele = parent1[i];
+                if (!selectedAlleles.Contains(allele))
+                {
+                    child.Add(allele);
+                }
+                else
+                {
+                    child.Add(null);
+                }
+            }
+
+            // add the missing alleles in the order they appear in parent2
+            var nextPositionParent2 = 0;
+            for (int i = 0; i < count; i++)
+            {
+                if (!child[i].HasValue)
+                {
+                    // find next allele
+                    for (int j = nextPositionParent2; j < count; j++)
+                    {
+                        var allele = parent2[j];
+                        if (!child.Contains(allele))
+                        {
+                            child[i] = allele;
+                            nextPositionParent2 = j + 1;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return new Genotype(child.Select(e => e.Value));
+        }
+
+        /// <summary>
+        /// Precondition: parent1 and parent2 contain the same alleles.
+        /// Postcondition: child contains the same alleles as parent1.
+        /// </summary>
+        /// <param name="parent1"></param>
+        /// <param name="parent2"></param>
+        /// <returns></returns>
+        public static Genotype EdgeRecombinationCrossover(Genotype parent1, Genotype parent2)
         {
             var count = parent1.Count;
             if (count <= 1)
