@@ -48,7 +48,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DatasetFactory.cs" />
-    <Compile Include="Datasets\DatasetFactory.DataSet8.cs" />
     <Compile Include="Datasets\DatasetFactory.DataSet7.cs" />
     <Compile Include="Datasets\DatasetFactory.DataSet1.cs" />
     <Compile Include="Datasets\DatasetFactory.DataSet10.cs" />
