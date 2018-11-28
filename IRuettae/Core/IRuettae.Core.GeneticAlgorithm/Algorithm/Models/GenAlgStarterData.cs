@@ -9,7 +9,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
 {
     public class GenAlgStarterData
     {
-        public int PopulationSize { get; set; } = 2;
+        public int PopulationSize { get; set; } = 10;
         public int MaxNumberOfSantas { get; set; }
         public long MaxNumberOfGenerations { get; set; } = long.MaxValue;
         public double MutationProbability { get; set; } = 1;
