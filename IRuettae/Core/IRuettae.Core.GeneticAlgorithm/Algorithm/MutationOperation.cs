@@ -34,7 +34,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 
                 var individual = population[i];
                 var p = rng.NextProbability();
-                if (p > 0.5)
+                if (p > probabilityPositionMutation)
                 {
                     PositionMutate(individual);
                 }
