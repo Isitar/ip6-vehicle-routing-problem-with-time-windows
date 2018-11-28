@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DatasetFactory.cs" />
+    <Compile Include="Datasets\DatasetFactory.DataSet8.cs" />
     <Compile Include="Datasets\DatasetFactory.DataSet7.cs" />
     <Compile Include="Datasets\DatasetFactory.DataSet1.cs" />
     <Compile Include="Datasets\DatasetFactory.DataSet10.cs" />
@@ -81,7 +82,7 @@
       <Name>IRuettae.Core.ILP</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\IRuettae.Core.LocalSolver\IRuettae.Core.LocalSolver.csproj">
-      <Project>{383487D6-E248-4D1B-A1D6-BE3BFBC54ABF}</Project>
+      <Project>{383487d6-e248-4d1b-a1d6-be3bfbc54abf}</Project>
       <Name>IRuettae.Core.LocalSolver</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\IRuettae.Core\IRuettae.Core.csproj">
