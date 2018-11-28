@@ -16,9 +16,46 @@ namespace IRuettae.Core.GeneticAlgorithm.Tests.Algorithm.Helpers
 
             for (int expected = 0; expected < 1000; expected++)
             {
-                generator.GetBytes(bytes);
+                generator.NextBytes(bytes);
                 Assert.AreEqual(expected, BitConverter.ToInt32(bytes, 0));
             }
+        }
+
+        [TestMethod]
+        public void TestNext()
+        {
+            var generator = new TestNumberGenerator();
+            Assert.AreEqual(int.MinValue, generator.Next());
+            Assert.AreEqual(int.MinValue + 1, generator.Next());
+        }
+
+        [TestMethod]
+        public void TestNextMax()
+        {
+            var generator = new TestNumberGenerator();
+
+            int max = 1000;
+            for (int expected = 0; expected < max; expected++)
+            {
+                Assert.AreEqual(expected, generator.Next(1000));
+            }
+
+            Assert.AreEqual(0, generator.Next(1000));
+        }
+
+        [TestMethod]
+        public void TestNextMinMax()
+        {
+            var generator = new TestNumberGenerator();
+
+            int min = -100;
+            int max = 100;
+            for (int expected = 0; expected < max - min; expected++)
+            {
+                Assert.AreEqual(expected + min, generator.Next(min, max));
+            }
+
+            Assert.AreEqual(min, generator.Next(min, max));
         }
     }
 }

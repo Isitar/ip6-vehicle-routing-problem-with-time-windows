@@ -15,15 +15,15 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
     /// </summary>
     public class BinaryTournamentSelection
     {
-        private readonly RandomNumberGenerator rng;
+        private readonly Random random;
 
         /// <summary>
         ///
         /// </summary>
-        /// <param name="rng">not null</param>
-        public BinaryTournamentSelection(RandomNumberGenerator rng)
+        /// <param name="random">not null</param>
+        public BinaryTournamentSelection(Random random)
         {
-            this.rng = rng;
+            this.random = random;
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <returns></returns>
         private Genotype GetRandomIndividual(List<Genotype> population)
         {
-            var index = rng.NextInt(0, population.Count - 1);
+            var index = random.Next(0, population.Count);
             return population[index];
         }
     }

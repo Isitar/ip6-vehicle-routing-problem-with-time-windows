@@ -46,7 +46,7 @@ namespace IRuettae.Core.GeneticAlgorithm
             }
 
             // init population
-            var (population, mapping) = PopulationGenerator.Generate(input, starterData.PopulationSize, starterData.MaxNumberOfSantas);
+            var (population, mapping) = new PopulationGenerator(RandomFactory.Instance).Generate(input, starterData.PopulationSize, starterData.MaxNumberOfSantas);
             var decoder = new Decoder(input, mapping);
 
             // calculate costs
@@ -63,8 +63,8 @@ namespace IRuettae.Core.GeneticAlgorithm
             Log($"Best solution cost is: {bestCost}");
 
             // evolution
-            var repairOperation = new RepairOperation(input, mapping);
             var evolutionOperation = new EvolutionOperation(starterData);
+            var repairOperation = new RepairOperation(input, mapping);
             long generation = 0;
             for (; generation < starterData.MaxNumberOfGenerations && sw.ElapsedMilliseconds < timelimitMiliseconds; generation++)
             {

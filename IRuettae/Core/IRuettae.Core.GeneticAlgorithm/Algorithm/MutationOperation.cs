@@ -10,11 +10,11 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
     {
         private const double probabilityPositionMutation = 0.5;
         private const double probabilityInversionMutation = 1.0 - probabilityPositionMutation;
-        private readonly RandomNumberGenerator rng;
+        private readonly Random random;
 
-        public MutationOperation(RandomNumberGenerator rng)
+        public MutationOperation(Random random)
         {
-            this.rng = rng;
+            this.random = random;
         }
 
         /// <summary>
@@ -26,14 +26,14 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         {
             for (int i = 0; i < population.Count; i++)
             {
-                if (rng.NextProbability() < probability)
+                if (random.NextDouble() < probability)
                 {
                     // no mutation
                     continue;
                 }
 
                 var individual = population[i];
-                var p = rng.NextProbability();
+                var p = random.NextDouble();
                 if (p < probabilityPositionMutation)
                 {
                     PositionMutate(individual);
@@ -54,8 +54,8 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             var mutationSize = GetMutationSize(1, individual.Count / 4d);
             while (mutationSize-- > 0)
             {
-                var position1 = rng.NextInt(0, individual.Count - 1);
-                var position2 = rng.NextInt(0, individual.Count - 1);
+                var position1 = random.Next(0, individual.Count);
+                var position2 = random.Next(0, individual.Count);
 
                 // swap
                 var temp = individual[position1];
@@ -72,7 +72,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         {
             var count = individual.Count;
             var inversionSize = Math.Min(count, GetMutationSize(2, count / 4d));
-            var inversionStart = rng.NextInt(0, count - inversionSize);
+            var inversionStart = random.Next(0, count - inversionSize + 1);
 
             var mutationSubset = individual.GetRange(inversionStart, inversionSize);
             var afterSubset = individual.GetRange(inversionStart + inversionSize, count - (inversionStart + inversionSize));
@@ -93,20 +93,20 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// Source: https://stackoverflow.com/questions/218060/random-gaussian-variables
         /// </summary>
         /// <param name="min"></param>
-        /// <param name="stdev">not 0</param>
+        /// <param name="stdev"></param>
         /// <returns></returns>
         private int GetMutationSize(int min, double stdev)
         {
             double u1;
             do
             {
-                u1 = rng.NextProbability();
+                u1 = random.NextDouble();
             } while (u1 == 0.0);
 
             double u2;
             do
             {
-                u2 = rng.NextProbability();
+                u2 = random.NextDouble();
             } while (u2 == 0.0);
 
             var randomNormal = Math.Cos(2d * Math.PI * u1) * Math.Sqrt(-2d * Math.Log(u2));

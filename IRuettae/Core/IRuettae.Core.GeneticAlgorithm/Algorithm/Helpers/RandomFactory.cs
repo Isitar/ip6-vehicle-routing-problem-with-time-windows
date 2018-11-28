@@ -9,6 +9,9 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Helpers
 {
     internal sealed class RandomFactory
     {
-        public static RandomNumberGenerator Instance { get; } = new RNGCryptoServiceProvider();
+        /// <summary>
+        /// Warning: Random is not threadsafe
+        /// </summary>
+        public static Random Instance { get; } = new Random();
     }
 }

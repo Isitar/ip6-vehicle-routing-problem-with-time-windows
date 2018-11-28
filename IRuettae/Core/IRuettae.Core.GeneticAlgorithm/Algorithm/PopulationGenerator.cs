@@ -11,6 +11,13 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 {
     public class PopulationGenerator
     {
+        private readonly Random random;
+
+        public PopulationGenerator(Random random)
+        {
+            this.random = random;
+        }
+
         /// <summary>
         /// Returns generated genotypes and mapping from allele to visitId.
         /// The returned Genotypes are already repaired.
@@ -19,7 +26,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <param name="numberOfIndividuals"></param>
         /// <param name="maxNumberOfSantas"></param>
         /// <returns>Population and the AlleleToVisitIdMapping</returns>
-        public static (List<Genotype>, Dictionary<int, int>) Generate(OptimizationInput input, int numberOfIndividuals, int maxNumberOfSantas)
+        public (List<Genotype>, Dictionary<int, int>) Generate(OptimizationInput input, int numberOfIndividuals, int maxNumberOfSantas)
         {
             var numberOfSeparators = input.Days.Length * maxNumberOfSantas - 1;
             var alleleToVisitIdMapping = CreateAlleles(input, numberOfSeparators);
@@ -32,7 +39,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             var population = new List<Genotype>(numberOfIndividuals);
             for (int i = 0; i < numberOfIndividuals; i++)
             {
-                elements.Shuffle();
+                elements.Shuffle(random);
                 var genotype = new Genotype(elements);
                 repairOperation.Repair(genotype);
                 population.Add(genotype);

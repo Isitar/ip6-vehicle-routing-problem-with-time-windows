@@ -66,7 +66,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Tests
             int maxNumberOfSantas = 5;
             int numberOfSeparators = input.Days.Length * maxNumberOfSantas - 1;
             int expectedNumberOfGenes = numberOfVisits + numberOfSeparators + numberOfBreaks * input.Days.Length;
-            var (actual, mapping) = PopulationGenerator.Generate(input, numberOfIndividuals, maxNumberOfSantas);
+            var (actual, mapping) = new PopulationGenerator(new Random()).Generate(input, numberOfIndividuals, maxNumberOfSantas);
 
             Assert.AreEqual(numberOfIndividuals, actual.Count);
             for (int i = 0; i < actual.Count; i++)

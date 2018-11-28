@@ -13,15 +13,15 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
     {
         private const double probabilityOrderBasedCrossover = 0.5;
         private const double probabilityEdgeRecombinationCrossover = 1.0 - probabilityOrderBasedCrossover;
-        private RandomNumberGenerator rng;
+        private Random random;
 
         /// <summary>
         ///
         /// </summary>
-        /// <param name="rng">not null</param>
-        public RecombinationOperation(RandomNumberGenerator rng)
+        /// <param name="random">not null</param>
+        public RecombinationOperation(Random random)
         {
-            this.rng = rng;
+            this.random = random;
         }
 
         /// <summary>
@@ -33,10 +33,9 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <returns></returns>
         public Genotype Recombinate(Genotype parent1, Genotype parent2)
         {
-            if (rng.NextProbability() < probabilityOrderBasedCrossover)
+            if (random.NextDouble() < probabilityOrderBasedCrossover)
             {
                 return OrderBasedCrossover(parent1, parent2);
-
             }
             else
             {
@@ -58,11 +57,11 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             {
                 return parent1;
             }
-            var numberOfPositions = rng.NextInt(Math.Max(1, count / 4), Math.Max(1, count * 3 / 4));
+            var numberOfPositions = random.Next(Math.Max(1, count / 4), Math.Max(1, count * 3 / 4));
             var selectedAlleles = new HashSet<int>();
             for (int i = 0; i < numberOfPositions; i++)
             {
-                var selectedAllele = parent2[rng.NextInt(0, count - 1)];
+                var selectedAllele = parent2[random.Next(0, count)];
                 if (selectedAlleles.Contains(selectedAllele))
                 {
                     // already selected, try again
