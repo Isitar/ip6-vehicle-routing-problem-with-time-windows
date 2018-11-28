@@ -26,7 +26,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         {
             for (int i = 0; i < population.Count; i++)
             {
-                if (rng.NextProbability() > probability)
+                if (rng.NextProbability() < probability)
                 {
                     // no mutation
                     continue;
@@ -34,7 +34,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 
                 var individual = population[i];
                 var p = rng.NextProbability();
-                if (p > probabilityPositionMutation)
+                if (p < probabilityPositionMutation)
                 {
                     PositionMutate(individual);
                 }
