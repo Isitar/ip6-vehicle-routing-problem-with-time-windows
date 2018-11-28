@@ -68,16 +68,16 @@ namespace IRuettae.Core.Models
                 - (20d / hour) * VisitTimeInDesired()
                 + (40d / hour) * SantaWorkTime()
                 + (30d / hour) * LongestDay();
-            return (int) Math.Ceiling(cost);
+            return (int)Math.Ceiling(cost);
 
         }
-        public int NumberOfNotVisitedFamilies()
+        public virtual int NumberOfNotVisitedFamilies()
         {
             var visitedVisits = NonEmptyRoutes.SelectMany(r => r.Waypoints.Select(w => w.VisitId));
             return OptimizationInput.Visits.Count(v => !v.IsBreak && !visitedVisits.Contains(v.Id));
         }
 
-        public int NumberOfMissingBreaks()
+        public virtual int NumberOfMissingBreaks()
         {
             var santaBreaks = new Dictionary<int, int>();
             foreach (var v in OptimizationInput.Visits.Where(v => v.IsBreak))
@@ -125,7 +125,7 @@ namespace IRuettae.Core.Models
                     int endTime = startTime + visit.Duration;
                     foreach (var (from, to) in visit.Unavailable)
                     {
-                        unavailableSum += IntersectionLength(new[] { (startTime, endTime), (from, to) });
+                        unavailableSum += IntersectionLength(startTime, endTime, from, to);
                     }
                 }
             }
@@ -145,7 +145,7 @@ namespace IRuettae.Core.Models
                 foreach (var waypoint in route.Waypoints.Skip(1))
                 {
                     var way = (from: endOfPreviousVisit, to: waypoint.StartTime);
-                    sum += (way.to - way.from) - IntersectionLength(new[] { day, way });
+                    sum += (way.to - way.from) - IntersectionLength(day.from, day.to, way.from, way.to);
 
                     var id = waypoint.VisitId;
                     if (id < 0)
@@ -174,7 +174,7 @@ namespace IRuettae.Core.Models
                     int endTime = startTime + visit.Duration;
                     foreach (var (from, to) in visit.Desired)
                     {
-                        desiredSum += IntersectionLength(new[] { (startTime, endTime), (from, to) });
+                        desiredSum += IntersectionLength(startTime, endTime, from, to);
                     }
                 }
             }
@@ -240,7 +240,7 @@ namespace IRuettae.Core.Models
         {
             foreach (var day in OptimizationInput.Days)
             {
-                if (IntersectionLength(new[] { (route.Waypoints.First().StartTime, route.Waypoints.Last().StartTime), day }) > 0)
+                if (IntersectionLength(route.Waypoints.First().StartTime, route.Waypoints.Last().StartTime, day.from, day.to) > 0)
                 {
                     return day;
                 }
@@ -251,12 +251,15 @@ namespace IRuettae.Core.Models
         /// <summary>
         /// Returns how much the two intervals overlap
         /// </summary>
-        /// <param name="intervals"></param>
+        /// <param name="start1">start of first interval</param>
+        /// <param name="end1">end of first interval</param>
+        /// <param name="start2">start of second interval</param>
+        /// <param name="end2">end of second interval</param>
         /// <returns></returns>
-        private static int IntersectionLength(IReadOnlyCollection<(int from, int to)> intervals)
+        private static int IntersectionLength(int start1, int end1, int start2, int end2)
         {
-            int startIntersection = intervals.Max(interval => interval.from);
-            int endIntersection = intervals.Min(interval => interval.to);
+            int startIntersection = Math.Max(start1, start2);
+            int endIntersection = Math.Min(end1, end2);
             if (startIntersection < endIntersection)
             {
                 return endIntersection - startIntersection;
