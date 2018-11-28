@@ -71,13 +71,13 @@ namespace IRuettae.Core.Models
             return (int)Math.Ceiling(cost);
 
         }
-        public int NumberOfNotVisitedFamilies()
+        public int virtual NumberOfNotVisitedFamilies()
         {
             var visitedVisits = NonEmptyRoutes.SelectMany(r => r.Waypoints.Select(w => w.VisitId));
             return OptimizationInput.Visits.Count(v => !v.IsBreak && !visitedVisits.Contains(v.Id));
         }
 
-        public int NumberOfMissingBreaks()
+        public int virtual NumberOfMissingBreaks()
         {
             var santaBreaks = new Dictionary<int, int>();
             foreach (var v in OptimizationInput.Visits.Where(v => v.IsBreak))
