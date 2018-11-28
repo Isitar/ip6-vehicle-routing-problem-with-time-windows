@@ -220,14 +220,14 @@ namespace IRuettae.Core.LocalSolver
                 }
 
 
-                var costFunction = model.Ceil(
+                var costFunction = 
                     400 * additionalSantaCount +
                     (40d / hour) * additionalSantaRouteTime +
                     (120d / hour) * model.Sum(santaUnavailableDuration) +
                     (120d / hour) * model.Sum(santaOvertime) +
                     (-20d / hour) * model.Sum(santaDesiredDuration) +
                     (40d / hour) * model.Sum(santaRouteTime) +
-                    (30d / hour) * maxRoute);
+                    (30d / hour) * maxRoute;
                 var minWayTime = input.RouteCosts.Cast<int>().Where(i => i > 0).Min();
 
                 model.Constraint(costFunction >= (minWayTime * (numberOfVisits + 1)) * 40d / hour // min walking time
