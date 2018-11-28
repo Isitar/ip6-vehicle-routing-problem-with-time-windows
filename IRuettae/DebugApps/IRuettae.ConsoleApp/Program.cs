@@ -13,7 +13,7 @@ namespace IRuettae.ConsoleApp
         {
             //CreateManualSolution.Run(args);
             //Console.WriteLine("Program has finished, press enter to close it.");
-            new DataSet8Helper().GeocodeAllVisits();
+            new DataSet8Helper().FromTxtFile();
             Console.WriteLine("Done");
             Console.ReadLine();
         }

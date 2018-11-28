@@ -31,7 +31,7 @@ namespace IRuettae.GeoCalculations.RouteCalculation
             var retJson = new WebClient().UploadString(callUrl,
                 "POST",
                 $"{{ \"profile\":\"foot-walking\"," +
-                $" \"locations\": [{string.Join(",", coordinates.Select(c => $"[{c.lat},{c.lng}]"))}]," +
+                $" \"locations\": [{string.Join(",", coordinates.Select(c => $"[{c.lng},{c.lat}]"))}]," +
                 $"\"metrics\":\"duration|distance\"" +
                 $"}}");
 
