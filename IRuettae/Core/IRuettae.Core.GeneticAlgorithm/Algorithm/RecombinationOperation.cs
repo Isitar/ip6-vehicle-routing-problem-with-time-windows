@@ -44,6 +44,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         }
 
         /// <summary>
+        /// order-based crossover operator (OX2)
         /// Precondition: parent1 and parent2 contain the same alleles.
         /// Postcondition: child contains the same alleles as parent1.
         /// </summary>
@@ -113,6 +114,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         }
 
         /// <summary>
+        /// edge recombination operator (ERO)
         /// Precondition: parent1 and parent2 contain the same alleles.
         /// Postcondition: child contains the same alleles as parent1.
         /// </summary>
