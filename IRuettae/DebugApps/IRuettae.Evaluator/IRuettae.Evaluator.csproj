@@ -58,6 +58,7 @@
     <Compile Include="Datasets\DatasetFactory.DataSet4.cs" />
     <Compile Include="Datasets\DatasetFactory.DataSet5.cs" />
     <Compile Include="Datasets\DatasetFactory.DataSet6.cs" />
+    <Compile Include="Datasets\DatasetFactory.DataSet8.cs" />
     <Compile Include="Datasets\DatasetFactory.DataSet9.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

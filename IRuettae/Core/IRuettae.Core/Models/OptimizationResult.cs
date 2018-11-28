@@ -251,12 +251,15 @@ namespace IRuettae.Core.Models
         /// <summary>
         /// Returns how much the two intervals overlap
         /// </summary>
-        /// <param name="intervals"></param>
+        /// <param name="start1">start of first interval</param>
+        /// <param name="end1">end of first interval</param>
+        /// <param name="start2">start of second interval</param>
+        /// <param name="end2">end of second interval</param>
         /// <returns></returns>
-        private static int IntersectionLength(int from1, int to1, int from2, int to2)
+        private static int IntersectionLength(int start1, int end1, int start2, int end2)
         {
-            int startIntersection = Math.Max(from1, from2);
-            int endIntersection = Math.Min(to1, to2);
+            int startIntersection = Math.Max(start1, start2);
+            int endIntersection = Math.Min(end1, end2);
             if (startIntersection < endIntersection)
             {
                 return endIntersection - startIntersection;
