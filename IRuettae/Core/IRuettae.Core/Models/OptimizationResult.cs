@@ -58,17 +58,18 @@ namespace IRuettae.Core.Models
         public int Cost()
         {
             const int hour = 3600;
-            return (int)(Math.Ceiling(
-                                       +560 * NumberOfNotVisitedFamilies()
-                                       + 560 * NumberOfMissingBreaks()
-                                       + 400 * NumberOfAdditionalSantas()
-                                       + (40d / hour) * AdditionalSantaWorkTime())
-                                       + (120d / hour) * VisitTimeInUnavailable()
-                                       + (120d / hour) * WayTimeOutsideBusinessHours()
-                                       - (20d / hour) * VisitTimeInDesired()
-                                       + (40d / hour) * SantaWorkTime()
-                                       + (30d / hour) * LongestDay()
-            );
+            var cost =
+                560d * NumberOfNotVisitedFamilies()
+                + 560d * NumberOfMissingBreaks()
+                + 400d * NumberOfAdditionalSantas()
+                + (40d / hour) * AdditionalSantaWorkTime()
+                + (120d / hour) * VisitTimeInUnavailable()
+                + (120d / hour) * WayTimeOutsideBusinessHours()
+                - (20d / hour) * VisitTimeInDesired()
+                + (40d / hour) * SantaWorkTime()
+                + (30d / hour) * LongestDay();
+            return (int) Math.Ceiling(cost);
+
         }
         public int NumberOfNotVisitedFamilies()
         {

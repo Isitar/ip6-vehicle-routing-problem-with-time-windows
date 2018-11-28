@@ -19,7 +19,7 @@ namespace IRuettae.Persistence.Mappings
             Map(x => x.VisitType);
 
             Map(x => x.Lat);
-            Map(x => x.Long);
+            Map(x => x.Long).Column("`Long`");
 
             Map(x => x.DeltaWayDistance);
             Map(x => x.DeltaWayDuration);

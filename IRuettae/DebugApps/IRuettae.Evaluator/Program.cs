@@ -102,7 +102,7 @@ namespace IRuettae.Evaluator
                 {
                     var (input, coordinates, timelimit) = GetDataset(dataset);
 
-                    string savepath = $"{DateTime.Now:yy-MM-dd-HH-mm-ss}_DataSet_{datasetSelection}";
+                    string savepath = $"{DateTime.Now:yy-MM-dd-HH-mm-ss}_DataSet_{dataset}";
                     ISolver solver = null;
                     switch (algorithmSelection)
                     {
@@ -140,7 +140,7 @@ namespace IRuettae.Evaluator
 
                     var summary = new StringBuilder();
                     summary.AppendLine($"Solver: {AlgorithmsDictionary[algorithmSelection]}");
-                    summary.AppendLine($"Dataset{datasetSelection}: {DatasetDictionary[dataset]}");
+                    summary.AppendLine($"Dataset{dataset}: {DatasetDictionary[dataset]}");
                     summary.AppendLine($"TimeElapsed [s]: {result.TimeElapsed}");
                     summary.AppendLine($"Cost: {result.Cost()}");
                     summary.AppendLine($"NumberOfNotVisitedFamilies: { result.NumberOfNotVisitedFamilies()}");
