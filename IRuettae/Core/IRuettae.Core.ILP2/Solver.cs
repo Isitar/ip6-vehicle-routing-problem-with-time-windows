@@ -111,7 +111,8 @@ namespace IRuettae.Core.ILP2
                     40*totalWayTime
                     +30*longestRoute
                     , GRB.MINIMIZE);
-                model.Parameters.TimeLimit = 2*60;// timelimitMiliseconds / 1000;
+                model.Parameters.TimeLimit = timelimitMiliseconds / 1000;
+                
                 model.Optimize();
 
                 BuildResult(output, numberOfRoutes, w, c);
@@ -139,8 +140,12 @@ namespace IRuettae.Core.ILP2
                     var (id, startingTime) = GetNextVisit(lastId, w[s], c[s]);
                     wpList.Add(new Waypoint { StartTime = startingTime, VisitId = id - 1 });
                     lastId = id;
-                } while (lastId != 0);
+                } while (lastId != 0 && lastId != -1);
 
+                if (wpList.Count == 0 || lastId == -1)
+                {
+                    continue;
+                }
                 var firstWaypoint = wpList.First();
                 var firstVisit = input.Visits[firstWaypoint.VisitId];
                 route.Waypoints = wpList
@@ -169,6 +174,10 @@ namespace IRuettae.Core.ILP2
 
         private (int id, int startingTime) GetNextVisit(int lastVisit, GRBVar[,] w, GRBVar[,] c)
         {
+            if (lastVisit == -1)
+            {
+                return (-1, -1);
+            }
             for (int j = 0; j < w.GetLength(1); j++)
             {
                 if (Math.Round(w[lastVisit, j].X, 0) > 0)
