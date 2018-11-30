@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using IRuettae.Core;
 using IRuettae.Core.ILP;
@@ -18,9 +19,11 @@ namespace IRuettae.Evaluator
             ILP = 1,
             GA = 2,
             LocalSolver = 3,
+            ILP2 = 4,
             ILPFast = 10,
             GAFast = 20,
             LocalSolverFast = 30,
+            ILP2Fast = 40,
         }
 
         /// <summary>
@@ -31,9 +34,11 @@ namespace IRuettae.Evaluator
             {Algorithms.ILP,"ILP"},
             {Algorithms.GA, "GA" },
             {Algorithms.LocalSolver, "LocalSolver" },
+            {Algorithms.ILP2, "ILP 2" },
             {Algorithms.ILPFast,"ILP Fast"},
             {Algorithms.GAFast, "GA Fast" },
             {Algorithms.LocalSolverFast, "LocalSolver Fast" },
+            {Algorithms.ILP2Fast, "ILP 2 Fast" },
         };
 
         static readonly Dictionary<int, string> DatasetDictionary = new Dictionary<int, string>()
@@ -119,6 +124,13 @@ namespace IRuettae.Evaluator
                                 TimeSliceDuration = 120
                             });
                             savepath += "_ILP";
+                            break;
+                        case Algorithms.ILP2Fast:
+                            timelimit /= 60;
+                            goto case Algorithms.ILP2;
+                        case Algorithms.ILP2:
+                            solver = new IRuettae.Core.ILP2.Solver(input);
+                            savepath += "_ILP2";
                             break;
                     }
 

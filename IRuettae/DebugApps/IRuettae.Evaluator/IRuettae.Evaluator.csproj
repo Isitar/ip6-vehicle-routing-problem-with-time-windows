@@ -77,6 +77,10 @@
       <Project>{3653ea67-0ca2-40fc-b027-1df812f7bc7c}</Project>
       <Name>IRuettae.Converter</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\IRuettae.Core.ILP2\IRuettae.Core.ILP2.csproj">
+      <Project>{540b2cd0-d967-48a3-8ef5-e3106eda5883}</Project>
+      <Name>IRuettae.Core.ILP2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\IRuettae.Core.ILP\IRuettae.Core.ILP.csproj">
       <Project>{d56e9df6-b3a9-4b97-82e4-f3cd401bbe7c}</Project>
       <Name>IRuettae.Core.ILP</Name>
@@ -93,6 +97,9 @@
       <Project>{b84cadd1-5f00-4b62-a363-9a047e39fbbd}</Project>
       <Name>IRuettae.Preprocessing</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
