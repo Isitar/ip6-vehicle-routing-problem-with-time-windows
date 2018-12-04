@@ -126,7 +126,7 @@ namespace IRuettae.Evaluator
                             savepath += "_ILP";
                             break;
                         case Algorithms.ILP2Fast:
-                            timelimit /= 60;
+                            timelimit /= 15;
                             goto case Algorithms.ILP2;
                         case Algorithms.ILP2:
                             solver = new IRuettae.Core.ILP2.Solver(input);
@@ -153,7 +153,7 @@ namespace IRuettae.Evaluator
                     summary.AppendLine($"AdditionalSantaWorkTime: { result.AdditionalSantaWorkTime()}");
                     summary.AppendLine($"VisitTimeInUnavailable: { result.VisitTimeInUnavailable()}");
                     summary.AppendLine($"WayTimeOutsideBusinessHours: { result.WayTimeOutsideBusinessHours()}");
-                    summary.AppendLine($"VisitTimeInDesired: { result.VisitTimeInDesired()}");
+                    summary.AppendLine($"VisitTimeInDesired: { result.VisitTimeInDesired()} / {result.OptimizationInput.MaxDesired()}");
                     summary.AppendLine($"SantaWorkTime: { result.SantaWorkTime()}");
                     summary.AppendLine($"LongestDay: { result.LongestDay()}");
 
