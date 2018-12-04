@@ -13,7 +13,6 @@ namespace IRuettae.Core.ILP2
         private readonly OptimizationInput input;
         private readonly int[,] distances;
         private readonly int[] visitDurations;
-        private readonly int bigM = 100000;
 
         public Solver(OptimizationInput input)
         {
@@ -36,7 +35,6 @@ namespace IRuettae.Core.ILP2
             }
 
             distances[0, 0] = 0;
-            bigM = 100 * input.Days.Max(d => d.to);
         }
 
         public OptimizationResult Solve(long timelimitMiliseconds, EventHandler<ProgressReport> progress,
@@ -68,7 +66,8 @@ namespace IRuettae.Core.ILP2
                     desiredDuration[s] = new GRBVar[visitDurations.Length][];
                     unavailableDuration[s] = new GRBVar[visitDurations.Length][];
                     unavailableOverlapPenalty[s] = new GRBVar[visitDurations.Length][];
-
+                    (var dayStart, var dayEnd) = input.Days[s / input.Santas.Length];
+                    var dayDuration = dayEnd - dayStart;
                     for (int i = 0; i < v[s].Length; i++)
                     {
                         v[s][i] = model.AddVar(0, 1, 0.0, GRB.BINARY, $"v[{s}][{i}]");
@@ -84,17 +83,17 @@ namespace IRuettae.Core.ILP2
 
                             for (int d = 0; d < visit.Desired.Length; d++)
                             {
-                                desiredOverlapPenalty[s][i][d] = model.AddVar(0, int.MaxValue, 0, GRB.CONTINUOUS,
+                                desiredOverlapPenalty[s][i][d] = model.AddVar(0, dayDuration, 0, GRB.CONTINUOUS,
                                     $"desiredOverlapPenalty[{s}][{v}][{d}]");
-                                desiredDuration[s][i][d] = model.AddVar(0, int.MaxValue, 0, GRB.CONTINUOUS,
+                                desiredDuration[s][i][d] = model.AddVar(0, visit.Desired[d].to - visit.Desired[d].from, 0, GRB.CONTINUOUS,
                                     $"desiredDuration[{s}][{v}][{d}]");
                             }
 
                             for (int u = 0; u < visit.Unavailable.Length; u++)
                             {
-                                unavailableOverlapPenalty[s][i][u] = model.AddVar(0, int.MaxValue, 0, GRB.CONTINUOUS,
+                                unavailableOverlapPenalty[s][i][u] = model.AddVar(0, dayDuration, 0, GRB.CONTINUOUS,
                                     $"unavailableOverlapPenalty[{s}][{v}][{u}]");
-                                unavailableDuration[s][i][u] = model.AddVar(0, int.MaxValue, 0, GRB.CONTINUOUS,
+                                unavailableDuration[s][i][u] = model.AddVar(0, visit.Unavailable[u].to - visit.Unavailable[u].from, 0, GRB.CONTINUOUS,
                                     $"unavailableDuration[{s}][{v}][{u}]");
                             }
                         }
@@ -105,7 +104,7 @@ namespace IRuettae.Core.ILP2
                         for (int j = 0; j < distances.GetLength(1); j++)
                         {
                             w[s][i, j] = model.AddVar(0, 1, 0, GRB.BINARY, $"w[{s}][{i},{j}]");
-                            c[s][i, j] = model.AddVar(0, bigM, 0, GRB.CONTINUOUS, $"c[{s}][{i},{j}]");
+                            c[s][i, j] = model.AddVar(0, dayDuration, 0, GRB.CONTINUOUS, $"c[{s}][{i},{j}]");
                         }
                     }
                 }
@@ -138,7 +137,7 @@ namespace IRuettae.Core.ILP2
                 var minRoutes = new GRBVar[numberOfRoutes];
                 FillMinRoutes(model, minRoutes, c);
                 var totalWayTime = new GRBLinExpr(0);
-                var longestRoute = model.AddVar(0, bigM, 0, GRB.CONTINUOUS, "longestRoute");
+                var longestRoute = model.AddVar(0, input.Days.Max(d => d.to - d.from), 0, GRB.CONTINUOUS, "longestRoute");
                 for (int s = 0; s < numberOfRoutes; s++)
                 {
                     totalWayTime += maxRoutes[s] - minRoutes[s];
@@ -221,12 +220,12 @@ namespace IRuettae.Core.ILP2
                                             }
 
                                             consoleProgress?.Invoke(this, $"c [{s}][k,{i}]: {cki}");
-                                            
-                                         
+
+
                                             var cik = 0d;
                                             for (int k = 0; k < visitDurations.Length; k++)
                                             {
-                                                cik += c[s][i, k].X - distances[i,k] * (w[s][i,k].X >= 0.001 ? 1 : 0);
+                                                cik += c[s][i, k].X - distances[i, k] * (w[s][i, k].X >= 0.001 ? 1 : 0);
                                             }
 
                                             consoleProgress?.Invoke(this, $"c [{s}][{i},k]: {cik}");
@@ -276,7 +275,7 @@ namespace IRuettae.Core.ILP2
                                             var cik = 0d;
                                             for (int k = 0; k < visitDurations.Length; k++)
                                             {
-                                                cik += c[s][i, k].X - distances[i,k] * (w[s][i, k].X >= 0.001 ? 1 : 0);
+                                                cik += c[s][i, k].X - distances[i, k] * (w[s][i, k].X >= 0.001 ? 1 : 0);
                                             }
 
                                             consoleProgress?.Invoke(this, $"c [{s}][{i},k]: {cik}");
@@ -323,12 +322,13 @@ namespace IRuettae.Core.ILP2
                             continue;
                         }
 
-                        model.AddConstr(desiredDuration[s][i][d] <= visit.Duration * v[s][i], $"desired[{s}][{i}][{d}] only possible if v[{s}][{i}]");
-                        model.AddConstr(desiredDuration[s][i][d] <= to - from, $"desired[{s}][{i}][{d}] <= to-from");
+                        var maxDesiredDuration = Math.Max(visit.Duration, to - from);
+                        model.AddConstr(desiredDuration[s][i][d] <= maxDesiredDuration * v[s][i], $"desired[{s}][{i}][{d}] only possible if v[{s}][{i}]");
+                        //model.AddConstr(desiredDuration[s][i][d] <= to - from, $"desired[{s}][{i}][{d}] <= to-from");
 
-                        var desiredStart = model.AddVar(0, bigM, 0, GRB.CONTINUOUS, $"desiredStart[{s}][{i}][{d}]");
-
-                        model.AddConstr(desiredStart >= from, $"desiredstart[{s}[{i}][{d}] >= from");
+                        var desiredStart = model.AddVar(from, to, 0, GRB.CONTINUOUS, $"desiredStart[{s}][{i}][{d}]");
+                        
+                        
                         var tempSumStart = new GRBLinExpr(0);
                         for (int k = 0; k < visitDurations.Length; k++)
                         {
@@ -336,10 +336,11 @@ namespace IRuettae.Core.ILP2
                         }
 
                         tempSumStart += dayStart;
+                        
                         model.AddConstr(desiredStart >= tempSumStart, $"desiredstart[{s}[{i}][{d}] >= tempsum");
 
-                        var desiredEnd = model.AddVar(0, bigM, 0, GRB.CONTINUOUS, $"desiredEnd[{s}][{i}][{d}]");
-                        model.AddConstr(desiredEnd <= to, $"desiredEnd[{s}][{i}][{d}] <= to");
+                        var desiredEnd = model.AddVar(dayStart, to, 0, GRB.CONTINUOUS, $"desiredEnd[{s}][{i}][{d}]");
+                        //model.AddConstr(desiredEnd <= to, $"desiredEnd[{s}][{i}][{d}] <= to");
                         var tempSumEnd = new GRBLinExpr(0);
                         for (int k = 0; k < visitDurations.Length; k++)
                         {
@@ -394,13 +395,13 @@ namespace IRuettae.Core.ILP2
                             continue;
                         }
 
+                        var maxUnavailableDuration = Math.Max(visit.Duration, to - from);
+                        model.AddConstr(unavailableDuration[s][i][d] <= maxUnavailableDuration * v[s][i], $"unavailable[{s}][{i}][{d}] only possible if v[{s}][{i}]");
+                        //model.AddConstr(unavailableDuration[s][i][d] <= to - from, $"unavailable[{s}][{i}][{d}] <= to-from");
 
-                        model.AddConstr(unavailableDuration[s][i][d] <= visitDurations[i] * v[s][i], $"unavailable[{s}][{i}][{d}] only possible if v[{s}][{i}]");
-                        model.AddConstr(unavailableDuration[s][i][d] <= to - from, $"unavailable[{s}][{i}][{d}] <= to-from");
-
-                        var unavailableStart = model.AddVar(0, bigM, 0, GRB.CONTINUOUS, $"unavailableStart[{s}][{i}][{d}]");
+                        var unavailableStart = model.AddVar(from, dayEnd, 0, GRB.CONTINUOUS, $"unavailableStart[{s}][{i}][{d}]");
                         var binHelperStart = model.AddVar(0, 1, 0, GRB.BINARY, $"binHelperUnavailableStart[{s}][{i}][{d}]");
-                        model.AddConstr(unavailableStart >= from, $"unavailableStart[{s}[{i}][{d}] >= from");
+                        //model.AddConstr(unavailableStart >= from, $"unavailableStart[{s}[{i}][{d}] >= from");
                         var tempSumStart = new GRBLinExpr(0);
                         for (int k = 0; k < visitDurations.Length; k++)
                         {
@@ -409,12 +410,16 @@ namespace IRuettae.Core.ILP2
 
                         tempSumStart += dayStart;
                         model.AddConstr(unavailableStart >= tempSumStart, $"unavailableStart[{s}[{i}][{d}] >= tempsum");
-                        model.AddConstr(unavailableStart <= @from + binHelperStart * bigM, "unavailableStart[{s}[{i}][{d}] <= from + bigM*binHelperStart");
-                        model.AddConstr(unavailableStart <= tempSumStart + (1 - binHelperStart) * bigM, "unavailableStart[{s}[{i}][{d}] <= tempsum + bigM*(1-binHelperStart)");
+                        model.AddGenConstrIndicator(binHelperStart, 0, unavailableStart <= @from, null);
+                        model.AddGenConstrIndicator(binHelperStart, 1, unavailableStart <= tempSumStart, null);
 
-                        var unavailableEnd = model.AddVar(0, bigM, 0, GRB.CONTINUOUS, $"unavailableEnd[{s}][{i}][{d}]");
+
+                        //model.AddConstr(unavailableStart <= @from + binHelperStart * bigM, "unavailableStart[{s}[{i}][{d}] <= from + bigM*binHelperStart");
+                        //model.AddConstr(unavailableStart <= tempSumStart + (1 - binHelperStart) * bigM, "unavailableStart[{s}[{i}][{d}] <= tempsum + bigM*(1-binHelperStart)");
+
+                        var unavailableEnd = model.AddVar(dayStart, to, 0, GRB.CONTINUOUS, $"unavailableEnd[{s}][{i}][{d}]");
                         var binHelperEnd = model.AddVar(0, 1, 0, GRB.BINARY, $"binHelperUnavailableEnd[{s}][{i}][{d}]");
-                        model.AddConstr(unavailableEnd <= to, $"unavailableEnd[{s}][{i}][{d}] <= to");
+                        //model.AddConstr(unavailableEnd <= to, $"unavailableEnd[{s}][{i}][{d}] <= to");
                         var tempSumEnd = new GRBLinExpr(0);
                         for (int k = 0; k < visitDurations.Length; k++)
                         {
@@ -423,8 +428,10 @@ namespace IRuettae.Core.ILP2
                         tempSumEnd += dayStart;
 
                         model.AddConstr(unavailableEnd <= tempSumEnd, $"unavailableEnd[{s}[{i}][{d}] <= tempsum");
-                        model.AddConstr(unavailableEnd >= to - binHelperEnd * bigM, "unavailableEnd[{s}[{i}][{d}] <= to - bigM*binHelperStart");
-                        model.AddConstr(unavailableEnd >= tempSumEnd - (1 - binHelperEnd) * bigM, "unavailableEnd[{s}[{i}][{d}] <= tempsum - bigM*(1-binHelperStart)");
+                        model.AddGenConstrIndicator(binHelperEnd, 0, unavailableEnd >= to, null);
+                        model.AddGenConstrIndicator(binHelperEnd, 1, unavailableEnd >= tempSumEnd, null);
+                        //model.AddConstr(unavailableEnd >= to - binHelperEnd * bigM, "unavailableEnd[{s}[{i}][{d}] <= to - bigM*binHelperStart");
+                        //model.AddConstr(unavailableEnd >= tempSumEnd - (1 - binHelperEnd) * bigM, "unavailableEnd[{s}[{i}][{d}] <= tempsum - bigM*(1-binHelperStart)");
 
                         model.AddConstr(
                             unavailableDuration[s][i][d] >= unavailableEnd - unavailableStart,
@@ -507,11 +514,12 @@ namespace IRuettae.Core.ILP2
         {
             for (int s = 0; s < numberOfRoutes; s++)
             {
+                (var dayStart, var dayEnd) = input.Days[s / input.Santas.Length];
                 for (int i = 0; i < distances.GetLength(0); i++)
                 {
                     for (int j = 0; j < distances.GetLength(1); j++)
                     {
-                        model.AddConstr(c[s][i, j] <= bigM * w[s][i, j],
+                        model.AddConstr(c[s][i, j] <= (dayEnd - dayStart) * w[s][i, j],
                             $"cost only on visited ways c[{s}][{i},{j}]");
                         model.AddConstr(w[s][i, j] <= c[s][i, j], $"visited ways only on cost w[{s}][{i},{j}]");
                     }
@@ -523,6 +531,9 @@ namespace IRuettae.Core.ILP2
         {
             for (int s = 0; s < numberOfRoutes; s++)
             {
+                var day = s / input.Santas.Length;
+                (var daystart, var dayend) = input.Days[day];
+                var dayDuration = dayend - daystart;
                 for (int i = 0; i < distances.GetLength(0); i++)
                 {
                     var cki = new GRBLinExpr(0);
@@ -538,14 +549,14 @@ namespace IRuettae.Core.ILP2
                     {
                         model.AddConstr(
                             c[s][i, j] >= cki + visitDurations[i] + distances[i, j] -
-                            bigM * (1 - w[s][i, j]),
+                            dayDuration * (1 - w[s][i, j]),
                             $"c[{s}][{i},{j}] bigger than incomming + duration v[{i}] + routecost[{i},{j}]");
                     }
 
                     // starting times
                     for (int j = 0; j < distances.GetLength(1); j++)
                     {
-                        model.AddConstr(c[s][0, j] >= distances[0, j] - bigM * (1 - w[s][0, j]),
+                        model.AddConstr(c[s][0, j] >= distances[0, j] - dayDuration * (1 - w[s][0, j]),
                             $"Starting time for c[{s}][0,{j}]");
                     }
                 }
@@ -602,7 +613,9 @@ namespace IRuettae.Core.ILP2
         {
             for (int s = 0; s < maxRoutes.Length; s++)
             {
-                maxRoutes[s] = model.AddVar(0, bigM, 0, GRB.CONTINUOUS, $"santa{s} maxRoute");
+                var day = s / input.Santas.Length;
+                (var dayStart, var dayEnd) = input.Days[day];
+                maxRoutes[s] = model.AddVar(0, dayEnd, 0, GRB.CONTINUOUS, $"santa{s} maxRoute");
                 for (int i = 0; i < distances.GetLength(0); i++)
                 {
                     for (int j = 0; j < distances.GetLength(1); j++)
@@ -619,7 +632,7 @@ namespace IRuettae.Core.ILP2
         {
             for (int s = 0; s < minRoutes.Length; s++)
             {
-                minRoutes[s] = model.AddVar(0, bigM, 0, GRB.CONTINUOUS, $"santa{s} minRoute");
+                minRoutes[s] = model.AddVar(0, input.Days.Max(d => d.to - d.from), 0, GRB.CONTINUOUS, $"santa{s} minRoute");
                 for (int i = 0; i < distances.GetLength(0); i++)
                 {
                     for (int j = 0; j < distances.GetLength(1); j++)
