@@ -48,7 +48,7 @@ namespace IRuettae.Evaluator
             {5, "20 visits, 2 santas, 2 days, 10 desired d1, 10 desired d2" },
             {6, "20 visits, 2 santas, 2 days, 10 unavailable d1, 10 unavailable d2" },
             {7, "Real example 2017" },
-            //{8, "Real example 2018" },
+            {8, "Real example 2018" },
             {9, "50 visits, 5 santas, 2 days, 15 desired d1, 15 desired d2, 11 unavailable d1, 11 unavailable d2" },
             {10, "100 visits, 10 santas, 2 days, 35 desired d1, 35 desired d2, 20 unavailable d1, 20 unavailable d2" },
             {11, "200 visits, 20 santas, 2 days, 75 desired d1, 75 desired d2, 40 unavailable d1, 40 unavailable d2" },
@@ -208,9 +208,8 @@ namespace IRuettae.Evaluator
                     timelimit = 90 * 60 * 1000;
                     break;
                 case 8:
-                    throw new NotImplementedException();
-                    //(input, coordinates) = DatasetFactory.DataSet8();
-                    //timelimit = 90 * 60 * 1000;
+                    (input, coordinates) = DatasetFactory.DataSet8();
+                    timelimit = 90 * 60 * 1000;
                     break;
                 case 9:
                     (input, coordinates) = DatasetFactory.DataSet9();

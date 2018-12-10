@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Persistence.Entities;
 using IRuettae.WebApi.Persistence;
+using Newtonsoft.Json;
 
 namespace IRuettae.ConsoleApp.Programs
 {
@@ -21,6 +22,8 @@ namespace IRuettae.ConsoleApp.Programs
                 var visits = dbSession.Query<Visit>().Where(v => v.Year == 2018).ToArray();
                 var coordinates = visits.Select(v => (v.Lat, v.Long)).ToArray();
                 var (distance, duration) = openRouteServiceCalculator.CalculateWalkingDistanceMatrix(coordinates);
+                System.IO.File.WriteAllText("distances.txt", JsonConvert.SerializeObject(distance));
+                System.IO.File.WriteAllText("durations.txt", JsonConvert.SerializeObject(duration));
                 for (int i = 0; i < coordinates.Length; i++)
                 {
                     for (int j = 0; j < coordinates.Length; j++)
@@ -34,6 +37,30 @@ namespace IRuettae.ConsoleApp.Programs
                         });
                     }
                     dbSession.Update(visits[i]);
+                }
+            }
+        }
+
+        public void FromTxtFile()
+        {
+            using (var dbSession = SessionFactory.Instance.OpenSession())
+            {
+                var visits = dbSession.Query<Visit>().Where(v => v.Year == 2018).ToArray();
+                var distances = JsonConvert.DeserializeObject<double[,]>(System.IO.File.ReadAllText("distances.txt"));
+                var durations = JsonConvert.DeserializeObject<double[,]>(System.IO.File.ReadAllText("distances.txt"));
+                for (int i = 0; i < distances.GetLength(0); i++)
+                {
+                    for (int j = 0; j < distances.GetLength(1); j++)
+                    {
+                        var way = new Way
+                        {
+                            Distance = (int) Math.Ceiling(distances[i, j]),
+                            Duration = (int) Math.Ceiling(durations[i, j]),
+                            From = visits[i],
+                            To = visits[j]
+                        };
+                        dbSession.Save(way);
+                    }
                 }
             }
         }
