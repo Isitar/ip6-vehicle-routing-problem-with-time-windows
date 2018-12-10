@@ -163,6 +163,8 @@ namespace IRuettae.Core.ILP2
                     }
                 }
 
+                model.AddConstr(totalWayTime >= visitDurations.Sum(), null);
+                
 
                 model.SetObjective(
                     +(120d / 3600d) * unavailableSum
@@ -550,8 +552,7 @@ namespace IRuettae.Core.ILP2
                     for (int j = 0; j < distances.GetLength(1); j++)
                     {
                         model.AddConstr(
-                            c[s][i, j] >= cki + visitDurations[i] + distances[i, j] -
-                            dayDuration * (1 - w[s][i, j]),
+                            c[s][i, j] >= cki + visitDurations[i] + distances[i, j] - dayDuration * (1 - w[s][i, j]),
                             $"c[{s}][{i},{j}] bigger than incomming + duration v[{i}] + routecost[{i},{j}]");
                     }
 
