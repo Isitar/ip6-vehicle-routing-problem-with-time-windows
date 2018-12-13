@@ -16,7 +16,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
 
         // Todo: remove
         static int callCounter = 0;
-        const int runs = 3;
+        const int runs = 1;
 
         /// <summary>
         ///Create default regarding the input
@@ -25,15 +25,15 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
         /// <returns></returns>
         public static GenAlgStarterData GetDefault(OptimizationInput input)
         {
-            var populationSizes = new int[]
+            var populationSize = 10;
+            if (input.Visits.Length >= 50)
             {
-                5,
-                25,
-            };
+                populationSize = 2;
+            }
 
             return new GenAlgStarterData()
             {
-                //PopulationSize = populationSizes[(callCounter++ / runs) % populationSizes.Length],
+                PopulationSize = populationSize/*populationSizes[(callCounter++ / runs) % populationSizes.Length]*/,
                 MaxNumberOfSantas = input.Santas.Length,
             };
         }
