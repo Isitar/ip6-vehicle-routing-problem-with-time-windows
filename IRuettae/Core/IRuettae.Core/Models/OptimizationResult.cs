@@ -334,7 +334,7 @@ namespace IRuettae.Core.Models
                 var wrongEndWays = routes.Where(r =>
                 {
                     var lastVisit = r.Waypoints.ElementAt(r.Waypoints.Length - 2);
-                    return OptimizationInput.Visits[lastVisit.VisitId].WayCostToHome > r.Waypoints.Last().StartTime - lastVisit.StartTime;
+                    return OptimizationInput.Visits[lastVisit.VisitId].WayCostToHome > r.Waypoints.Last().StartTime - (lastVisit.StartTime + OptimizationInput.Visits[lastVisit.VisitId].Duration);
                 }).ToList();
                 if (wrongEndWays.Count > 0)
                 {
@@ -350,38 +350,12 @@ namespace IRuettae.Core.Models
                     var previous = middleWaypoints.First();
                     foreach (var current in middleWaypoints.Skip(1))
                     {
-                        if (OptimizationInput.RouteCosts[previous.VisitId, current.VisitId] > current.StartTime - previous.StartTime)
+                        if (OptimizationInput.RouteCosts[previous.VisitId, current.VisitId] > current.StartTime - (previous.StartTime + OptimizationInput.Visits[current.VisitId].Duration))
                         {
                             return $"Way between visit {previous.VisitId} and visit {current.VisitId} is too short.";
                         }
                         previous = current;
                     }
-                }
-            }
-
-            // check multiple visits
-            {
-                var diffChecker = new HashSet<int>();
-                var multipleVisitedIds = routes.SelectMany(r => r.Waypoints).Select(wp => wp.VisitId).Where(id => id != Constants.VisitIdHome && !diffChecker.Add(id)).ToList();
-                if (multipleVisitedIds.Count > 0)
-                {
-                    return $"Visit {multipleVisitedIds.First()} is visited more than once.";
-                }
-            }
-
-            // wrong breaks
-            {
-                var wrongBreaks = routes
-                    .SelectMany(r => r.Waypoints
-                        .Where(wp => wp.VisitId != Constants.VisitIdHome)
-                        .Where(wp =>
-                        {
-                            var visit = OptimizationInput.Visits[wp.VisitId];
-                            return visit.IsBreak && visit.SantaId != r.SantaId;
-                        })).ToList();
-                if (wrongBreaks.Count > 0)
-                {
-                    return $"Break with id={wrongBreaks.First().VisitId} is made by the wrong santa.";
                 }
             }
 

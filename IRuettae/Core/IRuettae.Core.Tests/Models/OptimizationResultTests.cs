@@ -541,7 +541,7 @@ namespace IRuettae.Core.Models.Tests
             var model = GetModel();
             var numberOfVisits = model.Routes[0].Waypoints.Length;
             // move end to that the way is one to short
-            model.Routes[0].Waypoints[numberOfVisits - 1].StartTime = model.Routes[0].Waypoints[numberOfVisits - 2].StartTime + w20 - 1;
+            model.Routes[0].Waypoints[numberOfVisits - 1].StartTime = model.Routes[0].Waypoints[numberOfVisits - 2].StartTime + duration2 + w20 - 1;
 
             Assert.IsFalse(model.IsValid());
         }
@@ -551,27 +551,7 @@ namespace IRuettae.Core.Models.Tests
         {
             var model = GetModel();
             // make way from 1 to 2 too short
-            model.Routes[0].Waypoints[2].StartTime = model.Routes[0].Waypoints[1].StartTime + w12 - 1;
-
-            Assert.IsFalse(model.IsValid());
-        }
-
-        [TestMethod()]
-        public void IsValidTest_MultipleVisits()
-        {
-            var model = GetModel();
-            // visit visit 2 twice
-            model.Routes[0].Waypoints[2].VisitId = 2;
-
-            Assert.IsFalse(model.IsValid());
-        }
-
-        [TestMethod()]
-        public void IsValidTest_WrongBreaks()
-        {
-            var model = GetModel();
-            // visit break of santa 100 with santa 1000
-            model.Routes[2].Waypoints[1].VisitId = 5;
+            model.Routes[0].Waypoints[2].StartTime = model.Routes[0].Waypoints[1].StartTime + duration1 + w12 - 1;
 
             Assert.IsFalse(model.IsValid());
         }
