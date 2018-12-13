@@ -487,5 +487,93 @@ namespace IRuettae.Core.Models.Tests
             var model = GetModel();
             Assert.AreEqual(avg, model.AverageDurationPerRoute());
         }
+
+        [TestMethod()]
+        public void IsValidTest_Valid()
+        {
+            var model = GetModel();
+            Assert.IsTrue(model.IsValid());
+        }
+
+        [TestMethod()]
+        public void IsValidTest_SantaUsedTwice()
+        {
+            var model = GetModel();
+            // santa 1000 has two routes on day 1
+            model.Routes[0].SantaId = model.Routes.Skip(1).First().SantaId;
+
+            Assert.IsFalse(model.IsValid());
+        }
+
+        [TestMethod()]
+        public void IsValidTest_WrongStart()
+        {
+            var model = GetModel();
+            // delete start in route 0
+            model.Routes[0].Waypoints = model.Routes[0].Waypoints.Skip(1).ToArray();
+
+            Assert.IsFalse(model.IsValid());
+        }
+
+        [TestMethod()]
+        public void IsValidTest_WrongEnd()
+        {
+            var model = GetModel();
+            // delete end in route 0
+            model.Routes[0].Waypoints = model.Routes[0].Waypoints.Take(model.Routes[0].Waypoints.Length - 1).ToArray();
+
+            Assert.IsFalse(model.IsValid());
+        }
+
+        [TestMethod()]
+        public void IsValidTest_WrongWayFromHome()
+        {
+            var model = GetModel();
+            // move start to that the way is one to short
+            model.Routes[0].Waypoints[0].StartTime = model.Routes[0].Waypoints[1].StartTime - w01 + 1;
+
+            Assert.IsFalse(model.IsValid());
+        }
+
+        [TestMethod()]
+        public void IsValidTest_WrongWayToHome()
+        {
+            var model = GetModel();
+            var numberOfVisits = model.Routes[0].Waypoints.Length;
+            // move end to that the way is one to short
+            model.Routes[0].Waypoints[numberOfVisits - 1].StartTime = model.Routes[0].Waypoints[numberOfVisits - 2].StartTime + w20 - 1;
+
+            Assert.IsFalse(model.IsValid());
+        }
+
+        [TestMethod()]
+        public void IsValidTest_WrongWayBetween()
+        {
+            var model = GetModel();
+            // make way from 1 to 2 too short
+            model.Routes[0].Waypoints[2].StartTime = model.Routes[0].Waypoints[1].StartTime + w12 - 1;
+
+            Assert.IsFalse(model.IsValid());
+        }
+
+        [TestMethod()]
+        public void IsValidTest_MultipleVisits()
+        {
+            var model = GetModel();
+            // visit visit 2 twice
+            model.Routes[0].Waypoints[2].VisitId = 2;
+
+            Assert.IsFalse(model.IsValid());
+        }
+
+        [TestMethod()]
+        public void IsValidTest_WrongBreaks()
+        {
+            var model = GetModel();
+            // visit break of santa 100 with santa 1000
+            model.Routes[2].Waypoints[1].VisitId = 5;
+
+            Assert.IsFalse(model.IsValid());
+        }
     }
 }
