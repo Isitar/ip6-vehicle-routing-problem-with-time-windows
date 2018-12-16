@@ -50,7 +50,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         {
             foreach (var santa in input.Santas.Where(s => input.Visits.Any(v => v.SantaId == s.Id)))
             {
-                var breakId = input.Visits.Where(v => v.SantaId == santa.Id).First().Id;
+                var breakId = input.Visits.Where(v => v.IsBreak && v.SantaId == santa.Id).First().Id;
                 var breaks = alleleToVisitIdMapping.Where(e => e.Value == breakId).Select(e => e.Key).ToArray();
                 breakMapping.Add(santa.Id, breaks);
             }
@@ -136,8 +136,9 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
                 var routesPerDay = genotype.CountRoutes() / input.Days.Length;
                 int day = 0;
                 int santa = 0;
-                for (int i = 0; i < genotype.Count; i++)
+                for (int i = 0; i <= genotype.Count; i++)
                 {
+                    // add Genotype in any case
                     ret[day].Add(new Genotype());
                     while (i < genotype.Count && !PopulationGenerator.IsSeparator(genotype[i]))
                     {
