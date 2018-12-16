@@ -6,7 +6,7 @@ namespace IRuettae.DatasetGenerator
 {
     class DatasetGenerator
     {
-        
+
         private readonly int mapWidth;
         private readonly int mapHeight;
         private readonly int numberOfVisits;
@@ -15,8 +15,11 @@ namespace IRuettae.DatasetGenerator
         private readonly int[] numberOfDesired;
         private readonly int[] numberOfUnavailable;
         private int workingDayDuration;
+        private readonly bool generateBreaks;
 
         private readonly Random random = new Random();
+        private readonly int numberOfBreaks;
+        private readonly int numberOfUniqueVisits;
 
         /// <summary>
         /// Generates a dataset with the given parameters
@@ -29,8 +32,9 @@ namespace IRuettae.DatasetGenerator
         /// <param name="numberOfDesired">array containing how many visits should have desired time for day [i]</param>
         /// <param name="numberOfUnavailable">array containing how many visits should have unavailable time for day [i]</param>
         /// <param name="workingDayDuration">fixed working day duration, ignored if -1</param>
+        /// <param name="generateBreaks">generate breaks or not</param>
         public DatasetGenerator(int mapWidth, int mapHeight, int numberOfVisits, int numberOfDays, int numberOfSantas, int[] numberOfDesired,
-            int[] numberOfUnavailable, int workingDayDuration = -1)
+            int[] numberOfUnavailable, int workingDayDuration = -1, bool generateBreaks = false)
         {
             this.mapWidth = mapWidth;
             this.mapHeight = mapHeight;
@@ -40,6 +44,9 @@ namespace IRuettae.DatasetGenerator
             this.numberOfDesired = numberOfDesired;
             this.numberOfUnavailable = numberOfUnavailable;
             this.workingDayDuration = workingDayDuration;
+            this.generateBreaks = generateBreaks;
+            this.numberOfBreaks = generateBreaks ? numberOfSantas * numberOfDays : 0;
+            this.numberOfUniqueVisits = this.numberOfVisits - this.numberOfBreaks / this.numberOfDays;
         }
 
         /// <summary>
@@ -54,13 +61,11 @@ namespace IRuettae.DatasetGenerator
             double clusterPointHeight = 0.9d * mapHeight / 3;
 
 
-
-            var coordinates = new (int x, int y)[numberOfVisits + 1];
+            var coordinates = new (int x, int y)[numberOfUniqueVisits + 1];
             for (int i = 0; i < coordinates.Length; i++)
             {
                 int rnd = random.Next(0, 100);
 
-                
                 var x = -1;
                 var y = -1;
                 if (rnd <= 90)
@@ -104,15 +109,15 @@ namespace IRuettae.DatasetGenerator
             }
 
             var avgDistance = coordinates.Average(c => coordinates.Select(c2 => Distance(c, c2)).Average());
-            int[] visitDurations = Enumerable.Range(0, numberOfVisits).Select(v => random.Next(1200, 3600)).ToArray();
+            int[] visitDurations = Enumerable.Range(0, numberOfUniqueVisits).Select(v => random.Next(1200, 3600)).ToArray();
 
-            
+
             if (workingDayDuration == -1)
             {
                 var avgVisitsPerRoute = numberOfVisits / (numberOfSantas * numberOfDays);
-                workingDayDuration =(int) Math.Ceiling((1.5 * (avgVisitsPerRoute * visitDurations.Average() + (avgVisitsPerRoute + 1) * avgDistance)) / 3600d);
+                workingDayDuration = (int)Math.Ceiling((1.5 * (avgVisitsPerRoute * visitDurations.Average() + (avgVisitsPerRoute + 1) * avgDistance)) / 3600d);
             }
-            
+
 
             var sb = new StringBuilder();
             sb.AppendLine("using IRuettae.Core.Models;");
@@ -122,6 +127,7 @@ namespace IRuettae.DatasetGenerator
             sb.AppendLine("{");
             sb.AppendLine("/// <summary>");
             sb.AppendLine($"/// {numberOfVisits} Visits, {numberOfDays} Days, {numberOfSantas} Santas");
+            sb.AppendLine($"/// {numberOfBreaks} Breaks, {numberOfUniqueVisits} unique visits");
             for (int i = 0; i < numberOfDays; i++)
             {
                 sb.AppendLine($"/// {numberOfDesired[i]} Desired, {numberOfUnavailable[i]} Unavailable on day {i}");
@@ -144,10 +150,10 @@ namespace IRuettae.DatasetGenerator
             sb.AppendLine("\t\tRouteCosts = new[,]");
             sb.AppendLine("\t\t{");
             sb.AppendLine(string.Join($",{Environment.NewLine}",
-                Enumerable.Range(1, numberOfVisits).Select(i =>
+                Enumerable.Range(1, numberOfUniqueVisits).Select(i =>
                 {
                     var i1 = i;
-                    return $"\t\t\t{{ {string.Join(", ", Enumerable.Range(1, numberOfVisits).Select(j => Distance(coordinates[i1], coordinates[j])))} }}";
+                    return $"\t\t\t{{ {string.Join(", ", Enumerable.Range(1, numberOfUniqueVisits).Select(j => Distance(coordinates[i1], coordinates[j])))} }}";
                 })
             ));
             sb.AppendLine("\t\t},");
@@ -160,7 +166,7 @@ namespace IRuettae.DatasetGenerator
             sb.AppendLine("\t\tVisits = new[]");
             sb.AppendLine("\t\t{");
             sb.AppendLine(string.Join($",{Environment.NewLine}",
-                Enumerable.Range(0, numberOfVisits).Select(v =>
+                Enumerable.Range(0, numberOfVisits - numberOfBreaks).Select(v =>
                 {
                     string desiredString = "new (int from, int to)[0]";
                     int desiredDayIndex = -1;
@@ -175,7 +181,7 @@ namespace IRuettae.DatasetGenerator
 
                         numberOfDesired[desiredDayIndex]--;
                         var deltaFactor = 1 - random.NextDouble();
-                        var desiredTime = Math.Ceiling(deltaFactor * (workingDayDurationSeconds  - visitDurations[v]) + visitDurations[v]);
+                        var desiredTime = Math.Ceiling(deltaFactor * (workingDayDurationSeconds - visitDurations[v]) + visitDurations[v]);
                         var startFactor = 1 - random.NextDouble();
                         var start = $"{desiredDayIndex * 24} * Hour + {Math.Ceiling((workingDayDurationSeconds - desiredTime) * startFactor)}";
                         desiredString = $"new [] {{({start}, ({start}) + {desiredTime})}}";
@@ -204,6 +210,37 @@ namespace IRuettae.DatasetGenerator
 
                     return $"\t\t\tnew Visit{{Duration = {visitDurations[v]}, Id={v},WayCostFromHome={Distance(coordinates[0], coordinates[v + 1])}, WayCostToHome={Distance(coordinates[0], coordinates[v + 1])},Unavailable ={unavailableString},Desired = {desiredString}}}";
                 })));
+
+            // break handling
+            if (generateBreaks)
+            {
+                sb.Append(",");
+
+                sb.AppendLine(string.Join($",{Environment.NewLine}",
+                Enumerable.Range(numberOfVisits - numberOfBreaks, numberOfVisits - numberOfUniqueVisits).Select(v =>
+               {
+
+                   var workingDayDurationSeconds = workingDayDuration * 3600;
+
+                   var deltaFactor = 1 - random.NextDouble();
+                   var desiredTime = Math.Ceiling(deltaFactor * (workingDayDurationSeconds - visitDurations[v]) + visitDurations[v]);
+                   var startFactor = 1 - random.NextDouble();
+                   var desireds = string.Join(",", Enumerable.Range(0, numberOfDays).Select(dayIndex =>
+                   {
+                       var start = $"{dayIndex * 24} * Hour + {Math.Ceiling((workingDayDurationSeconds - desiredTime) * startFactor)}";
+                       return $"({start}, ({start}) + {desiredTime})";
+                   }));
+                   
+                   
+                   var desiredString = $"new [] {{{desireds}}}";
+
+                   var unavailableString = "new (int from, int to)[0]";
+
+                   return $"\t\t\tnew Visit{{Duration = {visitDurations[v]}, Id={v},WayCostFromHome={Distance(coordinates[0], coordinates[v + 1])}, WayCostToHome={Distance(coordinates[0], coordinates[v + 1])},Unavailable ={unavailableString},Desired = {desiredString},SantaId={v - (numberOfVisits - numberOfBreaks)},IsBreak = true}}";
+               })));
+
+            }
+
             sb.AppendLine("\t\t}");
             sb.AppendLine("\t};");
             sb.AppendLine("\treturn (input, coordinates);");
