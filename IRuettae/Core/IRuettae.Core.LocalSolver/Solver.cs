@@ -34,22 +34,42 @@ namespace IRuettae.Core.LocalSolver
                 OptimizationInput = input
             };
 
-            var routeCostJagged = new int[input.RouteCosts.GetLength(0)][];
+            var numberOfFakeSantas = input.Visits.Length - input.Santas.Length;
+            var numberOfSantas = (input.Santas.Length + numberOfFakeSantas) * input.Days.Length;
+            var numberOfDays = input.Days.Length;
+            var visits = input.Visits.ToList();
+            var breakDictionary = new Dictionary<(int day, int santa), int>();
+
+            for (int i = 1; i < numberOfDays; i++)
+            {
+                foreach (var breakVisit in input.Visits.Where(v => v.IsBreak))
+                {
+                    visits.Add(breakVisit);
+                    breakDictionary.Add((day: i, santa: breakVisit.SantaId), visits.Count - 1);
+                }
+            }
+
+
+            var routeCostJagged = new int[visits.Count][];
             for (int i = 0; i < routeCostJagged.Length; i++)
             {
-                routeCostJagged[i] = new int[input.RouteCosts.GetLength(1)];
+                routeCostJagged[i] = new int[visits.Count];
                 for (int j = 0; j < routeCostJagged[i].Length; j++)
                 {
-                    routeCostJagged[i][j] = input.RouteCosts[i, j];
+                    if (i < input.RouteCosts.GetLength(0) && j < input.RouteCosts.GetLength(1))
+                    { routeCostJagged[i][j] = input.RouteCosts[i, j];}
+                    else
+                    {
+                        // additional breaks:
+                        routeCostJagged[i][j] = input.RouteCosts[visits[i].Id, visits[j].Id];
+                    }
                 }
 
             }
             using (var localSolver = new localsolver.LocalSolver())
             {
                 var model = localSolver.GetModel();
-                var numberOfFakeSantas = input.Visits.Length - input.Santas.Length;
-                var numberOfSantas = (input.Santas.Length + numberOfFakeSantas) * input.Days.Length;
-                var numberOfDays = input.Days.Length;
+               
 
                 var santaUsed = new LSExpression[numberOfSantas];
                 var visitSequences = new LSExpression[numberOfSantas + 1];
@@ -61,18 +81,7 @@ namespace IRuettae.Core.LocalSolver
                 var santaVisitStartingTimes = new LSExpression[numberOfSantas];
 
 
-                var visits = input.Visits.ToList();
-                var breakDictionary = new Dictionary<(int day, int santa), int>();
-
-                for (int i = 1; i < numberOfDays; i++)
-                {
-                    foreach (var breakVisit in input.Visits.Where(v => v.IsBreak))
-                    {
-                        visits.Add(breakVisit);
-                        breakDictionary.Add((day: i, santa: breakVisit.SantaId), visits.Count - 1);
-                    }
-                }
-
+             
                 var numberOfVisits = visits.Count;
                 var santaOvertime = new LSExpression[numberOfSantas];
                 var santaWaitBeforeStart = new LSExpression[numberOfSantas];
@@ -96,8 +105,7 @@ namespace IRuettae.Core.LocalSolver
                 var visitDurationArray = model.Array(visits.Select(v => v.Duration).ToArray());
 
                 // desired
-                var visitsOnlyDesired = input
-                    .Visits
+                var visitsOnlyDesired = visits
                     .Select(v =>
                         // fake arr
                         v.Desired.Length == 0 ? new[] { new[] { -1, -1 } } :
@@ -108,8 +116,7 @@ namespace IRuettae.Core.LocalSolver
                 var visitDesiredCountArray = model.Array(visits.Select(v => v.Desired.Length).ToArray());
 
                 // unavailable
-                var visitsOnlyUnavailable = input
-                    .Visits
+                var visitsOnlyUnavailable = visits
                     .Select(v =>
                         // fake arr
                         v.Unavailable.Length == 0 ? new[] { new[] { -1, -1 } } :
@@ -292,7 +299,7 @@ namespace IRuettae.Core.LocalSolver
                     {
                         if (visitIds[visitIdIndex] >= input.Visits.Length)
                         {
-                            visitIds[visitIdIndex] = visits[visitIdIndex].Id;
+                            visitIds[visitIdIndex] = visits[visitIds[visitIdIndex]].Id;
                         }
                     }
 

@@ -104,7 +104,7 @@ namespace IRuettae.Evaluator
 
                     string savepath = $"{DateTime.Now:yy-MM-dd-HH-mm-ss}_DataSet_{dataset}";
                     ISolver solver = null;
-                    var fastFactor = 15;
+                    var fastFactor = 60;
                     switch (algorithmSelection)
                     {
                         case Algorithms.ILPFast:
