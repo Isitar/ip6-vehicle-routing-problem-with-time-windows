@@ -58,13 +58,18 @@ namespace IRuettae.DatasetGenerator
             int workingDayDuration = string.IsNullOrWhiteSpace(workingDayDurationInput)
                 ? -1
                 : int.Parse(workingDayDurationInput);
+
+            Console.Write("Generate breaks (empty = false): ");
+            var generateBreaksInput = Console.ReadLine();
+            bool generateBreaks = !string.IsNullOrWhiteSpace(generateBreaksInput) && bool.Parse(generateBreaksInput);
+
             Console.Write("Method name [text]: ");
             var methodName = Console.ReadLine();
             Console.WriteLine();
             Console.WriteLine("Calculating...");
             BigHr();
             var output =
-                new DatasetGenerator(width, height, numberOfVisits, numberOfDays, numberOfSantas, desired, unavailable, workingDayDuration)
+                new DatasetGenerator(width, height, numberOfVisits, numberOfDays, numberOfSantas, desired, unavailable, workingDayDuration, generateBreaks)
                     .Generate(methodName);
 
             //Console.WriteLine(output);

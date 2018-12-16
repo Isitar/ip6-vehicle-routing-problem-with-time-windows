@@ -142,6 +142,10 @@ namespace IRuettae.Evaluator
                     summary.AppendLine($"Solver: {AlgorithmsDictionary[algorithmSelection]}");
                     summary.AppendLine($"Dataset{dataset}: {DatasetDictionary[dataset]}");
                     summary.AppendLine($"TimeElapsed [s]: {result.TimeElapsed}");
+                    if (!result.IsValid())
+                    {
+                        summary.AppendLine($"IMPORTANT: This result seems to be invalid. The reason is \"{result.Validate()}\"");
+                    }
                     summary.AppendLine($"Cost: {result.Cost()}");
                     summary.AppendLine($"NumberOfNotVisitedFamilies: { result.NumberOfNotVisitedFamilies()}");
                     summary.AppendLine($"NumberOfMissingBreaks: { result.NumberOfMissingBreaks()}");
