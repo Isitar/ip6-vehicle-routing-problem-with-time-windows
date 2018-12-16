@@ -11,17 +11,18 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 {
     public class RecombinationOperation
     {
-        private const double probabilityOrderBasedCrossover = 0.5;
-        private const double probabilityEdgeRecombinationCrossover = 1.0 - probabilityOrderBasedCrossover;
+        private double orderBasedCrossoverProbability = 0.5;
+        //private double probabilityEdgeRecombinationCrossover = 1.0 - probabilityOrderBasedCrossover;
         private Random random;
 
         /// <summary>
         ///
         /// </summary>
         /// <param name="random">not null</param>
-        public RecombinationOperation(Random random)
+        public RecombinationOperation(Random random, double orderBasedCrossoverProbability)
         {
             this.random = random;
+            this.orderBasedCrossoverProbability = orderBasedCrossoverProbability;
         }
 
         /// <summary>
@@ -33,7 +34,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <returns></returns>
         public Genotype Recombinate(Genotype parent1, Genotype parent2)
         {
-            if (random.NextDouble() < probabilityOrderBasedCrossover)
+            if (random.NextDouble() < orderBasedCrossoverProbability)
             {
                 return OrderBasedCrossover(parent1, parent2);
             }

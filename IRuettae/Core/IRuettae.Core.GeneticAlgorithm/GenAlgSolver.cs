@@ -58,9 +58,9 @@ namespace IRuettae.Core.GeneticAlgorithm
             costCalculator.RecalculatateCost(population);
 
             // Log characteristics of inital population
-            Log($"Population created with {population.Count} individuals and max {starterData.MaxNumberOfSantas} santas.");
+            Log($"Genetic Algorithm started with following paramters:{Environment.NewLine}{starterData}");
             var bestCost = GetMinCost(population);
-            Log($"Best solution cost is: {bestCost}");
+            Log($"Best solution cost in initial population is: {bestCost}");
 
             // evolution
             var evolutionOperation = new EvolutionOperation(starterData);

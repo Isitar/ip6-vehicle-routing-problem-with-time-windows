@@ -13,10 +13,11 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
         public int MaxNumberOfSantas { get; set; }
         public long MaxNumberOfGenerations { get; set; } = long.MaxValue;
         public double MutationProbability { get; set; } = 0.1;
+        public double OrderBasedCrossoverProbability { get; set; } = 0.5;
 
         // Todo: remove
         static int callCounter = 0;
-        const int runs = 1;
+        const int runs = 3;
 
         /// <summary>
         ///Create default regarding the input
@@ -31,11 +32,27 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
                 populationSize = 2;
             }
 
+            var oCProbability = new double[]
+            {
+                0, 1
+            };
+
             return new GenAlgStarterData()
             {
-                PopulationSize = populationSize/*populationSizes[(callCounter++ / runs) % populationSizes.Length]*/,
+                //PopulationSize = populationSizes[(callCounter++ / runs) % populationSizes.Length],
                 MaxNumberOfSantas = input.Santas.Length,
+                OrderBasedCrossoverProbability = oCProbability[(callCounter++ / runs) % oCProbability.Length],
             };
+        }
+
+        public override string ToString()
+        {
+            return
+                $"PopulationSize={PopulationSize}{Environment.NewLine}" +
+                $"MaxNumberOfSantas={MaxNumberOfSantas}{Environment.NewLine}" +
+                $"MaxNumberOfGenerations={MaxNumberOfGenerations}{Environment.NewLine}" +
+                $"MutationProbability={MutationProbability}{Environment.NewLine}" +
+                $"OrderBasedCrossoverProbability={OrderBasedCrossoverProbability}{Environment.NewLine}";
         }
     }
 }

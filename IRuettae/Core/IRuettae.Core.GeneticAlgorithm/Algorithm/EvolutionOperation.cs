@@ -12,12 +12,13 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
     {
         private readonly BinaryTournamentSelection selectionOperation = new BinaryTournamentSelection(RandomFactory.Instance);
         private readonly MutationOperation mutationOperation = new MutationOperation(RandomFactory.Instance);
-        private readonly RecombinationOperation recombinationOperation = new RecombinationOperation(RandomFactory.Instance);
+        private readonly RecombinationOperation recombinationOperation;
         private readonly GenAlgStarterData starterData;
 
         public EvolutionOperation(GenAlgStarterData starterData)
         {
             this.starterData = starterData;
+            this.recombinationOperation = new RecombinationOperation(RandomFactory.Instance, starterData.OrderBasedCrossoverProbability);
         }
 
         public void Evolve(List<Genotype> population)
