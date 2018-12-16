@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IRuettae.Core.LocalSolverTests;
 using IRuettae.Core.Models;
 
 namespace IRuettae.Core.LocalSolver.Tests
@@ -164,6 +165,18 @@ namespace IRuettae.Core.LocalSolver.Tests
             Assert.AreEqual(0, output.Routes[0].Waypoints.Skip(1).First().VisitId);
             Assert.AreEqual(0, output.Routes[0].Waypoints.First().StartTime);
             Assert.AreEqual(3 * hour, output.Routes[0].Waypoints[1].StartTime);
+        }
+
+        [TestMethod]
+        public void TestBreaksCorrect()
+        {
+            var (input, _) = DatasetFactory.LocalSolverBreakDataSet();
+            var solver = new Solver(input);
+            var output = solver.Solve(3000L, null, null);
+            Assert.IsNotNull(output);
+            Assert.IsNotNull(output.Routes);
+            var santa0Break = input.Visits.First(v => v.IsBreak && v.SantaId == 0);
+            Assert.IsTrue(output.Routes.Where(r => r.SantaId == 0).All(r => r.Waypoints.Length == 0 || r.Waypoints.Select(wp => wp.VisitId).Contains(santa0Break.Id)));
         }
     }
 }

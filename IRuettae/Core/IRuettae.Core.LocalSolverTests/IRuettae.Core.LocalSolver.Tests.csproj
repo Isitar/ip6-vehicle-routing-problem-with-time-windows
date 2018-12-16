@@ -58,6 +58,8 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="DatasetFactory.cs" />
+    <Compile Include="DatasetFactory.LocalSolverBreakDataSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SolverTests.cs" />
   </ItemGroup>
