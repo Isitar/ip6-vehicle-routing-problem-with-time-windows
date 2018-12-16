@@ -85,8 +85,8 @@ public static (OptimizationInput input, (int x, int y)[] coordinates) DataSet5()
 			new Visit{Duration = 1855, Id=13,WayCostFromHome=537, WayCostToHome=537,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 4419, (24 * Hour + 4419) + 13959)}},
 			new Visit{Duration = 3136, Id=14,WayCostFromHome=1869, WayCostToHome=1869,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 4816, (24 * Hour + 4816) + 26462)}},
 			new Visit{Duration = 1949, Id=15,WayCostFromHome=1786, WayCostToHome=1786,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 7937, (24 * Hour + 7937) + 5208)}}
-,			new Visit{Duration = 2537, Id=16,WayCostFromHome=1568, WayCostToHome=1568,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 5368, (0 * Hour + 5368) + 25863),(24 * Hour + 5368, (24 * Hour + 5368) + 25863)},SantaId=0,IsBreak = true},
-			new Visit{Duration = 3515, Id=17,WayCostFromHome=764, WayCostToHome=764,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 12309, (0 * Hour + 12309) + 15013),(24 * Hour + 12309, (24 * Hour + 12309) + 15013)},SantaId=1,IsBreak = true}
+,			new Visit{Duration = 1800, Id=16,WayCostFromHome=1568, WayCostToHome=1568,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 5368, (0 * Hour + 5368) + 25863),(24 * Hour + 5368, (24 * Hour + 5368) + 25863)},SantaId=0,IsBreak = true},
+			new Visit{Duration = 1800, Id=17,WayCostFromHome=764, WayCostToHome=764,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 12309, (0 * Hour + 12309) + 15013),(24 * Hour + 12309, (24 * Hour + 12309) + 15013)},SantaId=1,IsBreak = true}
 		}
 	};
 	return (input, coordinates);

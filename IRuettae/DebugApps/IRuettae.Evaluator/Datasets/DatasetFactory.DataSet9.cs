@@ -166,11 +166,11 @@ public static (OptimizationInput input, (int x, int y)[] coordinates) DataSet9()
 			new Visit{Duration = 2551, Id=37,WayCostFromHome=350, WayCostToHome=350,Unavailable =new (int from, int to)[0],Desired = new (int from, int to)[0]},
 			new Visit{Duration = 1487, Id=38,WayCostFromHome=748, WayCostToHome=748,Unavailable =new (int from, int to)[0],Desired = new (int from, int to)[0]},
 			new Visit{Duration = 3274, Id=39,WayCostFromHome=498, WayCostToHome=498,Unavailable =new (int from, int to)[0],Desired = new (int from, int to)[0]}
-,			new Visit{Duration = 3463, Id=40,WayCostFromHome=896, WayCostToHome=896,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 205, (0 * Hour + 205) + 26348),(24 * Hour + 205, (24 * Hour + 205) + 26348)},SantaId=0,IsBreak = true},
-			new Visit{Duration = 1915, Id=41,WayCostFromHome=1096, WayCostToHome=1096,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 1947, (0 * Hour + 1947) + 20982),(24 * Hour + 1947, (24 * Hour + 1947) + 20982)},SantaId=1,IsBreak = true},
-			new Visit{Duration = 1615, Id=42,WayCostFromHome=1132, WayCostToHome=1132,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 1756, (0 * Hour + 1756) + 28430),(24 * Hour + 1756, (24 * Hour + 1756) + 28430)},SantaId=2,IsBreak = true},
-			new Visit{Duration = 3568, Id=43,WayCostFromHome=493, WayCostToHome=493,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 1521, (0 * Hour + 1521) + 20419),(24 * Hour + 1521, (24 * Hour + 1521) + 20419)},SantaId=3,IsBreak = true},
-			new Visit{Duration = 1327, Id=44,WayCostFromHome=930, WayCostToHome=930,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 6317, (0 * Hour + 6317) + 24379),(24 * Hour + 6317, (24 * Hour + 6317) + 24379)},SantaId=4,IsBreak = true}
+,			new Visit{Duration = 1800, Id=40,WayCostFromHome=896, WayCostToHome=896,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 205, (0 * Hour + 205) + 26348),(24 * Hour + 205, (24 * Hour + 205) + 26348)},SantaId=0,IsBreak = true},
+			new Visit{Duration = 1800, Id=41,WayCostFromHome=1096, WayCostToHome=1096,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 1947, (0 * Hour + 1947) + 20982),(24 * Hour + 1947, (24 * Hour + 1947) + 20982)},SantaId=1,IsBreak = true},
+			new Visit{Duration = 1800, Id=42,WayCostFromHome=1132, WayCostToHome=1132,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 1756, (0 * Hour + 1756) + 28430),(24 * Hour + 1756, (24 * Hour + 1756) + 28430)},SantaId=2,IsBreak = true},
+			new Visit{Duration = 1800, Id=43,WayCostFromHome=493, WayCostToHome=493,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 1521, (0 * Hour + 1521) + 20419),(24 * Hour + 1521, (24 * Hour + 1521) + 20419)},SantaId=3,IsBreak = true},
+			new Visit{Duration = 1800, Id=44,WayCostFromHome=930, WayCostToHome=930,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 6317, (0 * Hour + 6317) + 24379),(24 * Hour + 6317, (24 * Hour + 6317) + 24379)},SantaId=4,IsBreak = true}
 		}
 	};
 	return (input, coordinates);
