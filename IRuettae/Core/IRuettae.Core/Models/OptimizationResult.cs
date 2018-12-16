@@ -245,6 +245,8 @@ namespace IRuettae.Core.Models
                     return day;
                 }
             }
+
+            return OptimizationInput.Days.First(d => d.from == OptimizationInput.Days.Max(dayMax => dayMax.from));
             throw new ArgumentException("no matching day found");
         }
 

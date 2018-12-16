@@ -143,10 +143,19 @@ namespace IRuettae.Evaluator
                     summary.AppendLine($"Solver: {AlgorithmsDictionary[algorithmSelection]}");
                     summary.AppendLine($"Dataset{dataset}: {DatasetDictionary[dataset]}");
                     summary.AppendLine($"TimeElapsed [s]: {result.TimeElapsed}");
-                    if (!result.IsValid())
+                    try
                     {
-                        summary.AppendLine($"IMPORTANT: This result seems to be invalid. The reason is \"{result.Validate()}\"");
+                        if (!result.IsValid())
+                        {
+                            summary.AppendLine(
+                                $"IMPORTANT: This result seems to be invalid. The reason is \"{result.Validate()}\"");
+                        }
                     }
+                    catch
+                    {
+                        summary.AppendLine("error while checking invalidity");
+                    }
+
                     summary.AppendLine($"Cost: {result.Cost()}");
                     summary.AppendLine($"NumberOfNotVisitedFamilies: { result.NumberOfNotVisitedFamilies()}");
                     summary.AppendLine($"NumberOfMissingBreaks: { result.NumberOfMissingBreaks()}");
@@ -157,7 +166,7 @@ namespace IRuettae.Evaluator
                     summary.AppendLine($"VisitTimeInDesired: { result.VisitTimeInDesired()}");
                     summary.AppendLine($"SantaWorkTime: { result.SantaWorkTime()}");
                     summary.AppendLine($"LongestDay: { result.LongestDay()}");
-                    summary.AppendLine($"Validresult: { result.Validate()}");
+                   
 
                     File.WriteAllText(savepath + ".txt", summary.ToString());
                     Console.WriteLine();

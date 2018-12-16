@@ -9,11 +9,15 @@ using localsolver;
 
 namespace IRuettae.Core.LocalSolver
 {
+
+
     /// <summary>
     /// IRuettae Solver using LocalSolver
     /// </summary>
     public class Solver : ISolver
     {
+        const bool UseWaitBetweenVisits = false;
+        private const bool UseFakeSantas = false;
         private readonly OptimizationInput input;
 
         /// <summary>
@@ -34,7 +38,7 @@ namespace IRuettae.Core.LocalSolver
                 OptimizationInput = input
             };
 
-            var numberOfFakeSantas = input.Visits.Length - input.Santas.Length;
+            var numberOfFakeSantas = UseFakeSantas ? input.Visits.Length - input.Santas.Length : 0;
             var numberOfSantas = (input.Santas.Length + numberOfFakeSantas) * input.Days.Length;
             var numberOfDays = input.Days.Length;
             var visits = input.Visits.ToList();
@@ -57,7 +61,7 @@ namespace IRuettae.Core.LocalSolver
                 for (int j = 0; j < routeCostJagged[i].Length; j++)
                 {
                     if (i < input.RouteCosts.GetLength(0) && j < input.RouteCosts.GetLength(1))
-                    { routeCostJagged[i][j] = input.RouteCosts[i, j];}
+                    { routeCostJagged[i][j] = input.RouteCosts[i, j]; }
                     else
                     {
                         // additional breaks:
@@ -69,7 +73,7 @@ namespace IRuettae.Core.LocalSolver
             using (var localSolver = new localsolver.LocalSolver())
             {
                 var model = localSolver.GetModel();
-               
+
 
                 var santaUsed = new LSExpression[numberOfSantas];
                 var visitSequences = new LSExpression[numberOfSantas + 1];
@@ -81,16 +85,24 @@ namespace IRuettae.Core.LocalSolver
                 var santaVisitStartingTimes = new LSExpression[numberOfSantas];
 
 
-             
+
                 var numberOfVisits = visits.Count;
                 var santaOvertime = new LSExpression[numberOfSantas];
                 var santaWaitBeforeStart = new LSExpression[numberOfSantas];
-
+                var santaWaitBetweenVisit = new LSExpression[numberOfSantas][];
                 for (int k = 0; k < numberOfSantas; k++)
                 {
                     visitSequences[k] = model.List(numberOfVisits);
                     santaOvertime[k] = model.Int(0, int.MaxValue);
                     santaWaitBeforeStart[k] = model.Int(0, int.MaxValue);
+                    if (UseWaitBetweenVisits)
+                    {
+                        santaWaitBetweenVisit[k] = new LSExpression[visits.Count];
+                        for (int i = 0; i < santaWaitBetweenVisit[k].Length; i++)
+                        {
+                            santaWaitBetweenVisit[k][i] = model.Int(0, int.MaxValue);
+                        }
+                    }
                 }
 
                 // overflow for unused santa breaks
@@ -143,6 +155,7 @@ namespace IRuettae.Core.LocalSolver
                 {
                     for (int santa = 0; santa < input.Santas.Length + numberOfFakeSantas; santa++)
                     {
+
                         var s = (input.Santas.Length + numberOfFakeSantas) * day + santa;
                         var sequence = visitSequences[s];
                         var c = model.Count(sequence);
@@ -154,7 +167,8 @@ namespace IRuettae.Core.LocalSolver
                         if (breaks.Count > 0)
                         {
                             int breakIndex = day == 0 ? visits.IndexOf(breaks.First()) : breakDictionary[(day, santa)];
-                            model.Constraint(model.If(santaUsed[s], model.Contains(visitSequences[s], breakIndex), model.Contains(visitSequences[numberOfSantas], breakIndex)));
+                            //model.Constraint(model.If(santaUsed[s], model.Contains(visitSequences[s], breakIndex), model.Contains(visitSequences[numberOfSantas], breakIndex)));
+                            model.Constraint(model.Contains(visitSequences[s], breakIndex));
                         }
 
                         // walking
@@ -171,10 +185,13 @@ namespace IRuettae.Core.LocalSolver
 
                         // time slot
                         var currDayIndex = day; // copy because used in lambda expression
+
+                        var waitBetweenVisits = UseWaitBetweenVisits ? model.Array(santaWaitBetweenVisit[s]) : model.Int(0,0);
+
                         var visitStartingTimeSelector = model.Function((i, prev) =>
                             model.If(i == 0,
                                 input.Days[currDayIndex].from + santaWaitBeforeStart[s] + distanceFromHomeArray[sequence[i]],
-                                prev + visitDurationArray[sequence[i - 1]] + distanceArray[sequence[i - 1], sequence[i]]
+                                prev + visitDurationArray[sequence[i - 1]] + distanceArray[sequence[i - 1], sequence[i]] + (UseWaitBetweenVisits ? waitBetweenVisits[sequence[i]] : model.Int(0, 0))
                             )
                         );
 
@@ -240,7 +257,7 @@ namespace IRuettae.Core.LocalSolver
 
 
                         // sum all up
-                        santaRouteTime[s] = santaWalkingTime[s] + santaVisitDurations[s];
+                        santaRouteTime[s] = santaWalkingTime[s] + santaVisitDurations[s] + (UseWaitBetweenVisits ? model.Sum(santaWaitBetweenVisit[s]) : model.Int(0, 0));
 
                         // constraint
                         model.Constraint(model.If(santaUsed[s], visitStartingTime[c - 1] + visitDurationArray[sequence[c - 1]] + distanceToHomeArray[sequence[c - 1]], 0) <= input.Days[currDayIndex].to + santaOvertime[s]);
@@ -271,6 +288,8 @@ namespace IRuettae.Core.LocalSolver
                     (40d / hour) * model.Sum(santaRouteTime) +
                     (30d / hour) * maxRoute;
                 var minWayTime = input.RouteCosts.Cast<int>().Where(i => i > 0).Min();
+
+
 
                 //model.Constraint(costFunction >= (minWayTime * (numberOfVisits + 1)) * 40d / hour // min walking time
                 //                 + visits.Select(v => v.Duration).Sum() * (20d / hour) //every visit in desired
