@@ -109,7 +109,7 @@ namespace IRuettae.DatasetGenerator
             }
 
             var avgDistance = coordinates.Average(c => coordinates.Select(c2 => Distance(c, c2)).Average());
-            int[] visitDurations = Enumerable.Range(0, numberOfUniqueVisits).Select(v => random.Next(1200, 3600)).ToArray();
+            int[] visitDurations = Enumerable.Range(0, numberOfVisits - numberOfBreaks).Select(v => random.Next(1200, 3600)).ToArray();
 
 
             if (workingDayDuration == -1)
@@ -214,6 +214,8 @@ namespace IRuettae.DatasetGenerator
             // break handling
             if (generateBreaks)
             {
+
+                const int breakDuration = 1800;
                 sb.Append(",");
 
                 sb.AppendLine(string.Join($",{Environment.NewLine}",
@@ -223,7 +225,7 @@ namespace IRuettae.DatasetGenerator
                    var workingDayDurationSeconds = workingDayDuration * 3600;
 
                    var deltaFactor = 1 - random.NextDouble();
-                   var desiredTime = Math.Ceiling(deltaFactor * (workingDayDurationSeconds - visitDurations[v]) + visitDurations[v]);
+                   var desiredTime = Math.Ceiling(deltaFactor * (workingDayDurationSeconds - breakDuration) + breakDuration);
                    var startFactor = 1 - random.NextDouble();
                    var desireds = string.Join(",", Enumerable.Range(0, numberOfDays).Select(dayIndex =>
                    {
@@ -236,7 +238,7 @@ namespace IRuettae.DatasetGenerator
 
                    var unavailableString = "new (int from, int to)[0]";
 
-                   return $"\t\t\tnew Visit{{Duration = {visitDurations[v]}, Id={v},WayCostFromHome={Distance(coordinates[0], coordinates[v + 1])}, WayCostToHome={Distance(coordinates[0], coordinates[v + 1])},Unavailable ={unavailableString},Desired = {desiredString},SantaId={v - (numberOfVisits - numberOfBreaks)},IsBreak = true}}";
+                   return $"\t\t\tnew Visit{{Duration = {breakDuration}, Id={v},WayCostFromHome={Distance(coordinates[0], coordinates[v + 1])}, WayCostToHome={Distance(coordinates[0], coordinates[v + 1])},Unavailable ={unavailableString},Desired = {desiredString},SantaId={v - (numberOfVisits - numberOfBreaks)},IsBreak = true}}";
                })));
 
             }
