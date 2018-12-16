@@ -69,7 +69,7 @@ namespace IRuettae.Core.LocalSolver
                     foreach (var breakVisit in input.Visits.Where(v => v.IsBreak))
                     {
                         visits.Add(breakVisit);
-                        breakDictionary.Add((day: i, santa: breakVisit.SantaId), visits.Count -1);
+                        breakDictionary.Add((day: i, santa: breakVisit.SantaId), visits.Count - 1);
                     }
                 }
 
@@ -146,7 +146,7 @@ namespace IRuettae.Core.LocalSolver
                         var breaks = visits.Where((v => v.IsBreak && v.SantaId == santa)).ToList();
                         if (breaks.Count > 0)
                         {
-                            int breakIndex = day == 0 ? visits.IndexOf(breaks.First()) : breakDictionary[(day,santa)];
+                            int breakIndex = day == 0 ? visits.IndexOf(breaks.First()) : breakDictionary[(day, santa)];
                             model.Constraint(model.If(santaUsed[s], model.Contains(visitSequences[s], breakIndex), model.Contains(visitSequences[numberOfSantas], breakIndex)));
                         }
 
@@ -265,9 +265,9 @@ namespace IRuettae.Core.LocalSolver
                     (30d / hour) * maxRoute;
                 var minWayTime = input.RouteCosts.Cast<int>().Where(i => i > 0).Min();
 
-                model.Constraint(costFunction >= (minWayTime * (numberOfVisits + 1)) * 40d / hour // min walking time
-                                 + visits.Select(v => v.Duration).Sum() * (20d / hour) //every visit in desired
-                                 );
+                //model.Constraint(costFunction >= (minWayTime * (numberOfVisits + 1)) * 40d / hour // min walking time
+                //                 + visits.Select(v => v.Duration).Sum() * (20d / hour) //every visit in desired
+                //                 );
                 model.Minimize(costFunction);
 
                 model.Close();

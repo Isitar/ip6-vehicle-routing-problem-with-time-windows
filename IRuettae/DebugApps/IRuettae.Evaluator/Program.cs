@@ -104,10 +104,11 @@ namespace IRuettae.Evaluator
 
                     string savepath = $"{DateTime.Now:yy-MM-dd-HH-mm-ss}_DataSet_{dataset}";
                     ISolver solver = null;
+                    var fastFactor = 15;
                     switch (algorithmSelection)
                     {
                         case Algorithms.ILPFast:
-                            timelimit /= 60;
+                            timelimit /= fastFactor;
                             goto case Algorithms.ILP;
                         case Algorithms.ILP:
                             solver = new ILPSolver(input, new ILPStarterData
@@ -122,7 +123,7 @@ namespace IRuettae.Evaluator
                             savepath += "_ILP";
                             break;
                         case Algorithms.LocalSolverFast:
-                            timelimit /= 60;
+                            timelimit /= fastFactor;
                             goto case Algorithms.LocalSolver;
                         case Algorithms.LocalSolver:
                             solver = new IRuettae.Core.LocalSolver.Solver(input);
@@ -156,6 +157,7 @@ namespace IRuettae.Evaluator
                     summary.AppendLine($"VisitTimeInDesired: { result.VisitTimeInDesired()}");
                     summary.AppendLine($"SantaWorkTime: { result.SantaWorkTime()}");
                     summary.AppendLine($"LongestDay: { result.LongestDay()}");
+                    summary.AppendLine($"Validresult: { result.Validate()}");
 
                     File.WriteAllText(savepath + ".txt", summary.ToString());
                     Console.WriteLine();
