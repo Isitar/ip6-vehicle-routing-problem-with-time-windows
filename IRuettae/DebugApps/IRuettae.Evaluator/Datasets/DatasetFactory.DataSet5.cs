@@ -5,6 +5,7 @@ internal partial class DatasetFactory
 {
 /// <summary>
 /// 20 Visits, 2 Days, 2 Santas
+/// 4 Breaks, 18 unique visits
 /// 10 Desired, 0 Unavailable on day 0
 /// 10 Desired, 0 Unavailable on day 1
 /// </summary>
@@ -13,27 +14,25 @@ public static (OptimizationInput input, (int x, int y)[] coordinates) DataSet5()
 	// Coordinates of points
 	var coordinates = new[]
 	{
-		(3396,2724),
-		(2592,3292),
-		(876,948),
-		(1129,1099),
-		(1489,1046),
-		(1195,2042),
-		(723,845),
-		(1174,1383),
-		(1480,1601),
-		(2209,2398),
-		(1601,1437),
-		(1567,1104),
-		(826,1178),
-		(2298,3144),
-		(2697,2255),
-		(950,1457),
-		(2377,2477),
-		(1605,1316),
-		(2042,2055),
-		(846,1651),
-		(2415,3622)
+		(2578,2611),
+		(3369,2195),
+		(1008,1795),
+		(2095,2958),
+		(749,1483),
+		(1054,1683),
+		(1706,1427),
+		(1700,1151),
+		(2820,2722),
+		(1247,1313),
+		(1465,1359),
+		(3106,2814),
+		(3362,2426),
+		(1172,1173),
+		(3059,2370),
+		(1086,1484),
+		(2043,907),
+		(1363,1619),
+		(3342,2605)
 	};
 	const int workingDayDuration = 9 * Hour;
 	var input = new OptimizationInput
@@ -42,26 +41,24 @@ public static (OptimizationInput input, (int x, int y)[] coordinates) DataSet5()
 
 		RouteCosts = new[,]
 		{
-			{ 0, 2904, 2636, 2502, 1874, 3079, 2378, 2023, 972, 2103, 2416, 2754, 329, 1042, 2462, 842, 2208, 1353, 2396, 374 },
-			{ 2904, 0, 294, 620, 1139, 184, 527, 889, 1969, 874, 708, 235, 2616, 2241, 514, 2142, 816, 1607, 703, 3085 },
-			{ 2636, 294, 0, 363, 945, 478, 287, 612, 1689, 580, 438, 313, 2355, 1948, 400, 1859, 523, 1321, 620, 2831 },
-			{ 2502, 620, 363, 0, 1038, 791, 461, 555, 1531, 406, 97, 676, 2248, 1709, 677, 1684, 293, 1150, 882, 2737 },
-			{ 1874, 1139, 945, 1038, 0, 1286, 659, 525, 1074, 728, 1009, 939, 1559, 1517, 634, 1259, 833, 847, 524, 1996 },
-			{ 3079, 184, 478, 791, 1286, 0, 702, 1069, 2149, 1058, 882, 348, 2786, 2425, 652, 2323, 999, 1789, 815, 3251 },
-			{ 2378, 527, 287, 461, 659, 702, 0, 375, 1449, 430, 481, 403, 2089, 1754, 235, 1626, 436, 1097, 423, 2559 },
-			{ 2023, 889, 612, 555, 525, 1069, 375, 0, 1080, 203, 504, 778, 1746, 1381, 549, 1253, 311, 722, 635, 2226 },
-			{ 972, 1969, 1689, 1531, 1074, 2149, 1449, 1080, 0, 1137, 1444, 1844, 751, 508, 1571, 185, 1239, 381, 1554, 1241 },
-			{ 2103, 874, 580, 406, 728, 1058, 430, 203, 1137, 0, 334, 817, 1843, 1367, 651, 1297, 121, 759, 784, 2331 },
-			{ 2416, 708, 438, 97, 1009, 882, 481, 504, 1444, 334, 0, 744, 2167, 1612, 710, 1594, 215, 1063, 905, 2656 },
-			{ 2754, 235, 313, 676, 939, 348, 403, 778, 1844, 817, 744, 0, 2456, 2158, 305, 2023, 791, 1499, 473, 2915 },
-			{ 329, 2616, 2355, 2248, 1559, 2786, 2089, 1746, 751, 1843, 2167, 2456, 0, 974, 2159, 671, 1954, 1118, 2082, 492 },
-			{ 1042, 2241, 1948, 1709, 1517, 2425, 1754, 1381, 508, 1367, 1612, 2158, 974, 0, 1920, 389, 1440, 684, 1947, 1395 },
-			{ 2462, 514, 400, 677, 634, 652, 235, 549, 1571, 651, 710, 305, 2159, 1920, 0, 1754, 670, 1245, 220, 2614 },
-			{ 842, 2142, 1859, 1684, 1259, 2323, 1626, 1253, 185, 1297, 1594, 2023, 671, 389, 1754, 0, 1394, 538, 1739, 1145 },
-			{ 2208, 816, 523, 293, 833, 999, 436, 311, 1239, 121, 215, 791, 1954, 1440, 670, 1394, 0, 858, 829, 2444 },
-			{ 1353, 1607, 1321, 1150, 847, 1789, 1097, 722, 381, 759, 1063, 1499, 1118, 684, 1245, 538, 858, 0, 1262, 1610 },
-			{ 2396, 703, 620, 882, 524, 815, 423, 635, 1554, 784, 905, 473, 2082, 1947, 220, 1739, 829, 1262, 0, 2519 },
-			{ 374, 3085, 2831, 2737, 1996, 3251, 2559, 2226, 1241, 2331, 2656, 2915, 492, 1395, 2614, 1145, 2444, 1610, 2519, 0 }
+			{ 0, 2394, 1485, 2715, 2370, 1831, 1968, 761, 2298, 2079, 672, 231, 2423, 355, 2391, 1848, 2087, 410 },
+			{ 2394, 0, 1591, 405, 121, 789, 945, 2035, 538, 631, 2332, 2437, 643, 2130, 320, 1363, 396, 2470 },
+			{ 1485, 1591, 0, 1996, 1645, 1579, 1849, 762, 1850, 1718, 1021, 1374, 2009, 1129, 1786, 2051, 1526, 1296 },
+			{ 2715, 405, 1996, 0, 364, 958, 1007, 2413, 526, 726, 2706, 2777, 524, 2474, 337, 1416, 628, 2825 },
+			{ 2370, 121, 1645, 364, 0, 700, 836, 2048, 417, 523, 2343, 2424, 523, 2119, 201, 1257, 315, 2466 },
+			{ 1831, 789, 1579, 958, 700, 0, 276, 1708, 472, 250, 1970, 1933, 591, 1649, 622, 619, 393, 2015 },
+			{ 1968, 945, 1849, 1007, 836, 276, 0, 1929, 481, 313, 2177, 2094, 528, 1825, 698, 420, 576, 2193 },
+			{ 761, 2035, 762, 2413, 2048, 1708, 1929, 0, 2111, 1921, 300, 617, 2261, 425, 2130, 1974, 1827, 534 },
+			{ 2298, 538, 1850, 526, 417, 472, 481, 2111, 0, 222, 2389, 2389, 158, 2097, 234, 893, 327, 2461 },
+			{ 2079, 631, 1718, 726, 523, 250, 313, 1921, 222, 0, 2193, 2176, 347, 1887, 399, 733, 279, 2252 },
+			{ 672, 2332, 1021, 2706, 2343, 1970, 2177, 300, 2389, 2193, 0, 464, 2536, 446, 2418, 2183, 2113, 315 },
+			{ 231, 2437, 1374, 2777, 2424, 1933, 2094, 617, 2389, 2176, 464, 0, 2523, 308, 2463, 2011, 2155, 180 },
+			{ 2423, 643, 2009, 524, 523, 591, 528, 2261, 158, 347, 2536, 2523, 0, 2234, 322, 910, 485, 2599 },
+			{ 355, 2130, 1129, 2474, 2119, 1649, 1825, 425, 2097, 1887, 446, 308, 2234, 0, 2162, 1781, 1854, 367 },
+			{ 2391, 320, 1786, 337, 201, 622, 698, 2130, 234, 399, 2418, 2463, 322, 2162, 0, 1117, 308, 2519 },
+			{ 1848, 1363, 2051, 1416, 1257, 619, 420, 1974, 893, 733, 2183, 2011, 910, 1781, 1117, 0, 984, 2137 },
+			{ 2087, 396, 1526, 628, 315, 393, 576, 1827, 327, 279, 2113, 2155, 485, 1854, 308, 984, 0, 2211 },
+			{ 410, 2470, 1296, 2825, 2466, 2015, 2193, 534, 2461, 2252, 315, 180, 2599, 367, 2519, 2137, 2211, 0 }
 		},
 
 		Santas = new[]
@@ -72,26 +69,24 @@ public static (OptimizationInput input, (int x, int y)[] coordinates) DataSet5()
 
 		Visits = new[]
 		{
-			new Visit{Duration = 2424, Id=0,WayCostFromHome=984, WayCostToHome=984,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 1453, (0 * Hour + 1453) + 19311)}},
-			new Visit{Duration = 2247, Id=1,WayCostFromHome=3082, WayCostToHome=3082,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 13582, (0 * Hour + 13582) + 10074)}},
-			new Visit{Duration = 3136, Id=2,WayCostFromHome=2789, WayCostToHome=2789,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 3021, (0 * Hour + 3021) + 19783)}},
-			new Visit{Duration = 2090, Id=3,WayCostFromHome=2540, WayCostToHome=2540,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 6634, (0 * Hour + 6634) + 4660)}},
-			new Visit{Duration = 3476, Id=4,WayCostFromHome=2304, WayCostToHome=2304,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 6900, (0 * Hour + 6900) + 25054)}},
-			new Visit{Duration = 1560, Id=5,WayCostFromHome=3267, WayCostToHome=3267,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 887, (0 * Hour + 887) + 29934)}},
-			new Visit{Duration = 2664, Id=6,WayCostFromHome=2595, WayCostToHome=2595,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 5061, (0 * Hour + 5061) + 26651)}},
-			new Visit{Duration = 1423, Id=7,WayCostFromHome=2220, WayCostToHome=2220,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 6755, (0 * Hour + 6755) + 22558)}},
-			new Visit{Duration = 3571, Id=8,WayCostFromHome=1230, WayCostToHome=1230,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 2053, (0 * Hour + 2053) + 19173)}},
-			new Visit{Duration = 2394, Id=9,WayCostFromHome=2208, WayCostToHome=2208,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 5614, (0 * Hour + 5614) + 26291)}},
-			new Visit{Duration = 2794, Id=10,WayCostFromHome=2443, WayCostToHome=2443,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 15185, (24 * Hour + 15185) + 12375)}},
-			new Visit{Duration = 1867, Id=11,WayCostFromHome=2999, WayCostToHome=2999,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 11868, (24 * Hour + 11868) + 18955)}},
-			new Visit{Duration = 1864, Id=12,WayCostFromHome=1175, WayCostToHome=1175,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 3189, (24 * Hour + 3189) + 18360)}},
-			new Visit{Duration = 3372, Id=13,WayCostFromHome=841, WayCostToHome=841,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 10572, (24 * Hour + 10572) + 5345)}},
-			new Visit{Duration = 3472, Id=14,WayCostFromHome=2754, WayCostToHome=2754,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 5331, (24 * Hour + 5331) + 11135)}},
-			new Visit{Duration = 2310, Id=15,WayCostFromHome=1048, WayCostToHome=1048,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 4207, (24 * Hour + 4207) + 23180)}},
-			new Visit{Duration = 1680, Id=16,WayCostFromHome=2278, WayCostToHome=2278,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 16701, (24 * Hour + 16701) + 3131)}},
-			new Visit{Duration = 2723, Id=17,WayCostFromHome=1510, WayCostToHome=1510,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 3349, (24 * Hour + 3349) + 23563)}},
-			new Visit{Duration = 2617, Id=18,WayCostFromHome=2766, WayCostToHome=2766,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 12122, (24 * Hour + 12122) + 11674)}},
-			new Visit{Duration = 2876, Id=19,WayCostFromHome=1329, WayCostToHome=1329,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 22532, (24 * Hour + 22532) + 4654)}}
+			new Visit{Duration = 2831, Id=0,WayCostFromHome=893, WayCostToHome=893,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 16673, (0 * Hour + 16673) + 14460)}},
+			new Visit{Duration = 2257, Id=1,WayCostFromHome=1769, WayCostToHome=1769,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 323, (0 * Hour + 323) + 15893)}},
+			new Visit{Duration = 2868, Id=2,WayCostFromHome=594, WayCostToHome=594,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 18208, (0 * Hour + 18208) + 6273)}},
+			new Visit{Duration = 2844, Id=3,WayCostFromHome=2148, WayCostToHome=2148,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 2888, (0 * Hour + 2888) + 19744)}},
+			new Visit{Duration = 2271, Id=4,WayCostFromHome=1784, WayCostToHome=1784,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 5399, (0 * Hour + 5399) + 15919)}},
+			new Visit{Duration = 3404, Id=5,WayCostFromHome=1470, WayCostToHome=1470,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 20303, (0 * Hour + 20303) + 8703)}},
+			new Visit{Duration = 2961, Id=6,WayCostFromHome=1703, WayCostToHome=1703,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 8994, (0 * Hour + 8994) + 17454)}},
+			new Visit{Duration = 1305, Id=7,WayCostFromHome=266, WayCostToHome=266,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 7369, (0 * Hour + 7369) + 22379)}},
+			new Visit{Duration = 2043, Id=8,WayCostFromHome=1859, WayCostToHome=1859,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 2978, (0 * Hour + 2978) + 21930)}},
+			new Visit{Duration = 2297, Id=9,WayCostFromHome=1675, WayCostToHome=1675,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 23358, (0 * Hour + 23358) + 5230)}},
+			new Visit{Duration = 3598, Id=10,WayCostFromHome=565, WayCostToHome=565,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 6119, (24 * Hour + 6119) + 10510)}},
+			new Visit{Duration = 1869, Id=11,WayCostFromHome=805, WayCostToHome=805,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 13576, (24 * Hour + 13576) + 14698)}},
+			new Visit{Duration = 3490, Id=12,WayCostFromHome=2011, WayCostToHome=2011,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 205, (24 * Hour + 205) + 31781)}},
+			new Visit{Duration = 1855, Id=13,WayCostFromHome=537, WayCostToHome=537,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 4419, (24 * Hour + 4419) + 13959)}},
+			new Visit{Duration = 3136, Id=14,WayCostFromHome=1869, WayCostToHome=1869,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 4816, (24 * Hour + 4816) + 26462)}},
+			new Visit{Duration = 1949, Id=15,WayCostFromHome=1786, WayCostToHome=1786,Unavailable =new (int from, int to)[0],Desired = new [] {(24 * Hour + 7937, (24 * Hour + 7937) + 5208)}}
+,			new Visit{Duration = 2537, Id=16,WayCostFromHome=1568, WayCostToHome=1568,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 5368, (0 * Hour + 5368) + 25863),(24 * Hour + 5368, (24 * Hour + 5368) + 25863)},SantaId=0,IsBreak = true},
+			new Visit{Duration = 3515, Id=17,WayCostFromHome=764, WayCostToHome=764,Unavailable =new (int from, int to)[0],Desired = new [] {(0 * Hour + 12309, (0 * Hour + 12309) + 15013),(24 * Hour + 12309, (24 * Hour + 12309) + 15013)},SantaId=1,IsBreak = true}
 		}
 	};
 	return (input, coordinates);
