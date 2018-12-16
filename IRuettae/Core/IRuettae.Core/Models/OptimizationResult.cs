@@ -350,7 +350,7 @@ namespace IRuettae.Core.Models
                     var previous = middleWaypoints.First();
                     foreach (var current in middleWaypoints.Skip(1))
                     {
-                        if (OptimizationInput.RouteCosts[previous.VisitId, current.VisitId] > current.StartTime - (previous.StartTime + OptimizationInput.Visits[current.VisitId].Duration))
+                        if (OptimizationInput.RouteCosts[previous.VisitId, current.VisitId] > current.StartTime - (previous.StartTime + OptimizationInput.Visits[previous.VisitId].Duration))
                         {
                             return $"Way between visit {previous.VisitId} and visit {current.VisitId} is too short.";
                         }
