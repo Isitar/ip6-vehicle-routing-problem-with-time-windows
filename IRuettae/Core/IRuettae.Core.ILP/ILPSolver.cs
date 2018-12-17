@@ -55,7 +55,13 @@ namespace IRuettae.Core.ILP
             var phase1ResultState = clusteringSolver.Solve(starterData.ClusteringMIPGap, clusteringTimeLimitMiliseconds);
             if (!(new[] { ResultState.Feasible, ResultState.Optimal }).Contains(phase1ResultState))
             {
-                return null;
+                return new OptimizationResult()
+                {
+                    OptimizationInput = input,
+                    Routes = new Route[]{},
+                    TimeElapsed = sw.ElapsedMilliseconds/1000,
+                };
+
             }
 
             var phase1Result = clusteringSolver.GetResult();
