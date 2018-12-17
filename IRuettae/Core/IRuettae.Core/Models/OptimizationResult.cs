@@ -33,13 +33,7 @@ namespace IRuettae.Core.Models
         /// <summary>
         /// Array containing all routes which contain at least one visit
         /// </summary>
-        public IEnumerable<Route> NonEmptyRoutes
-        {
-            get
-            {
-                return Routes.Where(r => r.Waypoints != null && r.Waypoints.Any(wp => wp.VisitId != Constants.VisitIdHome));
-            }
-        }
+        public IEnumerable<Route> NonEmptyRoutes => Routes?.Where(r => r.Waypoints != null && r.Waypoints.Any(wp => wp.VisitId != Constants.VisitIdHome)) ?? new List<Route>();
 
         /// <summary>
         /// The input used to calculate this result

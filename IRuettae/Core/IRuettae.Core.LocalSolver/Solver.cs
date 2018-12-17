@@ -16,7 +16,7 @@ namespace IRuettae.Core.LocalSolver
     /// </summary>
     public class Solver : ISolver
     {
-        const bool UseWaitBetweenVisits = false;
+        const bool UseWaitBetweenVisits = true;
         private const bool UseFakeSantas = false;
         private readonly OptimizationInput input;
 
@@ -167,8 +167,8 @@ namespace IRuettae.Core.LocalSolver
                         if (breaks.Count > 0)
                         {
                             int breakIndex = day == 0 ? visits.IndexOf(breaks.First()) : breakDictionary[(day, santa)];
-                            //model.Constraint(model.If(santaUsed[s], model.Contains(visitSequences[s], breakIndex), model.Contains(visitSequences[numberOfSantas], breakIndex)));
-                            model.Constraint(model.Contains(visitSequences[s], breakIndex));
+                            model.Constraint(model.If(santaUsed[s], model.Contains(visitSequences[s], breakIndex), model.Contains(visitSequences[numberOfSantas], breakIndex)));
+                            //model.Constraint(model.Contains(visitSequences[s], breakIndex));
                         }
 
                         // walking
@@ -263,6 +263,8 @@ namespace IRuettae.Core.LocalSolver
                         model.Constraint(model.If(santaUsed[s], visitStartingTime[c - 1] + visitDurationArray[sequence[c - 1]] + distanceToHomeArray[sequence[c - 1]], 0) <= input.Days[currDayIndex].to + santaOvertime[s]);
                     }
                 }
+                
+
 
                 var maxRoute = model.Max(santaRouteTime);
                 const int hour = 3600;
@@ -298,6 +300,39 @@ namespace IRuettae.Core.LocalSolver
 
                 model.Close();
                 consoleProgress?.Invoke(this, "Done modeling");
+
+                // initialize solution
+                var numberOfvisitsPerSanta = Math.Floor((double) (input.Visits.Count(v => !v.IsBreak) / numberOfSantas));
+                int visitIndex = 0;
+                for (var day = 0; day < input.Days.Length; day++)
+                {
+                    for(var santa = 0; santa < input.Santas.Length + numberOfFakeSantas; santa++)
+                    {
+                        var s = (input.Santas.Length + numberOfFakeSantas) * day + santa;
+                        var santaVisits = visitSequences[s].GetCollectionValue();
+                        santaVisits.Clear();
+
+
+                        if (input.Visits.Any(v => v.IsBreak && v.SantaId == santa))
+                        {
+                            // add break
+                            if (day == 0)
+                            {
+                                santaVisits.Add(input.Visits.First(v => v.IsBreak && v.SantaId == santa).Id);
+                            }
+                            else
+                            {
+                                santaVisits.Add(breakDictionary[(day, santa)]);
+                            }
+                        }
+                        for (int i = 0; i < numberOfvisitsPerSanta; i++)
+                        {
+                            var visit = input.Visits.First(v => v.Id == visitIndex);
+                            santaVisits.Add(visitIndex);
+                            visitIndex++;
+                        }
+                    }
+                }
 
                 var phase = localSolver.CreatePhase();
                 phase.SetTimeLimit((int)((timelimitMiliseconds - sw.ElapsedMilliseconds) / 1000));
