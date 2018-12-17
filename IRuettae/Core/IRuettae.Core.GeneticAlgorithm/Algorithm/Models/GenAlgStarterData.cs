@@ -13,7 +13,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
         public int MaxNumberOfSantas { get; set; }
         public long MaxNumberOfGenerations { get; set; } = long.MaxValue;
         public double MutationProbability { get; set; } = 0.1;
-        public double OrderBasedCrossoverProbability { get; set; } = 0.5;
+        public double OrderBasedCrossoverProbability { get; set; } = 0.75;
 
         // Todo: remove
         static int callCounter = 0;
@@ -26,23 +26,24 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
         /// <returns></returns>
         public static GenAlgStarterData GetDefault(OptimizationInput input)
         {
-            var populationSize = 10;
-            if (input.Visits.Length >= 50)
-            {
-                populationSize = 2;
-            }
-
             var oCProbability = new double[]
             {
                 0, 1
             };
 
-            return new GenAlgStarterData()
+            var starterData = new GenAlgStarterData()
             {
-                //PopulationSize = populationSizes[(callCounter++ / runs) % populationSizes.Length],
                 MaxNumberOfSantas = input.Santas.Length,
                 OrderBasedCrossoverProbability = oCProbability[(callCounter++ / runs) % oCProbability.Length],
             };
+
+            // Population size
+            if (input.Visits.Length > 50)
+            {
+                starterData.PopulationSize = 2;
+            }
+
+            return starterData;
         }
 
         public override string ToString()
