@@ -126,7 +126,7 @@ namespace IRuettae.Evaluator
                             savepath += "_ILP";
                             break;
                         case Algorithms.ILP2Fast:
-                            timelimit /= 15;
+                            timelimit /= 60;
                             goto case Algorithms.ILP2;
                         case Algorithms.ILP2:
                             solver = new IRuettae.Core.ILP2.Solver(input);
