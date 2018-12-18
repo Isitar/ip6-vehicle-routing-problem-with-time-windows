@@ -48,14 +48,14 @@ namespace IRuettae.Evaluator
             {2, "10 visits, 1 santas, 2 days 5 desired d1, 5 desired d2" },
             {3, "10 visits, 1 santas, 2 days 5 unavailable d1, 5 unavailable d2" },
             {4, "20 visits, 2 santas"},
-            {5, "20 visits, 2 santas, 2 days, 10 desired d1, 10 desired d2" },
+            {5, "20 visits, 2 santas, 2 days, 10 desired d1, 10 desired d2, 4 breaks" },
             {6, "20 visits, 2 santas, 2 days, 10 unavailable d1, 10 unavailable d2" },
             {7, "Real example 2017" },
             {8, "Real example 2018" },
-            {9, "50 visits, 5 santas, 2 days, 15 desired d1, 15 desired d2, 11 unavailable d1, 11 unavailable d2" },
-            {10, "100 visits, 10 santas, 2 days, 35 desired d1, 35 desired d2, 20 unavailable d1, 20 unavailable d2" },
-            {11, "200 visits, 20 santas, 2 days, 75 desired d1, 75 desired d2, 40 unavailable d1, 40 unavailable d2" },
-            {12, "1000 visits, 100 santas, 2 days, 300 desired d1, 300 desired d2, 150 unavailable d1, 150 unavailable d2" },
+            {9, "50 visits, 5 santas, 2 days, 15 desired d1, 15 desired d2, 11 unavailable d1, 11 unavailable d2, 10 breaks" },
+            {10, "100 visits, 10 santas, 2 days, 35 desired d1, 35 desired d2, 20 unavailable d1, 20 unavailable d2, 20 breaks" },
+            {11, "200 visits, 20 santas, 2 days, 75 desired d1, 75 desired d2, 40 unavailable d1, 40 unavailable d2, 40 breaks" },
+            {12, "1000 visits, 100 santas, 2 days, 300 desired d1, 300 desired d2, 150 unavailable d1, 150 unavailable d2, 200 breaks" },
         };
 
         static void Main(string[] args)
@@ -146,6 +146,10 @@ namespace IRuettae.Evaluator
                     summary.AppendLine($"Solver: {AlgorithmsDictionary[algorithmSelection]}");
                     summary.AppendLine($"Dataset{dataset}: {DatasetDictionary[dataset]}");
                     summary.AppendLine($"TimeElapsed [s]: {result.TimeElapsed}");
+                    if (!result.IsValid())
+                    {
+                        summary.AppendLine($"IMPORTANT: This result seems to be invalid. The reason is \"{result.Validate()}\"");
+                    }
                     summary.AppendLine($"Cost: {result.Cost()}");
                     summary.AppendLine($"NumberOfNotVisitedFamilies: { result.NumberOfNotVisitedFamilies()}");
                     summary.AppendLine($"NumberOfMissingBreaks: { result.NumberOfMissingBreaks()}");
