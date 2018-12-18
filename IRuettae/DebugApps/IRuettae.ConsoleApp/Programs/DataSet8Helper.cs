@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using IRuettae.GeoCalculations.RouteCalculation;
 using IRuettae.Persistence.Entities;
 using IRuettae.WebApi.Persistence;
 using Newtonsoft.Json;
@@ -41,6 +43,40 @@ namespace IRuettae.ConsoleApp.Programs
             }
         }
 
+        public void FillRemainingWays()
+        {
+            var rnd = new Random();
+            var orsKey = Environment.GetEnvironmentVariable("open-route-service-key");
+            var openRouteServiceCalculator =
+                new GeoCalculations.RouteCalculation.OpenRouteServiceCalculator(orsKey);
+
+            using (var dbSession = SessionFactory.Instance.OpenSession())
+            {
+                var fromVisits = dbSession.Query<Visit>().Where(v => v.Year == 2018 && v.Id >= 120 && v.Id < 132)
+
+                    .ToArray();
+                var toVisits = dbSession.Query<Visit>().Where(v => v.Year == 2018 && v.Id == 132 || v.Id == 133)
+                    .ToArray();
+                foreach (var fromVisit in fromVisits)
+                {
+                    foreach (var toVisit in toVisits)
+                    {
+                        var (distance, duration) = openRouteServiceCalculator.CalculateWalkingDistance((fromVisit.Lat, fromVisit.Long),
+                            (toVisit.Lat, toVisit.Long));
+                        var way = new Way
+                        {
+                            Distance = (int)Math.Ceiling(distance),
+                            Duration = (int)Math.Ceiling(duration),
+                            From = fromVisit,
+                            To = toVisit
+                        };
+                        dbSession.Save(way);
+                        Thread.Sleep((int)(300 + rnd.NextDouble() * 100));
+                    }
+                }
+            }
+        }
+
         public void FromTxtFile()
         {
             using (var dbSession = SessionFactory.Instance.OpenSession())
@@ -54,8 +90,8 @@ namespace IRuettae.ConsoleApp.Programs
                     {
                         var way = new Way
                         {
-                            Distance = (int) Math.Ceiling(distances[i, j]),
-                            Duration = (int) Math.Ceiling(durations[i, j]),
+                            Distance = (int)Math.Ceiling(distances[i, j]),
+                            Duration = (int)Math.Ceiling(durations[i, j]),
                             From = visits[i],
                             To = visits[j]
                         };
