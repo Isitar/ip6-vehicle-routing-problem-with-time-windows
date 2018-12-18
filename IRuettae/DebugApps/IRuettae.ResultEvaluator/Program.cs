@@ -39,8 +39,7 @@ namespace IRuettae.ResultEvaluator
             }
 
             var resultDict = new Dictionary<string, Dictionary<string, List<int>>>();
-
-            var results = new List<Result>();
+            //var results = new List<Result>();
 
             foreach (var file in Directory.GetFiles(path, "*.txt", SearchOption.AllDirectories))
             {
@@ -78,7 +77,7 @@ namespace IRuettae.ResultEvaluator
                     }
 
                     resultDict[solver][dataSet].Add(cost);
-                    results.Add(new Result { Cost = cost, DataSet = dataSet, Solver = solver });
+                    //results.Add(new Result { Cost = cost, DataSet = dataSet, Solver = solver });
                 }
                 catch (Exception e)
                 {
