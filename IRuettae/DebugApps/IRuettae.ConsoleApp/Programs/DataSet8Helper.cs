@@ -52,10 +52,10 @@ namespace IRuettae.ConsoleApp.Programs
 
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
-                var fromVisits = dbSession.Query<Visit>().Where(v => v.Year == 2018 && v.Id >= 120 && v.Id < 132)
+                var fromVisits = dbSession.Query<Visit>().Where(v => v.Year == 2018 && v.Id == 133)
 
                     .ToArray();
-                var toVisits = dbSession.Query<Visit>().Where(v => v.Year == 2018 && v.Id == 132 || v.Id == 133)
+                var toVisits = dbSession.Query<Visit>().Where(v => v.Year == 2018 && v.Id == 108)
                     .ToArray();
                 foreach (var fromVisit in fromVisits)
                 {
