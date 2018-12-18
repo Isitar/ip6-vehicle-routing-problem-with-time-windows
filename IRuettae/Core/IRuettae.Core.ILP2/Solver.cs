@@ -110,6 +110,8 @@ namespace IRuettae.Core.ILP2
 
                 // visit visited once
                 VisitVisitedOnce(model, numberOfRoutes, v);
+                // breaks
+                BreakHandling(model, numberOfRoutes, v);
 
                 // number of ways = number of visits + home
                 NumberOfWaysMatchForSanta(model, numberOfRoutes, v, w);
@@ -164,7 +166,7 @@ namespace IRuettae.Core.ILP2
                 }
 
                 model.AddConstr(totalWayTime >= visitDurations.Sum(), null);
-                
+
 
                 model.SetObjective(
                     +(120d / 3600d) * unavailableSum
@@ -454,7 +456,7 @@ namespace IRuettae.Core.ILP2
                 Console.WriteLine($"Santa {s} uses way");
                 var route = new Route();
                 var wpList = new List<Waypoint>();
-                route.SantaId = numberOfRoutes % input.Days.Length;
+                route.SantaId = s % input.Days.Length;
                 var lastId = 0;
                 var day = s / input.Santas.Length;
 
@@ -650,6 +652,7 @@ namespace IRuettae.Core.ILP2
         {
             for (int i = 1; i < distances.GetLength(0); i++)
             {
+                if (input.Visits[i-1].IsBreak) { continue; }
                 var wki = new GRBLinExpr(0);
                 var wik = new GRBLinExpr(0);
 
@@ -691,6 +694,11 @@ namespace IRuettae.Core.ILP2
         {
             for (int i = 1; i < visitDurations.Length; i++)
             {
+                if (input.Visits[i - 1].IsBreak)
+                {
+                    continue;
+                }
+
                 var sum = new GRBLinExpr(0);
                 for (int s = 0; s < numberOfRoutes; s++)
                 {
@@ -698,6 +706,33 @@ namespace IRuettae.Core.ILP2
                 }
 
                 model.AddConstr(sum == 1, $"visit {i} visited once");
+
+            }
+        }
+
+        private void BreakHandling(GRBModel model, int numberOfRoutes, GRBVar[][] v)
+        {
+            for (int i = 1; i < visitDurations.Length; i++)
+            {
+                if (!input.Visits[i - 1].IsBreak)
+                {
+                    continue;
+                }
+
+                var visit = input.Visits[i - 1];
+                var breakRoutes = new List<int>();
+                for (var day = 0; day < input.Days.Length; day++)
+                {
+                    var s = visit.SantaId + day * input.Santas.Length;
+                    model.AddGenConstrOr(v[s][i], v[s].Take(i-1).Skip(1).ToArray(), null); // assignment if used
+                    //model.AddConstr(v[s][i] == 1, "SantaTakesBreakIfUsed"); // fix assignment
+                    breakRoutes.Add(s);
+                }
+
+                foreach (var nonBreakRoute in Enumerable.Range(0, numberOfRoutes).Except(breakRoutes))
+                {
+                    model.AddConstr(v[nonBreakRoute][i] == 0, null);
+                }
             }
         }
 
