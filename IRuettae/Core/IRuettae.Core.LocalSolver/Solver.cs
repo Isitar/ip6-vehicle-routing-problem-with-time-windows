@@ -399,7 +399,11 @@ namespace IRuettae.Core.LocalSolver
                 {
                     consoleProgress?.Invoke(this, $"Santa {i} visit sequence: {string.Join(",", visitSequences[i].GetCollectionValue().ToArray())} ");
                     consoleProgress?.Invoke(this, $"Santa {i} visit starting time: {string.Join(",", santaVisitStartingTimes[i].GetArrayValue())} ");
-                    consoleProgress?.Invoke(this, $"Santa {i} wait between visits: {string.Join(",", santaWaitBetweenVisit[i].Select(x => x.GetIntValue().ToString()))} ");
+                    if (UseWaitBetweenVisits)
+                    {
+                        consoleProgress?.Invoke(this,
+                            $"Santa {i} wait between visits: {string.Join(",", santaWaitBetweenVisit[i].Select(x => x.GetIntValue().ToString()))} ");
+                    }
 
                 }
 
