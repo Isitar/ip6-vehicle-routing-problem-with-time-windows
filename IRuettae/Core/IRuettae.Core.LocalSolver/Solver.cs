@@ -16,7 +16,7 @@ namespace IRuettae.Core.LocalSolver
     /// </summary>
     public class Solver : ISolver
     {
-        const bool UseWaitBetweenVisits = true;
+        private const bool UseWaitBetweenVisits = true;
         private const bool UseFakeSantas = false;
         private readonly OptimizationInput input;
 
@@ -164,7 +164,7 @@ namespace IRuettae.Core.LocalSolver
 
                         // break
                         var breaks = visits.Where((v => v.IsBreak && v.SantaId == santa)).ToList();
-                        if (breaks.Count > 0)
+                        if (breaks.Any())
                         {
                             int breakIndex = day == 0 ? visits.IndexOf(breaks.First()) : breakDictionary[(day, santa)];
                             model.Constraint(model.If(santaUsed[s], model.Contains(visitSequences[s], breakIndex), model.Contains(visitSequences[numberOfSantas], breakIndex)));
@@ -257,7 +257,7 @@ namespace IRuettae.Core.LocalSolver
 
 
                         // sum all up
-                        santaRouteTime[s] = santaWalkingTime[s] + santaVisitDurations[s] + (UseWaitBetweenVisits ? model.Sum(santaWaitBetweenVisit[s]) : model.Int(0, 0));
+                        santaRouteTime[s] = santaWalkingTime[s] + santaVisitDurations[s]+ (UseWaitBetweenVisits ? model.Sum(santaWaitBetweenVisit[s]) : model.Int(0, 0));
 
                         // constraint
                         model.Constraint(model.If(santaUsed[s], visitStartingTime[c - 1] + visitDurationArray[sequence[c - 1]] + distanceToHomeArray[sequence[c - 1]], 0) <= input.Days[currDayIndex].to + santaOvertime[s]);
@@ -289,7 +289,7 @@ namespace IRuettae.Core.LocalSolver
                     (-20d / hour) * model.Sum(santaDesiredDuration) +
                     (40d / hour) * model.Sum(santaRouteTime) +
                     (30d / hour) * maxRoute;
-                var minWayTime = input.RouteCosts.Cast<int>().Where(i => i > 0).Min();
+                //var minWayTime = input.RouteCosts.Cast<int>().Where(i => i > 0).Min();
 
 
 
@@ -316,18 +316,12 @@ namespace IRuettae.Core.LocalSolver
                         if (input.Visits.Any(v => v.IsBreak && v.SantaId == santa))
                         {
                             // add break
-                            if (day == 0)
-                            {
-                                santaVisits.Add(input.Visits.First(v => v.IsBreak && v.SantaId == santa).Id);
-                            }
-                            else
-                            {
-                                santaVisits.Add(breakDictionary[(day, santa)]);
-                            }
+                            santaVisits.Add(day == 0
+                                ? input.Visits.First(v => v.IsBreak && v.SantaId == santa).Id
+                                : breakDictionary[(day, santa)]);
                         }
                         for (int i = 0; i < numberOfvisitsPerSanta; i++)
                         {
-                            var visit = input.Visits.First(v => v.Id == visitIndex);
                             santaVisits.Add(visitIndex);
                             visitIndex++;
                         }
@@ -405,6 +399,7 @@ namespace IRuettae.Core.LocalSolver
                 {
                     consoleProgress?.Invoke(this, $"Santa {i} visit sequence: {string.Join(",", visitSequences[i].GetCollectionValue().ToArray())} ");
                     consoleProgress?.Invoke(this, $"Santa {i} visit starting time: {string.Join(",", santaVisitStartingTimes[i].GetArrayValue())} ");
+                    consoleProgress?.Invoke(this, $"Santa {i} wait between visits: {string.Join(",", santaWaitBetweenVisit[i].Select(x => x.GetIntValue().ToString()))} ");
 
                 }
 
