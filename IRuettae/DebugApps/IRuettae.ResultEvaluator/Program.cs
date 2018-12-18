@@ -92,12 +92,12 @@ namespace IRuettae.ResultEvaluator
             foreach (var solver in resultDict.Keys.OrderBy(k => k))
             {
                 sb.AppendLine(solver);
-                sb.AppendLine("DataSet;\tAvg;\tMin;\tMax;\t25-percentile;");
+                sb.AppendLine("DataSet;Avg;Min;Max;25-percentile;");
                 foreach (var dataSet in resultDict[solver].Keys.OrderBy(int.Parse))
                 {
                     var resultList = resultDict[solver][dataSet];
                     //Console.WriteLine($"{dataSet}: [{string.Join(",", resultList)}], avg: {resultList.Average()}, min: {resultList.Min()}, max: {resultList.Max()}, 25%percentile: {resultList.OrderBy(r => -r).Take((int)Math.Ceiling(resultList.Count * 0.25)).Average()}");
-                    sb.AppendLine($"{dataSet};\t{resultList.Average():F1};\t{resultList.Min():F1};\t{resultList.Max():F1};\t{resultList.OrderBy(r => -r).Take((int)Math.Ceiling(resultList.Count * 0.25)).Average():F1}");
+                    sb.AppendLine($"{dataSet};{resultList.Average():F1};{resultList.Min():F1};{resultList.Max():F1};{resultList.OrderBy(r => -r).Take((int)Math.Ceiling(resultList.Count * 0.25)).Average():F1}");
                 }
 
                 sb.AppendLine(new string('-', 40));
