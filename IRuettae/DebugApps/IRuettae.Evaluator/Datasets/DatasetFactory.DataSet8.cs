@@ -172,7 +172,7 @@ namespace IRuettae.Evaluator
                     new Visit{Duration=1500, Id=15,WayCostFromHome=1145, WayCostToHome=1145,Unavailable =new [] {(86400,90000)},Desired =new [] {(90000,93600)}},
                     new Visit{Duration=1800, Id=16,WayCostFromHome=1255, WayCostToHome=1255,Unavailable =new (int from, int to)[0],Desired =new [] {(86400,102600)}},
                     new Visit{Duration=1500, Id=17,WayCostFromHome=1290, WayCostToHome=1290,Unavailable =new [] {(86400,10800)},Desired =new [] {(0,3600)}},
-                    new Visit{Duration=900, Id=18,WayCostFromHome=52, WayCostToHome=52,Unavailable =new [] {(86400,97200)},Desired =new [] {(3600,16200)}},
+                    new Visit{Duration=1800, Id=18,WayCostFromHome=52, WayCostToHome=52,Unavailable =new [] {(86400,97200)},Desired =new [] {(3600,16200)}},
                     new Visit{Duration=1500, Id=19,WayCostFromHome=170, WayCostToHome=170,Unavailable =new [] {(86400,97200)},Desired =new [] {(3600,16200)}},
                     new Visit{Duration=1800, Id=20,WayCostFromHome=266, WayCostToHome=266,Unavailable =new [] {(86400,90000)},Desired =new [] {(3600,16200)}},
                     new Visit{Duration=1500, Id=21,WayCostFromHome=417, WayCostToHome=417,Unavailable =new (int from, int to)[0],Desired =new [] {(3600,16200)}},
@@ -185,8 +185,8 @@ namespace IRuettae.Evaluator
                     new Visit{Duration=1800, Id=28,WayCostFromHome=613, WayCostToHome=613,Unavailable =new [] {(86400,97200)},Desired =new [] {(5400,16200)}},
                     new Visit{Duration=1500, Id=29,WayCostFromHome=260, WayCostToHome=260,Unavailable =new [] {(86400,97200)},Desired =new [] {(3600,16200)}},
                     new Visit{Duration=2100, Id=30,WayCostFromHome=555, WayCostToHome=555,Unavailable =new [] {(86400,97200)},Desired =new [] {(3600,16200)}},
-                    new Visit{Duration=25, Id=31,WayCostFromHome=215, WayCostToHome=215,Unavailable =new (int from, int to)[0],Desired =new (int from, int to)[0]},
-                    new Visit{Duration=30, Id=32,WayCostFromHome=365, WayCostToHome=365,Unavailable =new (int from, int to)[0],Desired =new [] {(90000,100800)}, IsBreak = true, SantaId = 0}, // affolter
+                    new Visit{Duration=1500, Id=31,WayCostFromHome=215, WayCostToHome=215,Unavailable =new (int from, int to)[0],Desired =new (int from, int to)[0]},
+                    new Visit{Duration=1800, Id=32,WayCostFromHome=365, WayCostToHome=365,Unavailable =new (int from, int to)[0],Desired =new [] {(90000,100800)}, IsBreak = true, SantaId = 0}, // affolter
                     //new Visit{Duration=900, Id=33,WayCostFromHome=1125, WayCostToHome=1125,Unavailable =new [] {(86400,97200)},Desired =new [] {(7200,10800)}, IsBreak = true, SantaId = 1}, // zender
                 }
             };
