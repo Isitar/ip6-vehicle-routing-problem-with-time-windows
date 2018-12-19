@@ -184,8 +184,6 @@ namespace IRuettae.Core.ILP2
                 model.Parameters.TimeLimit = 30;//timelimitMiliseconds / 1000;
 
 
-                v[0][0].Start = 1;
-
                 model.Optimize();
                 try
                 {
