@@ -74,62 +74,49 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             var minNumberOfPositions = (int)Math.Max(1, count * MinumumNumberOfPositionsFactor);
             var maxNumberOfPositions = (int)Math.Max(1, count * MaximumNumberOfPositionsFactor);
             var numberOfPositions = random.Next(minNumberOfPositions, maxNumberOfPositions);
+
+            // select alleles
             var selectedAlleles = new HashSet<int>();
             for (int i = 0; i < numberOfPositions; i++)
             {
-                var selectedAllele = parent2[random.Next(0, count)];
-                if (selectedAlleles.Contains(selectedAllele))
+                if (!selectedAlleles.Add(parent2[random.Next(0, count)]))
                 {
                     // already selected, try again
                     i--;
                 }
-                else
-                {
-                    selectedAlleles.Add(selectedAllele);
-                }
             }
 
-
             // copy alleles from parent1 which are not selected
-            var child = new List<int?>(count);
+            var emptyIndices = new List<int>(count - numberOfPositions);
+            var child = new int[count];
             for (int i = 0; i < count; i++)
             {
                 var allele = parent1[i];
                 if (!selectedAlleles.Contains(allele))
                 {
-                    child.Add(allele);
+                    child[i] = allele;
                 }
                 else
                 {
-                    child.Add(null);
+                    emptyIndices.Add(i);
                 }
             }
 
             // add the missing alleles in the order they appear in parent2
             var nextPositionParent2 = 0;
-            for (int i = 0; i < count; i++)
+            var missingAlleles = parent2.Intersect(selectedAlleles).ToArray();
+            foreach (var i in emptyIndices)
             {
-                if (!child[i].HasValue)
-                {
-                    // find next allele
-                    for (int j = nextPositionParent2; j < count; j++)
-                    {
-                        var allele = parent2[j];
-                        if (!child.Contains(allele))
-                        {
-                            child[i] = allele;
-                            nextPositionParent2 = j + 1;
-                            break;
-                        }
-                    }
-                }
+                // find next allele
+                child[i] = missingAlleles[nextPositionParent2];
+                nextPositionParent2++;
             }
 
-            return new Genotype(child.Select(e => e.Value));
+            return new Genotype(child);
         }
 
         /// <summary>
-        /// edge recombination operator (ERO)
+        /// edge recombination operator (ER)
         /// Precondition: parent1 and parent2 contain the same alleles.
         /// Postcondition: child contains the same alleles as parent1.
         /// </summary>
