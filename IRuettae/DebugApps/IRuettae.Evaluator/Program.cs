@@ -136,14 +136,24 @@ namespace IRuettae.Evaluator
                     AddUnavailableBetweenDays(input);
 
                     OptimizationResult result = null;
-                    using (var tw = new StreamWriter(savepath + "-log.txt", true))
+#if DEBUG
+                    using (var sw = new StreamWriter(savepath + "-log.txt", true))
                     {
                         result = solver.Solve(timelimit, (sender, report) => Console.WriteLine($"Progress: {report}"),
                             (sender, s) =>
                             {
-                                Console.WriteLine($"Info ({DateTime.Now:HH-mm-ss}): {s}"); tw.WriteLine(s);
+                                Console.WriteLine($"Info ({DateTime.Now:HH-mm-ss}): {s}");
+                                sw.WriteLine(s);
                             });
                     }
+#else
+                    result = solver.Solve(timelimit, (sender, report) => Console.WriteLine($"Progress: {report}"),
+                        (sender, s) =>
+                        {
+                            Console.WriteLine($"Info ({DateTime.Now:HH-mm-ss}): {s}");
+                        });
+#endif
+
                     BigHr();
 
                     File.WriteAllText(savepath + ".json", JsonConvert.SerializeObject(result));
