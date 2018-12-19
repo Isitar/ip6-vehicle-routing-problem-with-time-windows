@@ -18,14 +18,12 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Helpers
         /// <param name="random"></param>
         public static void Shuffle<T>(this IList<T> list, Random random)
         {
-            var n = list.Count;
-            while (n > 1)
+            for (var i = list.Count - 1; i > 0; i--)
             {
-                n--;
-                var k = random.Next(0, n + 1);
+                var k = random.Next(0, i + 1);
                 T value = list[k];
-                list[k] = list[n];
-                list[n] = value;
+                list[k] = list[i];
+                list[i] = value;
             }
         }
     }
