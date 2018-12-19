@@ -15,10 +15,6 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
         public double MutationProbability { get; set; } = 0.1;
         public double OrderBasedCrossoverProbability { get; set; } = 0.5;
 
-        // Todo: remove
-        static int callCounter = 0;
-        const int runs = 3;
-
         /// <summary>
         ///Create default regarding the input
         /// </summary>

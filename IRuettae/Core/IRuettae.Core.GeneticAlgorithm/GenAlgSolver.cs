@@ -79,19 +79,15 @@ namespace IRuettae.Core.GeneticAlgorithm
 
                 // log current solution
                 var currentBestCost = GetMinCost(population);
-                //Debug.WriteLine($"Current best cost is {currentBestCost} (generation={generation})");
-                //Debug.WriteLine($"Current stdev is {StdDev(population.Select(i => (double)i.Cost))}");
                 if (currentBestCost < bestCost)
                 {
                     bestCost = currentBestCost;
                     Log($"Found better solution in generation {generation} with cost={bestCost}");
-                    //Debug.WriteLine($"Found better solution in generation {generation} with cost={bestCost}");
                 }
             }
 
             Log($"Finished at generation {generation} with cost={bestCost}");
             Log($"Current stdev is {StdDev(population.Select(i => (double)i.Cost))}");
-            //Debug.WriteLine($"Finished at generation {generation} with cost={bestCost}");
             Log(new ProgressReport(0.99));
 
             // build result
@@ -134,20 +130,14 @@ namespace IRuettae.Core.GeneticAlgorithm
             return population.Select(i => i.Cost).Min();
         }
 
-        // Todo: remove
         public static double StdDev(IEnumerable<double> values)
         {
-            double ret = 0;
-            int count = values.Count();
+            double ret = 0.0;
+            var count = values.Count();
             if (count > 1)
             {
-                //Compute the Average
-                double avg = values.Average();
-
-                //Perform the Sum of (value-avg)^2
-                double sum = values.Sum(d => (d - avg) * (d - avg));
-
-                //Put it all together
+                var avg = values.Average();
+                var sum = values.Sum(d => (d - avg) * (d - avg));
                 ret = Math.Sqrt(sum / count);
             }
             return ret;
