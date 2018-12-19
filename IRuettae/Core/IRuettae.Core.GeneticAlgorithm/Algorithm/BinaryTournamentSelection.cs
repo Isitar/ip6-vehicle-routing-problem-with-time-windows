@@ -35,7 +35,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         public List<(Genotype, Genotype)> Select(List<Genotype> population, int numberOfPairs)
         {
             var ret = new List<(Genotype, Genotype)>(numberOfPairs);
-            while (numberOfPairs-- > 0)
+            for (; numberOfPairs > 0; numberOfPairs--)
             {
                 var parent1 = GetParent(population);
                 var parent2 = GetParent(population);
