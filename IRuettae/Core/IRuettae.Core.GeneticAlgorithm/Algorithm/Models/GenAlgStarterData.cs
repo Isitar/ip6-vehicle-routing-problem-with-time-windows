@@ -33,30 +33,10 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
             };
 
             // Population size
-            if (input.Visits.Length > 50)
+            if (input.Visits.Length >= 50)
             {
                 starterData.PopulationSize = 2;
             }
-
-            #region debug
-#if true
-            // Debug Population size
-            var populationSizes = new int[]
-            {
-                2,5,10
-            };
-            starterData.PopulationSize = populationSizes[(callCounter++ / runs) % populationSizes.Length];
-#endif
-
-#if false
-            // Crossover
-            var oCProbability = new double[]
-            {
-                1, //0, 1
-            };
-            starterData.OrderBasedCrossoverProbability = oCProbability[(callCounter++ / runs) % oCProbability.Length];
-#endif
-            #endregion debug
 
             return starterData;
         }
