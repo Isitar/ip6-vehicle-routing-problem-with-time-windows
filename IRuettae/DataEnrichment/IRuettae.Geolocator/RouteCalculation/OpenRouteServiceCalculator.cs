@@ -11,6 +11,28 @@ namespace IRuettae.GeoCalculations.RouteCalculation
 {
     public class OpenRouteServiceCalculator : IRouteCalculator
     {
+        public (double distance, double duration) CalculateWalkingDistance((double lat, double lng) @from, (double lat, double lng) to)
+        {
+            var wc = new WebClient { Encoding = Encoding.UTF8 };
+
+            var uri = $"https://api.openrouteservice.org/directions?api_key={apiKey}" +
+                      $"&coordinates={@from.lng},{@from.lat}%7C{to.lng},{to.lat}" +
+                      $"&profile=foot-walking" +
+                      $"&preference=fastest" +
+                      $"&format=json" +
+                      $"&units=m" +
+                      $"&language=de" +
+                      $"&geometry=false" +
+                      $"&geometry_simplify=false" +
+                      $"&instructions=false" +
+                      $"&instructions_format=text" +
+                      $"&maneuvers=false";
+            var retJson = wc.DownloadString(uri);
+            dynamic retData = JObject.Parse(retJson);
+            var summary = retData.routes[0].summary;
+            return (summary.distance, summary.duration);
+        }
+
         public (double distance, double duration) CalculateWalkingDistance(string @from, string to)
         {
             throw new NotImplementedException();
