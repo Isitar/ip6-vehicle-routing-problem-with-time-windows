@@ -12,6 +12,12 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         private const double probabilityInversionMutation = 1.0 - probabilityPositionMutation;
         private readonly Random random;
 
+        /// <summary>
+        /// Factor to be multiplied with population size
+        /// to get the stdev for the mutation size
+        /// </summary>
+        private const double MutationSizeStdevFactor = 1d / 4d;
+
         public MutationOperation(Random random)
         {
             this.random = random;
@@ -51,7 +57,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <param name="individual">not null and size > 0</param>
         private void PositionMutate(Genotype individual)
         {
-            var mutationSize = GetMutationSize(1, individual.Count / 4d);
+            var mutationSize = GetMutationSize(1, individual.Count * MutationSizeStdevFactor);
             while (mutationSize-- > 0)
             {
                 var position1 = random.Next(0, individual.Count);
@@ -71,7 +77,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         private void InversionMutate(Genotype individual)
         {
             var count = individual.Count;
-            var inversionSize = Math.Min(count, GetMutationSize(2, count / 4d));
+            var inversionSize = Math.Min(count, GetMutationSize(2, count * MutationSizeStdevFactor));
             var inversionStart = random.Next(0, count - inversionSize + 1);
 
             var mutationSubset = individual.GetRange(inversionStart, inversionSize);
