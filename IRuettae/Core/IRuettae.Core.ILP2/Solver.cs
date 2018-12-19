@@ -191,28 +191,9 @@ namespace IRuettae.Core.ILP2
                     - (20d / 3600d) * desiredSum
                     + (30d / 3600d) * longestRoute
                     , GRB.MINIMIZE);
-                model.Parameters.TimeLimit = 150; // timelimitMiliseconds / 1000;
-
+                model.Parameters.TimeLimit = timelimitMiliseconds / 1000;
 
                 model.Optimize();
-                //model.FeasRelax(GRB.MINIMIZE, false, true, false);
-                //model.Optimize();
-                //model.ComputeIIS();
-                //foreach (var constr in model.GetConstrs())
-                //{
-                //    if (constr.Get(GRB.IntAttr.IISConstr) > 0)
-                //    {
-                //        Console.WriteLine(constr.Get(GRB.StringAttr.ConstrName));
-                //    }
-                //}
-
-                //foreach (var varia in model.GetVars())
-                //{
-                //    if (varia.Get(GRB.IntAttr.IISLB) > 0 || varia.Get(GRB.IntAttr.IISUB) > 0)
-                //    { 
-                //        Console.WriteLine($"{varia.Get(GRB.StringAttr.VarName)}: lb: {varia.IISLB} ub: {varia.IISUB}");
-                //    }
-                //}
 
                 try
                 {
