@@ -16,6 +16,17 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         private Random random;
 
         /// <summary>
+        /// Factor to be multiplied with population size
+        /// to get minimum number of positions to retain in OrderBasedCrossover
+        /// </summary>
+        private const double MinumumNumberOfPositionsFactor = 1d / 4d;
+        /// <summary>
+        /// Factor to be multiplied with population size
+        /// to get maximum number of positions to retain in OrderBasedCrossover
+        /// </summary>
+        private const double MaximumNumberOfPositionsFactor = 3d / 4d;
+
+        /// <summary>
         ///
         /// </summary>
         /// <param name="random">not null</param>
@@ -59,7 +70,10 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             {
                 return parent1;
             }
-            var numberOfPositions = random.Next(Math.Max(1, count / 4), Math.Max(1, count * 3 / 4));
+
+            var minNumberOfPositions = (int)Math.Max(1, count * MinumumNumberOfPositionsFactor);
+            var maxNumberOfPositions = (int)Math.Max(1, count * MaximumNumberOfPositionsFactor);
+            var numberOfPositions = random.Next(minNumberOfPositions, maxNumberOfPositions);
             var selectedAlleles = new HashSet<int>();
             for (int i = 0; i < numberOfPositions; i++)
             {
