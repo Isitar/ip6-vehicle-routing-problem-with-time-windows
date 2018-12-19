@@ -10,7 +10,7 @@ namespace IRuettae.Preprocessing.Tests.CSVImport
     [TestClass]
     public class ImportTest
     {
-        private const string testfile =
+        private const string Testfile =
 @"ID;Street;Zip;Children;DesiredFrom;DesiredTo;UnavailableFrom;UnavailableTo
 ;;;;;;;
 2017001;Isenbühlweg 16;5524;5;09.12.2017 18:00;09.12.2017 19:30;08.12.2017 17:00;08.12.2017 20:00
@@ -49,7 +49,7 @@ namespace IRuettae.Preprocessing.Tests.CSVImport
                     }
                 ),
             };
-            var imported = Import.StartImport(testfile).OrderBy(m => m.Id).ToList();
+            var imported = Import.StartImport(Testfile).OrderBy(m => m.Id).ToList();
 
             //CollectionAssert.AreEqual(expected,imported);
             Assert.IsNotNull(imported.FirstOrDefault(i => i.Equals(expected[0])));

@@ -8,8 +8,8 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 {
     public class MutationOperation
     {
-        private const double probabilityPositionMutation = 0.5;
-        private const double probabilityInversionMutation = 1.0 - probabilityPositionMutation;
+        private const double ProbabilityPositionMutation = 0.5;
+        private const double ProbabilityInversionMutation = 1.0 - ProbabilityPositionMutation;
         private readonly Random random;
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 
                 var individual = population[i];
                 var p = random.NextDouble();
-                if (p < probabilityPositionMutation)
+                if (p < ProbabilityPositionMutation)
                 {
                     PositionMutate(individual);
                 }

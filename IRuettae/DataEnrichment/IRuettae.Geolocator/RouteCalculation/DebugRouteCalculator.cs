@@ -11,12 +11,12 @@ namespace IRuettae.GeoCalculations.RouteCalculation
         /// <summary>
         /// Maximal distance between from and to in meters
         /// </summary>
-        private const double maxDistance = 2000;
+        private const double MaxDistance = 2000;
 
         /// <summary>
         /// Walking speed of a pedestrian in meter per second
         /// </summary>
-        private const double walkingSpeed = 1.1;
+        private const double WalkingSpeed = 1.1;
 
         /// <summary>
         /// Always the same seed for reproducability
@@ -25,8 +25,8 @@ namespace IRuettae.GeoCalculations.RouteCalculation
 
         public (double distance, double duration) CalculateWalkingDistance(string from, string to)
         {
-            var distance = random.NextDouble() * maxDistance;
-            return (distance, distance / walkingSpeed);
+            var distance = random.NextDouble() * MaxDistance;
+            return (distance, distance / WalkingSpeed);
         }
 
         public (double distance, double duration) CalculateWalkingDistance(double fromLat, double fromLong, double toLat, double toLong)
