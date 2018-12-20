@@ -172,11 +172,15 @@ namespace IRuettae.Core.LocalSolver.Tests
         {
             var (input, _) = DatasetFactory.LocalSolverBreakDataSet();
             var solver = new Solver(input);
-            var output = solver.Solve(3000L, null, null);
+            var output = solver.Solve(10000L, null, null);
             Assert.IsNotNull(output);
             Assert.IsNotNull(output.Routes);
             var santa0Break = input.Visits.First(v => v.IsBreak && v.SantaId == 0);
-            Assert.IsTrue(output.Routes.Where(r => r.SantaId == 0).All(r => r.Waypoints.Length == 0 || r.Waypoints.Select(wp => wp.VisitId).Contains(santa0Break.Id)));
+            var santa1Break = input.Visits.First(v => v.IsBreak && v.SantaId == 1);
+            var santa2Break = input.Visits.First(v => v.IsBreak && v.SantaId == 2);
+            Assert.IsTrue(output.Routes.Where(r => r.SantaId == 0).All(r => r.Waypoints == null || r.Waypoints.Length == 0 || r.Waypoints.Select(wp => wp.VisitId).Contains(santa0Break.Id)));
+            Assert.IsTrue(output.Routes.Where(r => r.SantaId == 1).All(r => r.Waypoints == null || r.Waypoints.Length == 0 || r.Waypoints.Select(wp => wp.VisitId).Contains(santa1Break.Id)));
+            Assert.IsTrue(output.Routes.Where(r => r.SantaId == 2).All(r => r.Waypoints == null || r.Waypoints.Length == 0 || r.Waypoints.Select(wp => wp.VisitId).Contains(santa2Break.Id)));
         }
     }
 }
