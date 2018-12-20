@@ -14,18 +14,18 @@ namespace IRuettae.Core.LocalSolver.Tests
     [TestClass()]
     public class SolverTests
     {
-        private static object mutex = new object();
+        private static readonly object Mutex = new object();
 
         [TestInitialize]
         public void TestStart()
         {
-            Monitor.Enter(mutex);
+            Monitor.Enter(Mutex);
         }
 
         [TestCleanup]
         public void TestCleanup()
         {
-            Monitor.Exit(mutex);
+            Monitor.Exit(Mutex);
         }
 
         [TestMethod]
