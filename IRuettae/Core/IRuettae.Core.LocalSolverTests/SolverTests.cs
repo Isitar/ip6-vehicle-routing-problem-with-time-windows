@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using IRuettae.Core.LocalSolverTests;
 using IRuettae.Core.Models;
@@ -13,6 +14,20 @@ namespace IRuettae.Core.LocalSolver.Tests
     [TestClass()]
     public class SolverTests
     {
+        private static object mutex = new object();
+
+        [TestInitialize]
+        public void TestStart()
+        {
+            Monitor.Enter(mutex);
+        }
+
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            Monitor.Exit(mutex);
+        }
+
         [TestMethod]
         public void TestRouteCostsCorrect()
         {
