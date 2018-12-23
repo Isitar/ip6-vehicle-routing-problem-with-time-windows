@@ -65,6 +65,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core.GeneticAlgori
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core.GeneticAlgorithm.Tests", "Core\IRuettae.Core.GeneticAlgorithm.Tests\IRuettae.Core.GeneticAlgorithm.Tests.csproj", "{51555E8A-6A06-4216-AB08-57F5E8663AA1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.GeneticAlgorithmTuning", "DebugApps\IRuettae.GeneticAlgorithmTuning\IRuettae.GeneticAlgorithmTuning.csproj", "{B36DD6A1-4017-4252-B9CF-DD69597B6CE8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug With RealGoogle|Any CPU = Debug With RealGoogle|Any CPU
@@ -216,6 +218,12 @@ Global
 		{51555E8A-6A06-4216-AB08-57F5E8663AA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51555E8A-6A06-4216-AB08-57F5E8663AA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51555E8A-6A06-4216-AB08-57F5E8663AA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B36DD6A1-4017-4252-B9CF-DD69597B6CE8}.Debug With RealGoogle|Any CPU.ActiveCfg = Debug|Any CPU
+		{B36DD6A1-4017-4252-B9CF-DD69597B6CE8}.Debug With RealGoogle|Any CPU.Build.0 = Debug|Any CPU
+		{B36DD6A1-4017-4252-B9CF-DD69597B6CE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B36DD6A1-4017-4252-B9CF-DD69597B6CE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B36DD6A1-4017-4252-B9CF-DD69597B6CE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B36DD6A1-4017-4252-B9CF-DD69597B6CE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -245,6 +253,7 @@ Global
 		{BF686FD0-CD50-4F60-AD88-02591D9F3528} = {F60824C4-90B4-4C99-BF8C-A185BCA036B0}
 		{48054F06-CCF2-4F00-BF6A-70F44C86BEF5} = {4AFFAE11-44BE-4405-B3F8-A60826387129}
 		{51555E8A-6A06-4216-AB08-57F5E8663AA1} = {4AFFAE11-44BE-4405-B3F8-A60826387129}
+		{B36DD6A1-4017-4252-B9CF-DD69597B6CE8} = {F60824C4-90B4-4C99-BF8C-A185BCA036B0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46C1937C-3FE9-4F20-B1E3-E40616B3A48D}
