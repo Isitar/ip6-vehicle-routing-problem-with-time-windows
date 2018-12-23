@@ -136,7 +136,7 @@ namespace IRuettae.Evaluator
                     AddUnavailableBetweenDays(input);
 
                     OptimizationResult result = null;
-#if true
+#if DEBUG
                     using (var sw = new StreamWriter(savepath + "-log.txt", true))
                     {
                         result = solver.Solve(timelimit, (sender, report) => Console.WriteLine($"Progress: {report}"),
