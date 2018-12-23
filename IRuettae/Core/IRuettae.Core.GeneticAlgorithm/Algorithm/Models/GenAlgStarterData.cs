@@ -28,12 +28,6 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
                 MaxNumberOfSantas = input.Santas.Length,
             };
 
-            // Population size
-            if (input.Visits.Length >= 50)
-            {
-                starterData.PopulationSize = 2;
-            }
-
             return starterData;
         }
 
