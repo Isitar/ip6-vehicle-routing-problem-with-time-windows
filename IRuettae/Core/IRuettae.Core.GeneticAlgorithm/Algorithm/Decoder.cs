@@ -99,7 +99,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
                 if (waypoints.Count == 1)
                 {
                     // first real visit
-                    startTime += input.Visits.Where(v => v.Id == visitId).First().WayCostFromHome;
+                    startTime += input.Visits.First(v => v.Id == visitId).WayCostFromHome;
                 }
                 else
                 {
