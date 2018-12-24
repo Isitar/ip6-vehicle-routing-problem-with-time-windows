@@ -111,7 +111,7 @@ namespace IRuettae.Core.GeneticAlgorithm
         /// <summary>
         /// convenience
         /// </summary>
-        /// <param name="report"></param>
+        /// <param name="msg"></param>
         public void Log(string msg)
         {
             consoleProgress?.Invoke(this, msg);
