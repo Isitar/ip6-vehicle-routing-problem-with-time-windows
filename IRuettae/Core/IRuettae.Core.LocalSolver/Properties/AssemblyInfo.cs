@@ -1,14 +1,15 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("IRuettae.Core.GeneticAlgorithm")]
+[assembly: AssemblyTitle("IRuettae.Core.LocalSolver")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("IRuettae.Core.GeneticAlgorithm")]
+[assembly: AssemblyProduct("IRuettae.Core.LocalSolver")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("48054f06-ccf2-4f00-bf6a-70f44c86bef5")]
+[assembly: Guid("383487d6-e248-4d1b-a1d6-be3bfbc54abf")]
 
 // Version information for an assembly consists of the following four values:
 //

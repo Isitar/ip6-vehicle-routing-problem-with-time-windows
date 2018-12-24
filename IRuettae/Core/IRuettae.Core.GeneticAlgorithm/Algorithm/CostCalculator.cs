@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
 using IRuettae.Core.Models;
 
@@ -13,8 +9,8 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
     /// </summary>
     public class CostCalculator
     {
-        private OptimizationResult result;
-        private Decoder decoder;
+        private readonly OptimizationResult result;
+        private readonly Decoder decoder;
 
         public CostCalculator(Decoder decoder, OptimizationResult temporaryResult)
         {
@@ -22,7 +18,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             this.result = temporaryResult;
         }
 
-        public void RecalculatateCost(IEnumerable<Genotype> population)
+        public void RecalculateCost(IEnumerable<Genotype> population)
         {
             foreach (var individual in population)
             {
@@ -31,7 +27,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             }
         }
 
-        public void RecalculatateCost(Genotype individual)
+        public void RecalculateCost(Genotype individual)
         {
             result.Routes = decoder.Decode(individual);
             individual.Cost = result.Cost();

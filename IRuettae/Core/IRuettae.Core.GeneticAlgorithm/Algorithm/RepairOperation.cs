@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
 using IRuettae.Core.Models;
 
@@ -34,7 +32,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             }
 
             this.input = input;
-            needRepair = input.Visits.Where(v => v.IsBreak).Count() > 0;
+            needRepair = input.Visits.Any(v => v.IsBreak);
             breakMapping = new Dictionary<int, int[]>();
             if (needRepair)
             {
@@ -48,18 +46,18 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <param name="alleleToVisitIdMapping">not null</param>
         private void CreateBreakMapping(Dictionary<int, int> alleleToVisitIdMapping)
         {
-            foreach (var santa in input.Santas.Where(s => input.Visits.Any(v => v.SantaId == s.Id)))
+            foreach (var santa in input.Santas.Where(s => input.Visits.Any(v => v.IsBreak && v.SantaId == s.Id)))
             {
-                var breakId = input.Visits.Where(v => v.IsBreak && v.SantaId == santa.Id).First().Id;
+                var breakId = input.Visits.First(v => v.IsBreak && v.SantaId == santa.Id).Id;
                 var breaks = alleleToVisitIdMapping.Where(e => e.Value == breakId).Select(e => e.Key).ToArray();
                 breakMapping.Add(santa.Id, breaks);
             }
         }
 
         /// <summary>
-        /// Repairs the given genotype in place
+        /// Repairs the given population in place
         /// </summary>
-        /// <param name="genotype"></param>
+        /// <param name="population"></param>
         public void Repair(List<Genotype> population)
         {
             if (!needRepair)
@@ -165,7 +163,8 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <summary>
         /// Removes the first occurence of the allel
         /// </summary>
-        /// <param name="genotype"></param>
+        /// <param name="genotypes"></param>
+        /// <param name="allele"></param>
         /// <returns>true if it was removed</returns>
         private bool RemoveAllele(List<Genotype>[] genotypes, int allele)
         {

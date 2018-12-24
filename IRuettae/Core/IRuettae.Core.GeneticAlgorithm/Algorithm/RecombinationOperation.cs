@@ -1,25 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using IRuettae.Core.GeneticAlgorithm.Algorithm.Helpers;
 using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
 
 namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 {
     public class RecombinationOperation
     {
-        private double orderBasedCrossoverProbability = 0.5;
-        //private double probabilityEdgeRecombinationCrossover = 1.0 - probabilityOrderBasedCrossover;
+        private readonly double orderBasedCrossoverProbability;
         private Random random;
 
         /// <summary>
         /// Factor to be multiplied with population size
         /// to get minimum number of positions to retain in OrderBasedCrossover
         /// </summary>
-        private const double MinumumNumberOfPositionsFactor = 1d / 4d;
+        private const double MinimumNumberOfPositionsFactor = 1d / 4d;
         /// <summary>
         /// Factor to be multiplied with population size
         /// to get maximum number of positions to retain in OrderBasedCrossover
@@ -30,6 +25,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         ///
         /// </summary>
         /// <param name="random">not null</param>
+        /// <param name="orderBasedCrossoverProbability">between 0 and 1</param>
         public RecombinationOperation(Random random, double orderBasedCrossoverProbability)
         {
             this.random = random;
@@ -71,15 +67,15 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
                 return parent1;
             }
 
-            var minNumberOfPositions = (int)Math.Max(1, count * MinumumNumberOfPositionsFactor);
+            var minNumberOfPositions = (int)Math.Max(1, count * MinimumNumberOfPositionsFactor);
             var maxNumberOfPositions = (int)Math.Max(1, count * MaximumNumberOfPositionsFactor);
             var numberOfPositions = random.Next(minNumberOfPositions, maxNumberOfPositions);
 
             // select alleles
-            var selectedAlleles = new HashSet<int>();
+            var selectedAllelesP2 = new HashSet<int>();
             for (int i = 0; i < numberOfPositions; i++)
             {
-                if (!selectedAlleles.Add(parent2[random.Next(0, count)]))
+                if (!selectedAllelesP2.Add(parent2[random.Next(0, count)]))
                 {
                     // already selected, try again
                     i--;
@@ -92,7 +88,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             for (int i = 0; i < count; i++)
             {
                 var allele = parent1[i];
-                if (!selectedAlleles.Contains(allele))
+                if (!selectedAllelesP2.Contains(allele))
                 {
                     child[i] = allele;
                 }
@@ -104,7 +100,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 
             // add the missing alleles in the order they appear in parent2
             var nextPositionParent2 = 0;
-            var missingAlleles = parent2.Intersect(selectedAlleles).ToArray();
+            var missingAlleles = parent2.Intersect(selectedAllelesP2).ToArray();
             foreach (var i in emptyIndices)
             {
                 // find next allele
@@ -175,7 +171,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             if (!nextAllele.HasValue)
             {
                 // take first allele
-                nextAllele = neighbours.Keys.Where(allele => allele != previousAllele).First();
+                nextAllele = neighbours.Keys.First(allele => allele != previousAllele);
             }
 
             return nextAllele.Value;
@@ -229,27 +225,27 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
                 neighbours[allele] = new SortedSet<int>();
             }
 
-            void addNeightbour(int pos, int posNeighbour)
+            void AddNeightbour(int pos, int posNeighbour)
             {
                 neighbours[parent1[pos]].Add(parent1[posNeighbour]);
                 neighbours[parent2[pos]].Add(parent2[posNeighbour]);
             }
 
             // first allele
-            addNeightbour(0, 1);
+            AddNeightbour(0, 1);
 
             // middle alleles
             var count = parent1.Count;
             for (int i = 1; i < count - 1; i++)
             {
                 // before
-                addNeightbour(i, i - 1);
+                AddNeightbour(i, i - 1);
                 // after
-                addNeightbour(i, i + 1);
+                AddNeightbour(i, i + 1);
             }
 
             // last allele
-            addNeightbour(count - 1, count - 2);
+            AddNeightbour(count - 1, count - 2);
 
             // convert sets to list
             // needed to improve performance of removing elements

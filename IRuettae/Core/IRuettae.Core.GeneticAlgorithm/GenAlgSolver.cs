@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using IRuettae.Core.GeneticAlgorithm.Algorithm;
 using IRuettae.Core.GeneticAlgorithm.Algorithm.Helpers;
 using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
 using IRuettae.Core.Models;
-using Route = IRuettae.Core.Models.Route;
-using Waypoint = IRuettae.Core.Models.Waypoint;
 
 namespace IRuettae.Core.GeneticAlgorithm
 {
@@ -30,7 +27,7 @@ namespace IRuettae.Core.GeneticAlgorithm
             this.starterData = starterData;
         }
 
-        public OptimizationResult Solve(long timelimitMiliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
+        public OptimizationResult Solve(long timeLimitMiliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
         {
             this.progress = progress;
             this.consoleProgress = consoleProgress;
@@ -39,10 +36,10 @@ namespace IRuettae.Core.GeneticAlgorithm
             Log("Solving started");
             Log(new ProgressReport(0.01));
 
-            // adjust timelimit if unlimited
-            if (timelimitMiliseconds == 0)
+            // adjust time limit if unlimited
+            if (timeLimitMiliseconds == 0)
             {
-                timelimitMiliseconds = long.MaxValue;
+                timeLimitMiliseconds = long.MaxValue;
             }
 
             // init population
@@ -55,9 +52,9 @@ namespace IRuettae.Core.GeneticAlgorithm
                 OptimizationInput = input,
             };
             var costCalculator = new CostCalculator(decoder, new SimplifiedOptimizationResult(result));
-            costCalculator.RecalculatateCost(population);
+            costCalculator.RecalculateCost(population);
 
-            // Log characteristics of inital population
+            // Log characteristics of initial population
             Log($"Genetic Algorithm started with following paramters:{Environment.NewLine}{starterData}");
             var bestCost = GetMinCost(population);
             Log($"Best solution cost in initial population is: {bestCost}");
@@ -66,7 +63,7 @@ namespace IRuettae.Core.GeneticAlgorithm
             var evolutionOperation = new EvolutionOperation(starterData);
             var repairOperation = new RepairOperation(input, mapping);
             long generation = 0;
-            for (; generation < starterData.MaxNumberOfGenerations && sw.ElapsedMilliseconds < timelimitMiliseconds; generation++)
+            for (; generation < starterData.MaxNumberOfGenerations && sw.ElapsedMilliseconds < timeLimitMiliseconds; generation++)
             {
                 // evolve
                 evolutionOperation.Evolve(population);
@@ -75,7 +72,7 @@ namespace IRuettae.Core.GeneticAlgorithm
                 repairOperation.Repair(population);
 
                 // recalculate costs
-                costCalculator.RecalculatateCost(population);
+                costCalculator.RecalculateCost(population);
 
                 // log current solution
                 var currentBestCost = GetMinCost(population);
@@ -87,7 +84,7 @@ namespace IRuettae.Core.GeneticAlgorithm
             }
 
             Log($"Finished at generation {generation} with cost={bestCost}");
-            Log($"Current stdev is {StdDev(population.Select(i => (double)i.Cost))}");
+            Log($"Current stdev is {StDev(population.Select(i => (double)i.Cost).ToList())}");
             Log(new ProgressReport(0.99));
 
             // build result
@@ -114,7 +111,7 @@ namespace IRuettae.Core.GeneticAlgorithm
         /// <summary>
         /// convenience
         /// </summary>
-        /// <param name="report"></param>
+        /// <param name="msg"></param>
         public void Log(string msg)
         {
             consoleProgress?.Invoke(this, msg);
@@ -130,7 +127,7 @@ namespace IRuettae.Core.GeneticAlgorithm
             return population.Select(i => i.Cost).Min();
         }
 
-        public static double StdDev(IEnumerable<double> values)
+        public static double StDev(IReadOnlyList<double> values)
         {
             double ret = 0.0;
             var count = values.Count();

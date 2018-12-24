@@ -25,11 +25,11 @@ namespace IRuettae.Core.ILP
             this.starterData = starterData;
         }
 
-        public OptimizationResult Solve(long timelimitMiliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
+        public OptimizationResult Solve(long timeLimitMilliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
         {
-            if (timelimitMiliseconds < starterData.ClusteringTimeLimitMiliseconds + starterData.SchedulingTimeLimitMiliseconds)
+            if (timeLimitMilliseconds < starterData.ClusteringTimeLimitMiliseconds + starterData.SchedulingTimeLimitMiliseconds)
             {
-                throw new ArgumentException("overall timelimitMiliseconds must be at least the sum of ClusteringTimeLimit and SchedulingTimeLimit");
+                throw new ArgumentException("overall timeLimitMilliseconds must be at least the sum of ClusteringTimeLimit and SchedulingTimeLimit");
             }
 
             consoleProgress?.Invoke(this, "Solving started");
@@ -49,7 +49,7 @@ namespace IRuettae.Core.ILP
             if (clusteringTimeLimitMiliseconds == 0)
             {
                 // avoid surpassing timelimit
-                clusteringTimeLimitMiliseconds = timelimitMiliseconds;
+                clusteringTimeLimitMiliseconds = timeLimitMilliseconds;
             }
 
             var phase1ResultState = clusteringSolver.Solve(starterData.ClusteringMIPGap, clusteringTimeLimitMiliseconds);
@@ -107,10 +107,10 @@ namespace IRuettae.Core.ILP
 
                     var clusteringExtraTime = Math.Max(0, clusteringTimeLimitMiliseconds - sw.ElapsedMilliseconds);
                     var schedulingTimelimitMiliseconds = starterData.SchedulingTimeLimitMiliseconds + clusteringExtraTime;
-                    if (schedulingTimelimitMiliseconds == 0 && timelimitMiliseconds != 0)
+                    if (schedulingTimelimitMiliseconds == 0 && timeLimitMilliseconds != 0)
                     {
                         // avoid surpassing timelimit
-                        schedulingTimelimitMiliseconds = Math.Max(1, timelimitMiliseconds - sw.ElapsedMilliseconds);
+                        schedulingTimelimitMiliseconds = Math.Max(1, timeLimitMilliseconds - sw.ElapsedMilliseconds);
                     }
 
                     var schedulingResultState = schedulingSolver.Solve(starterData.SchedulingMIPGap, schedulingTimelimitMiliseconds);

@@ -1,19 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using IRuettae.Core.Models;
 
 namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
 {
     public class GenAlgStarterData
     {
-        public int PopulationSize { get; set; } = 10;
-        public int MaxNumberOfSantas { get; set; }
-        public long MaxNumberOfGenerations { get; set; } = long.MaxValue;
-        public double MutationProbability { get; set; } = 0.1;
-        public double OrderBasedCrossoverProbability { get; set; } = 0.5;
+        public int PopulationSize { get; private set; } = 10;
+        public int MaxNumberOfSantas { get; private set; }
+        public long MaxNumberOfGenerations { get; private set; } = long.MaxValue;
+        public double MutationProbability { get; private set; } = 0.1;
+        public double OrderBasedCrossoverProbability { get; private set; } = 0.5;
 
         /// <summary>
         ///Create default regarding the input
@@ -31,26 +29,6 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
             return starterData;
         }
 
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-            foreach (var property in GetType().GetProperties())
-            {
-                sb.Append(property.Name);
-                sb.Append(": ");
-                if (property.GetIndexParameters().Length > 0)
-                {
-                    sb.Append("Indexed Property cannot be used");
-                }
-                else
-                {
-                    sb.Append(property.GetValue(this, null));
-                }
-
-                sb.Append(Environment.NewLine);
-            }
-
-            return sb.ToString();
-        }
+        public override string ToString() => string.Join(Environment.NewLine, GetType().GetProperties().Select(p => $"{p.Name}: {(p.GetIndexParameters().Length > 0 ? "Indexed Property cannot be used" : p.GetValue(this, null))}"));
     }
 }

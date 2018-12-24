@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
 {
@@ -15,7 +12,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
     {
         public int Cost { get; set; }
 
-        public Genotype() : base()
+        public Genotype()
         {
         }
 

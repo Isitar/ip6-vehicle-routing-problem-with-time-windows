@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using IRuettae.Core.Models;
+﻿using IRuettae.Core.Models;
 
 namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Helpers
 {
     /// <summary>
-    /// Class to improve perfomance of cost calculation
+    /// Class to improve performance of cost calculation
     /// </summary>
     class SimplifiedOptimizationResult : OptimizationResult
     {

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
 using IRuettae.Core.Models;
 
@@ -18,7 +15,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <summary>
         /// Cached list of all santaIds
         /// </summary>
-        private List<int> santaIds = new List<int>();
+        private readonly List<int> santaIds = new List<int>();
 
         public Decoder(OptimizationInput input, Dictionary<int, int> alleleToVisitIdMapping)
         {
@@ -49,7 +46,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         }
 
         /// <summary>
-        /// Depending on the dataset, artifical santas must be created
+        /// Depending on the dataset, artificial santas must be created
         /// </summary>
         /// <param name="numberOfSantas"></param>
         private void GenerateSantaIdList(int numberOfSantas)
@@ -71,7 +68,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
                 else
                 {
                     // new, artificial santa
-                    santaIds.Add(santaIds.LastOrDefault() + 1);
+                    santaIds.Add(santaIds.Max() + 1);
                 }
             }
         }
@@ -102,7 +99,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
                 if (waypoints.Count == 1)
                 {
                     // first real visit
-                    startTime += input.Visits.Where(v => v.Id == visitId).First().WayCostFromHome;
+                    startTime += input.Visits.First(v => v.Id == visitId).WayCostFromHome;
                 }
                 else
                 {

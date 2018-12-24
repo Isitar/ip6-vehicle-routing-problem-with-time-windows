@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using IRuettae.Core.GeneticAlgorithm.Algorithm.Helpers;
 using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
 
 namespace IRuettae.Core.GeneticAlgorithm.Algorithm
@@ -9,7 +7,6 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
     public class MutationOperation
     {
         private const double ProbabilityPositionMutation = 0.5;
-        private const double ProbabilityInversionMutation = 1.0 - ProbabilityPositionMutation;
         private readonly Random random;
 
         /// <summary>
@@ -30,7 +27,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <param name="probability">between 0 and 1</param>
         public void Mutate(List<Genotype> population, double probability)
         {
-            for (int i = 0; i < population.Count; i++)
+            foreach (var individual in population)
             {
                 if (random.NextDouble() < probability)
                 {
@@ -38,7 +35,6 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
                     continue;
                 }
 
-                var individual = population[i];
                 var p = random.NextDouble();
                 if (p < ProbabilityPositionMutation)
                 {
@@ -86,16 +82,16 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             // remove everything after inversionStart
             individual.RemoveRange(inversionStart, count - inversionStart);
 
-            // readd reverse
+            // add reverse again
             mutationSubset.Reverse();
             individual.AddRange(mutationSubset);
 
-            // readd subset after mutation
+            // add subset after mutation again
             individual.AddRange(afterSubset);
         }
 
         /// <summary>
-        /// Returns a random, guassian distributed number which is at least min.
+        /// Returns a random, gaussian distributed number which is at least min.
         /// Source: https://stackoverflow.com/questions/218060/random-gaussian-variables
         /// </summary>
         /// <param name="min"></param>
@@ -103,12 +99,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <returns></returns>
         private int GetMutationSize(int min, double stdev)
         {
-            double u1;
-            do
-            {
-                u1 = random.NextDouble();
-            } while (u1 == 0.0);
-
+            var u1 = random.NextDouble();
             double u2;
             do
             {
