@@ -51,6 +51,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\IRuettae.Core.GeneticAlgorithm\IRuettae.Core.GeneticAlgorithm.csproj">
+      <Project>{48054F06-CCF2-4F00-BF6A-70F44C86BEF5}</Project>
+      <Name>IRuettae.Core.GeneticAlgorithm</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\IRuettae.Core\IRuettae.Core.csproj">
       <Project>{E6F0FFC6-7F26-4286-AE57-44411EB66118}</Project>
       <Name>IRuettae.Core</Name>

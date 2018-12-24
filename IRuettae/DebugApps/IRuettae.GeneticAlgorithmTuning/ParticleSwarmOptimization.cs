@@ -11,19 +11,23 @@ namespace IRuettae.GeneticAlgorithmTuning
         private readonly int numberOfVars;
         const int NumberOfGenerations = 150;
         const int PopulationSize = 100;
-        const double xmin = -5;
-        const double xmax = 5;
+        const double xmin = 0;
+        const double xmax = 1;
 
         private double w = 1; // inertia weight
         private double c1 = 2; // cognitive parameter
         private double c2 = 2; // social parameter
 
         private readonly Func<double[], double> objective;
+        private readonly Action<double[]> scaling;
+        private readonly string[] names;
 
-        public ParticleSwarmOptimization(Func<double[], double> objectiveFunction, int numberOfDesignVariables)
+        public ParticleSwarmOptimization(Func<double[], double> objectiveFunction, Action<double[]> parameterScaling, string[] designVariableNames)
         {
             objective = objectiveFunction;
-            numberOfVars = numberOfDesignVariables;
+            scaling = parameterScaling;
+            numberOfVars = designVariableNames.Length;
+            names = designVariableNames;
         }
 
         public void Run()
@@ -36,9 +40,9 @@ namespace IRuettae.GeneticAlgorithmTuning
             // init
             for (int p = 0; p < PopulationSize; p++)
             {
+                x[p] = new double[numberOfVars];
                 for (int m = 0; m < numberOfVars; m++)
                 {
-                    x[p] = new double[numberOfVars];
                     x[p][m] = xmin + (xmax - xmin) * random.NextDouble();
                 }
                 bestFitness[p] = double.MaxValue;
@@ -52,12 +56,20 @@ namespace IRuettae.GeneticAlgorithmTuning
             // hier startet die "Evolution"
             for (var g = 1; g <= NumberOfGenerations; g++)
             {
-                // Loop über Generationen
+                // Scale values so that they are valid
+                for (int p = 0; p < PopulationSize; p++)
+                {
+                    scaling(x[p]);
+                }
 
+                // calculate new fitness parallel
+                var calculatedNewFitness = x.AsParallel().Select(s => objective(s)).ToArray();
+
+                // Loop über Generationen
                 for (int p = 0; p < PopulationSize; p++)
                 {
                     // Suche individual best und global best
-                    var newFitness = objective(x[p]);
+                    var newFitness = calculatedNewFitness[p];
                     if (newFitness < bestFitness[p])
                     {
                         // Individual best
@@ -79,10 +91,11 @@ namespace IRuettae.GeneticAlgorithmTuning
                 }
 
                 // Output progress
+                Console.WriteLine();
                 Console.WriteLine($"generation {g}");
                 for (int m = 0; m < numberOfVars; m++)
                 {
-                    Console.WriteLine($"global best[{m}]={globalBestPosition[m]}");
+                    Console.WriteLine($"global best {names[m]}={globalBestPosition[m]}");
                 }
                 Console.WriteLine($"w={w} f={globalBestFitness}");
 

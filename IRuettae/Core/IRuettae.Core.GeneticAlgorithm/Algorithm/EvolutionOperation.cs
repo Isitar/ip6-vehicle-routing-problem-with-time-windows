@@ -32,7 +32,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             {
 
                 // number of best individuals that should get taken directly to the next generation
-                // must be at leaste one to save best solution
+                // must be at least one to save best solution
                 var numberOfEliteIndividuals = (int)Math.Max(1, population.Count * starterData.ElitismPercentage);
                 newPopulation.AddRange(population.Take(numberOfEliteIndividuals));
             }
