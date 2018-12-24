@@ -5,8 +5,11 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using IRuettae.Core;
+using IRuettae.Core.GeneticAlgorithm;
+using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
 using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm.Models;
+using IRuettae.Core.LocalSolver;
 using IRuettae.Core.Models;
 using Newtonsoft.Json;
 
@@ -108,10 +111,11 @@ namespace IRuettae.Evaluator
 
                     string savepath = $"{DateTime.Now:yy-MM-dd-HH-mm-ss}_DataSet_{dataset}";
                     ISolver solver = null;
+                    var fastFactor = 60;
                     switch (algorithmSelection)
                     {
                         case Algorithms.ILPFast:
-                            timelimit /= 60;
+                            timelimit /= fastFactor;
                             goto case Algorithms.ILP;
                         case Algorithms.ILP:
                             solver = new ILPSolver(input, new ILPStarterData
@@ -126,18 +130,56 @@ namespace IRuettae.Evaluator
                             savepath += "_ILP";
                             break;
                         case Algorithms.ILP2Fast:
-                            timelimit /= 60;
+                            timelimit /= fastFactor;
                             goto case Algorithms.ILP2;
                         case Algorithms.ILP2:
                             solver = new IRuettae.Core.ILP2.Solver(input);
                             savepath += "_ILP2";
                             break;
+                        case Algorithms.LocalSolverFast:
+                            timelimit /= fastFactor;
+                            goto case Algorithms.LocalSolver;
+                        case Algorithms.LocalSolver:
+                            solver = new IRuettae.Core.LocalSolver.Solver(input);
+                            savepath += "_LocalSolver";
+                            break;
+                        case Algorithms.GA:
+                            solver = new GenAlgSolver(input, GenAlgStarterData.GetDefault(input));
+                            savepath += "_GA";
+                            break;
+                        case Algorithms.GAFast:
+                            timelimit /= 60;
+                            solver = new GenAlgSolver(input, GenAlgStarterData.GetDefault(input));
+                            savepath += "_GAFast";
+                            break;
                     }
 
                     AddUnavailableBetweenDays(input);
 
-                    var result = solver.Solve(timelimit, (sender, report) => Console.WriteLine($"Progress: {report}"),
-                        (sender, s) => Console.WriteLine($"Info: {s}"));
+                    OptimizationResult result = null;
+
+                    void WriteConsoleInfo(object sender, string s)
+                    {
+                        Console.WriteLine($"Info ({DateTime.Now:HH-mm-ss}): {s}");
+                    }
+                    void WriteConsoleProgress(object sender, ProgressReport report)
+                    {
+                        Console.WriteLine($"Progress: {report}");
+                    }
+#if DEBUG
+                    using (var sw = new StreamWriter(savepath + "-log.txt", true))
+                    {
+                        result = solver.Solve(timelimit, WriteConsoleProgress,
+                            (sender, s) =>
+                            {
+                                WriteConsoleInfo(sender, s);
+                                sw.WriteLine(s);
+                            });
+                    }
+#else
+                    result = solver.Solve(timelimit, WriteConsoleProgress, WriteConsoleInfo);
+#endif
+
                     BigHr();
 
                     File.WriteAllText(savepath + ".json", JsonConvert.SerializeObject(result));
@@ -146,10 +188,19 @@ namespace IRuettae.Evaluator
                     summary.AppendLine($"Solver: {AlgorithmsDictionary[algorithmSelection]}");
                     summary.AppendLine($"Dataset{dataset}: {DatasetDictionary[dataset]}");
                     summary.AppendLine($"TimeElapsed [s]: {result.TimeElapsed}");
-                    if (!result.IsValid())
+                    try
                     {
-                        summary.AppendLine($"IMPORTANT: This result seems to be invalid. The reason is \"{result.Validate()}\"");
+                        if (!result.IsValid())
+                        {
+                            summary.AppendLine(
+                                $"IMPORTANT: This result seems to be invalid. The reason is \"{result.Validate()}\"");
+                        }
                     }
+                    catch
+                    {
+                        summary.AppendLine("error while checking invalidity");
+                    }
+
                     summary.AppendLine($"Cost: {result.Cost()}");
                     summary.AppendLine($"NumberOfNotVisitedFamilies: { result.NumberOfNotVisitedFamilies()}");
                     summary.AppendLine($"NumberOfMissingBreaks: { result.NumberOfMissingBreaks()}");
@@ -160,6 +211,7 @@ namespace IRuettae.Evaluator
                     summary.AppendLine($"VisitTimeInDesired: { result.VisitTimeInDesired()} / {result.OptimizationInput.MaxDesired()}");
                     summary.AppendLine($"SantaWorkTime: { result.SantaWorkTime()}");
                     summary.AppendLine($"LongestDay: { result.LongestDay()}");
+                    summary.AppendLine($"NumberOfRoutes: { result.NumberOfRoutes()}");
 
                     File.WriteAllText(savepath + ".txt", summary.ToString());
                     Console.WriteLine();
@@ -231,7 +283,7 @@ namespace IRuettae.Evaluator
 
         private static Algorithms QueryAlgorithmSelection()
         {
-            Console.WriteLine("Pleace choose which algorithm to evaluate");
+            Console.WriteLine("Please choose which algorithm to evaluate");
             foreach (var algorithm in AlgorithmsDictionary)
             {
                 Console.WriteLine($"{(int)algorithm.Key}: {algorithm.Value}");

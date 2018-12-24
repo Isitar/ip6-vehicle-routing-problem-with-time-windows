@@ -33,8 +33,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -81,9 +81,17 @@
       <Project>{540b2cd0-d967-48a3-8ef5-e3106eda5883}</Project>
       <Name>IRuettae.Core.ILP2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\IRuettae.Core.GeneticAlgorithm\IRuettae.Core.GeneticAlgorithm.csproj">
+      <Project>{48054F06-CCF2-4F00-BF6A-70F44C86BEF5}</Project>
+      <Name>IRuettae.Core.GeneticAlgorithm</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\IRuettae.Core.ILP\IRuettae.Core.ILP.csproj">
       <Project>{d56e9df6-b3a9-4b97-82e4-f3cd401bbe7c}</Project>
       <Name>IRuettae.Core.ILP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\IRuettae.Core.LocalSolver\IRuettae.Core.LocalSolver.csproj">
+      <Project>{383487d6-e248-4d1b-a1d6-be3bfbc54abf}</Project>
+      <Name>IRuettae.Core.LocalSolver</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\IRuettae.Core\IRuettae.Core.csproj">
       <Project>{e6f0ffc6-7f26-4286-ae57-44411eb66118}</Project>
