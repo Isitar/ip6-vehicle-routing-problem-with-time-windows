@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IRuettae.Core.Models
 {
     public enum ResultState
     {
         Finished,
-        TimelimitReached,
+        TimeLimitReached,
         Cancelled,
         Error
     }
@@ -226,7 +224,7 @@ namespace IRuettae.Core.Models
         }
 
         /// <summary>
-        /// Returns the day from OptimizationInput.Days which correspondes to the Route
+        /// Returns the day from OptimizationInput.Days which corresponds to the Route
         /// </summary>
         /// <param name="route"></param>
         /// <returns></returns>
@@ -241,7 +239,6 @@ namespace IRuettae.Core.Models
             }
 
             return OptimizationInput.Days.First(d => d.from == OptimizationInput.Days.Max(dayMax => dayMax.from));
-            throw new ArgumentException("no matching day found");
         }
 
         /// <summary>
@@ -276,7 +273,7 @@ namespace IRuettae.Core.Models
         /// <summary>
         /// Returns null if this OptimizationResult is valid.
         /// Otherwise, returns an error message.
-        /// This function returns immediatly if anything invalid is found.
+        /// This function returns immediately if anything invalid is found.
         /// </summary>
         /// <returns></returns>
         public string Validate()
@@ -342,7 +339,7 @@ namespace IRuettae.Core.Models
             {
                 foreach (var route in routes)
                 {
-                    var middleWaypoints = route.Waypoints.Take(route.Waypoints.Length - 1).Skip(1);
+                    var middleWaypoints = route.Waypoints.Take(route.Waypoints.Length - 1).Skip(1).ToList();
                     var previous = middleWaypoints.First();
                     foreach (var current in middleWaypoints.Skip(1))
                     {
