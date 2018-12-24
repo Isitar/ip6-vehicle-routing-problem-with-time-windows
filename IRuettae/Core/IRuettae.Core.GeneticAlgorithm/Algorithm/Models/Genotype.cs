@@ -12,7 +12,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
     {
         public int Cost { get; set; }
 
-        public Genotype() : base()
+        public Genotype()
         {
         }
 
