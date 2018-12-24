@@ -40,6 +40,22 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         }
 
         /// <summary>
+        /// Returns numberOfIndividuals genotypes from population.
+        /// </summary>
+        /// <param name="population">with calculated costs and count > 0</param>
+        /// <param name="numberOfIndividuals"></param>
+        /// <returns></returns>
+        public List<Genotype> SelectIndividuals(List<Genotype> population, int numberOfIndividuals)
+        {
+            var ret = new List<Genotype>(numberOfIndividuals);
+            for (; numberOfIndividuals > 0; numberOfIndividuals--)
+            {
+                ret.Add(GetParent(population));
+            }
+            return ret;
+        }
+
+        /// <summary>
         ///
         /// </summary>
         /// <param name="population">count > 0</param>
