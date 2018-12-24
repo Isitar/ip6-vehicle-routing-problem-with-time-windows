@@ -25,22 +25,6 @@ namespace IRuettae.Core.LocalSolver
             this.input = input;
         }
 
-        private T[][] ToJagged<T>(T[,] arr)
-        {
-            var output = new T[arr.GetLength(0)][];
-
-            for (int i = 0; i < output.Length; i++)
-            {
-                output[i] = new T[arr.GetLength(1)];
-                for (int j = 0; j < output[i].Length; j++)
-                {
-                    output[i][j] = arr[i, j];
-                }
-            }
-
-            return output;
-        }
-
         /// <inheritdoc />
         public OptimizationResult Solve(long timeLimitMilliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
         {
