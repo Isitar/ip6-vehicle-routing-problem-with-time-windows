@@ -6,7 +6,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Helpers
     public static class ExtensionMethods
     {
         /// <summary>
-        /// Randomly shuffels a List.
+        /// Randomly shuffles a List.
         /// Elements may retain their position.
         /// </summary>
         /// <typeparam name="T"></typeparam>

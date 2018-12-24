@@ -68,7 +68,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
                 else
                 {
                     // new, artificial santa
-                    santaIds.Add(santaIds.LastOrDefault() + 1);
+                    santaIds.Add(santaIds.Max() + 1);
                 }
             }
         }
