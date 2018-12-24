@@ -15,7 +15,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <summary>
         /// Cached list of all santaIds
         /// </summary>
-        private List<int> santaIds = new List<int>();
+        private readonly List<int> santaIds = new List<int>();
 
         public Decoder(OptimizationInput input, Dictionary<int, int> alleleToVisitIdMapping)
         {
