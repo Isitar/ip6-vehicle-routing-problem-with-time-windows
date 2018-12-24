@@ -9,8 +9,8 @@ namespace IRuettae.GeneticAlgorithmTuning
     internal class ParticleSwarmOptimization
     {
         private readonly int numberOfVars;
-        const int NumberOfGenerations = 150;
-        const int PopulationSize = 100;
+        const int NumberOfGenerations = 450;
+        const int PopulationSize = 300;
         const double xmin = 0;
         const double xmax = 1;
 
@@ -91,13 +91,13 @@ namespace IRuettae.GeneticAlgorithmTuning
                 }
 
                 // Output progress
-                Console.WriteLine();
                 Console.WriteLine($"generation {g}");
                 for (int m = 0; m < numberOfVars; m++)
                 {
                     Console.WriteLine($"global best {names[m]}={globalBestPosition[m]}");
                 }
                 Console.WriteLine($"w={w} f={globalBestFitness}");
+                Console.WriteLine();
 
                 // Update velocity & position
                 for (int p = 0; p < PopulationSize; p++)
