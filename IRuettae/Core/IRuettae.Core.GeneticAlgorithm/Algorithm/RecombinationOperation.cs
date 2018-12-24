@@ -225,27 +225,27 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
                 neighbours[allele] = new SortedSet<int>();
             }
 
-            void addNeightbour(int pos, int posNeighbour)
+            void AddNeightbour(int pos, int posNeighbour)
             {
                 neighbours[parent1[pos]].Add(parent1[posNeighbour]);
                 neighbours[parent2[pos]].Add(parent2[posNeighbour]);
             }
 
             // first allele
-            addNeightbour(0, 1);
+            AddNeightbour(0, 1);
 
             // middle alleles
             var count = parent1.Count;
             for (int i = 1; i < count - 1; i++)
             {
                 // before
-                addNeightbour(i, i - 1);
+                AddNeightbour(i, i - 1);
                 // after
-                addNeightbour(i, i + 1);
+                AddNeightbour(i, i + 1);
             }
 
             // last allele
-            addNeightbour(count - 1, count - 2);
+            AddNeightbour(count - 1, count - 2);
 
             // convert sets to list
             // needed to improve performance of removing elements
