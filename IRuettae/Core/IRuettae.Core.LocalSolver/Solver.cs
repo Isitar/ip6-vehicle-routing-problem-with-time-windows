@@ -51,7 +51,7 @@ namespace IRuettae.Core.LocalSolver
             };
 
             var numberOfFakeSantas = UseFakeSantas ? input.Visits.Length - input.Santas.Length : 0;
-            var numberOfSantas = (input.Santas.Length + numberOfFakeSantas) * input.Days.Length;
+            var numberOfRoutes = (input.Santas.Length + numberOfFakeSantas) * input.Days.Length;
             var numberOfDays = input.Days.Length;
             var visits = input.Visits.ToList();
             var breakDictionary = new Dictionary<(int day, int santa), int>();
@@ -72,25 +72,21 @@ namespace IRuettae.Core.LocalSolver
             {
                 var model = localSolver.GetModel();
 
+                var santaUsed = new LSExpression[numberOfRoutes];
+                var visitSequences = new LSExpression[numberOfRoutes + 1];
+                var santaWalkingTime = new LSExpression[numberOfRoutes];
+                var santaRouteTime = new LSExpression[numberOfRoutes];
+                var santaVisitDurations = new LSExpression[numberOfRoutes];
+                var santaDesiredDuration = new LSExpression[numberOfRoutes];
+                var santaUnavailableDuration = new LSExpression[numberOfRoutes];
+                var santaVisitStartingTimes = new LSExpression[numberOfRoutes];
 
-                var santaUsed = new LSExpression[numberOfSantas];
-                var visitSequences = new LSExpression[numberOfSantas + 1];
-                var santaWalkingTime = new LSExpression[numberOfSantas];
-                var santaRouteTime = new LSExpression[numberOfSantas];
-                var santaVisitDurations = new LSExpression[numberOfSantas];
-                var santaDesiredDuration = new LSExpression[numberOfSantas];
-                var santaUnavailableDuration = new LSExpression[numberOfSantas];
-                var santaVisitStartingTimes = new LSExpression[numberOfSantas];
-
-
-
-                var numberOfVisits = visits.Count;
-                var santaOvertime = new LSExpression[numberOfSantas];
-                var santaWaitBeforeStart = new LSExpression[numberOfSantas];
-                var santaWaitBetweenVisit = new LSExpression[numberOfSantas][];
-                for (int k = 0; k < numberOfSantas; k++)
+                var santaOvertime = new LSExpression[numberOfRoutes];
+                var santaWaitBeforeStart = new LSExpression[numberOfRoutes];
+                var santaWaitBetweenVisit = new LSExpression[numberOfRoutes][];
+                for (int k = 0; k < numberOfRoutes; k++)
                 {
-                    visitSequences[k] = model.List(numberOfVisits);
+                    visitSequences[k] = model.List(visits.Count);
                     santaOvertime[k] = model.Int(0, int.MaxValue);
                     santaWaitBeforeStart[k] = model.Int(0, int.MaxValue);
                     if (UseWaitBetweenVisits)
@@ -104,7 +100,7 @@ namespace IRuettae.Core.LocalSolver
                 }
 
                 // overflow for unused santa breaks
-                visitSequences[numberOfSantas] = model.List(numberOfVisits);
+                visitSequences[numberOfRoutes] = model.List(visits.Count);
 
                 model.Constraint(model.Partition(visitSequences));
 
@@ -144,7 +140,7 @@ namespace IRuettae.Core.LocalSolver
                 {
                     if (!visits[i].IsBreak)
                     {
-                        model.AddConstraint(!model.Contains(visitSequences[numberOfSantas], i));
+                        model.AddConstraint(!model.Contains(visitSequences[numberOfRoutes], i));
                     }
                 }
 
@@ -164,7 +160,7 @@ namespace IRuettae.Core.LocalSolver
                         if (breaks.Any())
                         {
                             int breakIndex = day == 0 ? visits.IndexOf(breaks.First()) : breakDictionary[(day, santa)];
-                            model.Constraint(model.If(santaUsed[s], model.Contains(visitSequences[s], breakIndex), model.Contains(visitSequences[numberOfSantas], breakIndex)));
+                            model.Constraint(model.If(santaUsed[s], model.Contains(visitSequences[s], breakIndex), model.Contains(visitSequences[numberOfRoutes], breakIndex)));
                             //model.Constraint(model.Contains(visitSequences[s], breakIndex));
                         }
 
@@ -299,7 +295,7 @@ namespace IRuettae.Core.LocalSolver
                 consoleProgress?.Invoke(this, "Done modeling");
 
                 // initialize solution
-                var numberOfvisitsPerSanta = Math.Floor((double) (input.Visits.Count(v => !v.IsBreak) / numberOfSantas));
+                var numberOfvisitsPerSanta = Math.Floor((double) (input.Visits.Count(v => !v.IsBreak) / numberOfRoutes));
                 int visitIndex = 0;
                 for (var day = 0; day < input.Days.Length; day++)
                 {
@@ -326,14 +322,14 @@ namespace IRuettae.Core.LocalSolver
                 }
 
                 var phase = localSolver.CreatePhase();
-                phase.SetTimeLimit((int)((timelimitMiliseconds - sw.ElapsedMilliseconds) / 1000));
+                phase.SetTimeLimit((int)((timeLimitMilliseconds - sw.ElapsedMilliseconds) / 1000));
 
 
                 localSolver.Solve();
                 consoleProgress?.Invoke(this, "Done solving");
-                result.Routes = new Route[numberOfSantas];
+                result.Routes = new Route[numberOfRoutes];
 
-                for (int i = 0; i < numberOfSantas; i++)
+                for (int i = 0; i < numberOfRoutes; i++)
                 {
                     var visitIds = visitSequences[i].GetCollectionValue()
                         .Select(v => (int)v).ToArray();
@@ -388,11 +384,11 @@ namespace IRuettae.Core.LocalSolver
                 consoleProgress?.Invoke(this, $"longestRoute: : {maxRoute.GetIntValue()}");
                 consoleProgress?.Invoke(this, $"overtime: : {string.Join(",", santaOvertime.Select(o => o.GetIntValue()))}");
                 consoleProgress?.Invoke(this, $"santaWaitBeforeStart: : {string.Join(",", santaWaitBeforeStart.Select(o => o.GetIntValue()))}");
-                consoleProgress?.Invoke(this, $"santaVisitduartions: : {string.Join(",", santaWalkingTime.Select(o => o.GetIntValue()))}");
-                consoleProgress?.Invoke(this, $"santawalkingtime: : {string.Join(",", santaVisitDurations.Select(o => o.GetIntValue()))}");
+                consoleProgress?.Invoke(this, $"santaVisitDurations: : {string.Join(",", santaWalkingTime.Select(o => o.GetIntValue()))}");
+                consoleProgress?.Invoke(this, $"santaWalkingTime: : {string.Join(",", santaVisitDurations.Select(o => o.GetIntValue()))}");
 
 
-                for (int i = 0; i < numberOfSantas; i++)
+                for (int i = 0; i < numberOfRoutes; i++)
                 {
                     consoleProgress?.Invoke(this, $"Santa {i} visit sequence: {string.Join(",", visitSequences[i].GetCollectionValue().ToArray())} ");
                     consoleProgress?.Invoke(this, $"Santa {i} visit starting time: {string.Join(",", santaVisitStartingTimes[i].GetArrayValue())} ");
