@@ -8,7 +8,7 @@ using IRuettae.Core.Models;
 namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Helpers
 {
     /// <summary>
-    /// Class to improve perfomance of cost calculation
+    /// Class to improve performance of cost calculation
     /// </summary>
     class SimplifiedOptimizationResult : OptimizationResult
     {
