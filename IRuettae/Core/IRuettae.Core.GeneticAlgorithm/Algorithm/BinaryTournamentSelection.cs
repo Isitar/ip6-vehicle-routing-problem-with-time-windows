@@ -32,7 +32,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <param name="population">with calculated costs and count > 0</param>
         /// <param name="numberOfPairs"></param>
         /// <returns></returns>
-        public List<(Genotype, Genotype)> Select(List<Genotype> population, int numberOfPairs)
+        public List<(Genotype, Genotype)> SelectParents(List<Genotype> population, int numberOfPairs)
         {
             var ret = new List<(Genotype, Genotype)>(numberOfPairs);
             for (; numberOfPairs > 0; numberOfPairs--)

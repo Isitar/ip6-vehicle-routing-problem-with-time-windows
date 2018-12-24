@@ -32,7 +32,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Tests.Algorithm
                 (population[0],population[1]),
                 (population[3],population[0]),
             };
-            var actual = selection.Select(population, 3);
+            var actual = selection.SelectParents(population, 3);
 
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
