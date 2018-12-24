@@ -27,7 +27,7 @@ namespace IRuettae.Core.GeneticAlgorithm
             this.starterData = starterData;
         }
 
-        public OptimizationResult Solve(long timelimitMiliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
+        public OptimizationResult Solve(long timeLimitMiliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
         {
             this.progress = progress;
             this.consoleProgress = consoleProgress;
@@ -36,10 +36,10 @@ namespace IRuettae.Core.GeneticAlgorithm
             Log("Solving started");
             Log(new ProgressReport(0.01));
 
-            // adjust timelimit if unlimited
-            if (timelimitMiliseconds == 0)
+            // adjust time limit if unlimited
+            if (timeLimitMiliseconds == 0)
             {
-                timelimitMiliseconds = long.MaxValue;
+                timeLimitMiliseconds = long.MaxValue;
             }
 
             // init population
@@ -63,7 +63,7 @@ namespace IRuettae.Core.GeneticAlgorithm
             var evolutionOperation = new EvolutionOperation(starterData);
             var repairOperation = new RepairOperation(input, mapping);
             long generation = 0;
-            for (; generation < starterData.MaxNumberOfGenerations && sw.ElapsedMilliseconds < timelimitMiliseconds; generation++)
+            for (; generation < starterData.MaxNumberOfGenerations && sw.ElapsedMilliseconds < timeLimitMiliseconds; generation++)
             {
                 // evolve
                 evolutionOperation.Evolve(population);

@@ -46,7 +46,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         }
 
         /// <summary>
-        /// Depending on the dataset, artifical santas must be created
+        /// Depending on the dataset, artificial santas must be created
         /// </summary>
         /// <param name="numberOfSantas"></param>
         private void GenerateSantaIdList(int numberOfSantas)
