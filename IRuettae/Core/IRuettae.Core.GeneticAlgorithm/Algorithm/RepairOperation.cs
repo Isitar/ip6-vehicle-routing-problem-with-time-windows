@@ -46,7 +46,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <param name="alleleToVisitIdMapping">not null</param>
         private void CreateBreakMapping(Dictionary<int, int> alleleToVisitIdMapping)
         {
-            foreach (var santa in input.Santas.Where(s => input.Visits.Any(v => v.SantaId == s.Id)))
+            foreach (var santa in input.Santas.Where(s => input.Visits.Any(v => v.IsBreak && v.SantaId == s.Id)))
             {
                 var breakId = input.Visits.First(v => v.IsBreak && v.SantaId == santa.Id).Id;
                 var breaks = alleleToVisitIdMapping.Where(e => e.Value == breakId).Select(e => e.Key).ToArray();
