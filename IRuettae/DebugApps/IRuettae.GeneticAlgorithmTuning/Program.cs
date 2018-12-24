@@ -16,6 +16,7 @@ namespace IRuettae.GeneticAlgorithmTuning
         {
             var pso = new ParticleSwarmOptimization(RunGeneticAlgorithm, ScaleParameters, new string[] { "elitismPercentage", "directMutationPercentage", "randomPercentage", "orderBasedCrossoverProbability", "mutationProbability", "positionMutationProbability", "recombinationProbability" });
             pso.Run();
+            Console.ReadLine();
         }
 
         static double RunGeneticAlgorithm(double[] parameters)
