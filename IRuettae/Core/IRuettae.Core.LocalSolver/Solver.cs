@@ -322,6 +322,7 @@ namespace IRuettae.Core.LocalSolver
             }
 
             result.TimeElapsed = sw.ElapsedMilliseconds / 1000;
+            result.ResultState = ResultState.Finished;
             sw.Stop();
             return result;
         }
