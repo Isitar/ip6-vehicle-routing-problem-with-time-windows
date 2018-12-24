@@ -25,11 +25,11 @@ namespace IRuettae.Core.Manual
         /// <summary>
         ///
         /// </summary>
-        /// <param name="timelimitMiliseconds">unused</param>
+        /// <param name="timeLimitMilliseconds">unused</param>
         /// <param name="progress"></param>
         /// <param name="consoleProgress">unused</param>
         /// <returns></returns>
-        public OptimizationResult Solve(long timelimitMiliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
+        public OptimizationResult Solve(long timeLimitMilliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
         {
             var sw = Stopwatch.StartNew();
 

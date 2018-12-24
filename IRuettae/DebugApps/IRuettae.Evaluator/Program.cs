@@ -6,6 +6,7 @@ using System.Text;
 using IRuettae.Core;
 using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm.Models;
+using IRuettae.Core.LocalSolver;
 using IRuettae.Core.Models;
 using Newtonsoft.Json;
 
@@ -103,10 +104,11 @@ namespace IRuettae.Evaluator
 
                     string savepath = $"{DateTime.Now:yy-MM-dd-HH-mm-ss}_DataSet_{dataset}";
                     ISolver solver = null;
+                    var fastFactor = 60;
                     switch (algorithmSelection)
                     {
                         case Algorithms.ILPFast:
-                            timelimit /= 60;
+                            timelimit /= fastFactor;
                             goto case Algorithms.ILP;
                         case Algorithms.ILP:
                             solver = new ILPSolver(input, new ILPStarterData
@@ -119,6 +121,13 @@ namespace IRuettae.Evaluator
                                 TimeSliceDuration = 120
                             });
                             savepath += "_ILP";
+                            break;
+                        case Algorithms.LocalSolverFast:
+                            timelimit /= fastFactor;
+                            goto case Algorithms.LocalSolver;
+                        case Algorithms.LocalSolver:
+                            solver = new IRuettae.Core.LocalSolver.Solver(input);
+                            savepath += "_LocalSolver";
                             break;
                     }
 
@@ -134,10 +143,19 @@ namespace IRuettae.Evaluator
                     summary.AppendLine($"Solver: {AlgorithmsDictionary[algorithmSelection]}");
                     summary.AppendLine($"Dataset{dataset}: {DatasetDictionary[dataset]}");
                     summary.AppendLine($"TimeElapsed [s]: {result.TimeElapsed}");
-                    if (!result.IsValid())
+                    try
                     {
-                        summary.AppendLine($"IMPORTANT: This result seems to be invalid. The reason is \"{result.Validate()}\"");
+                        if (!result.IsValid())
+                        {
+                            summary.AppendLine(
+                                $"IMPORTANT: This result seems to be invalid. The reason is \"{result.Validate()}\"");
+                        }
                     }
+                    catch
+                    {
+                        summary.AppendLine("error while checking invalidity");
+                    }
+
                     summary.AppendLine($"Cost: {result.Cost()}");
                     summary.AppendLine($"NumberOfNotVisitedFamilies: { result.NumberOfNotVisitedFamilies()}");
                     summary.AppendLine($"NumberOfMissingBreaks: { result.NumberOfMissingBreaks()}");
@@ -148,6 +166,7 @@ namespace IRuettae.Evaluator
                     summary.AppendLine($"VisitTimeInDesired: { result.VisitTimeInDesired()}");
                     summary.AppendLine($"SantaWorkTime: { result.SantaWorkTime()}");
                     summary.AppendLine($"LongestDay: { result.LongestDay()}");
+                    summary.AppendLine($"NumberOfRoutes: { result.NumberOfRoutes()}");
 
                     File.WriteAllText(savepath + ".txt", summary.ToString());
                     Console.WriteLine();
