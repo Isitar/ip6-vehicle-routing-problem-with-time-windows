@@ -7,7 +7,6 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
     public class MutationOperation
     {
         private const double ProbabilityPositionMutation = 0.5;
-        private const double ProbabilityInversionMutation = 1.0 - ProbabilityPositionMutation;
         private readonly Random random;
 
         /// <summary>

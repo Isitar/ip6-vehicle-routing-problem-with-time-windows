@@ -8,7 +8,6 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
     public class RecombinationOperation
     {
         private readonly double orderBasedCrossoverProbability;
-        //private double probabilityEdgeRecombinationCrossover = 1.0 - probabilityOrderBasedCrossover;
         private Random random;
 
         /// <summary>
