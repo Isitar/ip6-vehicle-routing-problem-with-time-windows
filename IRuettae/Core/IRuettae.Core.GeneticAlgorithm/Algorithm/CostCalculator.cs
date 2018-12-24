@@ -9,8 +9,8 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
     /// </summary>
     public class CostCalculator
     {
-        private OptimizationResult result;
-        private Decoder decoder;
+        private readonly OptimizationResult result;
+        private readonly Decoder decoder;
 
         public CostCalculator(Decoder decoder, OptimizationResult temporaryResult)
         {
