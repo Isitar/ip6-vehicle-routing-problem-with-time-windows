@@ -136,7 +136,7 @@ namespace IRuettae.Evaluator
                             savepath += "_GA";
                             break;
                         case Algorithms.GAFast:
-                            timelimit /= 60;
+                            timelimit /= fastFactor;
                             solver = new GenAlgSolver(input, GenAlgStarterData.GetDefault(input));
                             savepath += "_GAFast";
                             break;
