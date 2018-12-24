@@ -166,9 +166,7 @@ namespace IRuettae.Evaluator
                     summary.AppendLine($"VisitTimeInDesired: { result.VisitTimeInDesired()}");
                     summary.AppendLine($"SantaWorkTime: { result.SantaWorkTime()}");
                     summary.AppendLine($"LongestDay: { result.LongestDay()}");
-
                     summary.AppendLine($"NumberOfRoutes: { result.NumberOfRoutes()}");
-                   
 
                     File.WriteAllText(savepath + ".txt", summary.ToString());
                     Console.WriteLine();
