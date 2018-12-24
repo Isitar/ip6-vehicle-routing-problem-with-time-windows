@@ -8,13 +8,13 @@ namespace IRuettae.GeoCalculations.Tests
     [TestClass]
     public class GoogleGeocoderTest
     {
-        private const string apiKey = "AIzaSyAdTPEkyVKvA0ZvVNAAZK5Ot3fl8zyBsks";
-        private const string region = "CH";
+        private const string ApiKey = "AIzaSyAdTPEkyVKvA0ZvVNAAZK5Ot3fl8zyBsks";
+        private const string Region = "CH";
 
         [TestMethod]
         public void TestCityFromZip()
         {
-            var geocoder = new GoogleGeocoder(apiKey, region);
+            var geocoder = new GoogleGeocoder(ApiKey, Region);
             Assert.IsNotNull(geocoder);
 
             var cities = geocoder.CityFromZip(5600);
@@ -32,7 +32,7 @@ namespace IRuettae.GeoCalculations.Tests
         [TestMethod]
         public void TestCityFromZipSpecialChars()
         {
-            var geocoder = new GoogleGeocoder(apiKey, region);
+            var geocoder = new GoogleGeocoder(ApiKey, Region);
             var cities3 = geocoder.CityFromZip(5627);
             Assert.AreEqual("Besenbüren", cities3[0]);
         }

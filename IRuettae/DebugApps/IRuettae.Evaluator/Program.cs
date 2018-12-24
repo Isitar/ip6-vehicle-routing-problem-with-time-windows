@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using IRuettae.Core;
+using IRuettae.Core.GeneticAlgorithm;
+using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
 using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm.Models;
 using IRuettae.Core.LocalSolver;
@@ -129,12 +131,43 @@ namespace IRuettae.Evaluator
                             solver = new IRuettae.Core.LocalSolver.Solver(input);
                             savepath += "_LocalSolver";
                             break;
+                        case Algorithms.GA:
+                            solver = new GenAlgSolver(input, GenAlgStarterData.GetDefault(input));
+                            savepath += "_GA";
+                            break;
+                        case Algorithms.GAFast:
+                            timelimit /= 60;
+                            solver = new GenAlgSolver(input, GenAlgStarterData.GetDefault(input));
+                            savepath += "_GAFast";
+                            break;
                     }
 
                     AddUnavailableBetweenDays(input);
 
-                    var result = solver.Solve(timelimit, (sender, report) => Console.WriteLine($"Progress: {report}"),
-                        (sender, s) => Console.WriteLine($"Info: {s}"));
+                    OptimizationResult result = null;
+
+                    void WriteConsoleInfo(object sender, string s)
+                    {
+                        Console.WriteLine($"Info ({DateTime.Now:HH-mm-ss}): {s}");
+                    }
+                    void WriteConsoleProgress(object sender, ProgressReport report)
+                    {
+                        Console.WriteLine($"Progress: {report}");
+                    }
+#if DEBUG
+                    using (var sw = new StreamWriter(savepath + "-log.txt", true))
+                    {
+                        result = solver.Solve(timelimit, WriteConsoleProgress,
+                            (sender, s) =>
+                            {
+                                WriteConsoleInfo(sender, s);
+                                sw.WriteLine(s);
+                            });
+                    }
+#else
+                    result = solver.Solve(timelimit, WriteConsoleProgress, WriteConsoleInfo);
+#endif
+
                     BigHr();
 
                     File.WriteAllText(savepath + ".json", JsonConvert.SerializeObject(result));
