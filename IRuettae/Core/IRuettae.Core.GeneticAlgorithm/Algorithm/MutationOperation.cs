@@ -84,16 +84,16 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             // remove everything after inversionStart
             individual.RemoveRange(inversionStart, count - inversionStart);
 
-            // readd reverse
+            // add reverse again
             mutationSubset.Reverse();
             individual.AddRange(mutationSubset);
 
-            // readd subset after mutation
+            // add subset after mutation again
             individual.AddRange(afterSubset);
         }
 
         /// <summary>
-        /// Returns a random, guassian distributed number which is at least min.
+        /// Returns a random, gaussian distributed number which is at least min.
         /// Source: https://stackoverflow.com/questions/218060/random-gaussian-variables
         /// </summary>
         /// <param name="min"></param>
