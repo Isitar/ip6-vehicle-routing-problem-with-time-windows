@@ -15,10 +15,10 @@ namespace IRuettae.Core
         /// <summary>
         /// Solves the optimization problem and returns an optimization result as output
         /// </summary>
-        /// <param name="timelimitMiliseconds">the timelimit in ms</param>
+        /// <param name="timeLimitMilliseconds">the timelimit in ms</param>
         /// <param name="progress">Eventhandler for progress reports</param>
         /// <param name="consoleProgress">Eventhandler for console progress reports</param>
         /// <returns>An OptimizationResult with the route</returns>
-        OptimizationResult Solve(long timelimitMiliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress);
+        OptimizationResult Solve(long timeLimitMilliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress);
     }
 }

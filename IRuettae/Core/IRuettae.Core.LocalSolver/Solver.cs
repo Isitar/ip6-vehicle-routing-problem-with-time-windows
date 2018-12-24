@@ -1,16 +1,12 @@
-﻿using System;
+﻿using IRuettae.Core.Models;
+using localsolver;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using IRuettae.Core.Models;
-using localsolver;
 
 namespace IRuettae.Core.LocalSolver
 {
-
-
     /// <summary>
     /// IRuettae Solver using LocalSolver
     /// </summary>
@@ -21,7 +17,7 @@ namespace IRuettae.Core.LocalSolver
         private readonly OptimizationInput input;
 
         /// <summary>
-        /// Instanciates a new LocalSolver.Solver class with the given opzimization input
+        /// Instantiates a new LocalSolver.Solver class with the given optimization input
         /// </summary>
         /// <param name="input">the optimization input being used to solve the problem</param>
         public Solver(OptimizationInput input)
@@ -29,8 +25,24 @@ namespace IRuettae.Core.LocalSolver
             this.input = input;
         }
 
+        private T[][] ToJagged<T>(T[,] arr)
+        {
+            var output = new T[arr.GetLength(0)][];
+
+            for (int i = 0; i < output.Length; i++)
+            {
+                output[i] = new T[arr.GetLength(1)];
+                for (int j = 0; j < output[i].Length; j++)
+                {
+                    output[i][j] = arr[i, j];
+                }
+            }
+
+            return output;
+        }
+
         /// <inheritdoc />
-        public OptimizationResult Solve(long timelimitMiliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
+        public OptimizationResult Solve(long timeLimitMilliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
         {
             var sw = Stopwatch.StartNew();
             var result = new OptimizationResult
@@ -54,22 +66,8 @@ namespace IRuettae.Core.LocalSolver
             }
 
 
-            var routeCostJagged = new int[visits.Count][];
-            for (int i = 0; i < routeCostJagged.Length; i++)
-            {
-                routeCostJagged[i] = new int[visits.Count];
-                for (int j = 0; j < routeCostJagged[i].Length; j++)
-                {
-                    if (i < input.RouteCosts.GetLength(0) && j < input.RouteCosts.GetLength(1))
-                    { routeCostJagged[i][j] = input.RouteCosts[i, j]; }
-                    else
-                    {
-                        // additional breaks:
-                        routeCostJagged[i][j] = input.RouteCosts[visits[i].Id, visits[j].Id];
-                    }
-                }
+            var routeCostJagged = RouteCostJagged(visits);
 
-            }
             using (var localSolver = new localsolver.LocalSolver())
             {
                 var model = localSolver.GetModel();
@@ -107,7 +105,6 @@ namespace IRuettae.Core.LocalSolver
 
                 // overflow for unused santa breaks
                 visitSequences[numberOfSantas] = model.List(numberOfVisits);
-
 
                 model.Constraint(model.Partition(visitSequences));
 
@@ -413,6 +410,34 @@ namespace IRuettae.Core.LocalSolver
             result.TimeElapsed = sw.ElapsedMilliseconds / 1000;
             sw.Stop();
             return result;
+        }
+
+        /// <summary>
+        /// Takes the input route costs and the visits from params to create a jagged array containing all route costs
+        /// </summary>
+        /// <param name="visits">The input visits including duplicated breaks</param>
+        /// <returns>The route costs as a jagged array</returns>
+        private int[][] RouteCostJagged(IReadOnlyList<Visit> visits)
+        {
+            var routeCostJagged = new int[visits.Count][];
+            for (int i = 0; i < routeCostJagged.Length; i++)
+            {
+                routeCostJagged[i] = new int[visits.Count];
+                for (int j = 0; j < routeCostJagged[i].Length; j++)
+                {
+                    if (i < input.RouteCosts.GetLength(0) && j < input.RouteCosts.GetLength(1))
+                    {
+                        routeCostJagged[i][j] = input.RouteCosts[i, j];
+                    }
+                    else
+                    {
+                        // additional breaks:
+                        routeCostJagged[i][j] = input.RouteCosts[visits[i].Id, visits[j].Id];
+                    }
+                }
+            }
+
+            return routeCostJagged;
         }
     }
 }
