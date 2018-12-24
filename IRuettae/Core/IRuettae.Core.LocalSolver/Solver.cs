@@ -164,7 +164,6 @@ namespace IRuettae.Core.LocalSolver
                                                   distanceFromHomeArray[sequence[0]] + distanceToHomeArray[sequence[c - 1]],
                                                   0);
 
-
                         // visiting
                         var visitDurationSelector = model.Function(i => visitDurationArray[sequence[i]]);
                         santaVisitDurations[s] = model.Sum(model.Range(0, c), visitDurationSelector);
@@ -215,7 +214,6 @@ namespace IRuettae.Core.LocalSolver
                         });
                         santaDesiredDuration[s] = model.Sum(model.Range(0, c), visitDesiredDurationSelector);
 
-
                         // unavailable
                         var visitUnavailableDurationSelector = model.Function(i =>
                         {
@@ -244,7 +242,6 @@ namespace IRuettae.Core.LocalSolver
                             return model.Sum(model.Range(0, nUnavailable), unavailableIntersection);
                         });
                         santaUnavailableDuration[s] = model.Sum(model.Range(0, c), visitUnavailableDurationSelector);
-
 
                         // sum all up
                         santaRouteTime[s] = santaWalkingTime[s] + santaVisitDurations[s] + (UseWaitBetweenVisits ? model.Sum(santaWaitBetweenVisit[s]) : model.Int(0, 0));
