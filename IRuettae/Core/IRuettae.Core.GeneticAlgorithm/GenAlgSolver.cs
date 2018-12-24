@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using IRuettae.Core.GeneticAlgorithm.Algorithm;
 using IRuettae.Core.GeneticAlgorithm.Algorithm.Helpers;
 using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
 using IRuettae.Core.Models;
-using Route = IRuettae.Core.Models.Route;
-using Waypoint = IRuettae.Core.Models.Waypoint;
 
 namespace IRuettae.Core.GeneticAlgorithm
 {
