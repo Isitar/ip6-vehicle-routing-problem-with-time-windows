@@ -8,14 +8,14 @@ using localsolver;
 namespace IRuettae.Core.LocalSolver
 {
     /// <summary>
-    ///     IRuettae Solver using LocalSolver
+    /// IRuettae Solver using LocalSolver
     /// </summary>
     public class Solver : ISolver
     {
         private readonly OptimizationInput input;
 
         /// <summary>
-        ///     Instantiates a new LocalSolver.Solver class with the given optimization input
+        /// Instantiates a new LocalSolver.Solver class with the given optimization input
         /// </summary>
         /// <param name="input">the optimization input being used to solve the problem</param>
         /// <param name="useWaitsBetweenVisits"></param>
@@ -62,6 +62,7 @@ namespace IRuettae.Core.LocalSolver
                 var model = localSolver.GetModel();
 
                 #region variable initialisation
+
                 var santaUsed = new LSExpression[numberOfRoutes];
                 var visitSequences = new LSExpression[numberOfRoutes + 1];
                 var santaWalkingTime = new LSExpression[numberOfRoutes];
@@ -327,7 +328,7 @@ namespace IRuettae.Core.LocalSolver
 
 
         /// <summary>
-        ///     Builds and returns a route array with the given parameters in a solved state
+        /// Builds and returns a route array with the given parameters in a solved state
         /// </summary>
         /// <param name="numberOfRoutes">how many routes there are</param>
         /// <param name="visitSequences">the visits per route</param>
@@ -403,8 +404,8 @@ namespace IRuettae.Core.LocalSolver
         }
 
         /// <summary>
-        ///     Initializes the visitSequences for every santa by adding visits to them
-        ///     Respects breaks
+        /// Initializes the visitSequences for every santa by adding visits to them
+        /// Respects breaks
         /// </summary>
         /// <param name="numberOfRoutes">how many routes there are</param>
         /// <param name="numberOfFakeSantas">how many fake santas were added</param>
@@ -445,7 +446,7 @@ namespace IRuettae.Core.LocalSolver
         }
 
         /// <summary>
-        ///     Takes the input route costs and the visits from params to create a jagged array containing all route costs
+        /// Takes the input route costs and the visits from params to create a jagged array containing all route costs
         /// </summary>
         /// <param name="visits">The input visits including duplicated breaks</param>
         /// <returns>The route costs as a jagged array</returns>
