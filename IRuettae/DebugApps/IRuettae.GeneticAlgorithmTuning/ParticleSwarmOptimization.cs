@@ -96,7 +96,7 @@ namespace IRuettae.GeneticAlgorithmTuning
                         x[p][m] = x[p][m] + velocity[p, m];
                     }
                 }
-                // Intertia weight changes
+                // Inertia weight changes
                 w = w * 0.99;
             }
         }
