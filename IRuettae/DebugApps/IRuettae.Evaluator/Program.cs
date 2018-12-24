@@ -219,7 +219,7 @@ namespace IRuettae.Evaluator
 
         private static Algorithms QueryAlgorithmSelection()
         {
-            Console.WriteLine("Pleace choose which algorithm to evaluate");
+            Console.WriteLine("Please choose which algorithm to evaluate");
             foreach (var algorithm in AlgorithmsDictionary)
             {
                 Console.WriteLine($"{(int)algorithm.Key}: {algorithm.Value}");
