@@ -27,7 +27,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <param name="probability">between 0 and 1</param>
         public void Mutate(List<Genotype> population, double probability)
         {
-            for (int i = 0; i < population.Count; i++)
+            foreach (var individual in population)
             {
                 if (random.NextDouble() < probability)
                 {
@@ -35,7 +35,6 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
                     continue;
                 }
 
-                var individual = population[i];
                 var p = random.NextDouble();
                 if (p < ProbabilityPositionMutation)
                 {
