@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using IRuettae.Core.Models;
 
@@ -28,26 +29,6 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
             return starterData;
         }
 
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-            foreach (var property in GetType().GetProperties())
-            {
-                sb.Append(property.Name);
-                sb.Append(": ");
-                if (property.GetIndexParameters().Length > 0)
-                {
-                    sb.Append("Indexed Property cannot be used");
-                }
-                else
-                {
-                    sb.Append(property.GetValue(this, null));
-                }
-
-                sb.Append(Environment.NewLine);
-            }
-
-            return sb.ToString();
-        }
+        public override string ToString() => string.Join(Environment.NewLine, GetType().GetProperties().Select(p => $"{p.Name}: {(p.GetIndexParameters().Length > 0 ? "Indexed Property cannot be used" : p.GetValue(this, null))}"));
     }
 }
