@@ -103,8 +103,8 @@ namespace IRuettae.Core.LocalSolver
                     .Select(v =>
                         // fake arr
                         v.Desired.Length == 0
-                            ? new[] { new[] { -1, -1 } }
-                            : v.Desired.Select(d => new[] { d.from, d.to }).ToArray()
+                            ? new[] {new[] {-1, -1}}
+                            : v.Desired.Select(d => new[] {d.from, d.to}).ToArray()
                     )
                     .ToArray();
                 var visitDesiredArray = model.Array(visitsOnlyDesired);
@@ -115,17 +115,19 @@ namespace IRuettae.Core.LocalSolver
                     .Select(v =>
                         // fake arr
                         v.Unavailable.Length == 0
-                            ? new[] { new[] { -1, -1 } }
-                            : v.Unavailable.Select(d => new[] { d.from, d.to }).ToArray()
+                            ? new[] {new[] {-1, -1}}
+                            : v.Unavailable.Select(d => new[] {d.from, d.to}).ToArray()
                     )
                     .ToArray();
                 var visitUnavailableArray = model.Array(visitsOnlyUnavailable);
                 var visitUnavailableCountArray = model.Array(visits.Select(v => v.Unavailable.Length).ToArray());
+
                 #endregion
 
                 consoleProgress?.Invoke(this, "Starting to model");
 
                 #region constraints
+
                 model.Constraint(model.Partition(visitSequences));
                 for (var i = 0; i < visits.Count; i++)
                 {
@@ -176,7 +178,7 @@ namespace IRuettae.Core.LocalSolver
                             model.If(i == 0,
                                 input.Days[currentDayIndex].from + santaWaitBeforeStart[s] + distanceFromHomeArray[sequence[i]],
                                 prev + visitDurationArray[sequence[i - 1]] + distanceArray[sequence[i - 1], sequence[i]] +
-                                    (UseWaitBetweenVisits ? waitBetweenVisits[sequence[i]] : model.Int(0, 0))
+                                (UseWaitBetweenVisits ? waitBetweenVisits[sequence[i]] : model.Int(0, 0))
                             )
                         );
 
@@ -250,9 +252,11 @@ namespace IRuettae.Core.LocalSolver
                         model.Constraint(model.If(santaUsed[s], visitStartingTime[c - 1] + visitDurationArray[sequence[c - 1]] + distanceToHomeArray[sequence[c - 1]], 0) <= input.Days[currentDayIndex].to + santaOvertime[s]);
                     }
                 }
+
                 #endregion
 
                 #region costFunction
+
                 var maxRoute = model.Max(santaRouteTime);
                 const int hour = 3600;
                 var additionalSantaCount = model.Float(0, 0);
@@ -287,7 +291,7 @@ namespace IRuettae.Core.LocalSolver
                 InitializeSolution(numberOfRoutes, numberOfFakeSantas, visitSequences, breakDictionary);
 
                 var phase = localSolver.CreatePhase();
-                phase.SetTimeLimit((int)((timeLimitMilliseconds - sw.ElapsedMilliseconds) / 1000));
+                phase.SetTimeLimit((int) ((timeLimitMilliseconds - sw.ElapsedMilliseconds) / 1000));
 
 
                 localSolver.Solve();
@@ -323,7 +327,7 @@ namespace IRuettae.Core.LocalSolver
 
 
         /// <summary>
-        /// Builds and returns a route array with the given parameters in a solved state
+        ///     Builds and returns a route array with the given parameters in a solved state
         /// </summary>
         /// <param name="numberOfRoutes">how many routes there are</param>
         /// <param name="visitSequences">the visits per route</param>
@@ -399,8 +403,8 @@ namespace IRuettae.Core.LocalSolver
         }
 
         /// <summary>
-        /// Initializes the visitSequences for every santa by adding visits to them
-        /// Respects breaks
+        ///     Initializes the visitSequences for every santa by adding visits to them
+        ///     Respects breaks
         /// </summary>
         /// <param name="numberOfRoutes">how many routes there are</param>
         /// <param name="numberOfFakeSantas">how many fake santas were added</param>
@@ -413,7 +417,7 @@ namespace IRuettae.Core.LocalSolver
                 throw new ArgumentNullException(nameof(visitSequences));
             }
 
-            var numberOfVisitsPerSanta = Math.Floor((double)(input.Visits.Count(v => !v.IsBreak) / numberOfRoutes));
+            var numberOfVisitsPerSanta = Math.Floor((double) (input.Visits.Count(v => !v.IsBreak) / numberOfRoutes));
             var visitIndex = 0;
             for (var day = 0; day < input.Days.Length; day++)
             {
