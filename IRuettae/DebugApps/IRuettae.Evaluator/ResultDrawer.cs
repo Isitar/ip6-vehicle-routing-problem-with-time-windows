@@ -12,7 +12,8 @@ namespace IRuettae.Evaluator
             Color.Red, Color.Green, Color.Blue,
             Color.Violet, Color.Brown, Color.Aqua,
             Color.Black, Color.DarkOrange,Color.Gold,
-            Color.Olive, Color.SlateGray
+            Color.Olive, Color.SlateGray, Color.Chartreuse,
+            Color.DeepPink, Color.MidnightBlue, Color.Tan
         };
 
         private const int CircleRadius = 10;
@@ -30,8 +31,8 @@ namespace IRuettae.Evaluator
 
             foreach (var route in result.NonEmptyRoutes)
             {
-                var pen = new Pen(Colors[colorIndex], 5);
-                colorIndex = colorIndex + 1 % Colors.Length;
+                var pen = new Pen(Colors[colorIndex], 2);
+                colorIndex = (colorIndex + 1) % Colors.Length;
                 int? lastX = null;
                 int? lastY = null;
                 foreach (var waypoint in route.Waypoints.OrderBy(wp => wp.StartTime))

@@ -65,7 +65,7 @@ namespace IRuettae.Core.Models.Tests
                 {
                     new Visit
                     {
-                        Id = 1,
+                        Id = 0,
                         Duration = duration1,
                         Desired = new(int, int)[]
                         {
@@ -87,7 +87,7 @@ namespace IRuettae.Core.Models.Tests
                     },
                     new Visit
                     {
-                        Id = 2,
+                        Id = 1,
                         Duration = duration2,
                         Desired = new(int, int)[]
                         {
@@ -107,7 +107,7 @@ namespace IRuettae.Core.Models.Tests
                     },
                     new Visit
                     {
-                        Id = 3,
+                        Id = 2,
                         Duration = duration3,
                         Desired = new(int, int)[]
                         {
@@ -127,7 +127,7 @@ namespace IRuettae.Core.Models.Tests
                     },
                     new Visit
                     {
-                        Id = 4,
+                        Id = 3,
                         Duration = duration4,
                         Desired = new(int, int)[]
                         {
@@ -147,14 +147,14 @@ namespace IRuettae.Core.Models.Tests
                     },
                     new Visit // will not be visited
                     {
-                        Id = 5,
+                        Id = 4,
                         Duration = 100 * hour,
                         IsBreak = false,
                         SantaId = -1,
                     },
                     new Visit // break will not be done
                     {
-                        Id = 6,
+                        Id = 5,
                         Duration = 100 * hour,
                         IsBreak = true,
                         SantaId = 100,
@@ -195,7 +195,7 @@ namespace IRuettae.Core.Models.Tests
                             // way=1h=w01
                             new Waypoint
                             {
-                                VisitId=1,
+                                VisitId=0,
                                 StartTime=day1Start-1*hour,
                                 // duration=30min
                                 // unavailable=30min
@@ -203,7 +203,7 @@ namespace IRuettae.Core.Models.Tests
                             // way=4.5h=w12
                             new Waypoint
                             {
-                                VisitId=2,
+                                VisitId=1,
                                 StartTime=day1End-1*hour,
                                 // duration=2h
                                 // desired=1h
@@ -232,7 +232,7 @@ namespace IRuettae.Core.Models.Tests
                             // way=2h=w03
                             new Waypoint
                             {
-                                VisitId=3,
+                                VisitId=2,
                                 StartTime=day1Start+2*hour,
                                 // duration=1h
                                 // desired=15min
@@ -260,7 +260,7 @@ namespace IRuettae.Core.Models.Tests
                             // way=15min=w04
                             new Waypoint
                             {
-                                VisitId=4,
+                                VisitId=3,
                                 StartTime=day2Start+1*hour,
                                 // duration=20min
                             },
@@ -307,7 +307,7 @@ namespace IRuettae.Core.Models.Tests
                 {
                     new Visit
                     {
-                        Id = 1,
+                        Id = 0,
                         IsBreak = true,
                         SantaId = 100,
                     }
@@ -330,7 +330,7 @@ namespace IRuettae.Core.Models.Tests
                         {
                             new Waypoint
                             {
-                                VisitId=1,
+                                VisitId=0,
                                 StartTime=day1Start-3*hour,
                             },
                             new Waypoint
@@ -340,12 +340,12 @@ namespace IRuettae.Core.Models.Tests
                             },
                             new Waypoint
                             {
-                                VisitId=1,
+                                VisitId=0,
                                 StartTime=day1Start-1*hour,
                             },
                             new Waypoint
                             {
-                                VisitId=1,
+                                VisitId=0,
                                 StartTime=day1End-1*hour,
                             },
                             new Waypoint
@@ -355,7 +355,7 @@ namespace IRuettae.Core.Models.Tests
                             },
                             new Waypoint
                             {
-                                VisitId=1,
+                                VisitId=0,
                                 StartTime=day1End+2*hour,
                             },
                         }
@@ -368,7 +368,7 @@ namespace IRuettae.Core.Models.Tests
                         {
                             new Waypoint
                             {
-                                VisitId=1,
+                                VisitId=0,
                                 StartTime=day2Start+2*hour,
                             },
                         }
@@ -486,6 +486,74 @@ namespace IRuettae.Core.Models.Tests
             int avg = (int)new int[] { route1Duration, route2Duration, route3Duration }.Average();
             var model = GetModel();
             Assert.AreEqual(avg, model.AverageDurationPerRoute());
+        }
+
+        [TestMethod()]
+        public void IsValidTest_Valid()
+        {
+            var model = GetModel();
+            Assert.IsTrue(model.IsValid());
+        }
+
+        [TestMethod()]
+        public void IsValidTest_SantaUsedTwice()
+        {
+            var model = GetModel();
+            // santa 1000 has two routes on day 1
+            model.Routes[0].SantaId = model.Routes.Skip(1).First().SantaId;
+
+            Assert.IsFalse(model.IsValid());
+        }
+
+        [TestMethod()]
+        public void IsValidTest_WrongStart()
+        {
+            var model = GetModel();
+            // delete start in route 0
+            model.Routes[0].Waypoints = model.Routes[0].Waypoints.Skip(1).ToArray();
+
+            Assert.IsFalse(model.IsValid());
+        }
+
+        [TestMethod()]
+        public void IsValidTest_WrongEnd()
+        {
+            var model = GetModel();
+            // delete end in route 0
+            model.Routes[0].Waypoints = model.Routes[0].Waypoints.Take(model.Routes[0].Waypoints.Length - 1).ToArray();
+
+            Assert.IsFalse(model.IsValid());
+        }
+
+        [TestMethod()]
+        public void IsValidTest_WrongWayFromHome()
+        {
+            var model = GetModel();
+            // move start to that the way is one to short
+            model.Routes[0].Waypoints[0].StartTime = model.Routes[0].Waypoints[1].StartTime - w01 + 1;
+
+            Assert.IsFalse(model.IsValid());
+        }
+
+        [TestMethod()]
+        public void IsValidTest_WrongWayToHome()
+        {
+            var model = GetModel();
+            var numberOfVisits = model.Routes[0].Waypoints.Length;
+            // move end to that the way is one to short
+            model.Routes[0].Waypoints[numberOfVisits - 1].StartTime = model.Routes[0].Waypoints[numberOfVisits - 2].StartTime + duration2 + w20 - 1;
+
+            Assert.IsFalse(model.IsValid());
+        }
+
+        [TestMethod()]
+        public void IsValidTest_WrongWayBetween()
+        {
+            var model = GetModel();
+            // make way from 1 to 2 too short
+            model.Routes[0].Waypoints[2].StartTime = model.Routes[0].Waypoints[1].StartTime + duration1 + w12 - 1;
+
+            Assert.IsFalse(model.IsValid());
         }
     }
 }

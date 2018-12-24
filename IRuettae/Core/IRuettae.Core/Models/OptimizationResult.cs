@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IRuettae.Core.Models
 {
     public enum ResultState
     {
         Finished,
-        TimelimitReached,
+        TimeLimitReached,
         Cancelled,
         Error
     }
@@ -33,13 +31,7 @@ namespace IRuettae.Core.Models
         /// <summary>
         /// Array containing all routes which contain at least one visit
         /// </summary>
-        public IEnumerable<Route> NonEmptyRoutes
-        {
-            get
-            {
-                return Routes.Where(r => r.Waypoints != null && r.Waypoints.Any(wp => wp.VisitId != Constants.VisitIdHome));
-            }
-        }
+        public IEnumerable<Route> NonEmptyRoutes => Routes?.Where(r => r.Waypoints != null && r.Waypoints.Any(wp => wp.VisitId != Constants.VisitIdHome)) ?? new List<Route>();
 
         /// <summary>
         /// The input used to calculate this result
@@ -58,25 +50,26 @@ namespace IRuettae.Core.Models
         public int Cost()
         {
             const int hour = 3600;
-            return (int)(Math.Ceiling(
-                                       +560 * NumberOfNotVisitedFamilies()
-                                       + 560 * NumberOfMissingBreaks()
-                                       + 400 * NumberOfAdditionalSantas()
-                                       + (40d / hour) * AdditionalSantaWorkTime())
-                                       + (120d / hour) * VisitTimeInUnavailable()
-                                       + (120d / hour) * WayTimeOutsideBusinessHours()
-                                       - (20d / hour) * VisitTimeInDesired()
-                                       + (40d / hour) * SantaWorkTime()
-                                       + (30d / hour) * LongestDay()
-            );
+            var cost =
+                560d * NumberOfNotVisitedFamilies()
+                + 560d * NumberOfMissingBreaks()
+                + 400d * NumberOfAdditionalSantas()
+                + (40d / hour) * AdditionalSantaWorkTime()
+                + (120d / hour) * VisitTimeInUnavailable()
+                + (120d / hour) * WayTimeOutsideBusinessHours()
+                - (20d / hour) * VisitTimeInDesired()
+                + (40d / hour) * SantaWorkTime()
+                + (30d / hour) * LongestDay();
+            return (int)Math.Ceiling(cost);
         }
-        public int NumberOfNotVisitedFamilies()
+
+        public virtual int NumberOfNotVisitedFamilies()
         {
             var visitedVisits = NonEmptyRoutes.SelectMany(r => r.Waypoints.Select(w => w.VisitId));
             return OptimizationInput.Visits.Count(v => !v.IsBreak && !visitedVisits.Contains(v.Id));
         }
 
-        public int NumberOfMissingBreaks()
+        public virtual int NumberOfMissingBreaks()
         {
             var santaBreaks = new Dictionary<int, int>();
             foreach (var v in OptimizationInput.Visits.Where(v => v.IsBreak))
@@ -116,16 +109,15 @@ namespace IRuettae.Core.Models
             var unavailableSum = 0;
             foreach (var route in NonEmptyRoutes)
             {
-                foreach (var waypoint in route.Waypoints)
+                foreach (var waypoint in route.Waypoints.Where(wp => wp.VisitId >= 0))
                 {
-                    var visit = OptimizationInput.Visits.Cast<Visit?>().FirstOrDefault(v => v != null && v.Value.Id == waypoint.VisitId);
-                    if (!visit.HasValue) { continue; }
+                    var visit = OptimizationInput.Visits[waypoint.VisitId];
 
                     int startTime = waypoint.StartTime;
-                    int endTime = startTime + visit.Value.Duration;
-                    foreach (var (from, to) in visit.Value.Unavailable)
+                    int endTime = startTime + visit.Duration;
+                    foreach (var (from, to) in visit.Unavailable)
                     {
-                        unavailableSum += IntersectionLength(new[] { (startTime, endTime), (from, to) });
+                        unavailableSum += IntersectionLength(startTime, endTime, from, to);
                     }
                 }
             }
@@ -145,13 +137,15 @@ namespace IRuettae.Core.Models
                 foreach (var waypoint in route.Waypoints.Skip(1))
                 {
                     var way = (from: endOfPreviousVisit, to: waypoint.StartTime);
-                    sum += (way.to - way.from) - IntersectionLength(new[] { day, way });
+                    sum += (way.to - way.from) - IntersectionLength(day.from, day.to, way.from, way.to);
 
-                    var visit = OptimizationInput.Visits.Cast<Visit?>().FirstOrDefault(v => v != null && v.Value.Id == waypoint.VisitId);
-                    if (visit.HasValue)
+                    var id = waypoint.VisitId;
+                    if (id < 0)
                     {
-                        endOfPreviousVisit = waypoint.StartTime + visit.Value.Duration;
+                        continue;
                     }
+
+                    endOfPreviousVisit = waypoint.StartTime + OptimizationInput.Visits[id].Duration;
                 }
             }
 
@@ -164,16 +158,15 @@ namespace IRuettae.Core.Models
 
             foreach (var route in NonEmptyRoutes)
             {
-                foreach (var waypoint in route.Waypoints)
+                foreach (var waypoint in route.Waypoints.Where(wp => wp.VisitId >= 0))
                 {
-                    var visit = OptimizationInput.Visits.Cast<Visit?>().FirstOrDefault(v => v != null && v.Value.Id == waypoint.VisitId);
-                    if (!visit.HasValue) { continue; }
+                    var visit = OptimizationInput.Visits[waypoint.VisitId];
 
                     int startTime = waypoint.StartTime;
-                    int endTime = startTime + visit.Value.Duration;
-                    foreach (var (from, to) in visit.Value.Desired)
+                    int endTime = startTime + visit.Duration;
+                    foreach (var (from, to) in visit.Desired)
                     {
-                        desiredSum += IntersectionLength(new[] { (startTime, endTime), (from, to) });
+                        desiredSum += IntersectionLength(startTime, endTime, from, to);
                     }
                 }
             }
@@ -231,7 +224,7 @@ namespace IRuettae.Core.Models
         }
 
         /// <summary>
-        /// Returns the day from OptimizationInput.Days which correspondes to the Route
+        /// Returns the day from OptimizationInput.Days which corresponds to the Route
         /// </summary>
         /// <param name="route"></param>
         /// <returns></returns>
@@ -239,28 +232,128 @@ namespace IRuettae.Core.Models
         {
             foreach (var day in OptimizationInput.Days)
             {
-                if (IntersectionLength(new[] { (route.Waypoints.First().StartTime, route.Waypoints.Last().StartTime), day }) > 0)
+                if (IntersectionLength(route.Waypoints.First().StartTime, route.Waypoints.Last().StartTime, day.from, day.to) > 0)
                 {
                     return day;
                 }
             }
-            throw new ArgumentException("no matching day found");
+
+            return OptimizationInput.Days.First(d => d.from == OptimizationInput.Days.Max(dayMax => dayMax.from));
         }
 
         /// <summary>
         /// Returns how much the two intervals overlap
         /// </summary>
-        /// <param name="intervals"></param>
+        /// <param name="start1">start of first interval</param>
+        /// <param name="end1">end of first interval</param>
+        /// <param name="start2">start of second interval</param>
+        /// <param name="end2">end of second interval</param>
         /// <returns></returns>
-        private static int IntersectionLength(IReadOnlyCollection<(int from, int to)> intervals)
+        private static int IntersectionLength(int start1, int end1, int start2, int end2)
         {
-            int startIntersection = intervals.Max(interval => interval.from);
-            int endIntersection = intervals.Min(interval => interval.to);
+            int startIntersection = Math.Max(start1, start2);
+            int endIntersection = Math.Min(end1, end2);
             if (startIntersection < endIntersection)
             {
                 return endIntersection - startIntersection;
             }
             return 0;
+        }
+
+        /// <summary>
+        /// Returns true if this OptimizationResult is valid.
+        /// Otherwise false.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsValid()
+        {
+            return Validate() == null;
+        }
+
+        /// <summary>
+        /// Returns null if this OptimizationResult is valid.
+        /// Otherwise, returns an error message.
+        /// This function returns immediately if anything invalid is found.
+        /// </summary>
+        /// <returns></returns>
+        public string Validate()
+        {
+            List<Route> routes = NonEmptyRoutes.ToList();
+
+            // check santa is only used once per day
+            {
+                var multipleUses = routes.GroupBy(r => (r.SantaId, FindDay(r))).Where(g => g.Count() > 1).ToList();
+                if (multipleUses.Count > 0)
+                {
+                    return $"Santa {multipleUses.First().Key} is used more than once on the same day.";
+                }
+            }
+
+            // validate starts
+            {
+                var wrongRoutes = routes.Where(r => r.Waypoints.First().VisitId != Constants.VisitIdHome).ToList();
+                if (wrongRoutes.Count > 0)
+                {
+                    var (from, to) = FindDay(wrongRoutes.First());
+                    return $"Wrong start in route of santa {wrongRoutes.First().SantaId} on day {from}-{to}.";
+                }
+            }
+
+            // validate ends
+            {
+                var wrongRoutes = routes.Where(r => r.Waypoints.Last().VisitId != Constants.VisitIdHome).ToList();
+                if (wrongRoutes.Count > 0)
+                {
+                    var (from, to) = FindDay(wrongRoutes.First());
+                    return $"Wrong end in route of santa {wrongRoutes.First().SantaId} on day {from}-{to}.";
+                }
+            }
+
+            // check way from home to first visit
+            {
+                var wrongStartWays = routes.Where(r =>
+                {
+                    var visit = r.Waypoints.ElementAt(1);
+                    return OptimizationInput.Visits[visit.VisitId].WayCostFromHome > visit.StartTime - r.Waypoints.First().StartTime;
+                }).ToList();
+                if (wrongStartWays.Count > 0)
+                {
+                    return $"Way between home and visit {wrongStartWays.First().Waypoints.ElementAt(1).VisitId} is too short.";
+                }
+            }
+
+            // check way from last visit to home
+            {
+                var wrongEndWays = routes.Where(r =>
+                {
+                    var lastVisit = r.Waypoints.ElementAt(r.Waypoints.Length - 2);
+                    return OptimizationInput.Visits[lastVisit.VisitId].WayCostToHome > r.Waypoints.Last().StartTime - (lastVisit.StartTime + OptimizationInput.Visits[lastVisit.VisitId].Duration);
+                }).ToList();
+                if (wrongEndWays.Count > 0)
+                {
+                    return $"Way between visit {wrongEndWays.First().Waypoints.Reverse().Skip(1).First().VisitId} and home is too short.";
+                }
+            }
+
+            // check ways in between
+            {
+                foreach (var route in routes)
+                {
+                    var middleWaypoints = route.Waypoints.Take(route.Waypoints.Length - 1).Skip(1).ToList();
+                    var previous = middleWaypoints.First();
+                    foreach (var current in middleWaypoints.Skip(1))
+                    {
+                        if (OptimizationInput.RouteCosts[previous.VisitId, current.VisitId] > current.StartTime - (previous.StartTime + OptimizationInput.Visits[previous.VisitId].Duration))
+                        {
+                            return $"Way between visit {previous.VisitId} and visit {current.VisitId} is too short.";
+                        }
+                        previous = current;
+                    }
+                }
+            }
+
+            // valid
+            return null;
         }
     }
 }
