@@ -18,7 +18,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             this.result = temporaryResult;
         }
 
-        public void RecalculatateCost(IEnumerable<Genotype> population)
+        public void RecalculateCost(IEnumerable<Genotype> population)
         {
             foreach (var individual in population)
             {
@@ -27,7 +27,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             }
         }
 
-        public void RecalculatateCost(Genotype individual)
+        public void RecalculateCost(Genotype individual)
         {
             result.Routes = decoder.Decode(individual);
             individual.Cost = result.Cost();

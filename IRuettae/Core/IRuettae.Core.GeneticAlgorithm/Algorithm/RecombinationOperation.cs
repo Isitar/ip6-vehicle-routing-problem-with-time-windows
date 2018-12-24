@@ -14,7 +14,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// Factor to be multiplied with population size
         /// to get minimum number of positions to retain in OrderBasedCrossover
         /// </summary>
-        private const double MinumumNumberOfPositionsFactor = 1d / 4d;
+        private const double MinimumNumberOfPositionsFactor = 1d / 4d;
         /// <summary>
         /// Factor to be multiplied with population size
         /// to get maximum number of positions to retain in OrderBasedCrossover
@@ -66,7 +66,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
                 return parent1;
             }
 
-            var minNumberOfPositions = (int)Math.Max(1, count * MinumumNumberOfPositionsFactor);
+            var minNumberOfPositions = (int)Math.Max(1, count * MinimumNumberOfPositionsFactor);
             var maxNumberOfPositions = (int)Math.Max(1, count * MaximumNumberOfPositionsFactor);
             var numberOfPositions = random.Next(minNumberOfPositions, maxNumberOfPositions);
 

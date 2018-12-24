@@ -52,7 +52,7 @@ namespace IRuettae.Core.GeneticAlgorithm
                 OptimizationInput = input,
             };
             var costCalculator = new CostCalculator(decoder, new SimplifiedOptimizationResult(result));
-            costCalculator.RecalculatateCost(population);
+            costCalculator.RecalculateCost(population);
 
             // Log characteristics of inital population
             Log($"Genetic Algorithm started with following paramters:{Environment.NewLine}{starterData}");
@@ -72,7 +72,7 @@ namespace IRuettae.Core.GeneticAlgorithm
                 repairOperation.Repair(population);
 
                 // recalculate costs
-                costCalculator.RecalculatateCost(population);
+                costCalculator.RecalculateCost(population);
 
                 // log current solution
                 var currentBestCost = GetMinCost(population);
