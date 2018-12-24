@@ -101,12 +101,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <returns></returns>
         private int GetMutationSize(int min, double stdev)
         {
-            double u1;
-            do
-            {
-                u1 = random.NextDouble();
-            } while (u1 == 0.0);
-
+            var u1 = random.NextDouble();
             double u2;
             do
             {
