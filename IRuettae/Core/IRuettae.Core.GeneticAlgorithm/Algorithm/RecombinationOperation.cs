@@ -171,7 +171,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             if (!nextAllele.HasValue)
             {
                 // take first allele
-                nextAllele = neighbours.Keys.Where(allele => allele != previousAllele).First();
+                nextAllele = neighbours.Keys.First(allele => allele != previousAllele);
             }
 
             return nextAllele.Value;
