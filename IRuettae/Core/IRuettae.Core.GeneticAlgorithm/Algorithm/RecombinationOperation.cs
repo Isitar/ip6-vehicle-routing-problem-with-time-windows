@@ -72,10 +72,10 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             var numberOfPositions = random.Next(minNumberOfPositions, maxNumberOfPositions);
 
             // select alleles
-            var selectedAlleles = new HashSet<int>();
+            var selectedAllelesP2 = new HashSet<int>();
             for (int i = 0; i < numberOfPositions; i++)
             {
-                if (!selectedAlleles.Add(parent2[random.Next(0, count)]))
+                if (!selectedAllelesP2.Add(parent2[random.Next(0, count)]))
                 {
                     // already selected, try again
                     i--;
@@ -88,7 +88,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             for (int i = 0; i < count; i++)
             {
                 var allele = parent1[i];
-                if (!selectedAlleles.Contains(allele))
+                if (!selectedAllelesP2.Contains(allele))
                 {
                     child[i] = allele;
                 }
@@ -100,7 +100,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 
             // add the missing alleles in the order they appear in parent2
             var nextPositionParent2 = 0;
-            var missingAlleles = parent2.Intersect(selectedAlleles).ToArray();
+            var missingAlleles = parent2.Intersect(selectedAllelesP2).ToArray();
             foreach (var i in emptyIndices)
             {
                 // find next allele
