@@ -25,6 +25,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         ///
         /// </summary>
         /// <param name="random">not null</param>
+        /// <param name="orderBasedCrossoverProbability">between 0 and 1</param>
         public RecombinationOperation(Random random, double orderBasedCrossoverProbability)
         {
             this.random = random;
