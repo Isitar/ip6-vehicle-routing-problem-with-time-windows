@@ -1,11 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using IRuettae.Core.LocalSolver;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using IRuettae.Core.LocalSolverTests;
 using IRuettae.Core.Models;
 
@@ -125,8 +120,8 @@ namespace IRuettae.Core.LocalSolver.Tests
             Assert.IsNotNull(output.Routes);
             Assert.AreEqual(1, output.NonEmptyRoutes.Count());
             Assert.AreEqual(1010, output.Cost());
-            Assert.AreEqual(1, output.Routes[0].Waypoints.Skip(1).First().VisitId);
-            Assert.AreEqual(0, output.Routes[0].Waypoints.First().StartTime);
+            Assert.AreEqual(1, output.Routes[0].Waypoints[1].VisitId);
+            Assert.AreEqual(0, output.Routes[0].Waypoints[0].StartTime);
             Assert.AreEqual(2 * hour, output.Routes[0].Waypoints[1].StartTime);
         }
 
@@ -177,8 +172,8 @@ namespace IRuettae.Core.LocalSolver.Tests
             Assert.IsNotNull(output.Routes);
             Assert.AreEqual(1, output.NonEmptyRoutes.Count());
             Assert.AreEqual(1050, output.Cost());
-            Assert.AreEqual(0, output.Routes[0].Waypoints.Skip(1).First().VisitId);
-            Assert.AreEqual(0, output.Routes[0].Waypoints.First().StartTime);
+            Assert.AreEqual(0, output.Routes[0].Waypoints[1].VisitId);
+            Assert.AreEqual(0, output.Routes[0].Waypoints[0].StartTime);
             Assert.AreEqual(3 * hour, output.Routes[0].Waypoints[1].StartTime);
         }
 
