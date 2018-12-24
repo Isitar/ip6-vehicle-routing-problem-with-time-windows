@@ -6,7 +6,7 @@ using IRuettae.Core.Models;
 
 namespace IRuettae.Core.LocalSolver.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class SolverTests
     {
         private static readonly object Mutex = new object();
@@ -14,6 +14,7 @@ namespace IRuettae.Core.LocalSolver.Tests
         [TestInitialize]
         public void TestStart()
         {
+            // Mutex used to run tests sequentially
             Monitor.Enter(Mutex);
         }
 
