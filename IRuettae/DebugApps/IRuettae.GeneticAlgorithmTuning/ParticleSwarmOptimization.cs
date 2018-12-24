@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -91,13 +92,20 @@ namespace IRuettae.GeneticAlgorithmTuning
                 }
 
                 // Output progress
-                Console.WriteLine($"generation {g}");
+                var output = new StringBuilder();
+                output.AppendLine($"generation {g} (time: {DateTime.Now:yy-MM-dd-HH-mm-ss})");
                 for (int m = 0; m < numberOfVars; m++)
                 {
-                    Console.WriteLine($"global best {names[m]}={globalBestPosition[m]}");
+                    output.AppendLine($"global best {names[m]}={globalBestPosition[m]}");
                 }
-                Console.WriteLine($"w={w} f={globalBestFitness}");
-                Console.WriteLine();
+                output.AppendLine($"w={w} f={globalBestFitness}");
+                output.AppendLine();
+
+                Console.WriteLine(output);
+                using (var sw = new StreamWriter("pso-log.txt", true))
+                {
+                    sw.WriteLine(output);
+                }
 
                 // Update velocity & position
                 for (int p = 0; p < PopulationSize; p++)
