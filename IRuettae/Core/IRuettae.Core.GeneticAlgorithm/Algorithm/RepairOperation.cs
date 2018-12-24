@@ -48,7 +48,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         {
             foreach (var santa in input.Santas.Where(s => input.Visits.Any(v => v.SantaId == s.Id)))
             {
-                var breakId = input.Visits.Where(v => v.IsBreak && v.SantaId == santa.Id).First().Id;
+                var breakId = input.Visits.First(v => v.IsBreak && v.SantaId == santa.Id).Id;
                 var breaks = alleleToVisitIdMapping.Where(e => e.Value == breakId).Select(e => e.Key).ToArray();
                 breakMapping.Add(santa.Id, breaks);
             }
