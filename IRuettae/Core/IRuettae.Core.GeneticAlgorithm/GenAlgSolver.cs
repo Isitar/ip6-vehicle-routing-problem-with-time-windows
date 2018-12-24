@@ -54,7 +54,7 @@ namespace IRuettae.Core.GeneticAlgorithm
             var costCalculator = new CostCalculator(decoder, new SimplifiedOptimizationResult(result));
             costCalculator.RecalculateCost(population);
 
-            // Log characteristics of inital population
+            // Log characteristics of initial population
             Log($"Genetic Algorithm started with following paramters:{Environment.NewLine}{starterData}");
             var bestCost = GetMinCost(population);
             Log($"Best solution cost in initial population is: {bestCost}");
