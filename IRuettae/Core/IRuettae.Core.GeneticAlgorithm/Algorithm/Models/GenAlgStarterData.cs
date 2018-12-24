@@ -9,11 +9,11 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
 {
     public class GenAlgStarterData
     {
-        public int PopulationSize { get; set; } = 10;
-        public int MaxNumberOfSantas { get; set; }
-        public long MaxNumberOfGenerations { get; set; } = long.MaxValue;
-        public double MutationProbability { get; set; } = 0.1;
-        public double OrderBasedCrossoverProbability { get; set; } = 0.5;
+        public int PopulationSize { get; private set; } = 10;
+        public int MaxNumberOfSantas { get; private set; }
+        public long MaxNumberOfGenerations { get; private set; } = long.MaxValue;
+        public double MutationProbability { get; private set; } = 0.1;
+        public double OrderBasedCrossoverProbability { get; private set; } = 0.5;
 
         /// <summary>
         ///Create default regarding the input
