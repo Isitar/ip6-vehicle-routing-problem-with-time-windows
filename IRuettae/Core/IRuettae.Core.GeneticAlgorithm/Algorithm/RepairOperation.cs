@@ -32,7 +32,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             }
 
             this.input = input;
-            needRepair = input.Visits.Where(v => v.IsBreak).Count() > 0;
+            needRepair = input.Visits.Any(v => v.IsBreak);
             breakMapping = new Dictionary<int, int[]>();
             if (needRepair)
             {
