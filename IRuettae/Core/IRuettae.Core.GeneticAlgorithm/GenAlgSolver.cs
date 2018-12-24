@@ -84,7 +84,7 @@ namespace IRuettae.Core.GeneticAlgorithm
             }
 
             Log($"Finished at generation {generation} with cost={bestCost}");
-            Log($"Current stdev is {StdDev(population.Select(i => (double)i.Cost))}");
+            Log($"Current stdev is {StDev(population.Select(i => (double)i.Cost).ToList())}");
             Log(new ProgressReport(0.99));
 
             // build result
@@ -127,7 +127,7 @@ namespace IRuettae.Core.GeneticAlgorithm
             return population.Select(i => i.Cost).Min();
         }
 
-        public static double StdDev(IEnumerable<double> values)
+        public static double StDev(IReadOnlyList<double> values)
         {
             double ret = 0.0;
             var count = values.Count();
