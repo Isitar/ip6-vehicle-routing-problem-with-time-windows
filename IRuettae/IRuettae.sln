@@ -62,7 +62,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core.LocalSolver", "Core\IRuettae.Core.LocalSolver\IRuettae.Core.LocalSolver.csproj", "{383487D6-E248-4D1B-A1D6-BE3BFBC54ABF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core.LocalSolver.Tests", "Core\IRuettae.Core.LocalSolverTests\IRuettae.Core.LocalSolver.Tests.csproj", "{CDDB3393-DFAF-4FA2-A9C4-0F9B06332753}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.ResultEvaluator", "DebugApps\IRuettae.ResultEvaluator\IRuettae.ResultEvaluator.csproj", "{BF686FD0-CD50-4F60-AD88-02591D9F3528}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug With RealGoogle|Any CPU = Debug With RealGoogle|Any CPU
