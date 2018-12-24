@@ -163,7 +163,8 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <summary>
         /// Removes the first occurence of the allel
         /// </summary>
-        /// <param name="genotype"></param>
+        /// <param name="genotypes"></param>
+        /// <param name="allele"></param>
         /// <returns>true if it was removed</returns>
         private bool RemoveAllele(List<Genotype>[] genotypes, int allele)
         {
