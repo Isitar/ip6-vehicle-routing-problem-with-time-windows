@@ -94,6 +94,7 @@ namespace IRuettae.GeneticAlgorithmTuning
                 // Output progress
                 var output = new StringBuilder();
                 output.AppendLine($"generation {g} (time: {DateTime.Now:yy-MM-dd-HH-mm-ss})");
+                output.AppendLine($"stdev={StDev(calculatedNewFitness)}");
                 for (int m = 0; m < numberOfVars; m++)
                 {
                     output.AppendLine($"global best {names[m]}={globalBestPosition[m]}");
@@ -120,6 +121,19 @@ namespace IRuettae.GeneticAlgorithmTuning
                 // Inertia weight changes
                 w = w * 0.99;
             }
+        }
+
+        public static double StDev(IReadOnlyList<double> values)
+        {
+            double ret = 0.0;
+            var count = values.Count();
+            if (count > 1)
+            {
+                var avg = values.Average();
+                var sum = values.Sum(d => (d - avg) * (d - avg));
+                ret = Math.Sqrt(sum / count);
+            }
+            return ret;
         }
     }
 }
