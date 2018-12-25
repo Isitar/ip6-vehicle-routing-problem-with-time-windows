@@ -29,7 +29,7 @@ namespace IRuettae.GeneticAlgorithmTuning
 
             var solver = new GenAlgSolver(input, starterData);
 
-            var numberOfRuns = 5;
+            var numberOfRuns = 20;
             // run numberOfRuns times and return worst
             return Enumerable.Range(0, numberOfRuns).Select(v => solver.Solve(timeLimitMilliseconds, null, null).Cost()).Max();
         }
