@@ -154,7 +154,7 @@ namespace IRuettae.Evaluator
                     {
                         Console.WriteLine($"Progress: {report}");
                     }
-#if DEBUG
+#if true
                     using (var sw = new StreamWriter(savepath + "-log.txt", true))
                     {
                         result = solver.Solve(timelimit, WriteConsoleProgress,
