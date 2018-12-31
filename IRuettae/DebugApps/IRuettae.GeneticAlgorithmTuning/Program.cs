@@ -25,7 +25,7 @@ namespace IRuettae.GeneticAlgorithmTuning
 
             var starterData = new GenAlgStarterData(input.NumberOfSantas(), long.MaxValue, PopulationSize, parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters[5]);
 
-            var timeLimitMilliseconds = 250;
+            var timeLimitMilliseconds = 1000;
 
             var solver = new GenAlgSolver(input, starterData);
 
