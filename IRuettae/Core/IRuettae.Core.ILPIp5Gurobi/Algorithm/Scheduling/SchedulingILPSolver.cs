@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using Gurobi;
 using IRuettae.Core.ILPIp5Gurobi.Algorithm;
 using IRuettae.Core.ILPIp5Gurobi.Algorithm.Scheduling;
@@ -18,7 +20,7 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
         private double MIP_GAP = 0;
         private ResultState resultState = ResultState.NotSolved;
 
-        private readonly GRBModel model = new GRBModel(new GRBEnv("scheduling.log"));
+        private readonly GRBModel model = new GRBModel(new GRBEnv($"{DateTime.Now:yy-MM-dd-HH-mm-ss}_scheduling.log"));
         private long timeLimitMilliseconds = 0;
 
         /// <summary>
@@ -117,11 +119,11 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
         {
             PrintDebugRessourcesBefore("SolveInternal");
 
-            model.Set(GRB.DoubleParam.MIPGap, MIP_GAP);
+            model.Parameters.MIPGap = MIP_GAP;
             
             if (timeLimitMilliseconds != 0)
             {
-                model.Set(GRB.DoubleParam.TimeLimit, timeLimitMilliseconds);
+                model.Parameters.TimeLimit =  timeLimitMilliseconds / 1000;
             }
             model.Optimize();
             if (model.SolCount == 0)
@@ -178,11 +180,12 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
                 for (int day = 0; day < solverData.NumberOfDays; day++)
                 {
                     Debug.WriteLine($"Day: {day}");
+                    var str = new StringBuilder();
                     for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                     {
-                        Debug.Write(solverData.Variables.SantaEnRoute[day][santa][timeslice].X);
+                        str.Append(solverData.Variables.SantaEnRoute[day][santa][timeslice].X);
                     }
-                    Debug.WriteLine($" (SantaEnRoute)");
+                    Debug.WriteLine($"SantaEnRoute: {str}");
                     Debug.WriteLine(string.Empty);
                 }
                 Debug.WriteLine(string.Empty);
@@ -201,11 +204,12 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
                     Debug.WriteLine($"Day: {day}");
                     for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
                     {
+                        var str = new StringBuilder();
                         for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                         {
-                            Debug.Write(solverData.Variables.VisitsPerSanta[day][santa][visit][timeslice].X);
+                            str.Append(solverData.Variables.VisitsPerSanta[day][santa][visit][timeslice].X);
                         }
-                        Debug.WriteLine($" (Visit {visit})");
+                        Debug.WriteLine($"Visit {visit}: {str.ToString()}");
                     }
                     Debug.WriteLine(string.Empty);
                 }
@@ -223,16 +227,18 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
                 for (int day = 0; day < solverData.NumberOfDays; day++)
                 {
                     Debug.WriteLine($"Day: {day}");
+                    var str = new StringBuilder();
                     for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                     {
-                        Debug.Write(solverData.Variables.VisitStart[day][visit][timeslice].X);
+                        str.Append(solverData.Variables.VisitStart[day][visit][timeslice].X);
                     }
-                    Debug.WriteLine(" (VisitStart)");
+                    Debug.WriteLine($"VisitStart: {str}");
+                    str.Clear();
                     for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                     {
-                        Debug.Write(solverData.Variables.Visits[day][visit][timeslice].X);
+                        str.Append(solverData.Variables.Visits[day][visit][timeslice].X);
                     }
-                    Debug.WriteLine(" (Visits)");
+                    Debug.WriteLine($"Visits: {str}");
                     Debug.WriteLine(string.Empty);
                 }
                 Debug.WriteLine(string.Empty);
@@ -245,6 +251,11 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
             {
                 {GRB.Status.OPTIMAL, ResultState.Optimal },
                 {GRB.Status.SUBOPTIMAL, ResultState.Feasible },
+                {GRB.Status.TIME_LIMIT, ResultState.Feasible},
+                {GRB.Status.SOLUTION_LIMIT, ResultState.Feasible},
+                {GRB.Status.ITERATION_LIMIT, ResultState.Feasible},
+                {GRB.Status.NODE_LIMIT, ResultState.Feasible},
+                {GRB.Status.USER_OBJ_LIMIT, ResultState.Feasible},
                 {GRB.Status.INFEASIBLE, ResultState.Infeasible },
                 {GRB.Status.LOADED, ResultState.NotSolved },
             };

@@ -17,7 +17,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
         private double MIP_GAP = 0;
         private long timelimit = 0;
 
-        private readonly GRBModel model = new GRBModel(new GRBEnv("clustering.log"));
+        private readonly GRBModel model = new GRBModel(new GRBEnv($"{DateTime.Now:yy-MM-dd-HH-mm-ss}_clustering.log"));
 
 
         public ClusteringILPSolver(SolverInputData solverInputData)
@@ -114,8 +114,12 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
         {
             PrintDebugRessourcesBefore("SolveInternal");
 
-            model.Set(GRB.DoubleParam.MIPGap, MIP_GAP);
-            model.Set(GRB.DoubleParam.TimeLimit, timelimit);
+            model.Parameters.MIPGap = MIP_GAP;
+
+            if (timelimit != 0)
+            {
+                model.Parameters.TimeLimit = timelimit / 1000;
+            }
             model.Optimize();
             if (model.SolCount == 0)
             {
@@ -224,6 +228,11 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
             {
                 {GRB.Status.OPTIMAL, ResultState.Optimal },
                 {GRB.Status.SUBOPTIMAL, ResultState.Feasible },
+                {GRB.Status.TIME_LIMIT, ResultState.Feasible},
+                {GRB.Status.SOLUTION_LIMIT, ResultState.Feasible},
+                {GRB.Status.ITERATION_LIMIT, ResultState.Feasible},
+                {GRB.Status.NODE_LIMIT, ResultState.Feasible},
+                {GRB.Status.USER_OBJ_LIMIT, ResultState.Feasible},
                 {GRB.Status.INFEASIBLE, ResultState.Infeasible },
                 {GRB.Status.LOADED, ResultState.NotSolved },
             };

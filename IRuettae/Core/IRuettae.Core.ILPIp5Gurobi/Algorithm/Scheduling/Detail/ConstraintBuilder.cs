@@ -356,14 +356,17 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Scheduling.Detail
                                 // 1 because same timeslot is handled by another constraint
                                 for (int distCounter = 1; distCounter <= Math.Min(distance, slicesPerDay - timeslice - 1); distCounter++)
                                 {
+
                                     B += solverData.Variables.VisitsPerSanta[day][santa][destination][timeslice + distCounter];
                                     numberOfBs++;
                                 }
+
 
                                 // A <= 1 - B would be easy but B can be greater than 0 and A has to be >= 0
                                 // so we multiply A by numberOfBs, possible values are 0 (if A == 0) or numberOfBs (if A == 1)
                                 // if B == 0, A can be 1 (numberOfBs <= numberOfBs), else A has to be 0 (numberOfBs - (at least 1)) is smaller than numberOfBs
                             }
+                            
                             solverData.Model.AddConstr(numberOfBs * A <= numberOfBs - B, null);
 
 #if DEBUG
