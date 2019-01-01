@@ -51,7 +51,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
 
         private int NextWaypoint(GRBVar[] santaUsesWay, int fromVisit)
         {
-            for (int i = 0; i < santaUsesWay.GetLength(1); i++)
+            for (int i = 0; i < solverData.NumberOfVisits; i++)
             {
                 if (Math.Abs(santaUsesWay[solverData.SourceDestArrPos(fromVisit,i)].X) > 0.0001)
                 {

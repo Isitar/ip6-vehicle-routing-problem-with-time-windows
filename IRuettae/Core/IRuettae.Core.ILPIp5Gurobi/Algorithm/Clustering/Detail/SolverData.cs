@@ -8,8 +8,8 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
         public GRBModel Model { get; }
         public SolverVariables Variables { get; }
 
-        public int NumberOfSantas => Variables.SantaVisit.GetLength(0);
-        public int NumberOfVisits => Variables.SantaVisit.GetLength(1);
+        public int NumberOfSantas => Variables.SantaVisit.Length;
+        public int NumberOfVisits => Variables.SantaVisit[0].Length;
 
         public SolverData(SolverInputData solverInputData, GRBModel model)
         {
