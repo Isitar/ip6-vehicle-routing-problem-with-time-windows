@@ -10,8 +10,6 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm
     {
         ResultState Solve();
         ResultState Solve(double MIP_GAP, long timelimitMiliseconds);
-        string ExportMPS();
-        string ImportMPS();
         Route GetResult();
 
         double SolutionValue();

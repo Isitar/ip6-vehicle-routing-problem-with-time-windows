@@ -208,13 +208,13 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
             DebugHR();
             Debug.WriteLine("-Metadata");
             Debug.WriteLine(string.Empty);
-            Debug.WriteLine($"Value of the target function: {solverData.Model.Objective().Value()}");
-            Debug.WriteLine($"Variables: {solverData.Model.NumVariables()}");
-            Debug.WriteLine($"Number of constraints: {solverData.Model.NumConstraints()}");
-            Debug.WriteLine($"Iterations: {solverData.Model.Iterations()}");
-            Debug.WriteLine($"Nodes: {solverData.Model.Nodes()}");
-            Debug.WriteLine($"Objective Minimization: {solverData.Model.Objective().Minimization()}");
-            Debug.WriteLine($"Best Bound: {solverData.Model.Objective().BestBound()}");
+            Debug.WriteLine($"Value of the target function: {solverData.Model.ObjVal}");
+            Debug.WriteLine($"Variables: {solverData.Model.NumVars}");
+            Debug.WriteLine($"Number of constraints: {solverData.Model.NumConstrs}");
+            Debug.WriteLine($"Iterations: {solverData.Model.IterCount}");
+            Debug.WriteLine($"Nodes: {solverData.Model.NodeCount}");
+            Debug.WriteLine($"Objective Minimization: {solverData.Model.ModelSense}");
+            Debug.WriteLine($"Best Bound: {solverData.Model.ObjBound}");
             Debug.WriteLine(string.Empty);
             DebugHR();
         }
