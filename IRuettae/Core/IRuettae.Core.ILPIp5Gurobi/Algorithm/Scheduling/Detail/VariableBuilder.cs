@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GLS = Google.OrTools.LinearSolver;
+using Gurobi;
 
 namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Scheduling.Detail
 {
@@ -28,7 +28,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Scheduling.Detail
 
         private void CreateVisits()
         {
-            solverData.Variables.Visits = new GLS.Variable[solverData.NumberOfDays][,];
+            solverData.Variables.Visits = new GRBVar[solverData.NumberOfDays][,];
 
             for (int day = 0; day < solverData.NumberOfDays; day++)
             {

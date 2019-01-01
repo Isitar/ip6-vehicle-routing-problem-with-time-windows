@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GLS = Google.OrTools.LinearSolver;
+using Gurobi;
+
 
 namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Scheduling.Detail
 {
     internal class SolverData
     {
         public SolverInputData Input { get; }
-        public GLS.Solver Solver { get; }
+        public GRBModel Model { get; }
         public int NumberOfSantas { get; }
         public int NumberOfVisits { get; }
         public int NumberOfDays { get; }
@@ -18,10 +19,10 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Scheduling.Detail
         public int StartEndPoint { get; }
         public SolverVariables Variables { get; }
 
-        public SolverData(SolverInputData solverInputData, GLS.Solver solver)
+        public SolverData(SolverInputData solverInputData, GRBModel model)
         {
             Input = solverInputData;
-            Solver = solver;
+            Model = model;
             NumberOfSantas = solverInputData.Santas[0].GetLength(0);
             NumberOfVisits = solverInputData.VisitsDuration.Length;
             NumberOfDays = solverInputData.Visits.Length;

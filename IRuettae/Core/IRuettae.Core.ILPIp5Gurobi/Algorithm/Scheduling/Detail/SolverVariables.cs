@@ -3,42 +3,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GLS = Google.OrTools.LinearSolver;
+using Gurobi;
 
 namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Scheduling.Detail
 {
     internal class SolverVariables
     {
         /// <summary>
-        /// [day][santa][Visit,timeslice] is visiting
+        /// [day][santa][Visit][timeslice] is visiting
         /// </summary>
-        public GLS.Variable[][][,] VisitsPerSanta { get; set; }
+        public GRBVar[][][][] VisitsPerSanta { get; set; }
 
         /// <summary>
-        /// [day][Visit,timeslice] is beeing visited by any santa
+        /// [day][Visit][timeslice] is beeing visited by any santa
         /// </summary>
-        public GLS.Variable[][,] Visits { get; set; }
+        public GRBVar[][][] Visits { get; set; }
 
         /// <summary>
-        /// [santa,Visit] is santa visiting Visit
+        /// [santa][Visit] is santa visiting Visit
         /// </summary>
-        public GLS.Variable[,] SantaVisits { get; set; }
+        public GRBVar[][] SantaVisits { get; set; }
 
         /// <summary>
-        /// [day][Visit,timeslice] is this the time when the Visit starts
+        /// [day][Visit][timeslice] is this the time when the Visit starts
         /// </summary>
-        public GLS.Variable[][,] VisitStart { get; set; }
+        public GRBVar[][][] VisitStart { get; set; }
 
         /// <summary>
-        /// [day,santa] is used
+        /// [day][santa] is used
         /// </summary>
-        public GLS.Variable[,] UsesSanta { get; set; }
+        public GRBVar[][] UsesSanta { get; set; }
 
         /// <summary>
-        /// [day][santa,timeslice] is on his way (visiting or walking around)
+        /// [day][santa][timeslice] is on his way (visiting or walking around)
         /// warning: those values may be too high,
         /// if TargetType.OverallMinTime is not part of the target function
         /// </summary>
-        public GLS.Variable[][,] SantaEnRoute { get; set; }
+        public GRBVar[][][] SantaEnRoute { get; set; }
     }
 }
