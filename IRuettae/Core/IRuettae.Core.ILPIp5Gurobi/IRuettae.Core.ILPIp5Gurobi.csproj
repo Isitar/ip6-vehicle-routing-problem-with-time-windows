@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6B0C008E-522D-4A5A-B854-CA14FA22C715}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>IRuettae.Core.ILPIp5Gurobi</RootNamespace>
+    <AssemblyName>IRuettae.Core.ILPIp5Gurobi</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="gurobi80.netstandard20">
+      <HintPath>..\..\..\..\..\gurobi800\win64\lib\gurobi80.netstandard20.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Algorithm\Clustering\ClusteringILPSolver.cs" />
+    <Compile Include="Algorithm\Clustering\Detail\ConstraintBuilder.cs" />
+    <Compile Include="Algorithm\Clustering\Detail\ResultBuilder.cs" />
+    <Compile Include="Algorithm\Clustering\Detail\SolverData.cs" />
+    <Compile Include="Algorithm\Clustering\Detail\SolverVariables.cs" />
+    <Compile Include="Algorithm\Clustering\Detail\VariableBuilder.cs" />
+    <Compile Include="Algorithm\Clustering\SolverInputData.cs" />
+    <Compile Include="Algorithm\ISolver.cs" />
+    <Compile Include="Algorithm\Models\ILPStarterData.cs" />
+    <Compile Include="Algorithm\Models\SchedulingOptimizationGoals.cs" />
+    <Compile Include="Algorithm\ResultState.cs" />
+    <Compile Include="Algorithm\Route.cs" />
+    <Compile Include="Algorithm\Scheduling\Detail\ConstraintBuilder.cs" />
+    <Compile Include="Algorithm\Scheduling\Detail\ResultBuilder.cs" />
+    <Compile Include="Algorithm\Scheduling\Detail\SolverData.cs" />
+    <Compile Include="Algorithm\Scheduling\Detail\SolverVariables.cs" />
+    <Compile Include="Algorithm\Scheduling\Detail\VariableBuilder.cs" />
+    <Compile Include="Algorithm\Scheduling\SchedulingILPSolver.cs" />
+    <Compile Include="Algorithm\Scheduling\SolverInputData.cs" />
+    <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\TargetFunctionFactory.cs" />
+    <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\TargetType.cs" />
+    <Compile Include="Algorithm\VisitState.cs" />
+    <Compile Include="Algorithm\Waypoint.cs" />
+    <Compile Include="ILPSolver.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VariableBuilder\ClusteringSolverVariableBuilder.cs" />
+    <Compile Include="VariableBuilder\SchedulingSolverVariableBuilder.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IRuettae.Core\IRuettae.Core.csproj">
+      <Project>{e6f0ffc6-7f26-4286-ae57-44411eb66118}</Project>
+      <Name>IRuettae.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
