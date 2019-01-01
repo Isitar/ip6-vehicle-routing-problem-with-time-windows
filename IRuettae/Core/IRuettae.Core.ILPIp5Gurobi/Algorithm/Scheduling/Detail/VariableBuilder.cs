@@ -28,81 +28,100 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Scheduling.Detail
 
         private void CreateVisits()
         {
-            solverData.Variables.Visits = new GRBVar[solverData.NumberOfDays][,];
+            solverData.Variables.Visits = new GRBVar[solverData.NumberOfDays][][];
 
             for (int day = 0; day < solverData.NumberOfDays; day++)
             {
                 var rows = solverData.NumberOfVisits;
+                solverData.Variables.Visits[day] = new GRBVar[rows][];
                 var cols = solverData.SlicesPerDay[day];
-                solverData.Variables.Visits[day] = solverData.Solver.MakeBoolVarMatrix(rows, cols, $"Visit_Day_{day}");
+                for (int v = 0; v < rows; v++)
+                {
+                    solverData.Variables.Visits[day][v] = solverData.Model.AddVars(cols, GRB.BINARY);
+                }
+
                 for (var col = 0; col < cols; col++)
                 {
-                    solverData.Solver.Add(solverData.Variables.Visits[day][0, col] == 0);
+                    solverData.Model.AddConstr(solverData.Variables.Visits[day][0][col] == 0, null);
                 }
             }
         }
 
         private void CreateSantaVisits()
         {
-            solverData.Variables.SantaVisits = solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfSantas, solverData.NumberOfVisits, "SantaVisits");
-            for (var row = 0; row < solverData.NumberOfSantas; row++)
+            solverData.Variables.SantaVisits = new GRBVar[solverData.NumberOfSantas][];
+            for (var s = 0; s < solverData.NumberOfSantas; s++)
             {
-                solverData.Solver.Add(solverData.Variables.SantaVisits[row, 0] == 0);
+                solverData.Variables.SantaVisits[s] = solverData.Model.AddVars(solverData.NumberOfVisits, GRB.BINARY);
+                solverData.Model.AddConstr(solverData.Variables.SantaVisits[s][0] == 0, null);
             }
         }
 
         private void CreateVisitsPerSanta()
         {
-            solverData.Variables.VisitsPerSanta = new GLS.Variable[solverData.NumberOfDays][][,];
+            solverData.Variables.VisitsPerSanta = new GRBVar[solverData.NumberOfDays][][][];
 
             for (int i = 0; i < solverData.NumberOfDays; i++)
             {
-                solverData.Variables.VisitsPerSanta[i] = new GLS.Variable[solverData.NumberOfSantas][,];
+                solverData.Variables.VisitsPerSanta[i] = new GRBVar[solverData.NumberOfSantas][][];
 
-                var rows = solverData.NumberOfVisits;
-                var cols = solverData.SlicesPerDay[i];
-                for (int j = 0; j < solverData.NumberOfSantas; j++)
+                var slicesPerDay = solverData.SlicesPerDay[i];
+
+                for (int s = 0; s < solverData.NumberOfSantas; s++)
                 {
-                    solverData.Variables.VisitsPerSanta[i][j] =
-                        solverData.Solver.MakeBoolVarMatrix(rows, cols, $"VisitsPerSanta_Day_{i}_Santa_{j}");
-
-                    for (var col = 0; col < cols; col++)
+                    solverData.Variables.VisitsPerSanta[i][s] = new GRBVar[solverData.NumberOfVisits][];
+                    for (int v = 0; v < solverData.NumberOfVisits; v++)
                     {
-                        solverData.Solver.Add(solverData.Variables.VisitsPerSanta[i][j][0, col] == 0);
-                    }
+                        solverData.Variables.VisitsPerSanta[i][s][v] = solverData.Model.AddVars(slicesPerDay, GRB.BINARY);
 
+                        for (var col = 0; col < slicesPerDay; col++)
+                        {
+                            solverData.Model.AddConstr(solverData.Variables.VisitsPerSanta[i][s][0][col] == 0, null);
+                        }
+                    }
                 }
             }
         }
 
         private void CreateUsesSanta()
         {
-            solverData.Variables.UsesSanta = solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfDays, solverData.NumberOfSantas, "UsesSanta");
+            solverData.Variables.UsesSanta = new GRBVar[solverData.NumberOfDays][];
+            for (int d = 0; d < solverData.NumberOfDays; d++)
+            {
+                solverData.Variables.UsesSanta[d] = solverData.Model.AddVars(solverData.NumberOfSantas, GRB.BINARY);
+            }
         }
 
         private void CreateVisitStart()
         {
-            solverData.Variables.VisitStart = new GLS.Variable[solverData.NumberOfDays][,];
+            solverData.Variables.VisitStart = new GRBVar[solverData.NumberOfDays][][];
 
             for (int day = 0; day < solverData.NumberOfDays; day++)
             {
-                solverData.Variables.VisitStart[day] = solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfVisits, solverData.SlicesPerDay[day], $"VisitStart_Day{day}");
-                for (var col = 0; col < solverData.SlicesPerDay[day]; col++)
+                solverData.Variables.VisitStart[day] = new GRBVar[solverData.NumberOfVisits][];
+                for (int v = 0; v < solverData.NumberOfVisits; v++)
                 {
-                    solverData.Solver.Add(solverData.Variables.VisitStart[day][0, col] == 0);
+                    solverData.Variables.VisitStart[day][v] = solverData.Model.AddVars(solverData.SlicesPerDay[day], GRB.BINARY);
+                    for (var col = 0; col < solverData.SlicesPerDay[day]; col++)
+                    {
+                        solverData.Model.AddConstr(solverData.Variables.VisitStart[day][0][col] == 0, null);
+                    }
                 }
             }
         }
 
         private void CreateSantaEnRoute()
         {
-            solverData.Variables.SantaEnRoute = new GLS.Variable[solverData.NumberOfDays][,];
+            solverData.Variables.SantaEnRoute = new GRBVar[solverData.NumberOfDays][][];
 
             for (int i = 0; i < solverData.NumberOfDays; i++)
             {
-                var rows = solverData.NumberOfSantas;
+                solverData.Variables.SantaEnRoute[i] = new GRBVar[solverData.NumberOfSantas][];
                 var cols = solverData.SlicesPerDay[i];
-                solverData.Variables.SantaEnRoute[i] = solverData.Solver.MakeBoolVarMatrix(rows, cols, $"SantaEnRoute_Day_{i}");
+                for (int s = 0; s < solverData.NumberOfSantas; s++)
+                {
+                    solverData.Variables.SantaEnRoute[i][s] = solverData.Model.AddVars(cols, GRB.BINARY);
+                }
             }
         }
     }

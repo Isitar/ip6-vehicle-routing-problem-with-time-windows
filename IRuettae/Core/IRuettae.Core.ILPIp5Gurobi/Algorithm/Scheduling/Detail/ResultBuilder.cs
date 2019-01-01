@@ -73,7 +73,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Scheduling.Detail
                         continue;
                     }
 
-                    if (solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice].SolutionValue() == 1)
+                    if (solverData.Variables.VisitsPerSanta[day][santa][visit][timeslice].X >= 0.5)
                     {
                         return new Waypoint(visit, timeslice);
                     }
