@@ -107,7 +107,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
             targetFunction = workingTimeFactor * santaWorkingTime.Sum()
                              + longestDayFactor * longestDay;
 
-            solverData.Solver.Minimize(targetFunction);
+            solverData.Model.Minimize(targetFunction);
 
             PrintDebugRessourcesAfter();
         }
@@ -210,13 +210,13 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
             DebugHR();
             Debug.WriteLine("-Metadata");
             Debug.WriteLine(string.Empty);
-            Debug.WriteLine($"Value of the target function: {solverData.Solver.Objective().Value()}");
-            Debug.WriteLine($"Variables: {solverData.Solver.NumVariables()}");
-            Debug.WriteLine($"Number of constraints: {solverData.Solver.NumConstraints()}");
-            Debug.WriteLine($"Iterations: {solverData.Solver.Iterations()}");
-            Debug.WriteLine($"Nodes: {solverData.Solver.Nodes()}");
-            Debug.WriteLine($"Objective Minimization: {solverData.Solver.Objective().Minimization()}");
-            Debug.WriteLine($"Best Bound: {solverData.Solver.Objective().BestBound()}");
+            Debug.WriteLine($"Value of the target function: {solverData.Model.Objective().Value()}");
+            Debug.WriteLine($"Variables: {solverData.Model.NumVariables()}");
+            Debug.WriteLine($"Number of constraints: {solverData.Model.NumConstraints()}");
+            Debug.WriteLine($"Iterations: {solverData.Model.Iterations()}");
+            Debug.WriteLine($"Nodes: {solverData.Model.Nodes()}");
+            Debug.WriteLine($"Objective Minimization: {solverData.Model.Objective().Minimization()}");
+            Debug.WriteLine($"Best Bound: {solverData.Model.Objective().BestBound()}");
             Debug.WriteLine(string.Empty);
             DebugHR();
         }
@@ -293,7 +293,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
 
         private void PrintDebugRessources(string description)
         {
-            Debug.WriteLine($"{description}: {solverData.Solver.NumConstraints()} constraint, {Process.GetCurrentProcess().PrivateMemorySize64 / 1024 / 1024} MB used memory;");
+            Debug.WriteLine($"{description}: {solverData.Model.NumConstraints()} constraint, {Process.GetCurrentProcess().PrivateMemorySize64 / 1024 / 1024} MB used memory;");
         }
     }
 }

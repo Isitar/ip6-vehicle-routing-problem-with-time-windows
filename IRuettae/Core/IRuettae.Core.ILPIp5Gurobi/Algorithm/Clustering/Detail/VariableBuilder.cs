@@ -19,7 +19,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
             CreateSantaVisit();
             CreateSantaRouteAndVisitTime();
             CreateSantaUsesWay();
-            solverData.Variables.SantaUsed = solverData.Solver.MakeBoolVarArray(solverData.NumberOfSantas, "Santa used");
+            solverData.Variables.SantaUsed = solverData.Model.MakeBoolVarArray(solverData.NumberOfSantas, "Santa used");
         }
 
         private void CreateSantaUsesWay()
@@ -31,12 +31,12 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
                 solverData.Variables.SantaUsesWay[santa] =
-                    solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfVisits, solverData.NumberOfVisits, $"Santa_{santa}_usesWay");
+                    solverData.Model.MakeBoolVarMatrix(solverData.NumberOfVisits, solverData.NumberOfVisits, $"Santa_{santa}_usesWay");
 
                 solverData.Variables.SantaWayFlow[santa] =
-                    solverData.Solver.MakeNumVarMatrix(solverData.NumberOfVisits, solverData.NumberOfVisits, 0, solverData.NumberOfVisits, $"Santa_{santa}_wayFlow");
+                    solverData.Model.MakeNumVarMatrix(solverData.NumberOfVisits, solverData.NumberOfVisits, 0, solverData.NumberOfVisits, $"Santa_{santa}_wayFlow");
                 solverData.Variables.SantaWayHasFlow[santa] =
-                    solverData.Solver.MakeBoolVarMatrix(solverData.NumberOfVisits, solverData.NumberOfVisits, $"Santa_{santa}_wayHasFlow");
+                    solverData.Model.MakeBoolVarMatrix(solverData.NumberOfVisits, solverData.NumberOfVisits, $"Santa_{santa}_wayHasFlow");
             }
         }
 
@@ -51,9 +51,9 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
                 foreach (var santa in Enumerable.Range(0, numberOfSantas))
                 {
                     var newIndex = day * numberOfSantas + santa;
-                    solverData.Variables.SantaRouteCost[newIndex] = solverData.Solver.MakeNumVar(0,
+                    solverData.Variables.SantaRouteCost[newIndex] = solverData.Model.MakeNumVar(0,
                         double.MaxValue, $"Day_{day}_Santa_{santa}_routecost");
-                    solverData.Variables.SantaVisitTime[newIndex] = solverData.Solver.MakeNumVar(0,
+                    solverData.Variables.SantaVisitTime[newIndex] = solverData.Model.MakeNumVar(0,
                         solverData.SolverInputData.DayDuration[day], $"Day_{day}_Santa_{santa}_visittime");
                 }
             }
@@ -63,8 +63,8 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
         {
             var rows = solverData.SolverInputData.Santas.Length;
             var cols = solverData.SolverInputData.Visits.GetLength(1);
-            solverData.Variables.SantaVisit = solverData.Solver.MakeBoolVarMatrix(rows, cols, "SantaVisit");
-            solverData.Variables.SantaVisitBonus = solverData.Solver.MakeBoolVarMatrix(rows, cols, "SantaVisitBonus");
+            solverData.Variables.SantaVisit = solverData.Model.MakeBoolVarMatrix(rows, cols, "SantaVisit");
+            solverData.Variables.SantaVisitBonus = solverData.Model.MakeBoolVarMatrix(rows, cols, "SantaVisitBonus");
             //solverData.Variables.SantaVisitFlow = solverData.ClusteringILPSolver.MakeNumVarMatrix(rows, cols, 0, solverData.NumberOfVisits, "SantaVisitFlow");
         }
 

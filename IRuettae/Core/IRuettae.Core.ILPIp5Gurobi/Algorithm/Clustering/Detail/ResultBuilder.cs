@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail;
+using Gurobi;
 
 namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
 {
@@ -31,7 +30,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
 
                     foreach (var visit in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
-                        if (Math.Abs(solverData.Variables.SantaVisit[santaIndex, visit].SolutionValue() - 1) < 0.0001)
+                        if (Math.Abs(solverData.Variables.SantaVisit[santaIndex, visit].X - 1) < 0.0001)
                         {
                             numberOfVisits++;
                         }
@@ -50,11 +49,11 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
             return route;
         }
 
-        private int NextWaypoint(Variable[,] santaUsesWay, int fromVisit)
+        private int NextWaypoint(GRBVar[,] santaUsesWay, int fromVisit)
         {
             for (int i = 0; i < santaUsesWay.GetLength(1); i++)
             {
-                if (Math.Abs(santaUsesWay[fromVisit, i].SolutionValue()) > 0.0001)
+                if (Math.Abs(santaUsesWay[fromVisit, i].X) > 0.0001)
                 {
                     return i;
                 }
