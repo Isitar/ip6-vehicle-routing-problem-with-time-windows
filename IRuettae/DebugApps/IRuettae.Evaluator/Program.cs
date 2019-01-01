@@ -159,7 +159,7 @@ namespace IRuettae.Evaluator
                                 SchedulingTimeLimitMiliseconds = (long)(0.3 * timelimit),
                                 TimeSliceDuration = 120
                             });
-                            savepath += "_ILP";
+                            savepath += "_ILPIp5Gurobi";
                             break;
                     }
 
