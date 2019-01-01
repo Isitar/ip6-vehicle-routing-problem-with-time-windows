@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
-using IRuettae.Core.ILP.Algorithm.Models;
-using IRuettae.Core.ILP.Algorithm.Scheduling.Detail;
-using IRuettae.Core.ILP.Algorithm.Scheduling.TargetFunctionBuilders;
-using GLS = Google.OrTools.LinearSolver;
+using Gurobi;
+using IRuettae.Core.ILPIp5Gurobi.Algorithm;
+using IRuettae.Core.ILPIp5Gurobi.Algorithm.Scheduling;
+using IRuettae.Core.ILPIp5Gurobi.Algorithm.Scheduling.Detail;
+using IRuettae.Core.ILPIp5Gurobi.Algorithm.Scheduling.TargetFunctionBuilders;
+
 
 namespace IRuettae.Core.ILP.Algorithm.Scheduling
 {
-    public class SchedulingILPSolver : ISolver
+    public class SchedulingILPSolver : ILPIp5Gurobi.Algorithm.ISolver
     {
         private const int WaytimeWeight = 40;
         private const int DesiredWeight = 20;
@@ -19,15 +19,15 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
         private bool hasModel = false;
         private ResultState resultState = ResultState.NotSolved;
 
-        private readonly GLS.Solver solver = new GLS.Solver("SantaProblem", GLS.Solver.SCIP_MIXED_INTEGER_PROGRAMMING);
-        private long timelimitMiliseconds = 0;
+        private readonly GRBModel model = new GRBModel(new GRBEnv("scheduling.log"));
+        private long timeLimitMilliseconds = 0;
 
         /// <summary>
         ///
         /// </summary>
         public SchedulingILPSolver(SolverInputData solverInputData)
         {
-            this.solverData = new SolverData(solverInputData, solver);
+            this.solverData = new SolverData(solverInputData, model);
         }
 
         public ResultState Solve()
@@ -36,10 +36,10 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
             return SolveInternal();
         }
 
-        public ResultState Solve(double MIP_GAP, long timelimitMiliseconds)
+        public ResultState Solve(double MIP_GAP, long timeLimitMilliseconds)
         {
             this.MIP_GAP = MIP_GAP;
-            this.timelimitMiliseconds = timelimitMiliseconds;
+            this.timeLimitMilliseconds = timeLimitMilliseconds;
             return Solve();
         }
 
@@ -58,7 +58,7 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
         {
             PrintDebugRessourcesBefore("InitGoogleSolver");
 
-            solver.Reset();
+            model.Reset();
 
             PrintDebugRessourcesAfter();
         }
@@ -88,11 +88,11 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
             PrintDebugRessourcesBefore("AddTargetFunction");
 
             var factory = new TargetFunctionFactory(solverData);
-            var targetFunction = new GLS.LinearExpr();
+            var targetFunction = new GRBLinExpr(0);
             targetFunction += factory.CreateTargetFunction(TargetType.MinTime, WaytimeWeight);
             targetFunction += factory.CreateTargetFunction(TargetType.TryVisitDesired, DesiredWeight);
 
-            solverData.Solver.Minimize(targetFunction);
+            solverData.Model.SetObjective(targetFunction, GRB.MINIMIZE);
 
 
             // constraint target function based on presolved solution
@@ -107,11 +107,11 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
                 }
 
                 totalTimePresolved += solverData.Input.Distances[solverData.Input.Presolved.Length - 1, 0];
-                solver.Add(targetFunction <= totalTimePresolved * WaytimeWeight);
+                model.AddConstr(targetFunction <= totalTimePresolved * WaytimeWeight, null);
             }
 
             var minWayTime = solverData.Input.Distances.Cast<int>().Where(i => i > 0).Min();
-            solver.Add(targetFunction >= (minWayTime * (solverData.NumberOfVisits + 1) + solverData.Input.VisitsDuration.Sum()) * (WaytimeWeight - DesiredWeight));
+            model.AddConstr(targetFunction >= (minWayTime * (solverData.NumberOfVisits + 1) + solverData.Input.VisitsDuration.Sum()) * (WaytimeWeight - DesiredWeight), null);
             PrintDebugRessourcesAfter();
         }
 
@@ -119,18 +119,21 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
         {
             PrintDebugRessourcesBefore("SolveInternal");
 
-            var param = new GLS.MPSolverParameters();
-            param.SetDoubleParam(GLS.MPSolverParameters.RELATIVE_MIP_GAP, MIP_GAP);
-            if (timelimitMiliseconds != 0)
+            model.Set(GRB.DoubleParam.MIPGap, MIP_GAP);
+            
+            if (timeLimitMilliseconds != 0)
             {
-                solver.SetTimeLimit(timelimitMiliseconds);
+                model.Set(GRB.DoubleParam.TimeLimit, timeLimitMilliseconds);
             }
-#if DEBUG
-            solver.EnableOutput();
-#else
-            solver.SuppressOutput();
-#endif
-            resultState = FromGoogleResultState(solver.Solve(param));
+            model.Optimize();
+            if (model.SolCount == 0)
+            {
+                resultState = ResultState.NotSolved;
+            }
+            else
+            {
+                resultState = FromGurobiState(model.Status);
+            }
 
             PrintDebugRessourcesAfter();
 #if DEBUG
@@ -157,13 +160,13 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
             Debug.WriteLine("====================");
             Debug.WriteLine("-Metadata");
             Debug.WriteLine(string.Empty);
-            Debug.WriteLine($"Value of the target function: {solverData.Solver.Objective().Value()}");
-            Debug.WriteLine($"Variables: {solverData.Solver.NumVariables()}");
-            Debug.WriteLine($"Number of constraints: {solverData.Solver.NumConstraints()}");
-            Debug.WriteLine($"Iterations: {solverData.Solver.Iterations()}");
-            Debug.WriteLine($"Nodes: {solverData.Solver.Nodes()}");
-            Debug.WriteLine($"Objective Minimization: {solverData.Solver.Objective().Minimization()}");
-            Debug.WriteLine($"Best Bound: {solverData.Solver.Objective().BestBound()}");
+            Debug.WriteLine($"Value of the target function: {solverData.Model.ObjVal}");
+            Debug.WriteLine($"Variables: {solverData.Model.NumVars}");
+            Debug.WriteLine($"Number of constraints: {solverData.Model.NumConstrs}");
+            Debug.WriteLine($"Iterations: {solverData.Model.IterCount}");
+            Debug.WriteLine($"Nodes: {solverData.Model.NodeCount}");
+            Debug.WriteLine($"Objective Minimization: {solverData.Model.ModelSense}");
+            Debug.WriteLine($"Best Bound: {solverData.Model.ObjBound}");
             Debug.WriteLine(string.Empty);
         }
 
@@ -179,7 +182,7 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
                     Debug.WriteLine($"Day: {day}");
                     for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                     {
-                        Debug.Write(solverData.Variables.SantaEnRoute[day][santa, timeslice].SolutionValue());
+                        Debug.Write(solverData.Variables.SantaEnRoute[day][santa][timeslice].X);
                     }
                     Debug.WriteLine($" (SantaEnRoute)");
                     Debug.WriteLine(string.Empty);
@@ -202,7 +205,7 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
                     {
                         for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                         {
-                            Debug.Write(solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice].SolutionValue());
+                            Debug.Write(solverData.Variables.VisitsPerSanta[day][santa][visit][timeslice].X);
                         }
                         Debug.WriteLine($" (Visit {visit})");
                     }
@@ -224,12 +227,12 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
                     Debug.WriteLine($"Day: {day}");
                     for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                     {
-                        Debug.Write(solverData.Variables.VisitStart[day][visit, timeslice].SolutionValue());
+                        Debug.Write(solverData.Variables.VisitStart[day][visit][timeslice].X);
                     }
                     Debug.WriteLine(" (VisitStart)");
                     for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                     {
-                        Debug.Write(solverData.Variables.Visits[day][visit, timeslice].SolutionValue());
+                        Debug.Write(solverData.Variables.Visits[day][visit][timeslice].X);
                     }
                     Debug.WriteLine(" (Visits)");
                     Debug.WriteLine(string.Empty);
@@ -238,49 +241,20 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
             }
         }
 
-        private ResultState FromGoogleResultState(int resultState)
+        private ResultState FromGurobiState(int resultState)
         {
             Dictionary<int, ResultState> mapping = new Dictionary<int, ResultState>()
             {
-                {GLS.Solver.OPTIMAL, ResultState.Optimal },
-                {GLS.Solver.FEASIBLE, ResultState.Feasible },
-                {GLS.Solver.INFEASIBLE, ResultState.Infeasible },
-                {GLS.Solver.NOT_SOLVED, ResultState.NotSolved },
+                {GRB.Status.OPTIMAL, ResultState.Optimal },
+                {GRB.Status.SUBOPTIMAL, ResultState.Feasible },
+                {GRB.Status.INFEASIBLE, ResultState.Infeasible },
+                {GRB.Status.LOADED, ResultState.NotSolved },
             };
             if (mapping.TryGetValue(resultState, out var value))
             {
                 return value;
             }
             return ResultState.Unknown;
-        }
-
-        /// <summary>
-        /// Returns the mps as string
-        /// </summary>
-        /// <returns>mps as string</returns>
-        public string ExportMPS()
-        {
-            if (!hasModel)
-            {
-                CreateModel();
-            }
-
-            // return solver.ExportModelAsLpFormat(false);
-            return solver.ExportModelAsMpsFormat(false, false);
-        }
-
-        /// <summary>
-        /// Exports the mps to the path as file
-        /// </summary>
-        /// <param name="path">where to save the mps</param>
-        public void ExportMPSAsFile(string path)
-        {
-            System.IO.File.WriteAllText(path, ExportMPS());
-        }
-
-        public string ImportMPS()
-        {
-            throw new NotImplementedException();
         }
 
         public Route GetResult()
@@ -292,7 +266,7 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
 
         public double SolutionValue()
         {
-            return solver.Objective().Value();
+            return model.ObjVal;
         }
 
         private void PrintDebugRessourcesBefore(string name)
@@ -309,7 +283,7 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
 
         private void PrintDebugRessources(string description)
         {
-            Debug.WriteLine($"{description}: {solverData.Solver.NumConstraints()} constraint, {Process.GetCurrentProcess().PrivateMemorySize64 / 1024 / 1024} MB used memory;");
+            Debug.WriteLine($"{description}: {solverData.Model.NumConstrs} constraint, {Process.GetCurrentProcess().PrivateMemorySize64 / 1024 / 1024} MB used memory;");
         }
     }
 }

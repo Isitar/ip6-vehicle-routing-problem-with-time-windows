@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using IRuettae.Core.ILP.Algorithm;
+using IRuettae.Core.ILPIp5Gurobi.Algorithm;
+using IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering;
 using IRuettae.Core.Models;
 
 namespace IRuettae.Core.ILPIp5Gurobi.VariableBuilder

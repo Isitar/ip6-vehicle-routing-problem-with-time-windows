@@ -18,7 +18,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
         private double MIP_GAP = 0;
         private long timelimit = 0;
 
-        private readonly GRBModel model = new GRBModel(new GRBEnv("grb.log"));
+        private readonly GRBModel model = new GRBModel(new GRBEnv("clustering.log"));
 
 
         public ClusteringILPSolver(SolverInputData solverInputData)
