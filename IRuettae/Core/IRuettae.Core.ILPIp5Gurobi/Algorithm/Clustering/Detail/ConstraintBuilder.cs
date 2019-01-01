@@ -15,10 +15,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
 
         private GRBModel Model => solverData.Model;
 
-        private int SourceDestArrPos(int source, int destination)
-        {
-            return source * solverData.NumberOfVisits + destination;
-        }
+        
 
         public void CreateConstraints()
         {
@@ -117,7 +114,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
                 // flow for start location if santa is in use
                 foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                 {
-                    Model.AddConstr(santaWayFlow[SourceDestArrPos(0, destination)] == santaUsesWay[SourceDestArrPos(0, destination)] * M, null);
+                    Model.AddConstr(santaWayFlow[solverData.SourceDestArrPos(0, destination)] == santaUsesWay[solverData.SourceDestArrPos(0, destination)] * M, null);
                 }
 
                 //flow only possible if santa uses way
@@ -125,7 +122,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
                 {
                     foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
-                        Model.AddConstr(santaWayFlow[SourceDestArrPos(source, destination)] <= santaUsesWay[SourceDestArrPos(source, destination)] * M, null);
+                        Model.AddConstr(santaWayFlow[solverData.SourceDestArrPos(source, destination)] <= santaUsesWay[solverData.SourceDestArrPos(source, destination)] * M, null);
                         //ClusteringILPSolver.Add(santaWayFlow[source, destination] >= santaUsesWay[source, destination]);
                     }
                 }
@@ -135,7 +132,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
                 {
                     for (var destination = 1; source < solverData.NumberOfVisits; source++)
                     {
-                        Model.AddConstr(santaWayFlow[SourceDestArrPos(source, destination)] <= numberOfVisitsInCluster, null);
+                        Model.AddConstr(santaWayFlow[solverData.SourceDestArrPos(source, destination)] <= numberOfVisitsInCluster, null);
                     }
                 }
 
@@ -145,13 +142,13 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
                     var sumFlowNeightbours = new GRBLinExpr(0);
                     foreach (var incomingNeighbours in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
-                        sumFlowNeightbours += santaWayFlow[SourceDestArrPos(incomingNeighbours, source)];
+                        sumFlowNeightbours += santaWayFlow[solverData.SourceDestArrPos(incomingNeighbours, source)];
                     }
 
                     // node has value of incoming flow
                     foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
-                        Model.AddConstr(santaWayFlow[SourceDestArrPos(source, destination)] <= sumFlowNeightbours - 1 * solverData.Variables.SantaVisit[santa][source], null);
+                        Model.AddConstr(santaWayFlow[solverData.SourceDestArrPos(source, destination)] <= sumFlowNeightbours - 1 * solverData.Variables.SantaVisit[santa][source], null);
                     }
                 }
 
@@ -160,7 +157,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
                 {
                     foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
-                        Model.AddConstr(santaWayHasFlow[SourceDestArrPos(source, destination)] <= santaWayFlow[SourceDestArrPos(source, destination)], null);
+                        Model.AddConstr(santaWayHasFlow[solverData.SourceDestArrPos(source, destination)] <= santaWayFlow[solverData.SourceDestArrPos(source, destination)], null);
                         //ClusteringILPSolver.Add(santaWayFlow[source, destination] <= santaWayHasFlow[source, destination] * M); // this constraint makes it terrible slow
                     }
                 }
@@ -171,8 +168,8 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
                 {
                     foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
-                        sumOfFlow += santaWayHasFlow[SourceDestArrPos(source, destination)];
-                        sumOfEdges += santaUsesWay[SourceDestArrPos(source, destination)];
+                        sumOfFlow += santaWayHasFlow[solverData.SourceDestArrPos(source, destination)];
+                        sumOfEdges += santaUsesWay[solverData.SourceDestArrPos(source, destination)];
                     }
                 }
 
@@ -188,7 +185,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
                 {
                     foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
-                        Model.AddConstr(solverData.Variables.SantaUsesWay[santa][SourceDestArrPos(source, destination)] + solverData.Variables.SantaUsesWay[santa][SourceDestArrPos(destination, source)] <= 1, null);
+                        Model.AddConstr(solverData.Variables.SantaUsesWay[santa][solverData.SourceDestArrPos(source, destination)] + solverData.Variables.SantaUsesWay[santa][solverData.SourceDestArrPos(destination, source)] <= 1, null);
                     }
                 }
             }
@@ -200,7 +197,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
             {
                 foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
                 {
-                    Model.AddConstr(solverData.Variables.SantaUsesWay[santa][SourceDestArrPos(source, source)] == 0, null);
+                    Model.AddConstr(solverData.Variables.SantaUsesWay[santa][solverData.SourceDestArrPos(source, source)] == 0, null);
                 }
             }
         }
@@ -214,7 +211,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
                     var numOfSources = new GRBLinExpr();
                     foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
-                        numOfSources += solverData.Variables.SantaUsesWay[santa][SourceDestArrPos(source, destination)];
+                        numOfSources += solverData.Variables.SantaUsesWay[santa][solverData.SourceDestArrPos(source, destination)];
                     }
 
                     Model.AddConstr(numOfSources == 1 * solverData.Variables.SantaVisit[santa][source], null);
@@ -231,7 +228,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
                     var numOfDestinations = new GRBLinExpr();
                     foreach (var source in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
-                        numOfDestinations += solverData.Variables.SantaUsesWay[santa][SourceDestArrPos(source, destination)];
+                        numOfDestinations += solverData.Variables.SantaUsesWay[santa][solverData.SourceDestArrPos(source, destination)];
                     }
 
                     Model.AddConstr(numOfDestinations == 1 * solverData.Variables.SantaVisit[santa][destination], null);
@@ -257,7 +254,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
                 {
                     foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
-                        numberOfEdges += solverData.Variables.SantaUsesWay[santa][SourceDestArrPos(source, destination)];
+                        numberOfEdges += solverData.Variables.SantaUsesWay[santa][solverData.SourceDestArrPos(source, destination)];
                     }
                 }
 
@@ -319,8 +316,8 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
                 {
                     foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
-                        Model.AddConstr(solverData.Variables.SantaUsesWay[santa][SourceDestArrPos(source, destination)] <=
-                                        solverData.Variables.SantaWayHasFlow[santa][SourceDestArrPos(source, destination)], null);
+                        Model.AddConstr(solverData.Variables.SantaUsesWay[santa][solverData.SourceDestArrPos(source, destination)] <=
+                                        solverData.Variables.SantaWayHasFlow[santa][solverData.SourceDestArrPos(source, destination)], null);
                     }
                 }
             }
@@ -352,8 +349,8 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
                 {
                     foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
-                        overallHasFlow += solverData.Variables.SantaWayHasFlow[santa][SourceDestArrPos(source, destination)];
-                        overallUseWay += solverData.Variables.SantaUsesWay[santa][SourceDestArrPos(source, destination)];
+                        overallHasFlow += solverData.Variables.SantaWayHasFlow[santa][solverData.SourceDestArrPos(source, destination)];
+                        overallUseWay += solverData.Variables.SantaUsesWay[santa][solverData.SourceDestArrPos(source, destination)];
                     }
                 }
             }
@@ -402,11 +399,11 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
                     {
                         var destinationVisitedBySanta = solverData.Variables.SantaVisit[santa][destination];
 
-                        Model.AddConstr(solverData.Variables.SantaUsesWay[santa][SourceDestArrPos(source, destination)] <= sourceVisitedBySanta, null);
-                        Model.AddConstr(solverData.Variables.SantaUsesWay[santa][SourceDestArrPos(source, destination)] <= destinationVisitedBySanta, null);
+                        Model.AddConstr(solverData.Variables.SantaUsesWay[santa][solverData.SourceDestArrPos(source, destination)] <= sourceVisitedBySanta, null);
+                        Model.AddConstr(solverData.Variables.SantaUsesWay[santa][solverData.SourceDestArrPos(source, destination)] <= destinationVisitedBySanta, null);
 
-                        Model.AddConstr(solverData.Variables.SantaUsesWay[santa][SourceDestArrPos(destination, source)] <= sourceVisitedBySanta, null);
-                        Model.AddConstr(solverData.Variables.SantaUsesWay[santa][SourceDestArrPos(destination, source)] <= destinationVisitedBySanta, null);
+                        Model.AddConstr(solverData.Variables.SantaUsesWay[santa][solverData.SourceDestArrPos(destination, source)] <= sourceVisitedBySanta, null);
+                        Model.AddConstr(solverData.Variables.SantaUsesWay[santa][solverData.SourceDestArrPos(destination, source)] <= destinationVisitedBySanta, null);
                     }
                 }
             }
@@ -421,7 +418,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
                 {
                     foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
-                        expr += solverData.Variables.SantaUsesWay[santa][SourceDestArrPos(source, destination)] * solverData.SolverInputData.Distances[source, destination];
+                        expr += solverData.Variables.SantaUsesWay[santa][solverData.SourceDestArrPos(source, destination)] * solverData.SolverInputData.Distances[source, destination];
                     }
                 }
 

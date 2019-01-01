@@ -30,17 +30,17 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
 
                     foreach (var visit in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
-                        if (Math.Abs(solverData.Variables.SantaVisit[santaIndex, visit].X - 1) < 0.0001)
+                        if (Math.Abs(solverData.Variables.SantaVisit[santaIndex][visit].X - 1) < 0.0001)
                         {
                             numberOfVisits++;
                         }
                     }
 
-                    var waypoints = new List<Waypoint> {new Waypoint(0, 0)};
+                    var waypoints = new List<Waypoint> { new Waypoint(0, 0) };
                     var uesWay = solverData.Variables.SantaUsesWay[santaIndex];
                     for (int i = 1; i < numberOfVisits; i++)
                     {
-                        waypoints.Add(new Waypoint(NextWaypoint(uesWay, waypoints.Last().Visit), i ));
+                        waypoints.Add(new Waypoint(NextWaypoint(uesWay, waypoints.Last().Visit), i));
                     }
 
                     route.Waypoints[santa, day] = waypoints;
@@ -49,11 +49,11 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
             return route;
         }
 
-        private int NextWaypoint(GRBVar[,] santaUsesWay, int fromVisit)
+        private int NextWaypoint(GRBVar[] santaUsesWay, int fromVisit)
         {
             for (int i = 0; i < santaUsesWay.GetLength(1); i++)
             {
-                if (Math.Abs(santaUsesWay[fromVisit, i].X) > 0.0001)
+                if (Math.Abs(santaUsesWay[solverData.SourceDestArrPos(fromVisit,i)].X) > 0.0001)
                 {
                     return i;
                 }

@@ -17,5 +17,10 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
             Model = model;
             Variables = new SolverVariables();
         }
+
+        public int SourceDestArrPos(int source, int destination)
+        {
+            return source * NumberOfVisits + destination;
+        }
     }
 }

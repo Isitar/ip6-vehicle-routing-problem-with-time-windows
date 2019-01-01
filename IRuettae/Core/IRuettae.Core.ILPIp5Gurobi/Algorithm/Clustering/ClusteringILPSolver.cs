@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-
-
+using Gurobi;
 using IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail;
 
 
@@ -19,13 +18,12 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
         private double MIP_GAP = 0;
         private long timelimit = 0;
 
-        private readonly GLS.Solver solver = new GLS.Solver("Santa Problem", GLS.Solver.SCIP_MIXED_INTEGER_PROGRAMMING);
-        //new GLS.ClusteringILPSolver("SantaProblem", GLS.ClusteringILPSolver.CBC_MIXED_INTEGER_PROGRAMMING);
+        private readonly GRBModel model = new GRBModel(new GRBEnv("grb.log"));
 
 
         public ClusteringILPSolver(SolverInputData solverInputData)
         {
-            solverData = new SolverData(solverInputData, solver);
+            solverData = new SolverData(solverInputData, model);
         }
 
         public ResultState Solve()
@@ -62,7 +60,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
         {
             PrintDebugRessourcesBefore("InitGoogleSolver");
 
-            solver.Reset();
+            model.Reset();
 
             PrintDebugRessourcesAfter();
         }
@@ -71,7 +69,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
         {
             PrintDebugRessourcesBefore("AddVariables");
 
-            var vb = new VariableBuilder(solverData);
+            var vb = new Detail.VariableBuilder(solverData);
             vb.CreateVariables();
 
             PrintDebugRessourcesAfter();
@@ -90,24 +88,26 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
         private void AddTargetFunction()
         {
             PrintDebugRessourcesBefore("AddTargetFunction");
-            var targetFunction = new LinearExpr();
+            var targetFunction = new GRBLinExpr(0);
             var hour = 3600;
 
-            var santaWorkingTime = new LinearExpr[solverData.NumberOfSantas];
-            var longestDay = solver.MakeIntVar(0, int.MaxValue, "longest day");
+
+            var longestDay = model.AddVar(0, int.MaxValue, 0, GRB.INTEGER, "longest day");
+            var workingTimeSum = new GRBLinExpr(0);
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
-                santaWorkingTime[santa] = solverData.Variables.SantaVisitTime[santa] + solverData.Variables.SantaRouteCost[santa];
-                solver.Add(longestDay >= santaWorkingTime[santa]);
+                var santaWorkingTime = solverData.Variables.SantaVisitTime[santa] + solverData.Variables.SantaRouteCost[santa];
+                model.AddConstr(longestDay >= santaWorkingTime, null);
+                workingTimeSum += santaWorkingTime;
             }
 
             var workingTimeFactor = (40d / hour);
             var longestDayFactor = (30d / hour);
 
-            targetFunction = workingTimeFactor * santaWorkingTime.Sum()
+            targetFunction = workingTimeFactor * workingTimeSum
                              + longestDayFactor * longestDay;
 
-            solverData.Model.Minimize(targetFunction);
+            solverData.Model.SetObjective(targetFunction, GRB.MINIMIZE);
 
             PrintDebugRessourcesAfter();
         }
@@ -116,19 +116,17 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
         {
             PrintDebugRessourcesBefore("SolveInternal");
 
-            var param = new MPSolverParameters();
-
-            param.SetDoubleParam(MPSolverParameters.RELATIVE_MIP_GAP, MIP_GAP);
-            if (timelimit != 0)
+            model.Set(GRB.DoubleParam.MIPGap, MIP_GAP);
+            model.Set(GRB.DoubleParam.TimeLimit, timelimit);
+            model.Optimize();
+            if (model.SolCount == 0)
             {
-                solver.SetTimeLimit(timelimit);
+                resultState = ResultState.NotSolved;
             }
-#if DEBUG
-            solver.EnableOutput();
-#else
-            solver.SuppressOutput();
-#endif
-            resultState = FromGoogleResultState(solver.Solve(param));
+            else
+            {
+                resultState = FromGurobiResultState(model.Status);
+            }
 
             PrintDebugRessourcesAfter();
 #if DEBUG
@@ -163,7 +161,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
                 Debug.WriteLine($"{santa} Santa Visits: ");
                 foreach (var visit in Enumerable.Range(0, solverData.NumberOfVisits))
                 {
-                    Debug.WriteLine($"Visit {visit}: {solverData.Variables.SantaVisit[santa, visit].SolutionValue()}");
+                    Debug.WriteLine($"Visit {visit}: {solverData.Variables.SantaVisit[santa][visit].X}");
                 }
                 Debug.WriteLine(string.Empty);
             }
@@ -176,7 +174,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
                 {
                     foreach (var destination in Enumerable.Range(0, solverData.NumberOfVisits))
                     {
-                        var value = solverData.Variables.SantaUsesWay[santa][source, destination].SolutionValue();
+                        var value = solverData.Variables.SantaUsesWay[santa][solverData.SourceDestArrPos(source, destination)].X;
                         if (Math.Abs(value) > 0.0001)
                         {
                             Debug.WriteLine($"S: {source}  |  D: {destination}");
@@ -222,14 +220,14 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
         }
 
 
-        private ResultState FromGoogleResultState(int resultState)
+        private ResultState FromGurobiResultState(int resultState)
         {
             Dictionary<int, ResultState> mapping = new Dictionary<int, ResultState>()
             {
-                {GLS.Solver.OPTIMAL, ResultState.Optimal },
-                {GLS.Solver.FEASIBLE, ResultState.Feasible },
-                {GLS.Solver.INFEASIBLE, ResultState.Infeasible },
-                {GLS.Solver.NOT_SOLVED, ResultState.NotSolved },
+                {GRB.Status.OPTIMAL, ResultState.Optimal },
+                {GRB.Status.SUBOPTIMAL, ResultState.Feasible },
+                {GRB.Status.INFEASIBLE, ResultState.Infeasible },
+                {GRB.Status.LOADED, ResultState.NotSolved },
             };
             if (mapping.TryGetValue(resultState, out var value))
             {
@@ -238,29 +236,6 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
             return ResultState.Unknown;
         }
 
-        /// <summary>
-        /// Returns the mps as string
-        /// </summary>
-        /// <returns>mps as string</returns>
-        public string ExportMPS()
-        {
-            if (!hasModel)
-            {
-                CreateModel();
-            }
-
-            // return solver.ExportModelAsLpFormat(false);
-            return solver.ExportModelAsMpsFormat(false, false);
-        }
-
-        /// <summary>
-        /// Exports the mps to the path as file
-        /// </summary>
-        /// <param name="path">where to save the mps</param>
-        public void ExportMPSAsFile(string path)
-        {
-            System.IO.File.WriteAllText(path, ExportMPS());
-        }
 
         public string ImportMPS()
         {
@@ -276,7 +251,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
 
         public double SolutionValue()
         {
-            return solver.Objective().Value();
+            return model.ObjVal;
         }
 
         private void PrintDebugRessourcesBefore(string name)
@@ -293,7 +268,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
 
         private void PrintDebugRessources(string description)
         {
-            Debug.WriteLine($"{description}: {solverData.Model.NumConstraints()} constraint, {Process.GetCurrentProcess().PrivateMemorySize64 / 1024 / 1024} MB used memory;");
+            Debug.WriteLine($"{description}: {solverData.Model.NumConstrs} constraint, {Process.GetCurrentProcess().PrivateMemorySize64 / 1024 / 1024} MB used memory;");
         }
     }
 }
