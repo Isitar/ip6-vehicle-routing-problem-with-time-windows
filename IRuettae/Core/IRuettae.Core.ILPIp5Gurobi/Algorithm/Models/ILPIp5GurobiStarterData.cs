@@ -9,7 +9,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Models
     /// <summary>
     /// Class that holds the ilp specific data belonging to a route calculation
     /// </summary>
-    public class ILPStarterData : IStarterData
+    public class ILPIp5GurobiStarterData : IStarterData
     {
         // General
         public int TimeSliceDuration { get; set; }

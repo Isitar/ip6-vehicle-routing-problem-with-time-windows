@@ -13,7 +13,6 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
     {
         private readonly SolverData solverData;
 
-        private bool hasModel = false;
         private ResultState resultState = ResultState.NotSolved;
         private double MIP_GAP = 0;
         private long timelimit = 0;
@@ -52,7 +51,6 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
             AddConstraints();
             AddTargetFunction();
 
-            hasModel = true;
             resultState = ResultState.NotSolved;
         }
 

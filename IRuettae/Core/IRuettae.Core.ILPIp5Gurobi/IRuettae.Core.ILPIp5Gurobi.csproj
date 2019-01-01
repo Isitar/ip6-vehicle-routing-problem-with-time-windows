@@ -57,7 +57,7 @@
     <Compile Include="Algorithm\Clustering\Detail\VariableBuilder.cs" />
     <Compile Include="Algorithm\Clustering\SolverInputData.cs" />
     <Compile Include="Algorithm\ISolver.cs" />
-    <Compile Include="Algorithm\Models\ILPStarterData.cs" />
+    <Compile Include="Algorithm\Models\ILPIp5GurobiStarterData.cs" />
     <Compile Include="Algorithm\Models\SchedulingOptimizationGoals.cs" />
     <Compile Include="Algorithm\ResultState.cs" />
     <Compile Include="Algorithm\Route.cs" />
@@ -72,7 +72,7 @@
     <Compile Include="Algorithm\Scheduling\TargetFunctionBuilders\TargetType.cs" />
     <Compile Include="Algorithm\VisitState.cs" />
     <Compile Include="Algorithm\Waypoint.cs" />
-    <Compile Include="ILPSolver.cs" />
+    <Compile Include="ILPIp5GurobiSolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VariableBuilder\ClusteringSolverVariableBuilder.cs" />
     <Compile Include="VariableBuilder\SchedulingSolverVariableBuilder.cs" />

@@ -16,7 +16,6 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
         private const int DesiredWeight = 20;
         private readonly SolverData solverData;
         private double MIP_GAP = 0;
-        private bool hasModel = false;
         private ResultState resultState = ResultState.NotSolved;
 
         private readonly GRBModel model = new GRBModel(new GRBEnv("scheduling.log"));
@@ -50,7 +49,6 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
             AddConstraints();
             AddTargetFunction();
 
-            hasModel = true;
             resultState = ResultState.NotSolved;
         }
 
