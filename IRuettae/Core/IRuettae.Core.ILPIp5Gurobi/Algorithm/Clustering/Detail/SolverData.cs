@@ -1,6 +1,4 @@
 ﻿using Gurobi;
-using IRuettae.Core.ILP.Algorithm.Clustering;
-using IRuettae.Core.ILP.Algorithm.Clustering.Detail;
 
 namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
 {

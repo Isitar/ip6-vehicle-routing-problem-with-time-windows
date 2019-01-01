@@ -10,14 +10,14 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
         public GRBVar[] SantaUsed { get; set; }
 
         /// <summary>
-        /// [Santa,Visit] if santa visits this Visit
+        /// [Santa][Visit] if santa visits this Visit
         /// </summary>
-        public GRBVar[,] SantaVisit { get; set; }
+        public GRBVar[][] SantaVisit { get; set; }
 
         /// <summary>
-        /// [Santa,Visit] if santa visits this Visit
+        /// [Santa][Visit] if santa visits this Visit
         /// </summary>
-        public GRBVar[,] SantaVisitBonus { get; set; }
+        public GRBVar[][] SantaVisitBonus { get; set; }
 
 
         /// <summary>
@@ -31,18 +31,18 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail
         public GRBVar[] SantaRouteCost { get; set; }
 
         /// <summary>
-        /// [santa][source,destination] if santa uses this way (calculated by spanningTree)
+        /// [santa][source * destination] if santa uses this way (calculated by spanningTree)
         /// </summary>
-        public GRBVar[][,] SantaUsesWay { get; set; }
+        public GRBVar[][] SantaUsesWay { get; set; }
 
         /// <summary>
-        /// [santa][source,destination] how much flow way has
+        /// [santa][source * destination] how much flow way has
         /// </summary>
-        public GRBVar[][,] SantaWayFlow { get; set; }
+        public GRBVar[][] SantaWayFlow { get; set; }
 
         /// <summary>
-        /// [santa][source,destination] how much flow way has
+        /// [santa][source * destination] how much flow way has
         /// </summary>
-        public GRBVar[][,] SantaWayHasFlow { get; set; }
+        public GRBVar[][ ] SantaWayHasFlow { get; set; }
     }
 }

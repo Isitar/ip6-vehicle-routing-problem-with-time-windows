@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using IRuettae.Core.ILP.Algorithm.Clustering.Detail;
+
 
 using IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering.Detail;
 
