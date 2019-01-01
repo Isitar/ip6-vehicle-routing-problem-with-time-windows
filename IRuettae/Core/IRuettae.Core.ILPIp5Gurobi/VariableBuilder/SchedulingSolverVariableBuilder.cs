@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using IRuettae.Core.ILP.Algorithm;
-using IRuettae.Core.ILP.Algorithm.Scheduling;
+using IRuettae.Core.ILPIp5Gurobi.Algorithm;
+using IRuettae.Core.ILPIp5Gurobi.Algorithm.Scheduling;
 using IRuettae.Core.Models;
 
 

@@ -4,11 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using IRuettae.Core.ILP.Algorithm;
-using IRuettae.Core.ILP.Algorithm.Models;
+using IRuettae.Core.ILP.Algorithm.Scheduling;
+using IRuettae.Core.ILPIp5Gurobi.Algorithm.Models;
+using IRuettae.Core.ILPIp5Gurobi.VariableBuilder;
 using IRuettae.Core.Models;
-using IRuettae.Preprocessing.Mapping;
-using ResultState = IRuettae.Core.ILP.Algorithm.ResultState;
+using ResultState = IRuettae.Core.ILPIp5Gurobi.Algorithm.ResultState;
 using Route = IRuettae.Core.Models.Route;
 using Waypoint = IRuettae.Core.Models.Waypoint;
 
@@ -98,7 +98,7 @@ namespace IRuettae.Core.ILPIp5Gurobi
                 .Select(schedulingInputVariable =>
                 {
 
-                    var schedulingSolver = new Algorithm.Scheduling.SchedulingILPSolver(schedulingInputVariable);
+                    var schedulingSolver = new SchedulingILPSolver(schedulingInputVariable);
 
 #if WriteMPS && DEBUG
                     System.IO.File.WriteAllText($@"C:\Temp\iRuettae\ILP\Scheduling\{new Guid()}.mps", schedulingSolver.ExportMPS());
