@@ -8,6 +8,8 @@ using IRuettae.Core.GeneticAlgorithm;
 using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
 using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm.Models;
+using IRuettae.Core.ILPIp5Gurobi;
+using IRuettae.Core.ILPIp5Gurobi.Algorithm.Models;
 using IRuettae.Core.LocalSolver;
 using IRuettae.Core.Models;
 using Newtonsoft.Json;
@@ -21,9 +23,11 @@ namespace IRuettae.Evaluator
             ILP = 1,
             GA = 2,
             LocalSolver = 3,
+            ILPIP5Gurobi = 5,
             ILPFast = 10,
             GAFast = 20,
             LocalSolverFast = 30,
+            ILPIP5GurobiFast = 50,
         }
 
         /// <summary>
@@ -34,9 +38,11 @@ namespace IRuettae.Evaluator
             {Algorithms.ILP,"ILP"},
             {Algorithms.GA, "GA" },
             {Algorithms.LocalSolver, "LocalSolver" },
+            {Algorithms.ILPIP5Gurobi, "ILP Ip5 Gurobi" },
             {Algorithms.ILPFast,"ILP Fast"},
             {Algorithms.GAFast, "GA Fast" },
             {Algorithms.LocalSolverFast, "LocalSolver Fast" },
+            {Algorithms.ILPIP5GurobiFast, "ILP Ip5 Gurobi Fast" },
         };
 
         static readonly Dictionary<int, string> DatasetDictionary = new Dictionary<int, string>()
@@ -100,7 +106,7 @@ namespace IRuettae.Evaluator
 
             for (int i = 0; i < runs; i++)
             {
-                
+
                 foreach (var dataset in datasetSelection)
                 {
                     try
@@ -121,8 +127,8 @@ namespace IRuettae.Evaluator
                                     ClusteringMIPGap = 0,
                                     SchedulingMIPGap = 0,
 
-                                    ClusteringTimeLimitMiliseconds = (long) (0.7 * timelimit),
-                                    SchedulingTimeLimitMiliseconds = (long) (0.3 * timelimit),
+                                    ClusteringTimeLimitMiliseconds = (long)(0.7 * timelimit),
+                                    SchedulingTimeLimitMiliseconds = (long)(0.3 * timelimit),
                                     TimeSliceDuration = 120
                                 });
                                 savepath += "_ILP";
@@ -142,6 +148,21 @@ namespace IRuettae.Evaluator
                                 timelimit /= fastFactor;
                                 solver = new GenAlgSolver(input, GenAlgStarterData.GetDefault(input));
                                 savepath += "_GAFast";
+                                break;
+                            case Algorithms.ILPIP5GurobiFast:
+                                timelimit /= fastFactor;
+                                goto case Algorithms.ILPIP5Gurobi;
+                            case Algorithms.ILPIP5Gurobi:
+                                solver = new ILPIp5GurobiSolver(input, new ILPIp5GurobiStarterData
+                                {
+                                    ClusteringMIPGap = 0,
+                                    SchedulingMIPGap = 0,
+
+                                    ClusteringTimeLimitMiliseconds = (long)(0.7 * timelimit),
+                                    SchedulingTimeLimitMiliseconds = (long)(0.3 * timelimit),
+                                    TimeSliceDuration = 120
+                                });
+                                savepath += "_ILPIp5Gurobi";
                                 break;
                         }
 
