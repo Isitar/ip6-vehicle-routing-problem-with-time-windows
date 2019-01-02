@@ -12,13 +12,13 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
 
         public int PopulationSize { get; private set; } = 10;
 
-        public double ElitismPercentage { get; private set; } = 0.2;
-        public double DirectMutationPercentage { get; private set; } = 0.3;
+        public double ElitismPercentage { get; private set; } = 0.6;
+        public double DirectMutationPercentage { get; private set; } = 0.0;
         public double RandomPercentage { get; private set; } = 0.0;
 
         public double OrderBasedCrossoverProbability { get; private set; } = 1;
-        public double MutationProbability { get; private set; } = 0.25;
-        public double PositionMutationProbability { get; private set; } = 0.7;
+        public double MutationProbability { get; private set; } = 0.1;
+        public double PositionMutationProbability { get; private set; } = 0.6;
 
         /// <summary>
         ///Create default regarding the input
