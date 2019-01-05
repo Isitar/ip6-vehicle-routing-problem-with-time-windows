@@ -103,11 +103,11 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
                 
                 for (int i = 1; i < solverData.Input.Presolved.Length; i++)
                 {
-                    totalTimePresolved += solverData.Input.VisitsDuration[i];
-                    totalTimePresolved += solverData.Input.Distances[i-1, i];
+                    totalTimePresolved += solverData.Input.VisitsDuration[Array.IndexOf(solverData.Input.VisitIds, solverData.Input.Presolved[i] -1 )];
+                    totalTimePresolved += solverData.Input.Distances[i > 1 ? Array.IndexOf(solverData.Input.VisitIds, solverData.Input.Presolved[i-1] -1) : 0, Array.IndexOf(solverData.Input.VisitIds, solverData.Input.Presolved[i] -1)];
                 }
 
-                totalTimePresolved += solverData.Input.Distances[solverData.Input.Presolved.Length - 1, 0];
+                totalTimePresolved += solverData.Input.Distances[Array.IndexOf(solverData.Input.VisitIds, solverData.Input.Presolved.Last() -1), 0];
                 solver.Add(targetFunction <= totalTimePresolved * WaytimeWeight);
             }
 

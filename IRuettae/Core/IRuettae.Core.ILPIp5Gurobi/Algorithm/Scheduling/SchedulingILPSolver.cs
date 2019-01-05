@@ -99,14 +99,14 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
             if (solverData.Input.Presolved.Length > 0)
             {
                 var totalTimePresolved = 0;
-                
+
                 for (int i = 1; i < solverData.Input.Presolved.Length; i++)
                 {
-                    totalTimePresolved += solverData.Input.VisitsDuration[i];
-                    totalTimePresolved += solverData.Input.Distances[i-1, i];
+                    totalTimePresolved += solverData.Input.VisitsDuration[Array.IndexOf(solverData.Input.VisitIds, solverData.Input.Presolved[i] - 1)];
+                    totalTimePresolved += solverData.Input.Distances[i > 1 ? Array.IndexOf(solverData.Input.VisitIds, solverData.Input.Presolved[i - 1] - 1) : 0, Array.IndexOf(solverData.Input.VisitIds, solverData.Input.Presolved[i] - 1)];
                 }
 
-                totalTimePresolved += solverData.Input.Distances[solverData.Input.Presolved.Length - 1, 0];
+                totalTimePresolved += solverData.Input.Distances[Array.IndexOf(solverData.Input.VisitIds, solverData.Input.Presolved.Last() - 1), 0];
                 model.AddConstr(targetFunction <= totalTimePresolved * WaytimeWeight, null);
             }
 
@@ -148,7 +148,8 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
             Debug.WriteLine(string.Empty);
             Debug.WriteLine("DEBUG OUTPUT");
             Debug.WriteLine(string.Empty);
-
+            if (model.SolCount == 0) return;
+            
             PrintMeta();
             PrintVisits();
             PrintVisitsPerSanta();
