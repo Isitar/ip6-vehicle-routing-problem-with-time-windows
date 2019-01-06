@@ -18,7 +18,11 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
 
         public double OrderBasedCrossoverProbability { get; private set; } = 1;
         public double MutationProbability { get; private set; } = 0.1;
-        public double PositionMutationProbability { get; private set; } = 0.6;
+        public double PositionMutationProbability { get; private set; } = 0.65;
+
+        // Todo: remove
+        static int callCounter = 0;
+        const int runs = 1;
 
         /// <summary>
         ///Create default regarding the input
@@ -32,6 +36,17 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
             {
                 MaxNumberOfSantas = input.Santas.Length,
             };
+
+            #region debug
+#if true
+            // Debug Population size
+            var populationSizes = new int[]
+            {
+                2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,
+            };
+            starterData.PopulationSize = populationSizes[(callCounter++ / runs) % populationSizes.Length];
+#endif
+            #endregion debug
 
             return starterData;
         }
