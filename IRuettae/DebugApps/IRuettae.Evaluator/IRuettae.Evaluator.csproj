@@ -32,6 +32,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Balance.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>IRuettae.Evaluator.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -85,6 +91,10 @@
       <Project>{48054F06-CCF2-4F00-BF6A-70F44C86BEF5}</Project>
       <Name>IRuettae.Core.GeneticAlgorithm</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\IRuettae.Core.ILPIp5Gurobi\IRuettae.Core.ILPIp5Gurobi.csproj">
+      <Project>{6b0c008e-522d-4a5a-b854-ca14fa22c715}</Project>
+      <Name>IRuettae.Core.ILPIp5Gurobi</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\IRuettae.Core.ILP\IRuettae.Core.ILP.csproj">
       <Project>{d56e9df6-b3a9-4b97-82e4-f3cd401bbe7c}</Project>
       <Name>IRuettae.Core.ILP</Name>
@@ -107,7 +117,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
+    <Content Include="Balance.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

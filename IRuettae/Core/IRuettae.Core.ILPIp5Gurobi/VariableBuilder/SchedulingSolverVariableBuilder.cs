@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using IRuettae.Core.ILP.Algorithm;
-using IRuettae.Core.ILP.Algorithm.Scheduling;
+using IRuettae.Core.ILPIp5Gurobi.Algorithm;
+using IRuettae.Core.ILPIp5Gurobi.Algorithm.Scheduling;
 using IRuettae.Core.Models;
 
 
-namespace IRuettae.Preprocessing.Mapping
+namespace IRuettae.Core.ILPIp5Gurobi.VariableBuilder
 {
     public class SchedulingSolverVariableBuilder
     {
@@ -140,7 +140,7 @@ namespace IRuettae.Preprocessing.Mapping
             {
                 for (int j = 1; j < distances.GetLength(1); j++)
                 {
-                    distances[i, j] = SecondsToTimeslice(input.RouteCosts[Visits[i - 1].Id, Visits[j - 1].Id]);
+                    distances[i, j] = SecondsToTimeslice(input.RouteCosts[Visits[i-1].Id, Visits[j-1].Id]);
                 }
             }
 
