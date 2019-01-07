@@ -31,8 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="gurobi80.netstandard20">
-      <HintPath>..\..\..\..\..\gurobi800\win64\lib\gurobi80.netstandard20.dll</HintPath>
+    <Reference Include="gurobi80.netstandard20, Version=8.0.0.0, Culture=neutral, PublicKeyToken=21e2c4b1860157bc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\gurobi80.netstandard20.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -53,6 +54,9 @@
       <Project>{e6f0ffc6-7f26-4286-ae57-44411eb66118}</Project>
       <Name>IRuettae.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="lib\gurobi80.netstandard20.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

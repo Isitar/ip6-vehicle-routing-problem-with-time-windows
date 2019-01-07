@@ -141,8 +141,7 @@ namespace IRuettae.Core.ILP2
                 DesiredOverlap(model, numberOfRoutes, v, w, c, desiredDuration);//, desiredOverlapPenalty);
                 UnavailableOverlap(model, numberOfRoutes, v, w, c, unavailableDuration);//, unavailableOverlapPenalty);
 
-                // TARGET FUNCTION
-
+                
                 var maxRoutes = new GRBVar[numberOfRoutes];
                 var minRoutes = new GRBVar[numberOfRoutes];
                 for (int s = 0; s < numberOfRoutes; s++)
@@ -156,6 +155,21 @@ namespace IRuettae.Core.ILP2
                 FillMaxRoute(model, maxRoutes, c, v);
                 FillMinRoutes(model, minRoutes, c);
 
+                // Symmetry breaking constraint if no breaks
+                if (!input.Visits.Any(visit => visit.IsBreak))
+                {
+                    for (int d = 0; d < input.Days.Length; d++)
+                    {
+                        var dayOffset = d * input.Santas.Length;
+                        for (int s = 1; s < input.Santas.Length; s++)
+                        {
+                            model.AddConstr(maxRoutes[dayOffset + s] - minRoutes[dayOffset + s] <= maxRoutes[dayOffset + s - 1] - minRoutes[dayOffset + s - 1], null);
+                        }
+                    }
+                }
+
+
+                // TARGET FUNCTION
                 var totalWayTime = new GRBLinExpr(0);
                 var longestRoute = model.AddVar(0, input.Days.Max(d => d.to - d.from), 0, GRB.CONTINUOUS, "longestRoute");
                 for (int s = 0; s < numberOfRoutes; s++)
