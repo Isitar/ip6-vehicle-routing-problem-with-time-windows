@@ -14,13 +14,16 @@ namespace IRuettae.GeneticAlgorithmTuning
         static void Main(string[] args)
         {
             var pso = new ParticleSwarmOptimization(RunGeneticAlgorithm, CreateVariables, BoundVariables, CreateVelocity, BoundVelocity, new string[] { "ElitismPercentage", "DirectMutationPercentage", "RandomPercentage", "OrderBasedCrossoverProbability", "mutationProbability", "PositionMutationProbability", "PopulationSize" });
-            pso.Run();
-            pso.Run();
-            pso.Run();
+            for (int i = 0; i < NumberOfRuns; i++)
+            {
+                pso.Run();
+                System.IO.File.Move("pso-log.txt", $"pso-log{i}.txt");
+            }
             Console.ReadLine();
         }
 
         // settings
+        const int NumberOfRuns = 3;
         const int NumberOfVars = 7;
         const int MaxPopulationSize = 5000;
         const int MinPopulationSize = 2;
@@ -109,7 +112,6 @@ namespace IRuettae.GeneticAlgorithmTuning
             {
                 values[i] = min[i] + (max[i] - min[i]) * random.NextDouble();
             }
-            Console.Out.WriteLine(values[6]);
             return values;
         }
 
