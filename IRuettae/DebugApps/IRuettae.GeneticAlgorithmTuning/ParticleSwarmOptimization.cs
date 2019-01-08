@@ -9,67 +9,109 @@ namespace IRuettae.GeneticAlgorithmTuning
 {
     internal class ParticleSwarmOptimization
     {
-        private readonly int numberOfVars;
-        const int NumberOfGenerations = 450;
-        const int PopulationSize = 300;
-        const double xmin = 0;
-        const double xmax = 1;
+        // settings
+        // 17280 evaluations should take about 3 hours with degree of parallelism=8
+        // 17280=3600*3/(5/8)
+        // there are 7 design variables to optimze
+        // the values are taken from // Todo cite
+#if true
+        // problem dimension=10
+        // fitness evaluations=20000
+        const int NumberOfGenerations = 326; // total 17278 evaluations
+        const int PopulationSize = 53;
+        const double initW = -0.3488; // inertia weight
+        const double initC1 = -0.2746; // cognitive parameter
+        const double initC2 = 4.8976; // social parameter
+#elif false
+        // problem dimension=5
+        // fitness evaluations=10000
+        const int NumberOfGenerations = 77; // total 17171 evaluations
+        const int PopulationSize = 223;
+        const double initW = -0.3699; // inertia weight
+        const double initC1 = -0.1207; // cognitive parameter
+        const double initC2 = 3.3657; // social parameter
+#else
+        // problem dimension=5
+        // fitness evaluations=10000
+        const int NumberOfGenerations = 85; // total 17255 evaluations
+        const int PopulationSize = 203;
+        const double initW = 0.5069; // inertia weight
+        const double initC1 = 2.5524; // cognitive parameter
+        const double initC2 = 1.0056; // social parameter
+#endif
 
-        private double w = 1; // inertia weight
-        private double c1 = 2; // cognitive parameter
-        private double c2 = 2; // social parameter
+        private readonly int numberOfVars;
 
         private readonly Func<double[], double> objective;
-        private readonly Action<double[]> scaling;
+        private readonly Func<Random, double[]> createVariables;
+        private readonly Action<double[]> boundVariable;
+        private readonly Func<Random, double[]> createVelocity;
+        private readonly Action<double[]> boundVelocity;
         private readonly string[] names;
+        private readonly Random random = new Random();
 
-        public ParticleSwarmOptimization(Func<double[], double> objectiveFunction, Action<double[]> parameterScaling, string[] designVariableNames)
+        public ParticleSwarmOptimization(
+            Func<double[], double> objectiveFunction,
+            Func<Random, double[]> createVariables,
+            Action<double[]> boundVariable,
+            Func<Random, double[]> createVelocity,
+            Action<double[]> boundVelocity,
+            string[] designVariableNames)
         {
+            if (createVariables(random).Length != designVariableNames.Length || createVelocity(random).Length != designVariableNames.Length)
+            {
+                throw new ArgumentException("constructor parameters are not consistent");
+            }
+
             objective = objectiveFunction;
-            scaling = parameterScaling;
+            this.createVariables = createVariables;
+            this.boundVariable = boundVariable;
+            this.createVelocity = createVelocity;
+            this.boundVelocity = boundVelocity;
             numberOfVars = designVariableNames.Length;
             names = designVariableNames;
         }
 
         public void Run()
         {
-            var random = new Random();
+            // settings
+            const double w = initW;  // inertia weight
+            const double c1 = initC1; // cognitive parameter
+            const double c2 = initC2; // social parameter
+
             // design variable vector's
             var x = new double[PopulationSize][];
+            var velocity = new double[PopulationSize][]; // design velocity vector's
             var bestFitness = new double[PopulationSize]; // best "fitness"
 
             // init
             for (int p = 0; p < PopulationSize; p++)
             {
-                x[p] = new double[numberOfVars];
-                for (int m = 0; m < numberOfVars; m++)
-                {
-                    x[p][m] = xmin + (xmax - xmin) * random.NextDouble();
-                }
+                x[p] = createVariables(random);
+                velocity[p] = createVelocity(random);
+                //x[p] = new double[numberOfVars];
+                //for (int m = 0; m < numberOfVars; m++)
+                //{
+                //    x[p][m] = xmin + (xmax - xmin) * random.NextDouble();
+                //}
                 bestFitness[p] = double.MaxValue;
             }
 
+
             var invididualBestPosition = new double[PopulationSize, numberOfVars]; // individual best position
-            var velocity = new double[PopulationSize, numberOfVars]; // design velocity vector's
             var globalBestFitness = double.MaxValue; // global best fitness
             var globalBestPosition = new double[numberOfVars]; // global best position
 
-            // hier startet die "Evolution"
+            // start of evolution
             for (var g = 1; g <= NumberOfGenerations; g++)
             {
-                // Scale values so that they are valid
-                for (int p = 0; p < PopulationSize; p++)
-                {
-                    scaling(x[p]);
-                }
-
                 // calculate new fitness parallel
                 var calculatedNewFitness = x.AsParallel().Select(s => objective(s)).ToArray();
 
-                // Loop über Generationen
+                // loop over generations
                 for (int p = 0; p < PopulationSize; p++)
                 {
-                    // Suche individual best und global best
+                    // search indivial best and global best
                     var newFitness = calculatedNewFitness[p];
                     if (newFitness < bestFitness[p])
                     {
@@ -113,13 +155,16 @@ namespace IRuettae.GeneticAlgorithmTuning
                 {
                     for (int m = 0; m < numberOfVars; m++)
                     {
-                        velocity[p, m] = w * velocity[p, m] + c1 * random.NextDouble() * (invididualBestPosition[p, m] - x[p][m])
+                        velocity[p][m] = w * velocity[p][m] + c1 * random.NextDouble() * (invididualBestPosition[p, m] - x[p][m])
                                               + c2 * random.NextDouble() * (globalBestPosition[m] - x[p][m]);
-                        x[p][m] = x[p][m] + velocity[p, m];
                     }
+                    boundVelocity(velocity[p]);
+                    for (int m = 0; m < numberOfVars; m++)
+                    {
+                        x[p][m] = x[p][m] + velocity[p][m];
+                    }
+                    boundVariable(x[p]);
                 }
-                // Inertia weight changes
-                w = w * 0.99;
             }
         }
 

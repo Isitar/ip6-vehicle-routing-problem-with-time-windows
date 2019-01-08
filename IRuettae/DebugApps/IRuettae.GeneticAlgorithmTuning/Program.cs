@@ -10,20 +10,62 @@ namespace IRuettae.GeneticAlgorithmTuning
 {
     class Program
     {
-        private const int PopulationSize = 10;
 
         static void Main(string[] args)
         {
-            var pso = new ParticleSwarmOptimization(RunGeneticAlgorithm, ScaleParameters, new string[] { "elitismPercentage", "directMutationPercentage", "randomPercentage", "orderBasedCrossoverProbability", "mutationProbability", "positionMutationProbability", "recombinationProbability" });
+            var pso = new ParticleSwarmOptimization(RunGeneticAlgorithm, CreateVariables, BoundVariables, CreateVelocity, BoundVelocity, new string[] { "ElitismPercentage", "DirectMutationPercentage", "RandomPercentage", "OrderBasedCrossoverProbability", "mutationProbability", "PositionMutationProbability", "PopulationSize" });
+            pso.Run();
+            pso.Run();
             pso.Run();
             Console.ReadLine();
         }
 
+        // settings
+        const int NumberOfVars = 7;
+        const int MaxPopulationSize = 5000;
+        const int MinPopulationSize = 2;
+        const double MinPercentage = 0.0;
+        const double MaxPercentage = 1.0;
+
+        // b_lo
+        private static readonly double[] min = new double[NumberOfVars]
+        {
+            MinPercentage,
+            MinPercentage,
+            MinPercentage,
+            MinPercentage,
+            MinPercentage,
+            MinPercentage,
+            MinPopulationSize,
+        };
+        // b_up
+        private static readonly double[] max = new double[NumberOfVars]
+        {
+            MaxPercentage,
+            MaxPercentage,
+            MaxPercentage,
+            MaxPercentage,
+            MaxPercentage,
+            MaxPercentage,
+            MaxPopulationSize,
+        };
+
+        /// <summary>
+        /// Can be called concurrent.
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         static double RunGeneticAlgorithm(double[] parameters)
         {
+            int invalidCost = GetInvalidCost(parameters);
+            if (invalidCost > 0)
+            {
+                return invalidCost;
+            }
+
             var (input, _) = DatasetFactory.DatasetGATuning();
 
-            var starterData = new GenAlgStarterData(input.NumberOfSantas(), long.MaxValue, PopulationSize, parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters[5]);
+            var starterData = new GenAlgStarterData(input.NumberOfSantas(), long.MaxValue, (int)parameters[6], parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters[5]);
 
             var timeLimitMilliseconds = 250;
 
@@ -34,65 +76,93 @@ namespace IRuettae.GeneticAlgorithmTuning
             return Enumerable.Range(0, numberOfRuns).Select(v => solver.Solve(timeLimitMilliseconds, null, null).Cost()).Average();
         }
 
-        static void ScaleParameters(double[] parameters)
+        /// <summary>
+        /// Return 0 if the GA parameters are valid.
+        /// Otherwise returns a dynamic cost therm
+        /// that indicates how far the parameters are away from beeing valid.
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        private static int GetInvalidCost(double[] parameters)
         {
-            // Percentages
+            // should be higher than the worst possible GA-Solution
+            var costOffset = 5000.0;
+            var costFactor = 1000.0;
+
+            // recombinationProbability must be between 0 and 1
+            var recombinationProbability = 1.0 - parameters[0] - parameters[1] - parameters[2];
+
+            // add cost if outside range
+            // note: can't be above 1.0 as the other probabilites can't be negative
+            if (recombinationProbability < MinPercentage)
             {
-                var minParameter = new[] {
-                    parameters[0],
-                    parameters[1],
-                    parameters[2],
-                    parameters[6],
-                }.Min();
+                // invalid parameters that lead to a negativ recombinationProbability
+                return (int)(costOffset + (MinPercentage - recombinationProbability) * costFactor);
+            }
+            return 0;
+        }
 
-                if (minParameter < 0)
-                {
-                    // shift to that minimal percentage = 0
-                    parameters[0] -= minParameter;
-                    parameters[1] -= minParameter;
-                    parameters[2] -= minParameter;
-                    parameters[6] -= minParameter;
-                }
+        static double[] CreateVariables(Random random)
+        {
+            var values = new double[NumberOfVars];
+            for (int i = 0; i < values.Length; i++)
+            {
+                values[i] = min[i] + (max[i] - min[i]) * random.NextDouble();
+            }
+            Console.Out.WriteLine(values[6]);
+            return values;
+        }
 
-                var elitismPercentage = parameters[0];
-                var directMutationPercentage = parameters[1];
-                var randomPercentage = parameters[2];
-                var recombinationPercentage = parameters[6];
-                var sum = (elitismPercentage + directMutationPercentage + randomPercentage + recombinationPercentage);
+        static void BoundVariables(double[] variables)
+        {
+            for (int i = 0; i < variables.Length; i++)
+            {
+                variables[i] = Math.Min(max[i], Math.Max(min[i], variables[i]));
+            }
 
-                if (sum != 0)
+            // fix wrong percentages
+            {
+                var elitismPercentage = variables[0];
+                var directMutationPercentage = variables[1];
+                var randomPercentage = variables[2];
+                var sum = elitismPercentage + directMutationPercentage + randomPercentage;
+
+                if (sum > 1)
                 {
                     // scale so that sum=1
-
                     var factor = 1 / sum;
 
-                    parameters[0] = parameters[0] * factor;
-                    parameters[1] = parameters[1] * factor;
-                    parameters[2] = parameters[2] * factor;
-                    parameters[6] = parameters[6] * factor;
-                }
-                else
-                {
-                    // set everything to 25% as somehow all values got zero
-                    parameters[0] = 0.25;
-                    parameters[1] = 0.25;
-                    parameters[2] = 0.25;
-                    parameters[6] = 0.25;
-                }
-
-                if (parameters[0] * PopulationSize < 1)
-                {
-                    // elitsm percentage needs to be high enough
-                    // so that p*PopulationSize > 0
-                    parameters[0] += 1d / PopulationSize;
-                    ScaleParameters(parameters);
+                    variables[0] = variables[0] * factor;
+                    variables[1] = variables[1] * factor;
+                    variables[2] = variables[2] * factor;
                 }
             }
 
-            // each must be between 0 and 1
-            parameters[3] = Math.Min(1, Math.Max(0, parameters[3]));
-            parameters[4] = Math.Min(1, Math.Max(0, parameters[4]));
-            parameters[5] = Math.Min(1, Math.Max(0, parameters[5]));
+            // elitism must equal at least 1 element
+            variables[0] = Math.Max(1.1 / variables[6], variables[0]);
+        }
+
+        static double[] CreateVelocity(Random random)
+        {
+            var values = new double[NumberOfVars];
+            for (int i = 0; i < values.Length; i++)
+            {
+                var difference = Math.Abs(max[i] - min[i]);
+                var negDifference = -difference;
+                values[i] = negDifference + (difference - negDifference) * random.NextDouble();
+            }
+            return values;
+        }
+
+        static void BoundVelocity(double[] velocity)
+        {
+            for (int i = 0; i < velocity.Length; i++)
+            {
+                var difference = Math.Abs(max[i] - min[i]);
+                var negDifference = -difference;
+                velocity[i] = Math.Min(difference, Math.Max(negDifference, velocity[i]));
+            }
         }
     }
 }
+

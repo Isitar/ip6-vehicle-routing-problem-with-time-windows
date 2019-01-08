@@ -89,6 +89,7 @@ namespace IRuettae.Core.GeneticAlgorithm
 
             // build result
             var bestSolution = population.OrderBy(i => i.Cost).First();
+
             result.Routes = decoder.Decode(bestSolution);
             result.ResultState = ResultState.Finished;
 
