@@ -60,7 +60,6 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
                 }
             }
 
-
             // Fill up with recombination & mutation
             {
                 var parents = selectionOperation.SelectParents(population, population.Count - newPopulation.Count);
