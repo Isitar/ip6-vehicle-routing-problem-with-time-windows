@@ -60,12 +60,6 @@ namespace IRuettae.GeneticAlgorithmTuning
         /// <returns></returns>
         static double RunGeneticAlgorithm(double[] parameters)
         {
-            int invalidCost = GetInvalidCost(parameters);
-            if (invalidCost > 0)
-            {
-                return invalidCost;
-            }
-
             var (input, _) = DatasetFactory.DatasetGATuning();
 
             var starterData = new GenAlgStarterData(input.NumberOfSantas(), long.MaxValue, (int)parameters[6], parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters[5]);
@@ -79,44 +73,20 @@ namespace IRuettae.GeneticAlgorithmTuning
             return Enumerable.Range(0, numberOfRuns).Select(v => solver.Solve(timeLimitMilliseconds, null, null).Cost()).Average();
         }
 
-        /// <summary>
-        /// Return 0 if the GA parameters are valid.
-        /// Otherwise returns a dynamic cost therm
-        /// that indicates how far the parameters are away from beeing valid.
-        /// </summary>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
-        private static int GetInvalidCost(double[] parameters)
-        {
-            // should be higher than the worst possible GA-Solution
-            var costOffset = 5000.0;
-            var costFactor = 1000.0;
-
-            // recombinationProbability must be between 0 and 1
-            var recombinationProbability = 1.0 - parameters[0] - parameters[1] - parameters[2];
-
-            // add cost if outside range
-            // note: can't be above 1.0 as the other probabilites can't be negative
-            if (recombinationProbability < MinPercentage)
-            {
-                // invalid parameters that lead to a negativ recombinationProbability
-                return (int)(costOffset + (MinPercentage - recombinationProbability) * costFactor);
-            }
-            return 0;
-        }
-
         static double[] CreateVariables(Random random)
         {
-            var values = new double[NumberOfVars];
-            for (int i = 0; i < values.Length; i++)
+            var variables = new double[NumberOfVars];
+            for (int i = 0; i < variables.Length; i++)
             {
-                values[i] = min[i] + (max[i] - min[i]) * random.NextDouble();
+                variables[i] = min[i] + (max[i] - min[i]) * random.NextDouble();
             }
-            return values;
+            BoundVariables(variables);
+            return variables;
         }
 
         static void BoundVariables(double[] variables)
         {
+            // enforce absolute bounds
             for (int i = 0; i < variables.Length; i++)
             {
                 variables[i] = Math.Min(max[i], Math.Max(min[i], variables[i]));
@@ -144,7 +114,7 @@ namespace IRuettae.GeneticAlgorithmTuning
             var elitismElements = (int)(variables[0] * (int)variables[6]);
             if (elitismElements < 1)
             {
-                variables[0] = Math.Max(1.1 / variables[6], variables[0]);
+                variables[0] = Math.Max(1.1 / (int)variables[6], variables[0]);
                 // recursive call to make sure the population doesn't grow
                 BoundVariables(variables);
             }
@@ -152,14 +122,14 @@ namespace IRuettae.GeneticAlgorithmTuning
 
         static double[] CreateVelocity(Random random)
         {
-            var values = new double[NumberOfVars];
-            for (int i = 0; i < values.Length; i++)
+            var velocity = new double[NumberOfVars];
+            for (int i = 0; i < velocity.Length; i++)
             {
                 var difference = Math.Abs(max[i] - min[i]);
                 var negDifference = -difference;
-                values[i] = negDifference + (difference - negDifference) * random.NextDouble();
+                velocity[i] = negDifference + (difference - negDifference) * random.NextDouble();
             }
-            return values;
+            return velocity;
         }
 
         static void BoundVelocity(double[] velocity)
