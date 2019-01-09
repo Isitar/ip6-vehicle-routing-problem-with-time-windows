@@ -39,7 +39,6 @@ namespace IRuettae.GeneticAlgorithmTuning
         const double initC1 = 2.5524; // cognitive parameter
         const double initC2 = 1.0056; // social parameter
 #endif
-        const bool UseParallelism = false;
 
         private readonly int numberOfVars;
         private readonly Func<double[], double> objective;
@@ -100,12 +99,7 @@ namespace IRuettae.GeneticAlgorithmTuning
             // start of evolution
             for (var g = 1; g <= NumberOfGenerations; g++)
             {
-
-#if UseParallelism
                 var calculatedNewFitness = x.AsParallel().Select(s => objective(s)).ToArray();
-#else
-                var calculatedNewFitness = x.Select(s => objective(s)).ToArray();
-#endif
 
                 // loop over generations
                 for (int p = 0; p < PopulationSize; p++)
