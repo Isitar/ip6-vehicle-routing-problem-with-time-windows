@@ -140,8 +140,14 @@ namespace IRuettae.GeneticAlgorithmTuning
                 }
             }
 
-            // elitism must equal at least 1 element
-            variables[0] = Math.Max(1.1 / variables[6], variables[0]);
+            // elitism percentage must lead to at least 1 element
+            var elitismElements = (int)(variables[0] * (int)variables[6]);
+            if (elitismElements < 1)
+            {
+                variables[0] = Math.Max(1.1 / variables[6], variables[0]);
+                // recursive call to make sure the population doesn't grow
+                BoundVariables(variables);
+            }
         }
 
         static double[] CreateVelocity(Random random)
