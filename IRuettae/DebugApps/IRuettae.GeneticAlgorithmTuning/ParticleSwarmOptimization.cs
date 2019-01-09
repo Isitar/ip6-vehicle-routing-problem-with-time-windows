@@ -39,9 +39,9 @@ namespace IRuettae.GeneticAlgorithmTuning
         const double initC1 = 2.5524; // cognitive parameter
         const double initC2 = 1.0056; // social parameter
 #endif
+        const bool UseParallelism = false;
 
         private readonly int numberOfVars;
-
         private readonly Func<double[], double> objective;
         private readonly Func<Random, double[]> createVariables;
         private readonly Action<double[]> boundVariable;
@@ -89,11 +89,6 @@ namespace IRuettae.GeneticAlgorithmTuning
             {
                 x[p] = createVariables(random);
                 velocity[p] = createVelocity(random);
-                //x[p] = new double[numberOfVars];
-                //for (int m = 0; m < numberOfVars; m++)
-                //{
-                //    x[p][m] = xmin + (xmax - xmin) * random.NextDouble();
-                //}
                 bestFitness[p] = double.MaxValue;
             }
 
@@ -105,8 +100,12 @@ namespace IRuettae.GeneticAlgorithmTuning
             // start of evolution
             for (var g = 1; g <= NumberOfGenerations; g++)
             {
-                // calculate new fitness parallel
+
+#if UseParallelism
                 var calculatedNewFitness = x.AsParallel().Select(s => objective(s)).ToArray();
+#else
+                var calculatedNewFitness = x.Select(s => objective(s)).ToArray();
+#endif
 
                 // loop over generations
                 for (int p = 0; p < PopulationSize; p++)
