@@ -63,7 +63,7 @@ namespace IRuettae.GeneticAlgorithmTuning
         static double RunGeneticAlgorithm(double[] parameters)
         {
             // settings
-            var timeLimitMilliseconds = 250;
+            var timeLimitMilliseconds = 500;
             var numberOfRuns = 10;
             var maxNumberOfGenerations = long.MaxValue;
 
