@@ -14,7 +14,7 @@ namespace IRuettae.GeneticAlgorithmTuning
         // 17280=3600*3/(5/8)
         // there are 7 design variables to optimze
         // the values are taken from // Todo cite
-#if true
+#if false
         // problem dimension=10
         // fitness evaluations=20000
         const int NumberOfGenerations = 326; // total 17278 evaluations
