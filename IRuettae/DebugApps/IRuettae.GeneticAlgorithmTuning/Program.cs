@@ -10,6 +10,8 @@ namespace IRuettae.GeneticAlgorithmTuning
 {
     class Program
     {
+        // settings
+        const int NumberOfRuns = 3;
 
         static void Main(string[] args)
         {
@@ -22,8 +24,7 @@ namespace IRuettae.GeneticAlgorithmTuning
             Console.ReadLine();
         }
 
-        // settings
-        const int NumberOfRuns = 3;
+        // design variable settings
         const int NumberOfVars = 7;
         const int MaxPopulationSize = 5000;
         const int MinPopulationSize = 2;
@@ -60,19 +61,27 @@ namespace IRuettae.GeneticAlgorithmTuning
         /// <returns></returns>
         static double RunGeneticAlgorithm(double[] parameters)
         {
-            var (input, _) = DatasetFactory.DatasetGATuning();
-
-            var starterData = new GenAlgStarterData(input.NumberOfSantas(), long.MaxValue, (int)parameters[6], parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters[5]);
-
+            // settings
             var timeLimitMilliseconds = 250;
+            var numberOfRuns = 10;
+            var maxNumberOfGenerations = long.MaxValue;
 
+            // create solver
+            var (input, _) = DatasetFactory.DatasetGATuning();
+            var starterData = new GenAlgStarterData(input.NumberOfSantas(), maxNumberOfGenerations, (int)parameters[6], parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters[5]);
             var solver = new GenAlgSolver(input, starterData);
 
-            var numberOfRuns = 10;
             // run numberOfRuns times and return average
-            return Enumerable.Range(0, numberOfRuns).Select(v => solver.Solve(timeLimitMilliseconds, null, null).Cost()).Average();
+            return Enumerable.Range(0, numberOfRuns)
+                .Select(v => solver.Solve(timeLimitMilliseconds, null, null).Cost())
+                .Average();
         }
 
+        /// <summary>
+        /// Returns a uniform distributed random set of valid variables.
+        /// </summary>
+        /// <param name="random"></param>
+        /// <returns></returns>
         static double[] CreateVariables(Random random)
         {
             var variables = new double[NumberOfVars];
@@ -84,6 +93,10 @@ namespace IRuettae.GeneticAlgorithmTuning
             return variables;
         }
 
+        /// <summary>
+        /// Bounds the given variables so that they are valid.
+        /// </summary>
+        /// <param name="variables"></param>
         static void BoundVariables(double[] variables)
         {
             // enforce absolute bounds
@@ -120,6 +133,11 @@ namespace IRuettae.GeneticAlgorithmTuning
             }
         }
 
+        /// <summary>
+        /// Returns a uniform distributed random set of valid velocities.
+        /// </summary>
+        /// <param name="random"></param>
+        /// <returns></returns>
         static double[] CreateVelocity(Random random)
         {
             var velocity = new double[NumberOfVars];
@@ -129,9 +147,14 @@ namespace IRuettae.GeneticAlgorithmTuning
                 var negDifference = -difference;
                 velocity[i] = negDifference + (difference - negDifference) * random.NextDouble();
             }
+            // call to BoundVelocity not needed
             return velocity;
         }
 
+        /// <summary>
+        /// Bounds the given velocities so that they are valid.
+        /// </summary>
+        /// <param name="variables"></param>
         static void BoundVelocity(double[] velocity)
         {
             for (int i = 0; i < velocity.Length; i++)
