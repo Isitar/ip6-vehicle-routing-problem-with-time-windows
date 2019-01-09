@@ -50,7 +50,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 
             // Random
             {
-                var numberOfRandom = population.Count * starterData.RandomPercentage;
+                var numberOfRandom = (int)(population.Count * starterData.RandomPercentage);
                 var random = RandomFactory.Instance;
                 for (int i = 0; i < numberOfRandom; i++)
                 {
