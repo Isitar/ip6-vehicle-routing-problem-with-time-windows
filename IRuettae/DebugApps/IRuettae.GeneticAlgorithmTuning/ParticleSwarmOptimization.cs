@@ -15,6 +15,7 @@ namespace IRuettae.GeneticAlgorithmTuning
         // there are 7 design variables to optimze
         // the values are taken from // Todo cite
 #if false
+        // config 1
         // problem dimension=10
         // fitness evaluations=20000
         const int NumberOfGenerations = 326; // total 17278 evaluations
@@ -23,6 +24,7 @@ namespace IRuettae.GeneticAlgorithmTuning
         const double initC1 = -0.2746; // cognitive parameter
         const double initC2 = 4.8976; // social parameter
 #elif false
+        // config 2
         // problem dimension=5
         // fitness evaluations=10000
         const int NumberOfGenerations = 77; // total 17171 evaluations
@@ -31,6 +33,7 @@ namespace IRuettae.GeneticAlgorithmTuning
         const double initC1 = -0.1207; // cognitive parameter
         const double initC2 = 3.3657; // social parameter
 #else
+        // config 3
         // problem dimension=5
         // fitness evaluations=10000
         const int NumberOfGenerations = 85; // total 17255 evaluations
