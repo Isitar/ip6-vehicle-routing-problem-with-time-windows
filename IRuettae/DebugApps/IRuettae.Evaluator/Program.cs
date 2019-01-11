@@ -6,6 +6,8 @@ using System.Text;
 using IRuettae.Core;
 using IRuettae.Core.GeneticAlgorithm;
 using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
+using IRuettae.Core.Google.Routing;
+using IRuettae.Core.Google.Routing.Models;
 using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm.Models;
 using IRuettae.Core.ILPIp5Gurobi;
@@ -24,10 +26,12 @@ namespace IRuettae.Evaluator
             GA = 2,
             LocalSolver = 3,
             ILPIP5Gurobi = 5,
+            GoogleRouting = 6,
             ILPFast = 10,
             GAFast = 20,
             LocalSolverFast = 30,
             ILPIP5GurobiFast = 50,
+            GoogleRoutingFast = 60,
         }
 
         /// <summary>
@@ -39,10 +43,12 @@ namespace IRuettae.Evaluator
             {Algorithms.GA, "GA" },
             {Algorithms.LocalSolver, "LocalSolver" },
             {Algorithms.ILPIP5Gurobi, "ILP Ip5 Gurobi" },
+            {Algorithms.GoogleRouting, "Google OR-Tools Routing" },
             {Algorithms.ILPFast,"ILP Fast"},
             {Algorithms.GAFast, "GA Fast" },
             {Algorithms.LocalSolverFast, "LocalSolver Fast" },
             {Algorithms.ILPIP5GurobiFast, "ILP Ip5 Gurobi Fast" },
+            {Algorithms.GoogleRoutingFast, "Google OR-Tools Routing Fast" },
         };
 
         static readonly Dictionary<int, string> DatasetDictionary = new Dictionary<int, string>()
@@ -166,6 +172,15 @@ namespace IRuettae.Evaluator
                                     TimeSliceDuration = 120
                                 });
                                 savepath += "_ILPIp5Gurobi";
+                                break;
+                            case Algorithms.GoogleRoutingFast:
+                                timelimit /= fastFactor;
+                                solver = new RoutingSolver(input, new RoutingSolverStarterData { });
+                                savepath += "_GoogleRoutingFast";
+                                break;
+                            case Algorithms.GoogleRouting:
+                                solver = new RoutingSolver(input, new RoutingSolverStarterData { });
+                                savepath += "_GoogleRouting";
                                 break;
                         }
 
