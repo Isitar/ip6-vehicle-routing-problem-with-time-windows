@@ -9,16 +9,15 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
     {
         public int MaxNumberOfSantas { get; private set; }
         public long MaxNumberOfGenerations { get; private set; } = long.MaxValue;
+        public int PopulationSize { get; private set; } = 102;
 
-        public int PopulationSize { get; private set; } = 10;
-
-        public double ElitismPercentage { get; private set; } = 0.6;
-        public double DirectMutationPercentage { get; private set; } = 0.0;
+        public double ElitismPercentage { get; private set; } = 0.357;
+        public double DirectMutationPercentage { get; private set; } = 0.378;
         public double RandomPercentage { get; private set; } = 0.0;
 
-        public double OrderBasedCrossoverProbability { get; private set; } = 1;
-        public double MutationProbability { get; private set; } = 0.1;
-        public double PositionMutationProbability { get; private set; } = 0.65;
+        public double OrderBasedCrossoverProbability { get; private set; } = 0.884;
+        public double MutationProbability { get; private set; } = 0.0;
+        public double PositionMutationProbability { get; private set; } = 0.886;
 
         // Todo: remove
         static int callCounter = 0;
