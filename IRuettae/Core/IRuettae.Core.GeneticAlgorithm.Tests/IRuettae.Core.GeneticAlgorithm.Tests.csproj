@@ -61,6 +61,7 @@
     <Compile Include="Algorithm\Helpers\TestNumberGenerator.cs" />
     <Compile Include="Algorithm\Helpers\ExtensionMethodsTests.cs" />
     <Compile Include="Algorithm\Helpers\TestNumberGeneratorTests.cs" />
+    <Compile Include="Algorithm\Models\GenAlgStarterDataTests.cs" />
     <Compile Include="Algorithm\PopulationGeneratorTests.cs" />
     <Compile Include="Algorithm\RecombinationOperationTests.cs" />
     <Compile Include="Algorithm\RepairOperationTests.cs" />

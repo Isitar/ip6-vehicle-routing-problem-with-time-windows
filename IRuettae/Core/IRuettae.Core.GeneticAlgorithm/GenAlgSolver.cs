@@ -23,6 +23,11 @@ namespace IRuettae.Core.GeneticAlgorithm
         /// <param name="starterData"></param>
         public GenAlgSolver(OptimizationInput input, GenAlgStarterData starterData)
         {
+            if (!starterData.IsValid())
+            {
+                throw new ArgumentException("The given GenAlgStarterData is invalid.");
+            }
+
             this.input = input;
             this.starterData = starterData;
         }

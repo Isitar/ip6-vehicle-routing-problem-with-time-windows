@@ -54,6 +54,66 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
             PositionMutationProbability = positionMutationProbability;
         }
 
+        /// <summary>
+        /// Returns if this is a valid configuration.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsValid()
+        {
+            if (MaxNumberOfSantas < 1)
+            {
+                return false;
+            }
+            if (MaxNumberOfGenerations < 0)
+            {
+                return false;
+            }
+            // one individual for elitism plus one "normal" individual
+            if (PopulationSize < 2)
+            {
+                return false;
+            }
+
+            // check percentages
+            if (ElitismPercentage <= 0 || ElitismPercentage >= 1)
+            {
+                return false;
+            }
+            if (DirectMutationPercentage < 0 || DirectMutationPercentage > 1)
+            {
+                return false;
+            }
+            if (RandomPercentage < 0 || RandomPercentage > 1)
+            {
+                return false;
+            }
+            if (RandomPercentage < 0 || RandomPercentage > 1)
+            {
+                return false;
+            }
+            if (MutationProbability < 0 || MutationProbability > 1)
+            {
+                return false;
+            }
+            if (OrderBasedCrossoverProbability < 0 || OrderBasedCrossoverProbability > 1)
+            {
+                return false;
+            }
+            if (PositionMutationProbability < 0 || PositionMutationProbability > 1)
+            {
+                return false;
+            }
+
+            // check if PopulationSize does not change
+            var size = (int)Math.Max(1, ElitismPercentage * PopulationSize) + (int)(DirectMutationPercentage * PopulationSize) + (int)(RandomPercentage * PopulationSize);
+            if (size < 0 || size > PopulationSize)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         public override string ToString() => string.Join(Environment.NewLine, GetType().GetProperties().Select(p => $"{p.Name}: {(p.GetIndexParameters().Length > 0 ? "Indexed Property cannot be used" : p.GetValue(this, null))}"));
     }
 }
