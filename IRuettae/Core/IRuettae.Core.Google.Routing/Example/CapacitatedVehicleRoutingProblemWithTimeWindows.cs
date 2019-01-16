@@ -287,6 +287,7 @@ public class CapacitatedVehicleRoutingProblemWithTimeWindows
             RoutingModel.DefaultSearchParameters();
         search_parameters.FirstSolutionStrategy =
             FirstSolutionStrategy.Types.Value.AllUnperformed;
+        search_parameters.TimeLimitMs = 10000;
 
         Console.WriteLine("Search");
         Assignment solution = model.SolveWithParameters(search_parameters);
