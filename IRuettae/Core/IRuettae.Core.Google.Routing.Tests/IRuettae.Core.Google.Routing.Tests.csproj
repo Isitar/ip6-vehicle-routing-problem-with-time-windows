@@ -28,6 +28,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -55,7 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IRuettae.Core.Google.Routing\IRuettae.Core.Google.Routing.csproj">
-      <Project>{68cc443b-a60c-4841-a6f9-4709927a75cf}</Project>
+      <Project>{74331164-a8fd-498d-b4f8-f10a12ad4ffa}</Project>
       <Name>IRuettae.Core.Google.Routing</Name>
     </ProjectReference>
   </ItemGroup>

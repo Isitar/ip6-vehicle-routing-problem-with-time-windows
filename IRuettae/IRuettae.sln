@@ -73,9 +73,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core.ILPIp5Gurobi"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core.ILPIp5GurobiTests", "Core\IRuettae.Core.ILPIp5GurobiTests\IRuettae.Core.ILPIp5GurobiTests.csproj", "{8735FC81-85DC-41B1-BB3A-9473CEA4D455}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IRuettae.Core.Google.Routing", "Core\IRuettae.Core.Google.Routing\IRuettae.Core.Google.Routing.csproj", "{68CC443B-A60C-4841-A6F9-4709927A75CF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core.Google.Routing.Tests", "Core\IRuettae.Core.Google.Routing.Tests\IRuettae.Core.Google.Routing.Tests.csproj", "{6E92CD1C-AD25-4845-8335-FB0EB813CE73}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core.Google.Routing", "Core\IRuettae.Core.Google.Routing\IRuettae.Core.Google.Routing.csproj", "{74331164-A8FD-498D-B4F8-F10A12AD4FFA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -252,18 +252,18 @@ Global
 		{8735FC81-85DC-41B1-BB3A-9473CEA4D455}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8735FC81-85DC-41B1-BB3A-9473CEA4D455}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8735FC81-85DC-41B1-BB3A-9473CEA4D455}.Release|Any CPU.Build.0 = Release|Any CPU
-		{68CC443B-A60C-4841-A6F9-4709927A75CF}.Debug With RealGoogle|Any CPU.ActiveCfg = Debug|Any CPU
-		{68CC443B-A60C-4841-A6F9-4709927A75CF}.Debug With RealGoogle|Any CPU.Build.0 = Debug|Any CPU
-		{68CC443B-A60C-4841-A6F9-4709927A75CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{68CC443B-A60C-4841-A6F9-4709927A75CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{68CC443B-A60C-4841-A6F9-4709927A75CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{68CC443B-A60C-4841-A6F9-4709927A75CF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6E92CD1C-AD25-4845-8335-FB0EB813CE73}.Debug With RealGoogle|Any CPU.ActiveCfg = Debug|Any CPU
 		{6E92CD1C-AD25-4845-8335-FB0EB813CE73}.Debug With RealGoogle|Any CPU.Build.0 = Debug|Any CPU
 		{6E92CD1C-AD25-4845-8335-FB0EB813CE73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6E92CD1C-AD25-4845-8335-FB0EB813CE73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E92CD1C-AD25-4845-8335-FB0EB813CE73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E92CD1C-AD25-4845-8335-FB0EB813CE73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74331164-A8FD-498D-B4F8-F10A12AD4FFA}.Debug With RealGoogle|Any CPU.ActiveCfg = Debug|Any CPU
+		{74331164-A8FD-498D-B4F8-F10A12AD4FFA}.Debug With RealGoogle|Any CPU.Build.0 = Debug|Any CPU
+		{74331164-A8FD-498D-B4F8-F10A12AD4FFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74331164-A8FD-498D-B4F8-F10A12AD4FFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74331164-A8FD-498D-B4F8-F10A12AD4FFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74331164-A8FD-498D-B4F8-F10A12AD4FFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -297,8 +297,8 @@ Global
 		{51555E8A-6A06-4216-AB08-57F5E8663AA1} = {4AFFAE11-44BE-4405-B3F8-A60826387129}
 		{6B0C008E-522D-4A5A-B854-CA14FA22C715} = {4AFFAE11-44BE-4405-B3F8-A60826387129}
 		{8735FC81-85DC-41B1-BB3A-9473CEA4D455} = {4AFFAE11-44BE-4405-B3F8-A60826387129}
-		{68CC443B-A60C-4841-A6F9-4709927A75CF} = {4AFFAE11-44BE-4405-B3F8-A60826387129}
 		{6E92CD1C-AD25-4845-8335-FB0EB813CE73} = {4AFFAE11-44BE-4405-B3F8-A60826387129}
+		{74331164-A8FD-498D-B4F8-F10A12AD4FFA} = {4AFFAE11-44BE-4405-B3F8-A60826387129}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46C1937C-3FE9-4F20-B1E3-E40616B3A48D}
