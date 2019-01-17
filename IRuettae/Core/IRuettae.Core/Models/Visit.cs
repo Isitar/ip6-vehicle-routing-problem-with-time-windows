@@ -9,7 +9,7 @@ namespace IRuettae.Core.Models
     /// <summary>
     /// Represents a visit
     /// </summary>
-    public struct Visit
+    public struct Visit : ICloneable
     {
         /// <summary>
         /// Identifies the visit
@@ -51,5 +51,16 @@ namespace IRuettae.Core.Models
         /// </summary>
         public bool IsBreak;
 
+        /// <summary>
+        /// Deep copy
+        /// </summary>
+        /// <returns></returns>
+        public object Clone()
+        {
+            var ret = (Visit)MemberwiseClone();
+            ret.Desired = Desired.Select(v => (v.from, v.to)).ToArray();
+            ret.Unavailable = Unavailable.Select(v => (v.from, v.to)).ToArray();
+            return ret;
+        }
     }
 }
