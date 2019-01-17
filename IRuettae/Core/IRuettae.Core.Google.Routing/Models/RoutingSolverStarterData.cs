@@ -6,5 +6,6 @@ namespace IRuettae.Core.Google.Routing.Models
 {
     public class RoutingSolverStarterData
     {
+        public int MaxNumberOfSantas { get; set; }
     }
 }
