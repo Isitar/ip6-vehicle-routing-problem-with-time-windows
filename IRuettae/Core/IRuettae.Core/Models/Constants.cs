@@ -9,5 +9,6 @@ namespace IRuettae.Core.Models
     public static class Constants
     {
         public const int VisitIdHome = -1;
+        public const int InvalidSantaId = -1;
     }
 }
