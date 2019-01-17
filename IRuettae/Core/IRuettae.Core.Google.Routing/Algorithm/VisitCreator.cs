@@ -65,9 +65,9 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             {
                 var home = new Visit()
                 {
-                    Id = -1,
+                    Id = Constants.VisitIdHome,
                     IsBreak = false,
-                    SantaId = -1,
+                    SantaId = Constants.InvalidSantaId,
                     Duration = 0,
                 };
                 data.Visits.Add(home);
