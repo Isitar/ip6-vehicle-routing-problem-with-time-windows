@@ -24,7 +24,10 @@ namespace IRuettae.Core.Google.Routing.Algorithm.Tests
             var numberOfDays = actual.Input.Days.Length;
             visitCreator.Create();
 
-            Assert.AreEqual(6, actual.Visits.Count);
+            // 4 normal
+            // 2 breaks
+            // 2 homes
+            Assert.AreEqual(8, actual.Visits.Count);
             for (int i = 0; i < actual.Input.Visits.Length; i++)
             {
                 Assert.AreEqual(actual.Input.Visits[i].Id, actual.Visits[i].Id);
@@ -49,6 +52,16 @@ namespace IRuettae.Core.Google.Routing.Algorithm.Tests
             Assert.AreEqual(1, actual.Visits[5].Desired.Length);
             Assert.AreEqual(Dataset1.StartDay2 + Dataset1.BreakDesiredStart, actual.Visits[5].Desired[0].from);
             Assert.AreEqual(Dataset1.StartDay2 + Dataset1.BreakDesiredEnd, actual.Visits[5].Desired[0].to);
+
+            // home 1
+            var home1Index = 6;
+            Assert.AreEqual(-1, actual.Visits[home1Index].Id);
+            Assert.AreEqual(home1Index, actual.HomeIndex);
+
+            // home 2
+            var home2Index = 7;
+            Assert.AreEqual(-1, actual.Visits[home2Index].Id);
+            Assert.AreEqual(home2Index, actual.HomeIndexAdditional);
         }
     }
 }

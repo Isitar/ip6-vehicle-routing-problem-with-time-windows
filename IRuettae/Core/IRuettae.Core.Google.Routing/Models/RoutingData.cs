@@ -28,5 +28,7 @@ namespace IRuettae.Core.Google.Routing.Models
         /// The Visits.Count equals the sum of normal visits and breaks*numberOfDays.
         /// </summary>
         public List<Visit> Visits { get; set; } = new List<Visit>();
+        public int HomeIndex { get; internal set; }
+        public int HomeIndexAdditional { get; internal set; }
     }
 }

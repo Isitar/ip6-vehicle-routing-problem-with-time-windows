@@ -18,8 +18,10 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         }
 
         /// <summary>
-        /// creates data.Visits
         /// requires data.SantaIds
+        /// creates data.Visits
+        /// creates data.HomeIndex
+        /// creates data.HomeIndexAdditional
         /// </summary>
         public void Create()
         {
@@ -57,6 +59,23 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                     // normal visit
                     data.Visits.Add((Visit)visit.Clone());
                 }
+            }
+
+            // add home
+            {
+                var home = new Visit()
+                {
+                    Id = -1,
+                    IsBreak = false,
+                    SantaId = -1,
+                    Duration = 0,
+                };
+                data.Visits.Add(home);
+                data.HomeIndex = data.Visits.Count - 1;
+
+                // home for aditional santas
+                data.Visits.Add(home);
+                data.HomeIndexAdditional = data.Visits.Count - 1;
             }
         }
     }
