@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Algorithm\VisitCreator.cs" />
     <Compile Include="Algorithm\SantaCreator.cs" />
+    <Compile Include="Algorithm\WayEvaluator.cs" />
     <Compile Include="Example\CapacitatedVehicleRoutingProblemWithTimeWindows.cs" />
     <Compile Include="Models\RoutingData.cs" />
     <Compile Include="Models\RoutingSolverStarterData.cs" />
