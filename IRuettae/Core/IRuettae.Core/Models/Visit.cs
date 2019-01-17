@@ -58,8 +58,8 @@ namespace IRuettae.Core.Models
         public object Clone()
         {
             var ret = (Visit)MemberwiseClone();
-            ret.Desired = Desired.Select(v => (v.from, v.to)).ToArray();
-            ret.Unavailable = Unavailable.Select(v => (v.from, v.to)).ToArray();
+            ret.Desired = Desired?.Select(v => (v.from, v.to)).ToArray();
+            ret.Unavailable = Unavailable?.Select(v => (v.from, v.to)).ToArray();
             return ret;
         }
     }
