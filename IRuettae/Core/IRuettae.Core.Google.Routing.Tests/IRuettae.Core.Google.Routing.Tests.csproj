@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Algorithm\SantaCreatorTests.cs" />
     <Compile Include="Algorithm\Dataset1.cs" />
+    <Compile Include="Algorithm\VisitCreatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

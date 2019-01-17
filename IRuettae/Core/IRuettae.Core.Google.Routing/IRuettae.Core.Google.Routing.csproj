@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithm\VisitCreator.cs" />
     <Compile Include="Algorithm\SantaCreator.cs" />
     <Compile Include="Example\CapacitatedVehicleRoutingProblemWithTimeWindows.cs" />
     <Compile Include="Models\RoutingData.cs" />
