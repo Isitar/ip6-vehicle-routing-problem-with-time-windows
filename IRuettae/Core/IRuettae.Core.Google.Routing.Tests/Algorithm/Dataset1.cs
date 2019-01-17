@@ -38,6 +38,10 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
         public const int StartDay2 = 5000;
         public const int EndDay2 = 6000;
 
+        // break times (relative to day)
+        public const int BreakDesiredStart = 100;
+        public const int BreakDesiredEnd = 200;
+
         public const int Hour = 3600;
 
         public static RoutingData Create()
@@ -99,12 +103,17 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
                         Duration = 100 * Hour,
                         IsBreak = true,
                         SantaId = SantaId2,
+                        Desired = new(int, int)[]
+                        {
+                            (StartDay1 + BreakDesiredStart, StartDay1 + BreakDesiredEnd),
+                            (StartDay2 + BreakDesiredStart, StartDay2 + BreakDesiredEnd),
+                        }
                     }
                 },
                 Days = new(int, int)[]
                 {
                     (StartDay1, EndDay1),
-                    (StartDay2, StartDay2),
+                    (StartDay2, EndDay2),
                 },
                 RouteCosts = new int[,]
                 {
