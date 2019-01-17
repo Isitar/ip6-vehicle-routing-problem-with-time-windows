@@ -17,22 +17,33 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             this.data = data;
         }
 
+        /// <summary>
+        /// creates data.SantaIds
+        /// </summary>
+        /// <param name="maxNumberOfSantas"></param>
         public void Create(int maxNumberOfSantas)
         {
             data.SantaIds.Clear();
 
+            List<int> santaIds = new List<int>();
             for (int i = 0; i < maxNumberOfSantas; i++)
             {
                 if (i < data.Input.Santas.Length)
                 {
                     // real santa
-                    data.SantaIds.Add(data.Input.Santas[i].Id);
+                    santaIds.Add(data.Input.Santas[i].Id);
                 }
                 else
                 {
                     // new, artificial santa
-                    data.SantaIds.Add(data.SantaIds.Max() + 1);
+                    santaIds.Add(santaIds.Max() + 1);
                 }
+            }
+
+            // duplicate for each day
+            for (int i = 0; i < data.Input.Days.Length; i++)
+            {
+                data.SantaIds.AddRange(santaIds);
             }
         }
     }
