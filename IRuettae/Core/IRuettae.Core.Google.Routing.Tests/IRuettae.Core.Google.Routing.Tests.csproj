@@ -49,6 +49,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithm\SantaCreatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -58,6 +59,10 @@
     <ProjectReference Include="..\IRuettae.Core.Google.Routing\IRuettae.Core.Google.Routing.csproj">
       <Project>{74331164-a8fd-498d-b4f8-f10a12ad4ffa}</Project>
       <Name>IRuettae.Core.Google.Routing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IRuettae.Core\IRuettae.Core.csproj">
+      <Project>{E6F0FFC6-7F26-4286-AE57-44411EB66118}</Project>
+      <Name>IRuettae.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
