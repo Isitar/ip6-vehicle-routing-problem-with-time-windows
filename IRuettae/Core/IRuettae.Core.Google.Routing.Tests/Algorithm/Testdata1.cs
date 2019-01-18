@@ -11,7 +11,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
     /// <summary>
     /// Dataset for testing.
     /// </summary>
-    static class Dataset1
+    static class Testdata1
     {
         // santa ids
         public const int SantaId1 = 100;

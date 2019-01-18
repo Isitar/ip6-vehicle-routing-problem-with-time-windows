@@ -17,7 +17,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
         [TestMethod()]
         public void TestCreate_Simple()
         {
-            var actual = Dataset1.Create();
+            var actual = Testdata1.Create();
             var santaCreator = new SantaCreator(actual);
 
             var numberOfDays = actual.Input.Days.Length;
@@ -25,16 +25,16 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
             santaCreator.Create(numberOfSantas);
 
             Assert.AreEqual(numberOfDays * numberOfSantas, actual.SantaIds.Count);
-            Assert.AreEqual(Dataset1.SantaId1, actual.SantaIds[0]);
-            Assert.AreEqual(Dataset1.SantaId2, actual.SantaIds[1]);
-            Assert.AreEqual(Dataset1.SantaId1, actual.SantaIds[2]);
-            Assert.AreEqual(Dataset1.SantaId2, actual.SantaIds[3]);
+            Assert.AreEqual(Testdata1.SantaId1, actual.SantaIds[0]);
+            Assert.AreEqual(Testdata1.SantaId2, actual.SantaIds[1]);
+            Assert.AreEqual(Testdata1.SantaId1, actual.SantaIds[2]);
+            Assert.AreEqual(Testdata1.SantaId2, actual.SantaIds[3]);
         }
 
         [TestMethod()]
         public void TestCreate_Additional()
         {
-            var actual = Dataset1.Create();
+            var actual = Testdata1.Create();
             var santaCreator = new SantaCreator(actual);
 
             var numberOfDays = actual.Input.Days.Length;
@@ -42,12 +42,12 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
             santaCreator.Create(numberOfSantas);
 
             Assert.AreEqual(numberOfDays * numberOfSantas, actual.SantaIds.Count);
-            Assert.AreEqual(Dataset1.SantaId1, actual.SantaIds[0]);
-            Assert.AreEqual(Dataset1.SantaId2, actual.SantaIds[1]);
-            Assert.AreEqual(Dataset1.SantaId2 + 1, actual.SantaIds[2]);
-            Assert.AreEqual(Dataset1.SantaId1, actual.SantaIds[3]);
-            Assert.AreEqual(Dataset1.SantaId2, actual.SantaIds[4]);
-            Assert.AreEqual(Dataset1.SantaId2 + 1, actual.SantaIds[5]);
+            Assert.AreEqual(Testdata1.SantaId1, actual.SantaIds[0]);
+            Assert.AreEqual(Testdata1.SantaId2, actual.SantaIds[1]);
+            Assert.AreEqual(Testdata1.SantaId2 + 1, actual.SantaIds[2]);
+            Assert.AreEqual(Testdata1.SantaId1, actual.SantaIds[3]);
+            Assert.AreEqual(Testdata1.SantaId2, actual.SantaIds[4]);
+            Assert.AreEqual(Testdata1.SantaId2 + 1, actual.SantaIds[5]);
         }
     }
 }

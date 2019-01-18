@@ -15,7 +15,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm.Tests
         [TestMethod()]
         public void TestCreate_Simple()
         {
-            var actual = Dataset1.Create();
+            var actual = Testdata1.Create();
             var santaCreator = new SantaCreator(actual);
             var numberOfSantas = 3;
             santaCreator.Create(numberOfSantas);
@@ -36,22 +36,22 @@ namespace IRuettae.Core.Google.Routing.Algorithm.Tests
             // test break on day1
             Assert.AreEqual(1, actual.Visits[4].SantaId);
             Assert.AreEqual(int.MinValue, actual.Visits[4].Unavailable[0].from);
-            Assert.AreEqual(Dataset1.StartDay1 - 1, actual.Visits[4].Unavailable[0].to);
-            Assert.AreEqual(Dataset1.EndDay1 + 1, actual.Visits[4].Unavailable[1].from);
+            Assert.AreEqual(Testdata1.StartDay1 - 1, actual.Visits[4].Unavailable[0].to);
+            Assert.AreEqual(Testdata1.EndDay1 + 1, actual.Visits[4].Unavailable[1].from);
             Assert.AreEqual(int.MaxValue, actual.Visits[4].Unavailable[1].to);
             Assert.AreEqual(1, actual.Visits[4].Desired.Length);
-            Assert.AreEqual(Dataset1.StartDay1 + Dataset1.BreakDesiredStart, actual.Visits[4].Desired[0].from);
-            Assert.AreEqual(Dataset1.StartDay1 + Dataset1.BreakDesiredEnd, actual.Visits[4].Desired[0].to);
+            Assert.AreEqual(Testdata1.StartDay1 + Testdata1.BreakDesiredStart, actual.Visits[4].Desired[0].from);
+            Assert.AreEqual(Testdata1.StartDay1 + Testdata1.BreakDesiredEnd, actual.Visits[4].Desired[0].to);
 
             // test break on day2
             Assert.AreEqual(4, actual.Visits[5].SantaId);
             Assert.AreEqual(int.MinValue, actual.Visits[5].Unavailable[0].from);
-            Assert.AreEqual(Dataset1.StartDay2 - 1, actual.Visits[5].Unavailable[0].to);
-            Assert.AreEqual(Dataset1.EndDay2 + 1, actual.Visits[5].Unavailable[1].from);
+            Assert.AreEqual(Testdata1.StartDay2 - 1, actual.Visits[5].Unavailable[0].to);
+            Assert.AreEqual(Testdata1.EndDay2 + 1, actual.Visits[5].Unavailable[1].from);
             Assert.AreEqual(int.MaxValue, actual.Visits[5].Unavailable[1].to);
             Assert.AreEqual(1, actual.Visits[5].Desired.Length);
-            Assert.AreEqual(Dataset1.StartDay2 + Dataset1.BreakDesiredStart, actual.Visits[5].Desired[0].from);
-            Assert.AreEqual(Dataset1.StartDay2 + Dataset1.BreakDesiredEnd, actual.Visits[5].Desired[0].to);
+            Assert.AreEqual(Testdata1.StartDay2 + Testdata1.BreakDesiredStart, actual.Visits[5].Desired[0].from);
+            Assert.AreEqual(Testdata1.StartDay2 + Testdata1.BreakDesiredEnd, actual.Visits[5].Desired[0].to);
 
             // home 1
             var home1Index = 6;
