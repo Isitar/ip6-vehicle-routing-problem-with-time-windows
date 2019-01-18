@@ -59,6 +59,13 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
             var home2Index = 7;
             Assert.AreEqual(-1, actual.Visits[home2Index].Id);
             Assert.AreEqual(home2Index, actual.HomeIndexAdditional);
+
+            // desired/unavailable must not be null
+            foreach (var visit in actual.Visits)
+            {
+                Assert.IsNotNull(visit.Desired);
+                Assert.IsNotNull(visit.Unavailable);
+            }
         }
     }
 }

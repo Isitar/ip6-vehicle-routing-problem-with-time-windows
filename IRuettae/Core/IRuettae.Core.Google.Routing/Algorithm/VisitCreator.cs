@@ -57,7 +57,10 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                 else
                 {
                     // normal visit
-                    data.Visits.Add((Visit)visit.Clone());
+                    var clone = (Visit)visit.Clone();
+                    clone.Desired = clone.Desired ?? new(int, int)[0];
+                    clone.Unavailable = clone.Unavailable ?? new(int, int)[0];
+                    data.Visits.Add(clone);
                 }
             }
 
@@ -69,6 +72,8 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                     IsBreak = false,
                     SantaId = Constants.InvalidSantaId,
                     Duration = 0,
+                    Desired = new(int, int)[0],
+                    Unavailable = new(int, int)[0],
                 };
                 data.Visits.Add(home);
                 data.HomeIndex = data.Visits.Count - 1;
