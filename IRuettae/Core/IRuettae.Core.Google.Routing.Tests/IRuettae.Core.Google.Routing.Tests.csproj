@@ -60,6 +60,7 @@
     <Compile Include="Algorithm\SantaCreatorTests.cs" />
     <Compile Include="Algorithm\Testdata1.cs" />
     <Compile Include="Algorithm\UnavailableCreatorTests.cs" />
+    <Compile Include="Algorithm\StartEndCreatorTests.cs" />
     <Compile Include="Algorithm\VisitCreatorTests.cs" />
     <Compile Include="Algorithm\TimeEvaluatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -47,5 +47,17 @@ namespace IRuettae.Core.Google.Routing.Models
         /// Unavailable.Length equals Visits.Length.
         /// </summary>
         public (int startFrom, int startEnd)[][] Unavailable { get; set; }
+
+        /// <summary>
+        /// Index of the visit which is the start of the santa.
+        /// SantaStartIndex[santaIndex].
+        /// </summary>
+        public int[] SantaStartIndex { get; set; }
+
+        /// <summary>
+        /// Index of the visit which is the end of the santa.
+        /// SantaEndIndex[santaIndex].
+        /// </summary>
+        public int[] SantaEndIndex { get; set; }
     }
 }
