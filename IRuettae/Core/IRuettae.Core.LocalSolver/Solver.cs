@@ -104,8 +104,8 @@ namespace IRuettae.Core.LocalSolver
                     .Select(v =>
                         // fake arr
                         v.Desired.Length == 0
-                            ? new[] {new[] {-1, -1}}
-                            : v.Desired.Select(d => new[] {d.from, d.to}).ToArray()
+                            ? new[] { new[] { -1, -1 } }
+                            : v.Desired.Select(d => new[] { d.from, d.to }).ToArray()
                     )
                     .ToArray();
                 var visitDesiredArray = model.Array(visitsOnlyDesired);
@@ -116,8 +116,8 @@ namespace IRuettae.Core.LocalSolver
                     .Select(v =>
                         // fake arr
                         v.Unavailable.Length == 0
-                            ? new[] {new[] {-1, -1}}
-                            : v.Unavailable.Select(d => new[] {d.from, d.to}).ToArray()
+                            ? new[] { new[] { -1, -1 } }
+                            : v.Unavailable.Select(d => new[] { d.from, d.to }).ToArray()
                     )
                     .ToArray();
                 var visitUnavailableArray = model.Array(visitsOnlyUnavailable);
@@ -289,7 +289,7 @@ namespace IRuettae.Core.LocalSolver
                 InitializeSolution(numberOfRoutes, numberOfFakeSantas, visitSequences, breakDictionary);
 
                 var phase = localSolver.CreatePhase();
-                phase.SetTimeLimit((int) ((timeLimitMilliseconds - sw.ElapsedMilliseconds) / 1000));
+                phase.SetTimeLimit((int)((timeLimitMilliseconds - sw.ElapsedMilliseconds) / 1000));
 
 
                 localSolver.Solve();
@@ -350,7 +350,7 @@ namespace IRuettae.Core.LocalSolver
 
             for (var i = 0; i < numberOfRoutes; i++)
             {
-                var visitIds = visitSequences[i].GetCollectionValue().Select(v => (int) v).ToArray();
+                var visitIds = visitSequences[i].GetCollectionValue().Select(v => (int)v).ToArray();
 
                 // breaks
                 for (var visitIdIndex = 0; visitIdIndex < visitIds.Length; visitIdIndex++)
@@ -373,7 +373,7 @@ namespace IRuettae.Core.LocalSolver
                     Waypoints = Enumerable.Range(0, visitIds.Length).Select(j =>
                         new Waypoint
                         {
-                            StartTime = (int) visitStartingTimes.GetArrayValue().GetIntValue(j),
+                            StartTime = (int)visitStartingTimes.GetArrayValue().GetIntValue(j),
                             VisitId = visitIds[j]
                         }).ToArray()
                 };
@@ -416,7 +416,7 @@ namespace IRuettae.Core.LocalSolver
                 throw new ArgumentNullException(nameof(visitSequences));
             }
 
-            var numberOfVisitsPerSanta = Math.Floor((double) (input.Visits.Count(v => !v.IsBreak) / numberOfRoutes));
+            var numberOfVisitsPerSanta = Math.Floor((double)(input.Visits.Count(v => !v.IsBreak) / numberOfRoutes));
             var visitIndex = 0;
             for (var day = 0; day < input.Days.Length; day++)
             {
@@ -456,15 +456,7 @@ namespace IRuettae.Core.LocalSolver
                 routeCostJagged[i] = new int[visits.Count];
                 for (var j = 0; j < routeCostJagged[i].Length; j++)
                 {
-                    if ((i < input.RouteCosts.GetLength(0)) && (j < input.RouteCosts.GetLength(1)))
-                    {
-                        routeCostJagged[i][j] = input.RouteCosts[i, j];
-                    }
-                    else
-                    {
-                        // additional breaks
-                        routeCostJagged[i][j] = input.RouteCosts[visits[i].Id, visits[j].Id];
-                    }
+                    routeCostJagged[i][j] = input.RouteCosts[visits[i].Id, visits[j].Id];
                 }
             }
 

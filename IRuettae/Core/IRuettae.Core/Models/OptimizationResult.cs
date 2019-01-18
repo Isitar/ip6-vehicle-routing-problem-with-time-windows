@@ -87,7 +87,7 @@ namespace IRuettae.Core.Models
 
         public int NumberOfAdditionalSantas()
         {
-            var additionalSantaIds = NonEmptyRoutes.Where(r => !OptimizationInput.Santas.Select(s => s.Id).Contains(r.SantaId))
+            var additionalSantaIds = NonEmptyRoutes.Where(r => OptimizationInput.IsAdditionalSanta(r.SantaId))
                 .Select(r => r.SantaId)
                 .Distinct().ToList();
             return additionalSantaIds.Count;
@@ -95,7 +95,7 @@ namespace IRuettae.Core.Models
 
         public int AdditionalSantaWorkTime()
         {
-            var additionalSantaIds = NonEmptyRoutes.Where(r => !OptimizationInput.Santas.Select(s => s.Id).Contains(r.SantaId))
+            var additionalSantaIds = NonEmptyRoutes.Where(r => OptimizationInput.IsAdditionalSanta(r.SantaId))
                 .Select(r => r.SantaId)
                 .Distinct().ToList();
             var additionalSantaRoutes = NonEmptyRoutes.Where(r => additionalSantaIds.Contains(r.SantaId));
