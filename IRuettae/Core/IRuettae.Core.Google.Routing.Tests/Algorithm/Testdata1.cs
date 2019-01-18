@@ -50,6 +50,11 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
 
         public static RoutingData Create()
         {
+            // unavailable
+            var unavailableDay1Before = (int.MinValue, StartDay1 - 1);
+            var unavailableBetween = (EndDay1 + 1, StartDay2 - 1);
+            var unavailableDay2After = (EndDay2 + 1, int.MaxValue);
+
             return new RoutingData(new OptimizationInput()
             {
                 Santas = new Santa[]
@@ -73,6 +78,18 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
                         SantaId = -1,
                         WayCostFromHome = W01,
                         WayCostToHome = 0,
+                        Desired = new(int, int)[]
+                        {
+                            (StartDay1, EndDay1),
+                            (StartDay2, EndDay2),
+                        },
+                        Unavailable = new(int, int)[]
+                        {
+                            unavailableDay1Before,
+                            unavailableBetween,
+                            unavailableDay2After,
+                            (StartDay1, EndDay1),
+                        },
                     },
                     new Visit
                     {
@@ -82,6 +99,17 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
                         SantaId = -1,
                         WayCostFromHome = 0,
                         WayCostToHome = W20,
+                        Desired = new(int, int)[]
+                        {
+                            (StartDay1, EndDay1),
+                        },
+                        Unavailable = new(int, int)[]
+                        {
+                            unavailableDay1Before,
+                            unavailableBetween,
+                            unavailableDay2After,
+                            (StartDay2, EndDay2),
+                        },
                     },
                     new Visit
                     {
@@ -90,7 +118,13 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
                         IsBreak = false,
                         SantaId = -1,
                         WayCostFromHome = W03,
-                        WayCostToHome =W30,
+                        WayCostToHome = W30,
+                        Unavailable = new(int, int)[]
+                        {
+                            unavailableDay1Before,
+                            unavailableBetween,
+                            unavailableDay2After,
+                        },
                     },
                     new Visit
                     {
@@ -100,6 +134,12 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
                         SantaId = -1,
                         WayCostFromHome = W04,
                         WayCostToHome = W40,
+                        Unavailable = new(int, int)[]
+                        {
+                            unavailableDay1Before,
+                            unavailableBetween,
+                            unavailableDay2After,
+                        },
                     },
                     new Visit
                     {
@@ -111,6 +151,12 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
                         {
                             (StartDay1 + BreakDesiredStart, StartDay1 + BreakDesiredEnd),
                             (StartDay2 + BreakDesiredStart, StartDay2 + BreakDesiredEnd),
+                        },
+                        Unavailable = new(int, int)[]
+                        {
+                            unavailableDay1Before,
+                            unavailableBetween,
+                            unavailableDay2After,
                         },
                         WayCostFromHome = W05,
                         WayCostToHome = W50,

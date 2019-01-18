@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithm\UnavailableCreator.cs" />
     <Compile Include="Algorithm\VisitCreator.cs" />
     <Compile Include="Algorithm\SantaCreator.cs" />
     <Compile Include="Algorithm\TimeEvaluator.cs" />

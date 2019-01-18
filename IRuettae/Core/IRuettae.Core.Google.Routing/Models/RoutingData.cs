@@ -40,5 +40,12 @@ namespace IRuettae.Core.Google.Routing.Models
         /// This home has a penalty term.
         /// </summary>
         public int HomeIndexAdditional { get; set; }
+
+        /// <summary>
+        /// Intervals in which a visit start can not be.
+        /// Unavailable[visitId][interval].
+        /// Unavailable.Count equals Visits.Count.
+        /// </summary>
+        public List<List<(int startFrom, int startEnd)>> Unavailable { get; set; } = new List<List<(int startFrom, int startEnd)>>();
     }
 }
