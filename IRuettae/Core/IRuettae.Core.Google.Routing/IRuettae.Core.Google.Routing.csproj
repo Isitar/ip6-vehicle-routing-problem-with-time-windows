@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithm\RoutingModelCreator.cs" />
     <Compile Include="Algorithm\UnavailableCreator.cs" />
     <Compile Include="Algorithm\StartEndCreator.cs" />
     <Compile Include="Algorithm\VisitCreator.cs" />

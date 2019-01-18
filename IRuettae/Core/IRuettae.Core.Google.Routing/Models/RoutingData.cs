@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Google.OrTools.ConstraintSolver;
 using IRuettae.Core.Models;
 
 namespace IRuettae.Core.Google.Routing.Models
@@ -107,5 +108,7 @@ namespace IRuettae.Core.Google.Routing.Models
                 return Input.Days.Max(d => d.to);
             }
         }
+
+        public RoutingModel RoutingModel { get; set; }
     }
 }
