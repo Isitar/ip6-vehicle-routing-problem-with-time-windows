@@ -15,11 +15,9 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
         public void TestRun_Simple()
         {
             var data = Testdata1.Create();
-            var santaCreator = new SantaCreator(data);
             var numberOfSantas = 3;
-            santaCreator.Create(numberOfSantas);
-            var visitCreator = new VisitCreator(data);
-            visitCreator.Create();
+            new SantaCreator(data).Create(numberOfSantas);
+            new VisitCreator(data).Create();
 
             var wayEvaluator = new TimeEvaluator(data);
 

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.Google.Routing.Tests.Algorithm;
 
-namespace IRuettae.Core.Google.Routing.Algorithm.Tests
+namespace IRuettae.Core.Google.Routing.Tests.Algorithm
 {
     [TestClass()]
     public class VisitCreatorTests
@@ -16,13 +16,10 @@ namespace IRuettae.Core.Google.Routing.Algorithm.Tests
         public void TestCreate_Simple()
         {
             var actual = Testdata1.Create();
-            var santaCreator = new SantaCreator(actual);
             var numberOfSantas = 3;
-            santaCreator.Create(numberOfSantas);
-            var visitCreator = new VisitCreator(actual);
+            new SantaCreator(actual).Create(numberOfSantas);
 
-            var numberOfDays = actual.Input.Days.Length;
-            visitCreator.Create();
+            new VisitCreator(actual).Create();
 
             // 4 normal
             // 2 breaks
