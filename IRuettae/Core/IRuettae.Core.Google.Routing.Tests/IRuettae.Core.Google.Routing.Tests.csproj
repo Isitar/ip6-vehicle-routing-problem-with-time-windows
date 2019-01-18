@@ -63,6 +63,7 @@
     <Compile Include="Algorithm\StartEndCreatorTests.cs" />
     <Compile Include="Algorithm\VisitCreatorTests.cs" />
     <Compile Include="Algorithm\TimeEvaluatorTests.cs" />
+    <Compile Include="Models\RoutingDataTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

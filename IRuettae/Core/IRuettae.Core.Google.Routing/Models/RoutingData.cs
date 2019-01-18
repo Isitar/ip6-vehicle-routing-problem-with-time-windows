@@ -59,5 +59,53 @@ namespace IRuettae.Core.Google.Routing.Models
         /// SantaEndIndex[santaIndex].
         /// </summary>
         public int[] SantaEndIndex { get; set; }
+
+
+        /// <summary>
+        /// Returns the number of santas.
+        /// This includes duplicated santas.
+        /// </summary>
+        public int NumberOfSantas
+        {
+            get
+            {
+                return SantaIds == null ? 0 : SantaIds.Length;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of visits.
+        /// This includes duplicated breaks.
+        /// </summary>
+        public int NumberOfVisits
+        {
+            get
+            {
+                return Visits == null ? 0 : Visits.Length;
+            }
+        }
+
+
+        /// <summary>
+        /// Returns the start of the first day.
+        /// </summary>
+        public int OverallStart
+        {
+            get
+            {
+                return Input.Days.Min(d => d.from);
+            }
+        }
+
+        /// <summary>
+        /// Returns the end of the latest day.
+        /// </summary>
+        public int OverallEnd
+        {
+            get
+            {
+                return Input.Days.Max(d => d.to);
+            }
+        }
     }
 }
