@@ -56,6 +56,7 @@
     <Compile Include="Algorithm\SantaCreator.cs" />
     <Compile Include="Algorithm\TimeEvaluator.cs" />
     <Compile Include="Example\CapacitatedVehicleRoutingProblemWithTimeWindows.cs" />
+    <Compile Include="Models\CostSettings.cs" />
     <Compile Include="Models\RoutingData.cs" />
     <Compile Include="Models\RoutingSolverStarterData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -17,6 +17,8 @@ namespace IRuettae.Core.Google.Routing.Models
             Input = input;
         }
 
+        public CostSettings Cost { get; } = new CostSettings();
+
         /// <summary>
         /// List of all santa Ids.
         /// The SantaIds.Length equals maxNumberOfSantas*numberOfDays.
