@@ -34,7 +34,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             {
                 var startIndex = data.HomeIndex;
                 var endIndex = data.HomeIndex;
-                if (IsAdditionalSanta(data.SantaIds[i]))
+                if (data.Input.IsAdditionalSanta(data.SantaIds[i]))
                 {
                     startIndex = data.HomeIndexAdditional;
                 }
@@ -44,11 +44,6 @@ namespace IRuettae.Core.Google.Routing.Algorithm
 
             data.SantaStartIndex = starts;
             data.SantaEndIndex = ends;
-        }
-
-        private bool IsAdditionalSanta(int santaId)
-        {
-            return data.Input.Santas.All(s => s.Id != santaId);
         }
     }
 }
