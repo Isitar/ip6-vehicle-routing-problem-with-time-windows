@@ -22,8 +22,8 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// requires data.Visits
         /// requires data.HomeIndex
         /// requires data.HomeIndexAdditional
-        /// creates data.Start
-        /// creates data.End
+        /// creates data.SantaStartIndex
+        /// creates data.SantaEndIndex
         /// </summary>
         public void Create()
         {
