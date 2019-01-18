@@ -8,7 +8,7 @@ using IRuettae.Core.Google.Routing.Models;
 
 namespace IRuettae.Core.Google.Routing.Algorithm
 {
-    public class WayEvaluator : NodeEvaluator2
+    public class TimeEvaluator : NodeEvaluator2
     {
         private readonly RoutingData data;
 
@@ -18,7 +18,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// requires data.HomeIndexAdditional
         /// </summary>
         /// <param name="data"></param>
-        public WayEvaluator(RoutingData data)
+        public TimeEvaluator(RoutingData data)
         {
             this.data = data ?? throw new ArgumentException("data must not be null");
         }
@@ -42,13 +42,19 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             {
                 return data.Visits[secondIndex].WayCostFromHome;
             }
-            else if (secondIsHome)
+
+            // first index is not home
+            // -> add duration
+
+            var firstVisit = data.Visits[firstIndex];
+            var duration = firstVisit.Duration;
+            if (secondIsHome)
             {
-                return data.Visits[firstIndex].WayCostToHome;
+                return duration + firstVisit.WayCostToHome;
             }
             else
             {
-                return data.Input.RouteCosts[data.Visits[firstIndex].Id, data.Visits[secondIndex].Id];
+                return duration + data.Input.RouteCosts[firstVisit.Id, data.Visits[secondIndex].Id];
             }
         }
 

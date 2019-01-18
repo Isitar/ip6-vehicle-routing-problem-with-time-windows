@@ -34,6 +34,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
         public const int Duration2 = 200;
         public const int Duration3 = 300;
         public const int Duration4 = 400;
+        public const int Duration5 = 500;
 
         // days
         public const int StartDay1 = 1000;
@@ -103,7 +104,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
                     new Visit
                     {
                         Id = 4,
-                        Duration = 100 * Hour,
+                        Duration = Duration5,
                         IsBreak = true,
                         SantaId = SantaId2,
                         Desired = new(int, int)[]
