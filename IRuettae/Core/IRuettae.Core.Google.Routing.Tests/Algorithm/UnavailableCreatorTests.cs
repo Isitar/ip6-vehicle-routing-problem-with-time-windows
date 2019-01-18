@@ -20,11 +20,11 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
             new VisitCreator(actual).Create();
             new UnavailableCreator(actual).Create();
 
-            Assert.AreEqual(actual.Visits.Count, actual.Unavailable.Count);
+            Assert.AreEqual(actual.Visits.Length, actual.Unavailable.Length);
 
             // visit 1
             {
-                Assert.AreEqual(4, actual.Unavailable[0].Count);
+                Assert.AreEqual(4, actual.Unavailable[0].Length);
                 var (from, to) = actual.Unavailable[0].Last();
                 Assert.AreEqual(Testdata1.StartDay1 - Testdata1.Duration1, from);
                 Assert.AreEqual(Testdata1.EndDay1, to);
@@ -32,14 +32,14 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
 
             // visit2
             {
-                Assert.AreEqual(4, actual.Unavailable[1].Count);
+                Assert.AreEqual(4, actual.Unavailable[1].Length);
                 var (from, to) = actual.Unavailable[1].Last();
                 Assert.AreEqual(Testdata1.StartDay2 - Testdata1.Duration2, from);
                 Assert.AreEqual(Testdata1.EndDay2, to);
             }
 
             // normal visits have default unavailables
-            for (int i = 0; i < actual.Unavailable.Count; i++)
+            for (int i = 0; i < actual.Unavailable.Length; i++)
             {
                 if (i == actual.HomeIndex || i == actual.HomeIndexAdditional || actual.Visits[i].IsBreak)
                 {
@@ -52,7 +52,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
 
         }
 
-        private void CheckDefaultUnavailable(List<(int startFrom, int startEnd)> unavailable, int duration)
+        private void CheckDefaultUnavailable((int startFrom, int startEnd)[] unavailable, int duration)
         {
             {
                 var (from, to) = unavailable[0];

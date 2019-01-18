@@ -23,8 +23,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// </summary>
         public void Create()
         {
-            data.Unavailable.Clear();
-
+            var unavailables = new List<(int, int)[]>();
             foreach (var visit in data.Visits)
             {
                 var duration = visit.Duration;
@@ -41,8 +40,10 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                         unavailable.Add((from - duration, to));
                     }
                 }
-                data.Unavailable.Add(unavailable);
+                unavailables.Add(unavailable.ToArray());
             }
+
+            data.Unavailable = unavailables.ToArray();
         }
     }
 }

@@ -18,16 +18,16 @@ namespace IRuettae.Core.Google.Routing.Models
 
         /// <summary>
         /// List of all santa Ids.
-        /// The SantaIds.Count equals maxNumberOfSantas*numberOfDays.
+        /// The SantaIds.Length equals maxNumberOfSantas*numberOfDays.
         /// </summary>
-        public List<int> SantaIds { get; set; } = new List<int>();
+        public int[] SantaIds { get; set; }
 
         /// <summary>
         /// List of all visits.
         /// Visit.SantaId of the elements in this list refer to an index of SantaIds.
-        /// The Visits.Count equals the sum of normal visits and breaks*numberOfDays.
+        /// The Visits.Length equals the sum of normal visits and breaks*numberOfDays.
         /// </summary>
-        public List<Visit> Visits { get; set; } = new List<Visit>();
+        public Visit[] Visits { get; set; }
 
         /// <summary>
         /// Visits[HomeIndex] is the home for the normal santas.
@@ -44,8 +44,8 @@ namespace IRuettae.Core.Google.Routing.Models
         /// <summary>
         /// Intervals in which a visit start can not be.
         /// Unavailable[visitId][interval].
-        /// Unavailable.Count equals Visits.Count.
+        /// Unavailable.Length equals Visits.Length.
         /// </summary>
-        public List<List<(int startFrom, int startEnd)>> Unavailable { get; set; } = new List<List<(int startFrom, int startEnd)>>();
+        public (int startFrom, int startEnd)[][] Unavailable { get; set; }
     }
 }

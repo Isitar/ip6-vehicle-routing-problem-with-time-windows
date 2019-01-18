@@ -25,6 +25,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// </summary>
         public void Create()
         {
+            var visits = new List<Visit>();
             foreach (var visit in data.Input.Visits)
             {
                 if (data.SantaIds.Contains(visit.SantaId) && visit.IsBreak)
@@ -48,10 +49,10 @@ namespace IRuettae.Core.Google.Routing.Algorithm
 
                         // set santa index
                         santaIndex++;
-                        santaIndex = data.SantaIds.IndexOf(breakVisit.SantaId, santaIndex);
+                        santaIndex = Array.IndexOf(data.SantaIds, breakVisit.SantaId, santaIndex);
                         breakVisit.SantaId = santaIndex;
 
-                        data.Visits.Add(breakVisit);
+                        visits.Add(breakVisit);
                     }
                 }
                 else
@@ -60,7 +61,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                     var clone = (Visit)visit.Clone();
                     clone.Desired = clone.Desired ?? new(int, int)[0];
                     clone.Unavailable = clone.Unavailable ?? new(int, int)[0];
-                    data.Visits.Add(clone);
+                    visits.Add(clone);
                 }
             }
 
@@ -75,13 +76,15 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                     Desired = new(int, int)[0],
                     Unavailable = new(int, int)[0],
                 };
-                data.Visits.Add(home);
-                data.HomeIndex = data.Visits.Count - 1;
+                visits.Add(home);
+                data.HomeIndex = visits.Count - 1;
 
                 // home for aditional santas
-                data.Visits.Add(home);
-                data.HomeIndexAdditional = data.Visits.Count - 1;
+                visits.Add(home);
+                data.HomeIndexAdditional = visits.Count - 1;
             }
+
+            data.Visits = visits.ToArray();
         }
     }
 }

@@ -23,8 +23,6 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// <param name="maxNumberOfSantas"></param>
         public void Create(int maxNumberOfSantas)
         {
-            data.SantaIds.Clear();
-
             List<int> santaIds = new List<int>();
             for (int i = 0; i < maxNumberOfSantas; i++)
             {
@@ -41,9 +39,15 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             }
 
             // duplicate for each day
-            for (int i = 0; i < data.Input.Days.Length; i++)
+            var numberOfDays = data.Input.Days.Length;
+            var numberOfSantaIds = santaIds.Count;
+            data.SantaIds = new int[numberOfSantaIds * numberOfDays];
+            for (int i = 0; i < numberOfDays; i++)
             {
-                data.SantaIds.AddRange(santaIds);
+                for (int j = 0; j < numberOfSantaIds; j++)
+                {
+                    data.SantaIds[i * numberOfSantaIds + j] = santaIds[j];
+                }
             }
         }
     }

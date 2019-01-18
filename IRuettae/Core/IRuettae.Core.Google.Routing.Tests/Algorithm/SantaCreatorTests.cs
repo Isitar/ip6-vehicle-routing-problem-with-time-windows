@@ -24,7 +24,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
             var numberOfSantas = 2;
             santaCreator.Create(numberOfSantas);
 
-            Assert.AreEqual(numberOfDays * numberOfSantas, actual.SantaIds.Count);
+            Assert.AreEqual(numberOfDays * numberOfSantas, actual.SantaIds.Length);
             Assert.AreEqual(Testdata1.SantaId1, actual.SantaIds[0]);
             Assert.AreEqual(Testdata1.SantaId2, actual.SantaIds[1]);
             Assert.AreEqual(Testdata1.SantaId1, actual.SantaIds[2]);
@@ -41,7 +41,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
             var numberOfSantas = 3;
             santaCreator.Create(numberOfSantas);
 
-            Assert.AreEqual(numberOfDays * numberOfSantas, actual.SantaIds.Count);
+            Assert.AreEqual(numberOfDays * numberOfSantas, actual.SantaIds.Length);
             Assert.AreEqual(Testdata1.SantaId1, actual.SantaIds[0]);
             Assert.AreEqual(Testdata1.SantaId2, actual.SantaIds[1]);
             Assert.AreEqual(Testdata1.SantaId2 + 1, actual.SantaIds[2]);

@@ -25,7 +25,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
 
         public override long Run(int firstIndex, int secondIndex)
         {
-            if (firstIndex >= data.Visits.Count || secondIndex >= data.Visits.Count)
+            if (firstIndex >= data.Visits.Length || secondIndex >= data.Visits.Length)
             {
                 throw new ArgumentOutOfRangeException("index must be smaller than numberOfVisits");
             }

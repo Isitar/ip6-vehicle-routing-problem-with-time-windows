@@ -24,7 +24,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
             // 4 normal
             // 2 breaks
             // 2 homes
-            Assert.AreEqual(8, actual.Visits.Count);
+            Assert.AreEqual(8, actual.Visits.Length);
             for (int i = 0; i < actual.Input.Visits.Length; i++)
             {
                 Assert.AreEqual(actual.Input.Visits[i].Id, actual.Visits[i].Id);
