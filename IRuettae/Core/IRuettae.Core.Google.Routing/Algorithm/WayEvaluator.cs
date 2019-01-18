@@ -12,6 +12,12 @@ namespace IRuettae.Core.Google.Routing.Algorithm
     {
         private readonly RoutingData data;
 
+        /// <summary>
+        /// requires data.Visits
+        /// requires data.HomeIndex
+        /// requires data.HomeIndexAdditional
+        /// </summary>
+        /// <param name="data"></param>
         public WayEvaluator(RoutingData data)
         {
             this.data = data ?? throw new ArgumentException("data must not be null");
@@ -25,7 +31,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             }
 
             bool firstIsHome = firstIndex == data.HomeIndex || firstIndex == data.HomeIndexAdditional;
-            bool secondIsHome = secondIndex == data.HomeIndex || firstIndex == data.HomeIndexAdditional;
+            bool secondIsHome = secondIndex == data.HomeIndex || secondIndex == data.HomeIndexAdditional;
 
             if (firstIsHome && secondIsHome)
             {
@@ -42,9 +48,8 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             }
             else
             {
-                // Todo
+                return data.Input.RouteCosts[data.Visits[firstIndex].Id, data.Visits[secondIndex].Id];
             }
-            return 0;
         }
 
     }

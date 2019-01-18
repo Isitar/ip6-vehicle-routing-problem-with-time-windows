@@ -25,6 +25,9 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
         public const int W30 = 50;
         public const int W04 = 60;
         public const int W40 = 70;
+        public const int W05 = 80;
+        public const int W50 = 90;
+        public const int W45 = 100;
 
         // durations
         public const int Duration1 = 100;
@@ -107,7 +110,9 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
                         {
                             (StartDay1 + BreakDesiredStart, StartDay1 + BreakDesiredEnd),
                             (StartDay2 + BreakDesiredStart, StartDay2 + BreakDesiredEnd),
-                        }
+                        },
+                        WayCostFromHome = W05,
+                        WayCostToHome = W50,
                     }
                 },
                 Days = new(int, int)[]
@@ -120,7 +125,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
                     {0, W12, Hour, Hour, Hour},
                     {Hour, 0, Hour, Hour, Hour},
                     {Hour, Hour, 0,Hour, Hour},
-                    {Hour, Hour, Hour, 0, Hour},
+                    {Hour, Hour, Hour, 0, W45},
                     {Hour, Hour, Hour, Hour, 0},
                 },
             });
