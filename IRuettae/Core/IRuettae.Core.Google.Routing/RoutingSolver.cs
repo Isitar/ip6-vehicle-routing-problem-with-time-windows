@@ -25,6 +25,7 @@ namespace IRuettae.Core.Google.Routing
             new SantaCreator(data).Create(starterData.MaxNumberOfSantas);
             new VisitCreator(data).Create();
             new UnavailableCreator(data).Create();
+            new StartEndCreator(data).Create();
 
             // create RoutingModel
             //new RoutingModelCreator(data).Create();
