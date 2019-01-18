@@ -11,6 +11,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
     public class TimeEvaluator : NodeEvaluator2
     {
         private readonly RoutingData data;
+        private readonly int costCoefficient;
 
         /// <summary>
         /// requires data.Visits
@@ -18,9 +19,10 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// requires data.HomeIndexAdditional
         /// </summary>
         /// <param name="data"></param>
-        public TimeEvaluator(RoutingData data)
+        public TimeEvaluator(RoutingData data, int costCoefficient)
         {
             this.data = data ?? throw new ArgumentException("data must not be null");
+            this.costCoefficient = costCoefficient;
         }
 
         public override long Run(int firstIndex, int secondIndex)
@@ -33,29 +35,34 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             bool firstIsHome = firstIndex == data.HomeIndex || firstIndex == data.HomeIndexAdditional;
             bool secondIsHome = secondIndex == data.HomeIndex || secondIndex == data.HomeIndexAdditional;
 
+            long time;
             if (firstIsHome && secondIsHome)
             {
                 // home to home is zero
-                return 0;
+                time = 0;
             }
             else if (firstIsHome)
             {
-                return data.Visits[secondIndex].WayCostFromHome;
-            }
-
-            // first index is not home
-            // -> add duration
-
-            var firstVisit = data.Visits[firstIndex];
-            var duration = firstVisit.Duration;
-            if (secondIsHome)
-            {
-                return duration + firstVisit.WayCostToHome;
+                time = data.Visits[secondIndex].WayCostFromHome;
             }
             else
             {
-                return duration + data.Input.RouteCosts[firstVisit.Id, data.Visits[secondIndex].Id];
+                // first index is not home
+                // -> add duration
+
+                var firstVisit = data.Visits[firstIndex];
+                var duration = firstVisit.Duration;
+                if (secondIsHome)
+                {
+                    time = duration + firstVisit.WayCostToHome;
+                }
+                else
+                {
+                    time = duration + data.Input.RouteCosts[firstVisit.Id, data.Visits[secondIndex].Id];
+                }
             }
+
+            return time * costCoefficient;
         }
 
     }
