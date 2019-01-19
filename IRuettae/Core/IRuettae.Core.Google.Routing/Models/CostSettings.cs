@@ -11,13 +11,13 @@ namespace IRuettae.Core.Google.Routing.Models
     /// </summary>
     public class CostSettings
     {
-        public const int CostNotVisitedVisit = 560;
-        public const int CostAdditionalSanta = 400;
-        public const int CostAdditionalSantaPerHour = 40;
-        public const int CostVisitInUnavailablePerHour = 120;
-        public const int CostWayInUnavailablePerHour = 120;
-        public const int CostVisitInDesiredPerHour = 20;
-        public const int CostWorkPerHour = 40;
-        public const int CostLongestDayPerHour = 30;
+        public int CostNotVisitedVisit { get; } = 560;
+        public int CostAdditionalSanta { get; } = 400;
+        public int CostAdditionalSantaPerHour { get; } = 40;
+        public int CostVisitInUnavailablePerHour { get; } = 120;
+        public int CostWayInUnavailablePerHour { get; } = 120;
+        public int CostVisitInDesiredPerHour { get; } = 20;
+        public int CostWorkPerHour { get; } = 40;
+        public int CostLongestDayPerHour { get; } = 30;
     }
 }
