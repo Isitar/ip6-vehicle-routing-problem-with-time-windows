@@ -71,10 +71,13 @@ namespace IRuettae.Evaluator
         {
             do
             {
-                EvaluateAlgorithm();
-                Console.Write("New run? [Y/N]: ");
+                EvaluateAlgorithm(args);
+                if (args.Length == 0)
+                {
+                    Console.Write("New run? [Y/N]: ");
+                }
 
-            } while (Console.ReadLine().ToUpper().Equals("Y"));
+            } while (args.Length == 0 && Console.ReadLine().ToUpper().Equals("Y"));
         }
 
         private static void TestResultDrawer()
@@ -85,23 +88,23 @@ namespace IRuettae.Evaluator
             ResultDrawer.DrawResult("debug.gif", result, DatasetFactory.DataSet3().coordinates);
         }
 
-        private static void EvaluateAlgorithm()
+        private static void EvaluateAlgorithm(string[] args)
         {
             BigHr();
             Console.WriteLine("Program written to evaluate the different optimisation algorithms.");
             Console.WriteLine();
 
-            var algorithmSelection = QueryAlgorithmSelection();
+            var algorithmSelection = args.Length == 0 ? QueryAlgorithmSelection() : (Algorithms)Enum.Parse(typeof(Algorithms), args[0]);
 
             SmallHr();
             Console.WriteLine();
 
-            var datasetSelection = QueryDatasetSelection();
+            var datasetSelection = args.Length == 0 ? QueryDatasetSelection() : GetDatasetSelection(int.Parse(args[1]));
 
             SmallHr();
             Console.WriteLine();
 
-            var runs = QueryNumberOfRuns();
+            var runs = args.Length == 0 ? QueryNumberOfRuns() : int.Parse(args[2]);
 
             SmallHr();
             Console.WriteLine();
@@ -142,7 +145,7 @@ namespace IRuettae.Evaluator
                                 timelimit /= fastFactor;
                                 goto case Algorithms.LocalSolver;
                             case Algorithms.LocalSolver:
-                                solver = new IRuettae.Core.LocalSolver.Solver(input);
+                                solver = new IRuettae.Core.LocalSolver.Solver(input, false, false);
                                 savepath += "_LocalSolver";
                                 break;
                             case Algorithms.GA:
@@ -192,15 +195,15 @@ namespace IRuettae.Evaluator
                             Console.WriteLine($"Progress: {report}");
                         }
 #if DEBUG
-                    using (var sw = new StreamWriter(savepath + "-log.txt", true))
-                    {
-                        result = solver.Solve(timelimit, WriteConsoleProgress,
-                            (sender, s) =>
-                            {
-                                WriteConsoleInfo(sender, s);
-                                sw.WriteLine(s);
-                            });
-                    }
+                        using (var sw = new StreamWriter(savepath + "-log.txt", true))
+                        {
+                            result = solver.Solve(timelimit, WriteConsoleProgress,
+                                (sender, s) =>
+                                {
+                                    WriteConsoleInfo(sender, s);
+                                    sw.WriteLine(s);
+                                });
+                        }
 #else
                         result = solver.Solve(timelimit, WriteConsoleProgress, WriteConsoleInfo);
 #endif
@@ -361,14 +364,12 @@ namespace IRuettae.Evaluator
 
             Console.WriteLine($"You selected dataset {datasetSelection}: {DatasetDictionary[datasetSelection]}");
 
-            if (datasetSelection == 0)
-            {
-                return DatasetDictionary.Keys.Where(k => k != 0);
-            }
-            else
-            {
-                return new[] { datasetSelection };
-            }
+            return GetDatasetSelection(datasetSelection);
+        }
+
+        private static IEnumerable<int> GetDatasetSelection(int datasetSelection)
+        {
+            return datasetSelection == 0 ? DatasetDictionary.Keys.Where(k => k != 0) : new[] { datasetSelection };
         }
 
         private static int QueryNumberOfRuns()
