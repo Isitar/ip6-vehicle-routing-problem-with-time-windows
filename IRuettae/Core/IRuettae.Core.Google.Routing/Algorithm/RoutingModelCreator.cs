@@ -8,6 +8,9 @@ namespace IRuettae.Core.Google.Routing.Algorithm
     {
         private readonly RoutingData data;
 
+        // dimensions
+        private const String DimensionTime = "time";
+
         public RoutingModelCreator(RoutingData data)
         {
             this.data = data;
@@ -32,15 +35,13 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             // setting up dimensions
             var maxTime = GetMaxTime();
             var timeEvaluator = new TimeEvaluator(data, 1);
-            model.AddDimension(timeEvaluator, maxTime, maxTime, false, "time");
-
+            model.AddDimension(timeEvaluator, maxTime, maxTime, false, DimensionTime);
 
             // setting up santas (=vehicles)
-            /*var costCallback = new TimeEvaluator(data);
-            var costCallbackAdditional = new TimeEvaluator(data); // Todo
+            var costCallback = new TimeEvaluator(data, data.Cost.CostWorkPerHour);
+            var costCallbackAdditional = new TimeEvaluator(data, data.Cost.CostWorkPerHour + data.Cost.CostAdditionalSantaPerHour);
             for (int i = 0; i < data.NumberOfSantas; i++)
             {
-                var day = i / (data.NumberOfSantas / data.Input.Days.Length);
                 if (data.Input.IsAdditionalSanta(data.SantaIds[i]))
                 {
                     model.SetVehicleCost(i, costCallbackAdditional);
@@ -49,9 +50,13 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                 {
                     model.SetVehicleCost(i, costCallback);
                 }
+
+                // limit time per santa
+                var day = i / (data.NumberOfSantas / data.Input.Days.Length);
+                model.CumulVar(model.End(i), "time").SetRange(GetDayStart(day), GetDayEnd(day));
             }
 
-
+            /*
             NodeEvaluator2[] cost_callbacks = new NodeEvaluator2[number_of_vehicles];
             for (int vehicle = 0; vehicle < number_of_vehicles; ++vehicle)
             {
@@ -80,6 +85,24 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             }
 
             return longestDay + 2 * data.Input.MaxWayDuration();
+        }
+
+        /// <summary>
+        /// Returns the earliest time for the santas to start.
+        /// </summary>
+        /// <returns></returns>
+        private int GetDayStart(int day)
+        {
+            return data.Input.Days[day].from - data.Input.MaxWayDuration();
+        }
+
+        /// <summary>
+        /// Returns the lastest time for the santas to return home.
+        /// </summary>
+        /// <returns></returns>
+        private int GetDayEnd(int day)
+        {
+            return data.Input.Days[day].to + data.Input.MaxWayDuration();
         }
     }
 }
