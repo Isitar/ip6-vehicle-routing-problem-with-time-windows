@@ -4,17 +4,10 @@ using IRuettae.Core.Google.Routing.Models;
 
 namespace IRuettae.Core.Google.Routing.Algorithm
 {
-    public class RoutingModelCreator
+    internal static class InternalSolver
     {
-        private readonly RoutingData data;
-
         // dimensions
         private const String DimensionTime = "time";
-
-        public RoutingModelCreator(RoutingData data)
-        {
-            this.data = data;
-        }
 
         /// <summary>
         /// requires data.SantaIds
@@ -24,16 +17,26 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// requires data.Unavailable
         /// requires data.Start
         /// requires data.End
-        /// creates data.RoutingModel
         /// </summary>
-        public void Create()
+        public static (RoutingModel, Assignment) Solve(RoutingData data)
         {
+            if (false
+                || data.SantaIds == null
+                || data.Visits == null
+                || data.Unavailable == null
+                || data.SantaStartIndex == null
+                || data.SantaEndIndex == null
+                )
+            {
+                throw new ArgumentNullException();
+            }
+
             var model =
                 new RoutingModel(data.Visits.Length, data.SantaIds.Length,
                                  data.SantaStartIndex, data.SantaEndIndex);
 
             // setting up dimensions
-            var maxTime = GetMaxTime();
+            var maxTime = GetMaxTime(data);
             var timeEvaluator = new TimeEvaluator(data, 1);
             model.AddDimension(timeEvaluator, maxTime, maxTime, false, DimensionTime);
 
@@ -53,7 +56,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
 
                 // limit time per santa
                 var day = i / (data.NumberOfSantas / data.Input.Days.Length);
-                model.CumulVar(model.End(i), "time").SetRange(GetDayStart(day), GetDayEnd(day));
+                model.CumulVar(model.End(i), "time").SetRange(GetDayStart(data, day), GetDayEnd(data, day));
             }
 
             /*
@@ -71,16 +74,18 @@ namespace IRuettae.Core.Google.Routing.Algorithm
 
 
 
-            // Todo ev. mit GetFixedCostOfVehicle arbeiten
+            // Todo maybe work with GetFixedCostOfVehicle
 
-            data.RoutingModel = model;
+            Assignment solution = null;
+
+            return (model, solution);
         }
 
         /// <summary>
         /// Returns the duration of the longest possible day.
         /// </summary>
         /// <returns></returns>
-        public int GetMaxTime()
+        public static int GetMaxTime(RoutingData data)
         {
             var longestDay = int.MinValue;
             foreach (var (from, to) in data.Input.Days)
@@ -95,7 +100,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// Returns the earliest time for the santas to start.
         /// </summary>
         /// <returns></returns>
-        private int GetDayStart(int day)
+        public static int GetDayStart(RoutingData data, int day)
         {
             return data.Input.Days[day].from - data.Input.MaxWayDuration();
         }
@@ -104,7 +109,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// Returns the lastest time for the santas to return home.
         /// </summary>
         /// <returns></returns>
-        private int GetDayEnd(int day)
+        public static int GetDayEnd(RoutingData data, int day)
         {
             return data.Input.Days[day].to + data.Input.MaxWayDuration();
         }

@@ -110,7 +110,5 @@ namespace IRuettae.Core.Google.Routing.Models
                 return Input.Days.Max(d => d.to);
             }
         }
-
-        public RoutingModel RoutingModel { get; set; }
     }
 }
