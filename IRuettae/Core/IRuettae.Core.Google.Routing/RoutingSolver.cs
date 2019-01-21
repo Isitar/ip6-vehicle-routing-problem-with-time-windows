@@ -21,11 +21,7 @@ namespace IRuettae.Core.Google.Routing
             //CapacitatedVehicleRoutingProblemWithTimeWindows.Main(new String[0]);
 
             // transform input
-            var data = new RoutingData(input);
-            new SantaCreator(data).Create(starterData.MaxNumberOfSantas);
-            new VisitCreator(data).Create();
-            new UnavailableCreator(data).Create();
-            new StartEndCreator(data).Create();
+            var data = Converter.Convert(input, starterData.MaxNumberOfSantas);
 
             // create RoutingModel
             //new RoutingModelCreator(data).Create();

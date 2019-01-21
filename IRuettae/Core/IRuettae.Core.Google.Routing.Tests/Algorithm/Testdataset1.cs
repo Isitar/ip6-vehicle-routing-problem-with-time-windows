@@ -37,6 +37,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
         public const int Duration5 = 500;
 
         // days
+        public const int NumberOfDays = 2;
         public const int StartDay1 = 1000;
         public const int EndDay1 = 2000;
         public const int StartDay2 = 5000;
@@ -48,14 +49,14 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
 
         public const int Hour = 3600;
 
-        public static RoutingData Create()
+        public static OptimizationInput Create()
         {
             // unavailable
             var unavailableDay1Before = (int.MinValue, StartDay1 - 1);
             var unavailableBetween = (EndDay1 + 1, StartDay2 - 1);
             var unavailableDay2After = (EndDay2 + 1, int.MaxValue);
 
-            return new RoutingData(new OptimizationInput
+            return new OptimizationInput
             {
                 Santas = new Santa[]
                 {
@@ -175,7 +176,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
                     {Hour, Hour, Hour, 0, W45},
                     {Hour, Hour, Hour, Hour, 0},
                 },
-            });
+            };
         }
     }
 }

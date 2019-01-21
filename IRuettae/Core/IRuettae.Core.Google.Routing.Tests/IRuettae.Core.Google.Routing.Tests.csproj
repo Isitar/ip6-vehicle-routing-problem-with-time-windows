@@ -57,13 +57,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Algorithm\SantaCreatorTests.cs" />
+    <Compile Include="Algorithm\ConverterTests.cs" />
     <Compile Include="Algorithm\Testdataset1.cs" />
-    <Compile Include="Algorithm\UnavailableCreatorTests.cs" />
-    <Compile Include="Algorithm\StartEndCreatorTests.cs" />
-    <Compile Include="Algorithm\VisitCreatorTests.cs" />
-    <Compile Include="Algorithm\TimeEvaluatorTests.cs" />
-    <Compile Include="Models\RoutingDataTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

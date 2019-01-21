@@ -49,11 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithm\Converter.cs" />
     <Compile Include="Algorithm\RoutingModelCreator.cs" />
-    <Compile Include="Algorithm\UnavailableCreator.cs" />
-    <Compile Include="Algorithm\StartEndCreator.cs" />
-    <Compile Include="Algorithm\VisitCreator.cs" />
-    <Compile Include="Algorithm\SantaCreator.cs" />
     <Compile Include="Algorithm\TimeEvaluator.cs" />
     <Compile Include="Example\CapacitatedVehicleRoutingProblemWithTimeWindows.cs" />
     <Compile Include="Models\CostSettings.cs" />

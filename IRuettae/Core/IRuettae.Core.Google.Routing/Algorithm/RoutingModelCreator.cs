@@ -69,6 +69,10 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                     vehicle_end_time_[vehicle]);
             }*/
 
+
+
+            // Todo ev. mit GetFixedCostOfVehicle arbeiten
+
             data.RoutingModel = model;
         }
 
