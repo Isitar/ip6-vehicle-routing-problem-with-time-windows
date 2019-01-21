@@ -14,7 +14,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
         [TestMethod()]
         public void TestCreate_Simple()
         {
-            var actual = Testdata1.Create();
+            var actual = Testdataset1.Create();
             var numberOfSantas = 3;
             new SantaCreator(actual).Create(numberOfSantas);
             new VisitCreator(actual).Create();
@@ -26,16 +26,16 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
             {
                 Assert.AreEqual(4, actual.Unavailable[0].Length);
                 var (from, to) = actual.Unavailable[0].Last();
-                Assert.AreEqual(Testdata1.StartDay1 - Testdata1.Duration1, from);
-                Assert.AreEqual(Testdata1.EndDay1, to);
+                Assert.AreEqual(Testdataset1.StartDay1 - Testdataset1.Duration1, from);
+                Assert.AreEqual(Testdataset1.EndDay1, to);
             }
 
             // visit2
             {
                 Assert.AreEqual(4, actual.Unavailable[1].Length);
                 var (from, to) = actual.Unavailable[1].Last();
-                Assert.AreEqual(Testdata1.StartDay2 - Testdata1.Duration2, from);
-                Assert.AreEqual(Testdata1.EndDay2, to);
+                Assert.AreEqual(Testdataset1.StartDay2 - Testdataset1.Duration2, from);
+                Assert.AreEqual(Testdataset1.EndDay2, to);
             }
 
             // normal visits have default unavailables
@@ -57,16 +57,16 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
             {
                 var (from, to) = unavailable[0];
                 Assert.AreEqual(int.MinValue, from);
-                Assert.AreEqual(Testdata1.StartDay1 - 1, to);
+                Assert.AreEqual(Testdataset1.StartDay1 - 1, to);
             }
             {
                 var (from, to) = unavailable[1];
-                Assert.AreEqual(Testdata1.EndDay1 + 1 - duration, from);
-                Assert.AreEqual(Testdata1.StartDay2 - 1, to);
+                Assert.AreEqual(Testdataset1.EndDay1 + 1 - duration, from);
+                Assert.AreEqual(Testdataset1.StartDay2 - 1, to);
             }
             {
                 var (from, to) = unavailable[2];
-                Assert.AreEqual(Testdata1.EndDay2 + 1 - duration, from);
+                Assert.AreEqual(Testdataset1.EndDay2 + 1 - duration, from);
                 Assert.AreEqual(int.MaxValue, to);
             }
         }

@@ -15,7 +15,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Models
     {
         private RoutingData CreateRoutingData()
         {
-            var data = Testdata1.Create();
+            var data = Testdataset1.Create();
             var numberOfSantas = 3;
             new SantaCreator(data).Create(numberOfSantas);
             new VisitCreator(data).Create();
@@ -42,13 +42,13 @@ namespace IRuettae.Core.Google.Routing.Tests.Models
         [TestMethod()]
         public void TestOverallStart()
         {
-            Assert.AreEqual(Testdata1.StartDay1, CreateRoutingData().OverallStart);
+            Assert.AreEqual(Testdataset1.StartDay1, CreateRoutingData().OverallStart);
         }
 
         [TestMethod()]
         public void TestOverallEnd()
         {
-            Assert.AreEqual(Testdata1.EndDay2, CreateRoutingData().OverallEnd);
+            Assert.AreEqual(Testdataset1.EndDay2, CreateRoutingData().OverallEnd);
         }
     }
 }

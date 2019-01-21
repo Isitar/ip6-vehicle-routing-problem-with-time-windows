@@ -11,7 +11,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
     /// <summary>
     /// Dataset for testing.
     /// </summary>
-    static class Testdata1
+    internal static class Testdataset1
     {
         // santa ids
         public const int SantaId1 = 100;
@@ -55,7 +55,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
             var unavailableBetween = (EndDay1 + 1, StartDay2 - 1);
             var unavailableDay2After = (EndDay2 + 1, int.MaxValue);
 
-            return new RoutingData(new OptimizationInput()
+            return new RoutingData(new OptimizationInput
             {
                 Santas = new Santa[]
                 {

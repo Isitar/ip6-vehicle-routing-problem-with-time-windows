@@ -15,7 +15,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
         [TestMethod()]
         public void TestCreate_Simple()
         {
-            var actual = Testdata1.Create();
+            var actual = Testdataset1.Create();
             var numberOfSantas = 3;
             new SantaCreator(actual).Create(numberOfSantas);
             new VisitCreator(actual).Create();
