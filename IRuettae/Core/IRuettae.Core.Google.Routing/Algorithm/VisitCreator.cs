@@ -38,7 +38,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                         var breakVisit = (Visit)visit.Clone();
 
                         // remove desired on other days
-                        breakVisit.Desired = breakVisit.Desired.Where(d => Utility.IntersectionLength(d.from, d.to, from, to) > 0).ToArray();
+                        breakVisit.Desired = breakVisit.Desired?.Where(d => Utility.IntersectionLength(d.from, d.to, from, to) > 0).ToArray() ?? new(int, int)[0];
 
                         // set unavailable on other days
                         breakVisit.Unavailable = new(int, int)[]
@@ -67,7 +67,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
 
             // add home
             {
-                var home = new Visit()
+                var home = new Visit
                 {
                     Id = Constants.VisitIdHome,
                     IsBreak = false,

@@ -23,7 +23,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// <param name="maxNumberOfSantas"></param>
         public void Create(int maxNumberOfSantas)
         {
-            List<int> santaIds = new List<int>();
+            var santaIds = new List<int>();
             for (int i = 0; i < maxNumberOfSantas; i++)
             {
                 if (i < data.Input.Santas.Length)
