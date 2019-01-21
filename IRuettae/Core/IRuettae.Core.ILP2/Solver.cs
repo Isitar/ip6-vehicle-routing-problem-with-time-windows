@@ -55,25 +55,19 @@ namespace IRuettae.Core.ILP2
             using (var model = new GRBModel(env))
             {
                 var numberOfRoutes = input.Santas.Length * input.Days.Length;
-                var v = new GRBVar[numberOfRoutes][];
-                var w = new GRBVar[numberOfRoutes][];
-                //var c = new GRBVar[numberOfRoutes][,];
-                var c = new GRBVar[numberOfRoutes][]; //c_v
+                var v = new GRBVar[numberOfRoutes][]; // [santa] visits [visit]
+                var w = new GRBVar[numberOfRoutes][]; // [santa] uses [way]
+                var c = new GRBVar[numberOfRoutes][]; // [santa] visits visit at the end of [way]
 
                 var desiredDuration = new GRBVar[numberOfRoutes][][];
-                //var unavailableOverlapPenalty = new GRBVar[numberOfRoutes][][];
                 var unavailableDuration = new GRBVar[numberOfRoutes][][];
 
                 for (int s = 0; s < numberOfRoutes; s++)
                 {
                     v[s] = new GRBVar[visitDurations.Length];
-                    //w[s] = new GRBVar[distances.GetLength(0), distances.GetLength(1)];
-                    //c[s] = new GRBVar[distances.GetLength(0), distances.GetLength(1)];
                     c[s] = new GRBVar[visitDurations.Length];
-                    //desiredOverlapPenalty[s] = new GRBVar[visitDurations.Length][];
                     desiredDuration[s] = new GRBVar[visitDurations.Length][];
                     unavailableDuration[s] = new GRBVar[visitDurations.Length][];
-                    // unavailableOverlapPenalty[s] = new GRBVar[visitDurations.Length][];
                     var (dayStart, dayEnd) = input.Days[s / input.Santas.Length];
                     var dayDuration = dayEnd - dayStart;
                     for (int i = 0; i < v[s].Length; i++)
@@ -84,21 +78,17 @@ namespace IRuettae.Core.ILP2
                         if (i > 0)
                         {
                             var visit = input.Visits[i - 1];
-                            //desiredOverlapPenalty[s][i] = new GRBVar[visit.Desired.Length];
                             desiredDuration[s][i] = new GRBVar[visit.Desired.Length];
                             unavailableDuration[s][i] = new GRBVar[visit.Unavailable.Length];
-                            //unavailableOverlapPenalty[s][i] = new GRBVar[visit.Unavailable.Length];
 
                             for (int d = 0; d < visit.Desired.Length; d++)
                             {
-                                //desiredOverlapPenalty[s][i][d] = model.AddVar(0, dayDuration, 0, GRB.CONTINUOUS,$"desiredOverlapPenalty[{s}][{v}][{d}]");
                                 var ub = Math.Max(0, Math.Min(visit.Duration, visit.Desired[d].to - visit.Desired[d].from));
                                 desiredDuration[s][i][d] = model.AddVar(0, ub, 0, GRB.CONTINUOUS, $"desiredDuration[{s}][{i}][{d}]");
                             }
 
                             for (int u = 0; u < visit.Unavailable.Length; u++)
                             {
-                                //unavailableOverlapPenalty[s][i][u] = model.AddVar(0, dayDuration, 0, GRB.CONTINUOUS, $"unavailableOverlapPenalty[{s}][{v}][{u}]");
                                 var ub = Math.Max(0, Math.Min(visit.Duration, visit.Unavailable[u].to - visit.Unavailable[u].from));
                                 unavailableDuration[s][i][u] = model.AddVar(0, ub, 0, GRB.CONTINUOUS, $"unavailableDuration[{s}][{i}][{u}]");
                             }
@@ -106,20 +96,8 @@ namespace IRuettae.Core.ILP2
                     }
 
                     w[s] = model.AddVars(distances.GetLength(0) * distances.GetLength(1), GRB.BINARY);
-                    //Buffer.BlockCopy(tempWHolder, 0, w[s], 0, tempWHolder.Length * sizeof(Int32));
-                    //for (int i = 0; i < distances.GetLength(0); i++)
-                    //{
-                    //    for (int j = 0; j < distances.GetLength(1); j++)
-                    //    {
-
-                    //        w[s][i, j] = tempWHolder[i * distances.GetLength(1) + j];//  model.AddVar(0, 1, 0, GRB.BINARY, null);//$"w[{s}][{i},{j}]");
-                    //        //c[s][i, j] = model.AddVar(0, dayDuration, 0, GRB.CONTINUOUS, $"c[{s}][{i},{j}]");
-
-                    //    }
-                    //}
                 }
 
-                //COnlyOnVisitedWays(model, numberOfRoutes, w, c);
                 SelfieConstraint(model, numberOfRoutes, w);
 
                 // visit visited once
@@ -138,10 +116,11 @@ namespace IRuettae.Core.ILP2
 
                 IncreasingC(model, numberOfRoutes, w, c, v);
 
-                DesiredOverlap(model, numberOfRoutes, v, w, c, desiredDuration);//, desiredOverlapPenalty);
-                UnavailableOverlap(model, numberOfRoutes, v, w, c, unavailableDuration);//, unavailableOverlapPenalty);
+                DesiredOverlap(model, numberOfRoutes, v, w, c, desiredDuration); 
 
-                
+                UnavailableOverlap(model, numberOfRoutes, v, w, c, unavailableDuration, true);
+
+
                 var maxRoutes = new GRBVar[numberOfRoutes];
                 var minRoutes = new GRBVar[numberOfRoutes];
                 for (int s = 0; s < numberOfRoutes; s++)
@@ -164,6 +143,40 @@ namespace IRuettae.Core.ILP2
                         for (int s = 1; s < input.Santas.Length; s++)
                         {
                             model.AddConstr(maxRoutes[dayOffset + s] - minRoutes[dayOffset + s] <= maxRoutes[dayOffset + s - 1] - minRoutes[dayOffset + s - 1], null);
+                        }
+                    }
+                }
+
+                // symmetrie breaking constriant if timewindow is irrelevant
+                if (input.Visits.All(visit =>
+                {
+                    if (visit.Desired.Length > 0) return false;
+
+                    if (visit.Unavailable.Any(unavailable =>
+                    {
+                        var (unavailableFrom, unavailableTo) = unavailable;
+                        foreach (var (dayFrom, dayTo) in input.Days)
+                        {
+                            if (IntersectionLength(unavailableFrom, unavailableTo, dayFrom, dayTo) > 0)
+                            {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }))
+                    {
+                        return false;
+                    }
+
+                    return true;
+                }))
+                {
+                    for (int s = 0; s < numberOfRoutes; s++)
+                    {
+                        for (int i = 1; i < visitDurations.Length; i++)
+                        {
+                            model.AddGenConstrIndicator(AccessW(w[s], 0, i), 1, c[s][0] == 0, null);
+                            model.AddGenConstrIndicator(AccessW(w[s], 0, i), 1, c[s][i] == input.Visits[i-1].WayCostFromHome, null);
                         }
                     }
                 }
@@ -206,7 +219,13 @@ namespace IRuettae.Core.ILP2
                     + (30d / 3600d) * longestRoute
                     , GRB.MINIMIZE);
                 model.Parameters.TimeLimit = timelimitMiliseconds / 1000;
+                model.Parameters.MIPFocus = 2;
+                //model.Parameters.FlowCoverCuts = 1;
+                //model.Parameters.Method = ;
+                //model.Parameters.TuneTimeLimit = 12 * 60 * 60;
+                //model.Tune();
 
+               // model.GetTuneResult(model.TuneResultCount);
                 model.Optimize();
 
                 try
@@ -244,9 +263,7 @@ namespace IRuettae.Core.ILP2
                         // check if desired on day
                         if (to < dayStart || from > dayEnd)
                         {
-                            model.AddConstr(desiredDuration[s][i][d] == 0,
-                                $"desiredDuration[{s}][{i}][{d}] == 0, outside of day");
-                            //model.AddConstr(desiredOverlapPenalty[s][i][d] == 0,$"desiredOverlapPenalty[{s}][{i}][{d}] == 0 outside of day");
+                            model.AddConstr(desiredDuration[s][i][d] == 0, $"desiredDuration[{s}][{i}][{d}] == 0, outside of day");
                             continue;
                         }
 
@@ -284,9 +301,8 @@ namespace IRuettae.Core.ILP2
         /// <param name="w"></param>
         /// <param name="c"></param>
         /// <param name="unavailableDuration"></param>
-        private void UnavailableOverlap(GRBModel model, int numberOfRoutes, GRBVar[][] v, GRBVar[][] w, GRBVar[][] c, GRBVar[][][] unavailableDuration)//, GRBVar[][][] unavailableOverlapPenalty)
+        private void UnavailableOverlap(GRBModel model, int numberOfRoutes, GRBVar[][] v, GRBVar[][] w, GRBVar[][] c, GRBVar[][][] unavailableDuration, bool hardConstraint = false)
         {
-
             for (int s = 0; s < numberOfRoutes; s++)
             {
                 var day = s / input.Santas.Length;
@@ -303,8 +319,13 @@ namespace IRuettae.Core.ILP2
                         if (to < dayStart || from > dayEnd)
                         {
                             model.AddConstr(unavailableDuration[s][i][d] == 0, $"unavailalbe[{s}][{i}][{d}] == 0, outside of day");
-                            //model.AddConstr(unavailableOverlapPenalty[s][i][d] == 0, $"unavailableOverlapPenalty[{s}][{i}][{d}] == 0 outside of day");
                             continue;
+                        }
+
+                        // temp
+                        if (hardConstraint)
+                        {
+                            model.AddConstr(unavailableDuration[s][i][d] == 0, $"unavailalbe[{s}][{i}][{d}] == 0, hard constraint");
                         }
 
                         var maxUnavailableDuration = Math.Min(visit.Duration, to - from);
@@ -364,6 +385,7 @@ namespace IRuettae.Core.ILP2
                     {
                         wpList.Add(new Waypoint { StartTime = startingTime + input.Days[day].from, VisitId = id - 1 });
                     }
+
                     lastId = id;
                 } while (lastId != 0 && lastId != -1);
 
@@ -410,29 +432,23 @@ namespace IRuettae.Core.ILP2
             {
                 if (Math.Round(AccessW(w, lastVisit, j).X, 0) > 0)
                 {
-                    return (id: j, startingTime: (int)Math.Ceiling(c[j].X));
+                    return (id: j, startingTime: (int)Math.Round(c[j].X,0));
                 }
             }
 
             return (-1, -1);
         }
 
-        private void COnlyOnVisitedWays(GRBModel model, int numberOfRoutes, GRBVar[][] w, GRBVar[][] c)
-        {
-            return; // not needed
-        }
-
         private void IncreasingC(GRBModel model, int numberOfRoutes, GRBVar[][] w, GRBVar[][] c, GRBVar[][] v)
         {
             for (int s = 0; s < numberOfRoutes; s++)
             {
-
                 for (int i = 1; i < distances.GetLength(0); i++)
                 {
                     model.AddGenConstrIndicator(v[s][i], 0, c[s][i] == 0, null);
                     for (int k = 0; k < distances.GetLength(1); k++)
                     {
-                        model.AddGenConstrIndicator(AccessW(w[s], k, i), 1, c[s][i] >= c[s][k] + distances[k, i] + visitDurations[k] + 1, null);
+                        model.AddGenConstrIndicator(AccessW(w[s], k, i), 1, c[s][i] >= c[s][k] + distances[k, i] + visitDurations[k] , null);
                     }
                 }
             }
@@ -505,7 +521,11 @@ namespace IRuettae.Core.ILP2
         {
             for (int i = 1; i < distances.GetLength(0); i++)
             {
-                if (input.Visits[i - 1].IsBreak) { continue; }
+                if (input.Visits[i - 1].IsBreak)
+                {
+                    continue;
+                }
+
                 var wki = new GRBLinExpr(0);
                 var wik = new GRBLinExpr(0);
 
@@ -559,7 +579,6 @@ namespace IRuettae.Core.ILP2
                 }
 
                 model.AddConstr(sum == 1, $"visit {i} visited once");
-
             }
         }
 
@@ -598,6 +617,25 @@ namespace IRuettae.Core.ILP2
                     model.AddConstr(AccessW(w[s], i, i) == 0, $"no selfie for {s} {i}");
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns how much the two intervals overlap
+        /// </summary>
+        /// <param name="start1">start of first interval</param>
+        /// <param name="end1">end of first interval</param>
+        /// <param name="start2">start of second interval</param>
+        /// <param name="end2">end of second interval</param>
+        /// <returns></returns>
+        private static int IntersectionLength(int start1, int end1, int start2, int end2)
+        {
+            int startIntersection = Math.Max(start1, start2);
+            int endIntersection = Math.Min(end1, end2);
+            if (startIntersection < endIntersection)
+            {
+                return endIntersection - startIntersection;
+            }
+            return 0;
         }
     }
 }
