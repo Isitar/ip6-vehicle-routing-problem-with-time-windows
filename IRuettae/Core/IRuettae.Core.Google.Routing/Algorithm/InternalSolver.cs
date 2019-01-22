@@ -59,18 +59,12 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                 model.CumulVar(model.End(i), "time").SetRange(GetDayStart(data, day), GetDayEnd(data, day));
             }
 
-            /*
-            NodeEvaluator2[] cost_callbacks = new NodeEvaluator2[number_of_vehicles];
-            for (int vehicle = 0; vehicle < number_of_vehicles; ++vehicle)
+            // setting up visits (=orders)
+            for (int i = 0; i < data.NumberOfVisits; ++i)
             {
-                int cost_coefficient = vehicle_cost_coefficients_[vehicle];
-                NodeEvaluator2 manhattan_cost_callback =
-                    new Manhattan(locations_, cost_coefficient);
-                cost_callbacks[vehicle] = manhattan_cost_callback;
-                model.SetVehicleCost(vehicle, manhattan_cost_callback);
-                model.CumulVar(model.End(vehicle), "time").SetMax(
-                    vehicle_end_time_[vehicle]);
-            }*/
+                model.CumulVar(i, "time").SetRange(data.OverallStart, data.OverallEnd);
+                model.AddDisjunction(new int[] { i }, data.Cost.CostNotVisitedVisit);
+            }
 
 
 
