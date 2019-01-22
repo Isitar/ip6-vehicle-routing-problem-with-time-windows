@@ -175,11 +175,11 @@ namespace IRuettae.Evaluator
                                 break;
                             case Algorithms.GoogleRoutingFast:
                                 timelimit /= fastFactor;
-                                solver = new RoutingSolver(input, new RoutingSolverStarterData { });
+                                solver = new RoutingSolver(input, RoutingSolverStarterData.GetDefault(input));
                                 savepath += "_GoogleRoutingFast";
                                 break;
                             case Algorithms.GoogleRouting:
-                                solver = new RoutingSolver(input, new RoutingSolverStarterData { });
+                                solver = new RoutingSolver(input, RoutingSolverStarterData.GetDefault(input));
                                 savepath += "_GoogleRouting";
                                 break;
                         }
