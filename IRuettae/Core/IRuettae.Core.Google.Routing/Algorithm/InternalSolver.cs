@@ -18,7 +18,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// requires data.Start
         /// requires data.End
         /// </summary>
-        public static (RoutingModel, Assignment) Solve(RoutingData data)
+        public static (RoutingModel, Assignment) Solve(RoutingData data, long timeLimitMilliseconds)
         {
             if (false
                 || data.SantaIds == null
@@ -37,57 +37,71 @@ namespace IRuettae.Core.Google.Routing.Algorithm
 
             // setting up dimensions
             var maxTime = GetMaxTime(data);
-            var timeEvaluator = new TimeEvaluator(data, 1);
-            model.AddDimension(timeEvaluator, maxTime, maxTime, false, DimensionTime);
+            var timeCallback = new TimeEvaluator(data, 1);
+            model.AddDimension(timeCallback, maxTime, maxTime, false, DimensionTime);
 
             // setting up santas (=vehicles)
-            var costCallback = new TimeEvaluator(data, data.Cost.CostWorkPerHour);
-            var costCallbackAdditional = new TimeEvaluator(data, data.Cost.CostWorkPerHour + data.Cost.CostAdditionalSantaPerHour);
+            var costCallbacks = new NodeEvaluator2[data.NumberOfSantas];
             for (int i = 0; i < data.NumberOfSantas; i++)
             {
+                // must be a new instance per santa
+                NodeEvaluator2 costCallback;
                 if (data.Input.IsAdditionalSanta(data.SantaIds[i]))
                 {
-                    model.SetVehicleCost(i, costCallbackAdditional);
+                    costCallback = new TimeEvaluator(data, data.Cost.CostWorkPerHour + data.Cost.CostAdditionalSantaPerHour);
                 }
                 else
                 {
-                    model.SetVehicleCost(i, costCallback);
+                    costCallback = new TimeEvaluator(data, data.Cost.CostWorkPerHour);
                 }
+                costCallbacks[i] = costCallback;
+                model.SetVehicleCost(i, costCallback);
 
                 // limit time per santa
                 var day = i / (data.NumberOfSantas / data.Input.Days.Length);
-                model.CumulVar(model.End(i), "time").SetRange(GetDayStart(data, day), GetDayEnd(data, day));
+                var start = GetDayStart(data, day);
+                var end = GetDayEnd(data, day);
+                model.CumulVar(model.End(i), DimensionTime).SetRange(start, end);
+                model.CumulVar(model.Start(i), DimensionTime).SetRange(start, end);
             }
 
             // setting up visits (=orders)
             for (int i = 0; i < data.NumberOfVisits; ++i)
             {
-                model.CumulVar(i, "time").SetRange(data.OverallStart, data.OverallEnd);
+                model.CumulVar(i, DimensionTime).SetRange(data.OverallStart, data.OverallEnd);
                 model.AddDisjunction(new int[] { i }, data.Cost.CostNotVisitedVisit);
             }
 
+            // Solving
+            RoutingSearchParameters search_parameters =
+                RoutingModel.DefaultSearchParameters();
+            search_parameters.FirstSolutionStrategy =
+                FirstSolutionStrategy.Types.Value.Automatic; // maybe try AllUnperformed or PathCheapestArc
+            search_parameters.TimeLimitMs = timeLimitMilliseconds;
 
+            Console.WriteLine("Search");
+            Assignment solution = model.SolveWithParameters(search_parameters);
+
+            // protect callbacks from the GC
+            GC.KeepAlive(timeCallback);
+            foreach (var costCallback in costCallbacks)
+            {
+                GC.KeepAlive(costCallback);
+            }
 
             // Todo maybe work with GetFixedCostOfVehicle
 
-            Assignment solution = null;
 
             return (model, solution);
         }
 
         /// <summary>
-        /// Returns the duration of the longest possible day.
+        /// Returns the total lenght of the time dimension.
         /// </summary>
         /// <returns></returns>
         public static int GetMaxTime(RoutingData data)
         {
-            var longestDay = int.MinValue;
-            foreach (var (from, to) in data.Input.Days)
-            {
-                longestDay = Math.Max(longestDay, to - from);
-            }
-
-            return longestDay + 2 * data.Input.MaxWayDuration();
+            return data.OverallEnd - data.OverallStart + 2 * data.Input.MaxWayDuration();
         }
 
         /// <summary>
