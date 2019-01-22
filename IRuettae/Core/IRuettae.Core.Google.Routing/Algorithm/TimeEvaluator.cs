@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Google.OrTools.ConstraintSolver;
 using IRuettae.Core.Google.Routing.Models;
+using IRuettae.Core.Models;
 
 namespace IRuettae.Core.Google.Routing.Algorithm
 {
@@ -32,8 +33,8 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                 throw new ArgumentOutOfRangeException("index must be smaller than numberOfVisits");
             }
 
-            bool firstIsHome = firstIndex == data.HomeIndex || firstIndex == data.HomeIndexAdditional;
-            bool secondIsHome = secondIndex == data.HomeIndex || secondIndex == data.HomeIndexAdditional;
+            bool firstIsHome = data.Visits[firstIndex].Id == Constants.VisitIdHome;
+            bool secondIsHome = data.Visits[secondIndex].Id == Constants.VisitIdHome;
 
             long time;
             if (firstIsHome && secondIsHome)

@@ -33,16 +33,10 @@ namespace IRuettae.Core.Google.Routing.Models
         public Visit[] Visits { get; set; }
 
         /// <summary>
-        /// Visits[HomeIndex] is the home for the normal santas.
-        /// This home has no penalty term.
+        /// Visits[HomeIndex[day]] is the home the santas on the specified day.
+        /// All santas on the same day have the same home.
         /// </summary>
-        public int HomeIndex { get; set; }
-
-        /// <summary>
-        /// Visits[HomeIndexAdditional] is the home for the additional santas.
-        /// This home has a penalty term.
-        /// </summary>
-        public int HomeIndexAdditional { get; set; }
+        public int[] HomeIndex { get; set; }
 
         /// <summary>
         /// Intervals in which a visit start can not be.
@@ -109,6 +103,16 @@ namespace IRuettae.Core.Google.Routing.Models
             {
                 return Input.Days.Max(d => d.to);
             }
+        }
+
+        /// <summary>
+        /// Returns to which day the santa with the given index belongs to.
+        /// </summary>
+        /// <param name="santaIndex"></param>
+        /// <returns></returns>
+        public int GetDayFromSanta(int santaIndex)
+        {
+            return santaIndex / (NumberOfSantas / Input.Days.Length);
         }
     }
 }

@@ -42,6 +42,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
             CheckNumberOfVisits(actual);
             CheckOverallStart(actual);
             CheckOverallEnd(actual);
+            CheckGetDayFromSanta(actual);
         }
 
         private void CheckSantas(RoutingData actual)
@@ -86,15 +87,13 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
             Assert.AreEqual(Testdataset1.StartDay2 + Testdataset1.BreakDesiredStart, actual.Visits[5].Desired[0].from);
             Assert.AreEqual(Testdataset1.StartDay2 + Testdataset1.BreakDesiredEnd, actual.Visits[5].Desired[0].to);
 
-            // home 1
-            var home1Index = 6;
-            Assert.AreEqual(-1, actual.Visits[home1Index].Id);
-            Assert.AreEqual(home1Index, actual.HomeIndex);
-
-            // home 2
-            var home2Index = 7;
-            Assert.AreEqual(-1, actual.Visits[home2Index].Id);
-            Assert.AreEqual(home2Index, actual.HomeIndexAdditional);
+            // homes
+            var home0 = 6;
+            var home1 = 7;
+            Assert.AreEqual(-1, actual.Visits[home0].Id);
+            Assert.AreEqual(-1, actual.Visits[home1].Id);
+            Assert.AreEqual(home0, actual.HomeIndex[0]);
+            Assert.AreEqual(home1, actual.HomeIndex[1]);
 
             // desired/unavailable must not be null
             foreach (var visit in actual.Visits)
@@ -127,7 +126,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
             // normal visits have default unavailables
             for (int i = 0; i < actual.Unavailable.Length; i++)
             {
-                if (i == actual.HomeIndex || i == actual.HomeIndexAdditional || actual.Visits[i].IsBreak)
+                if (actual.HomeIndex.Contains(i) || actual.Visits[i].IsBreak)
                 {
                     // home / breaks
                     continue;
@@ -164,24 +163,16 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
             Assert.AreEqual(length, actual.SantaStartIndex.Length);
             Assert.AreEqual(length, actual.SantaEndIndex.Length);
 
-            var home = actual.HomeIndex;
-            var homeAdditional = actual.HomeIndexAdditional;
-
-            // starts
-            var expectedStarts = new int[]
+            // starts/ends are the same
+            var home0 = actual.HomeIndex[0];
+            var home1 = actual.HomeIndex[1];
+            var expected = new int[]
             {
-                home,home,homeAdditional,
-                home,home,homeAdditional,
+                home0,home0,home0,
+                home1,home1,home1,
             };
-            Enumerable.SequenceEqual(expectedStarts, actual.SantaStartIndex);
-
-            // ends
-            var expectedEnds = new int[]
-            {
-                home,home,home,
-                home,home,home,
-            };
-            Enumerable.SequenceEqual(expectedEnds, actual.SantaEndIndex);
+            Enumerable.SequenceEqual(expected, actual.SantaStartIndex);
+            Enumerable.SequenceEqual(expected, actual.SantaEndIndex);
         }
 
         public void CheckNumberOfSantas(RoutingData actual)
@@ -205,6 +196,19 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
         public void CheckOverallEnd(RoutingData actual)
         {
             Assert.AreEqual(Testdataset1.EndDay2, actual.OverallEnd);
+        }
+
+        private void CheckGetDayFromSanta(RoutingData actual)
+        {
+            // first 3 santas are on first day
+            Assert.AreEqual(0, actual.GetDayFromSanta(0));
+            Assert.AreEqual(0, actual.GetDayFromSanta(1));
+            Assert.AreEqual(0, actual.GetDayFromSanta(2));
+
+            // next 3 santas are on second day
+            Assert.AreEqual(1, actual.GetDayFromSanta(3));
+            Assert.AreEqual(1, actual.GetDayFromSanta(4));
+            Assert.AreEqual(1, actual.GetDayFromSanta(5));
         }
     }
 }

@@ -57,7 +57,6 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// requires data.SantaIds
         /// creates data.Visits
         /// creates data.HomeIndex
-        /// creates data.HomeIndexAdditional
         /// </summary>
         private static void CreateVisits(RoutingData data)
         {
@@ -106,7 +105,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                 }
             }
 
-            // add home
+            // add home for each day
             {
                 var home = new Visit
                 {
@@ -117,12 +116,14 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                     Desired = new(int, int)[0],
                     Unavailable = new(int, int)[0],
                 };
-                visits.Add(home);
-                data.HomeIndex = visits.Count - 1;
 
-                // home for aditional santas
-                visits.Add(home);
-                data.HomeIndexAdditional = visits.Count - 1;
+                var numberOfDays = data.Input.Days.Length;
+                data.HomeIndex = new int[numberOfDays];
+                for (int i = 0; i < numberOfDays; i++)
+                {
+                    visits.Add(home);
+                    data.HomeIndex[i] = visits.Count - 1;
+                }
             }
 
             data.Visits = visits.ToArray();
@@ -183,14 +184,9 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             var ends = new int[numberOfSantas];
             for (int i = 0; i < numberOfSantas; i++)
             {
-                var startIndex = data.HomeIndex;
-                var endIndex = data.HomeIndex;
-                if (data.Input.IsAdditionalSanta(data.SantaIds[i]))
-                {
-                    startIndex = data.HomeIndexAdditional;
-                }
-                starts[i] = startIndex;
-                ends[i] = endIndex;
+                var day = data.GetDayFromSanta(i);
+                starts[i] = data.HomeIndex[day];
+                ends[i] = data.HomeIndex[day];
             }
 
             data.SantaStartIndex = starts;

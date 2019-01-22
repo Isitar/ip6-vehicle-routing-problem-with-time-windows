@@ -58,7 +58,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                 model.SetVehicleCost(i, costCallback);
 
                 // limit time per santa
-                var day = i / (data.NumberOfSantas / data.Input.Days.Length);
+                var day = data.GetDayFromSanta(i);
                 var start = GetDayStart(data, day);
                 var end = GetDayEnd(data, day);
                 model.CumulVar(model.End(i), DimensionTime).SetRange(start, end);
