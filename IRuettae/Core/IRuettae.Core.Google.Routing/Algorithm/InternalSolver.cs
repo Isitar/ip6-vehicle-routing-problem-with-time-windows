@@ -1,13 +1,14 @@
 ﻿using System;
 using Google.OrTools.ConstraintSolver;
 using IRuettae.Core.Google.Routing.Models;
+using IRuettae.Core.Models;
 
 namespace IRuettae.Core.Google.Routing.Algorithm
 {
     internal static class InternalSolver
     {
         // dimensions
-        private const String DimensionTime = "time";
+        public const String DimensionTime = "time";
 
         /// <summary>
         /// requires data.SantaIds
@@ -18,7 +19,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// requires data.Start
         /// requires data.End
         /// </summary>
-        public static (RoutingModel, Assignment) Solve(RoutingData data, long timeLimitMilliseconds)
+        public static OptimizationResult Solve(RoutingData data, long timeLimitMilliseconds)
         {
             if (false
                 || data.SantaIds == null
@@ -92,7 +93,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             // Todo maybe work with GetFixedCostOfVehicle
 
 
-            return (model, solution);
+            return CreateResult(data, model, solution);
         }
 
         /// <summary>
@@ -120,6 +121,100 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         public static int GetDayEnd(RoutingData data, int day)
         {
             return data.Input.Days[day].to + data.Input.MaxWayDuration();
+        }
+
+        /// <summary>
+        /// Builds the OptimizationResult.
+        /// Note: OptimizationResult.TimeElapsed will not be set.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="model"></param>
+        /// <param name="solution"></param>
+        /// <returns></returns>
+        private static OptimizationResult CreateResult(RoutingData data, RoutingModel model, Assignment solution)
+        {
+            var ret = new OptimizationResult
+            {
+                OptimizationInput = data.Input,
+                ResultState = GetResultState(model),
+                Routes = GetRoutes(data, model, solution),
+            };
+
+            return ret;
+        }
+
+        /// <summary>
+        /// Returns the ResultState matching the given routingModel
+        /// </summary>
+        /// <param name="routingModel"></param>
+        /// <returns></returns>
+        private static ResultState GetResultState(RoutingModel routingModel)
+        {
+            // timeout
+            if (routingModel.Status() == RoutingModel.ROUTING_FAIL_TIMEOUT)
+            {
+                return ResultState.TimeLimitReached;
+            }
+            // success
+            if (routingModel.Status() == RoutingModel.ROUTING_FAIL_TIMEOUT)
+            {
+                return ResultState.Finished;
+            }
+            // error, may be one of those:
+            // ROUTING_NOT_SOLVED
+            // ROUTING_FAIL
+            // ROUTING_INVALID
+            return ResultState.Error;
+        }
+
+        /// <summary>
+        /// Returns the Routes.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="model"></param>
+        /// <param name="solution"></param>
+        /// <returns></returns>
+        private static Route[] GetRoutes(RoutingData data, RoutingModel model, Assignment solution)
+        {
+            if (solution == null)
+            {
+                return new Route[0];
+            }
+
+            throw new NotImplementedException();
+            // Routes
+            /*for (int santa = 0; santa < data.NumberOfSantas; ++santa)
+            {
+                var route = new Route
+                {
+                    SantaId = data.SantaIds[santa],
+                };
+
+                String route = "Vehicle " + santa + ": ";
+                long order = model.Start(santa);
+                if (model.IsEnd(solution.Value(model.NextVar(order))))
+                {
+                    // empty
+                }
+                else
+                {
+                    for (; !model.IsEnd(order); order = solution.Value(model.NextVar(order)))
+                    {
+                        long startTime =
+
+                        IntVar local_load = model.CumulVar(order, "capacity");
+                        IntVar local_time = model.CumulVar(order, "time");
+                        route += order + " Load(" + solution.Value(local_load) + ") " +
+                            "Time(" + solution.Min(local_time) + ", " +
+                            solution.Max(local_time) + ") -> ";
+                    }
+                    IntVar load = model.CumulVar(order, "capacity");
+                    IntVar time = model.CumulVar(order, "time");
+                    route += order + " Load(" + solution.Value(load) + ") " +
+                        "Time(" + solution.Min(time) + ", " + solution.Max(time) + ")";
+                }
+                output += route + "\n";
+            }*/
         }
     }
 }

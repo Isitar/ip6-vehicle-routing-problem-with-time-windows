@@ -23,15 +23,8 @@ namespace IRuettae.Core.Google.Routing
             // transform input
             var data = Converter.Convert(input, starterData.MaxNumberOfSantas);
 
-            var (routingModel, assigment) = InternalSolver.Solve(data, timeLimitMilliseconds);
-
-            // create RoutingModel
-            //new RoutingModelCreator(data).Create();
-
-            // create solver settings
-
-
-            throw new NotImplementedException();
+            // solve
+            return InternalSolver.Solve(data, timeLimitMilliseconds);
         }
     }
 }
