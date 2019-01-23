@@ -16,7 +16,6 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// requires data.SantaIds
         /// requires data.Visits
         /// requires data.HomeIndex
-        /// requires data.HomeIndexAdditional
         /// requires data.Unavailable
         /// requires data.Start
         /// requires data.End
@@ -61,7 +60,6 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                 breakCallbacks.Add(evaluator);
                 breakDimensions.Add(dimension);
             }
-
 
             // setting up santas (=vehicles)
             var costCallbacks = new NodeEvaluator2[data.NumberOfSantas];

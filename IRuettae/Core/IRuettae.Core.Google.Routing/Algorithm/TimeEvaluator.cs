@@ -17,7 +17,6 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// <summary>
         /// requires data.Visits
         /// requires data.HomeIndex
-        /// requires data.HomeIndexAdditional
         /// </summary>
         /// <param name="data"></param>
         public TimeEvaluator(RoutingData data, int costCoefficient)
