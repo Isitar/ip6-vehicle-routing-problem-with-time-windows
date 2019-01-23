@@ -24,9 +24,11 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// <param name="startCost">Additional cost from home to any visit</param>
         public CostEvaluator(RoutingData data, int costCoefficient, int startCost)
         {
+            timeEvaluator = new TimeEvaluator(data);
+
+            this.data = data;
             this.costCoefficient = costCoefficient;
             this.startCost = startCost;
-            timeEvaluator = new TimeEvaluator(data);
         }
 
         public override long Run(int firstIndex, int secondIndex)
