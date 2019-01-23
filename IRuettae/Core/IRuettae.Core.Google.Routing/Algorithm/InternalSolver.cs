@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Google.OrTools.ConstraintSolver;
 using IRuettae.Core.Google.Routing.Models;
@@ -11,6 +12,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
     {
         // dimensions
         public const String DimensionTime = "time";
+        public const String DimensionLength = "length";
 
         /// <summary>
         /// requires data.SantaIds
@@ -40,7 +42,15 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             // setting up dimensions
             var maxTime = GetMaxTime(data);
             var timeCallback = new TimeEvaluator(data);
-            model.AddDimension(timeCallback, maxTime, maxTime, false, DimensionTime);
+            model.AddDimension(timeCallback, 0, maxTime, false, DimensionTime);
+            var lengthCallback = new TimeEvaluator(data);
+            model.AddDimension(lengthCallback, 0, maxTime, true, DimensionLength);
+
+            // set additional cost of longest day
+            {
+                var dim = model.GetDimensionOrDie(DimensionLength);
+                dim.SetGlobalSpanCostCoefficient(data.Cost.CostLongestDayPerHour);
+            }
 
             // dimensions for breaks
             var breakCallbacks = new List<BreakEvaluator>();
@@ -109,15 +119,17 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             }
 
             // Solving
-            var search_parameters = RoutingModel.DefaultSearchParameters();
-            search_parameters.FirstSolutionStrategy =
+            var searchParameters = RoutingModel.DefaultSearchParameters();
+            searchParameters.FirstSolutionStrategy =
                 FirstSolutionStrategy.Types.Value.Automatic; // maybe try AllUnperformed or PathCheapestArc
-            search_parameters.TimeLimitMs = timeLimitMilliseconds;
+            searchParameters.LocalSearchMetaheuristic = LocalSearchMetaheuristic.Types.Value.GuidedLocalSearch;
+            searchParameters.TimeLimitMs = timeLimitMilliseconds;
 
-            var solution = model.SolveWithParameters(search_parameters);
+            var solution = model.SolveWithParameters(searchParameters);
 
             // protect callbacks from the GC
             GC.KeepAlive(timeCallback);
+            GC.KeepAlive(lengthCallback);
             foreach (var costCallback in costCallbacks)
             {
                 GC.KeepAlive(costCallback);
@@ -126,6 +138,8 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             {
                 GC.KeepAlive(breakCallback);
             }
+
+            Debug.WriteLine($"obj={solution.ObjectiveValue()}");
 
             return CreateResult(data, model, solution);
         }
