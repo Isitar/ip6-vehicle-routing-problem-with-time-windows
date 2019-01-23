@@ -220,6 +220,7 @@ namespace IRuettae.Core.ILP2
                     , GRB.MINIMIZE);
                 model.Parameters.TimeLimit = timelimitMiliseconds / 1000;
                 model.Parameters.MIPFocus = 2;
+                model.Parameters.Cuts = 3;
                 //model.Parameters.FlowCoverCuts = 1;
                 //model.Parameters.Method = ;
                 //model.Parameters.TuneTimeLimit = 12 * 60 * 60;
@@ -492,6 +493,7 @@ namespace IRuettae.Core.ILP2
                         wik += AccessW(w[s], i, k);
                     }
 
+                    model.AddConstr(wki == wik, null);
                     model.AddConstr(wki == v[s][i], $"if visit {i} is visited by santa {s}, incoming way has to be used");
                     model.AddConstr(wik == v[s][i], $"if visit {i} is visited by santa {s}, outgoing way has to be used");
                 }
