@@ -15,23 +15,23 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
         [TestMethod()]
         public void TestCreate_Simple()
         {
-            var input = Testdataset1.Create();
+            var input = TestDataset1.Create();
             var numberOfDays = input.Days.Length;
 
             var numberOfSantas = 2;
             var actual = Converter.Convert(input, numberOfSantas);
 
             Assert.AreEqual(numberOfDays * numberOfSantas, actual.SantaIds.Length);
-            Assert.AreEqual(Testdataset1.SantaId1, actual.SantaIds[0]);
-            Assert.AreEqual(Testdataset1.SantaId2, actual.SantaIds[1]);
-            Assert.AreEqual(Testdataset1.SantaId1, actual.SantaIds[2]);
-            Assert.AreEqual(Testdataset1.SantaId2, actual.SantaIds[3]);
+            Assert.AreEqual(TestDataset1.SantaId1, actual.SantaIds[0]);
+            Assert.AreEqual(TestDataset1.SantaId2, actual.SantaIds[1]);
+            Assert.AreEqual(TestDataset1.SantaId1, actual.SantaIds[2]);
+            Assert.AreEqual(TestDataset1.SantaId2, actual.SantaIds[3]);
         }
 
         [TestMethod()]
         public void TestConvert_Additional()
         {
-            var input = Testdataset1.Create();
+            var input = TestDataset1.Create();
             var actual = Converter.Convert(input, NumberOfSantas);
 
             CheckSantas(actual);
@@ -47,13 +47,13 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
 
         private void CheckSantas(RoutingData actual)
         {
-            Assert.AreEqual(Testdataset1.NumberOfDays * NumberOfSantas, actual.SantaIds.Length);
-            Assert.AreEqual(Testdataset1.SantaId1, actual.SantaIds[0]);
-            Assert.AreEqual(Testdataset1.SantaId2, actual.SantaIds[1]);
-            Assert.AreEqual(Testdataset1.SantaId2 + 1, actual.SantaIds[2]);
-            Assert.AreEqual(Testdataset1.SantaId1, actual.SantaIds[3]);
-            Assert.AreEqual(Testdataset1.SantaId2, actual.SantaIds[4]);
-            Assert.AreEqual(Testdataset1.SantaId2 + 1, actual.SantaIds[5]);
+            Assert.AreEqual(TestDataset1.NumberOfDays * NumberOfSantas, actual.SantaIds.Length);
+            Assert.AreEqual(TestDataset1.SantaId1, actual.SantaIds[0]);
+            Assert.AreEqual(TestDataset1.SantaId2, actual.SantaIds[1]);
+            Assert.AreEqual(TestDataset1.SantaId2 + 1, actual.SantaIds[2]);
+            Assert.AreEqual(TestDataset1.SantaId1, actual.SantaIds[3]);
+            Assert.AreEqual(TestDataset1.SantaId2, actual.SantaIds[4]);
+            Assert.AreEqual(TestDataset1.SantaId2 + 1, actual.SantaIds[5]);
         }
 
         private void CheckVisits(RoutingData actual)
@@ -70,14 +70,14 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
             // test break on day1
             Assert.AreEqual(1, actual.Visits[4].SantaId);
             Assert.AreEqual(1, actual.Visits[4].Desired.Length);
-            Assert.AreEqual(Testdataset1.StartDay1 + Testdataset1.BreakDesiredStart, actual.Visits[4].Desired[0].from);
-            Assert.AreEqual(Testdataset1.StartDay1 + Testdataset1.BreakDesiredEnd, actual.Visits[4].Desired[0].to);
+            Assert.AreEqual(TestDataset1.StartDay1 + TestDataset1.BreakDesiredStart, actual.Visits[4].Desired[0].from);
+            Assert.AreEqual(TestDataset1.StartDay1 + TestDataset1.BreakDesiredEnd, actual.Visits[4].Desired[0].to);
 
             // test break on day2
             Assert.AreEqual(4, actual.Visits[5].SantaId);
             Assert.AreEqual(1, actual.Visits[5].Desired.Length);
-            Assert.AreEqual(Testdataset1.StartDay2 + Testdataset1.BreakDesiredStart, actual.Visits[5].Desired[0].from);
-            Assert.AreEqual(Testdataset1.StartDay2 + Testdataset1.BreakDesiredEnd, actual.Visits[5].Desired[0].to);
+            Assert.AreEqual(TestDataset1.StartDay2 + TestDataset1.BreakDesiredStart, actual.Visits[5].Desired[0].from);
+            Assert.AreEqual(TestDataset1.StartDay2 + TestDataset1.BreakDesiredEnd, actual.Visits[5].Desired[0].to);
 
             // homes
             var home0 = 6;
@@ -103,16 +103,16 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
             {
                 Assert.AreEqual(4, actual.Unavailable[0].Length);
                 var (from, to) = actual.Unavailable[0].Last();
-                Assert.AreEqual(Testdataset1.StartDay1 - Testdataset1.Duration1, from);
-                Assert.AreEqual(Testdataset1.EndDay1, to);
+                Assert.AreEqual(TestDataset1.StartDay1 - TestDataset1.Duration1, from);
+                Assert.AreEqual(TestDataset1.EndDay1, to);
             }
 
             // visit2
             {
                 Assert.AreEqual(4, actual.Unavailable[1].Length);
                 var (from, to) = actual.Unavailable[1].Last();
-                Assert.AreEqual(Testdataset1.StartDay2 - Testdataset1.Duration2, from);
-                Assert.AreEqual(Testdataset1.EndDay2, to);
+                Assert.AreEqual(TestDataset1.StartDay2 - TestDataset1.Duration2, from);
+                Assert.AreEqual(TestDataset1.EndDay2, to);
             }
 
             // normal visits have default unavailables
@@ -134,16 +134,16 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
             {
                 var (from, to) = unavailable[0];
                 Assert.AreEqual(int.MinValue, from);
-                Assert.AreEqual(Testdataset1.StartDay1 - 1, to);
+                Assert.AreEqual(TestDataset1.StartDay1 - 1, to);
             }
             {
                 var (from, to) = unavailable[1];
-                Assert.AreEqual(Testdataset1.EndDay1 + 1 - duration, from);
-                Assert.AreEqual(Testdataset1.StartDay2 - 1, to);
+                Assert.AreEqual(TestDataset1.EndDay1 + 1 - duration, from);
+                Assert.AreEqual(TestDataset1.StartDay2 - 1, to);
             }
             {
                 var (from, to) = unavailable[2];
-                Assert.AreEqual(Testdataset1.EndDay2 + 1 - duration, from);
+                Assert.AreEqual(TestDataset1.EndDay2 + 1 - duration, from);
                 Assert.AreEqual(int.MaxValue, to);
             }
 
@@ -182,12 +182,12 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
 
         public void CheckOverallStart(RoutingData actual)
         {
-            Assert.AreEqual(Testdataset1.StartDay1, actual.OverallStart);
+            Assert.AreEqual(TestDataset1.StartDay1, actual.OverallStart);
         }
 
         public void CheckOverallEnd(RoutingData actual)
         {
-            Assert.AreEqual(Testdataset1.EndDay2, actual.OverallEnd);
+            Assert.AreEqual(TestDataset1.EndDay2, actual.OverallEnd);
         }
 
         private void CheckGetDayFromSanta(RoutingData actual)

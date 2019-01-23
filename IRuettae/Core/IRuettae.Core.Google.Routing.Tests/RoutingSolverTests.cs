@@ -17,7 +17,7 @@ namespace IRuettae.Core.Google.Routing.Tests
         [TestMethod()]
         public void TestSolve_Simple()
         {
-            var input = Testdataset1.Create();
+            var input = TestDataset1.Create();
             var solver = new RoutingSolver(input, new RoutingSolverStarterData
             {
                 MaxNumberOfSantas = 2,
@@ -34,7 +34,7 @@ namespace IRuettae.Core.Google.Routing.Tests
         [TestMethod()]
         public void TestSolve_AdditionalSanta()
         {
-            var input = Testdataset1.Create();
+            var input = TestDataset1.Create();
             var solver = new RoutingSolver(input, new RoutingSolverStarterData
             {
                 MaxNumberOfSantas = 3,
@@ -61,7 +61,7 @@ namespace IRuettae.Core.Google.Routing.Tests
         private void CheckNoWrongBreaks(OptimizationResult actual)
         {
             // SantaId2 has break with visitId=4
-            var wrongBreaks = actual.NonEmptyRoutes.Any(r => r.SantaId != Testdataset1.SantaId2 && r.Waypoints.Any(wp => wp.VisitId == 4));
+            var wrongBreaks = actual.NonEmptyRoutes.Any(r => r.SantaId != TestDataset1.SantaId2 && r.Waypoints.Any(wp => wp.VisitId == 4));
             Assert.IsFalse(wrongBreaks, "there are breaks in the wrong route");
         }
 

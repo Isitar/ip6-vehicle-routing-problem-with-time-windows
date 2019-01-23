@@ -58,7 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithm\ConverterTests.cs" />
-    <Compile Include="Algorithm\Testdataset1.cs" />
+    <Compile Include="TestDataset1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoutingSolverTests.cs" />
   </ItemGroup>
