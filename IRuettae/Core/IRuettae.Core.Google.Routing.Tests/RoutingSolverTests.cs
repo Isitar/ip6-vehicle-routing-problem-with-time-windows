@@ -28,6 +28,7 @@ namespace IRuettae.Core.Google.Routing.Tests
             CheckValid(actual);
             CheckAllVisited(actual);
             CheckNoWrongBreaks(actual);
+            CheckNoAdditionalSantas(actual);
         }
 
         [TestMethod()]
@@ -44,6 +45,7 @@ namespace IRuettae.Core.Google.Routing.Tests
             CheckValid(actual);
             CheckAllVisited(actual);
             CheckNoWrongBreaks(actual);
+            CheckNoAdditionalSantas(actual);
         }
 
         private void CheckValid(OptimizationResult actual)
@@ -59,8 +61,13 @@ namespace IRuettae.Core.Google.Routing.Tests
         private void CheckNoWrongBreaks(OptimizationResult actual)
         {
             // SantaId2 has break with visitId=4
-            var wrongBreaks = actual.Routes.Any(r => r.SantaId != Testdataset1.SantaId2 && r.Waypoints.Any(wp => wp.VisitId == 4));
+            var wrongBreaks = actual.NonEmptyRoutes.Any(r => r.SantaId != Testdataset1.SantaId2 && r.Waypoints.Any(wp => wp.VisitId == 4));
             Assert.IsFalse(wrongBreaks, "there are breaks in the wrong route");
+        }
+
+        private void CheckNoAdditionalSantas(OptimizationResult actual)
+        {
+            Assert.AreEqual(0, actual.NumberOfAdditionalSantas());
         }
     }
 }
