@@ -94,10 +94,18 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             }
 
             // setting up visits (=orders)
-            for (int i = 0; i < data.NumberOfVisits; ++i)
+            for (int visit = 0; visit < data.NumberOfVisits; ++visit)
             {
-                model.CumulVar(i, DimensionTime).SetRange(data.OverallStart, data.OverallEnd);
-                model.AddDisjunction(new int[] { i }, data.Cost.CostNotVisitedVisit);
+                var timeCumulVar = model.CumulVar(visit, DimensionTime);
+                timeCumulVar.SetRange(data.OverallStart, data.OverallEnd);
+                model.AddDisjunction(new int[] { visit }, data.Cost.CostNotVisitedVisit);
+
+                // permit visit in unavailable
+                foreach (var (from, to) in data.Unavailable[visit])
+                {
+                    var constraint = model.solver().MakeNotBetweenCt(timeCumulVar, from, to);
+                    model.solver().Add(constraint);
+                }
             }
 
             // Solving
@@ -131,7 +139,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// <returns></returns>
         public static int GetMaxTime(RoutingData data)
         {
-            return data.OverallEnd - data.OverallStart + 2 * data.Input.MaxWayDuration();
+            return data.OverallEnd - data.OverallStart;
         }
 
         /// <summary>
@@ -140,7 +148,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// <returns></returns>
         public static int GetDayStart(RoutingData data, int day)
         {
-            return data.Input.Days[day].from - data.Input.MaxWayDuration();
+            return data.Input.Days[day].from;
         }
 
         /// <summary>
@@ -149,7 +157,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// <returns></returns>
         public static int GetDayEnd(RoutingData data, int day)
         {
-            return data.Input.Days[day].to + data.Input.MaxWayDuration();
+            return data.Input.Days[day].to;
         }
 
         /// <summary>
