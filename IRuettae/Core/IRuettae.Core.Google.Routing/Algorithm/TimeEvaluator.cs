@@ -11,18 +11,16 @@ namespace IRuettae.Core.Google.Routing.Algorithm
 {
     public class TimeEvaluator : NodeEvaluator2
     {
-        private readonly RoutingData data;
-        private readonly int costCoefficient;
+        protected readonly RoutingData data;
 
         /// <summary>
         /// requires data.Visits
         /// requires data.HomeIndex
         /// </summary>
         /// <param name="data"></param>
-        public TimeEvaluator(RoutingData data, int costCoefficient)
+        public TimeEvaluator(RoutingData data)
         {
             this.data = data ?? throw new ArgumentException("data must not be null");
-            this.costCoefficient = costCoefficient;
         }
 
         public override long Run(int firstIndex, int secondIndex)
@@ -62,7 +60,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                 }
             }
 
-            return time * costCoefficient;
+            return time;
         }
 
     }

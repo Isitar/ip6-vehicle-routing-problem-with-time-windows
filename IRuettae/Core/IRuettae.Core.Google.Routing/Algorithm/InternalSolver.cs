@@ -39,7 +39,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
 
             // setting up dimensions
             var maxTime = GetMaxTime(data);
-            var timeCallback = new TimeEvaluator(data, 1);
+            var timeCallback = new TimeEvaluator(data);
             model.AddDimension(timeCallback, maxTime, maxTime, false, DimensionTime);
 
             // dimensions for breaks
@@ -69,11 +69,11 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                 NodeEvaluator2 costCallback;
                 if (data.Input.IsAdditionalSanta(data.SantaIds[santa]))
                 {
-                    costCallback = new TimeEvaluator(data, data.Cost.CostWorkPerHour + data.Cost.CostAdditionalSantaPerHour);
+                    costCallback = new CostEvaluator(data, data.Cost.CostWorkPerHour + data.Cost.CostAdditionalSantaPerHour, data.Cost.CostAdditionalSanta);
                 }
                 else
                 {
-                    costCallback = new TimeEvaluator(data, data.Cost.CostWorkPerHour);
+                    costCallback = new CostEvaluator(data, data.Cost.CostWorkPerHour, 0);
                 }
                 costCallbacks[santa] = costCallback;
                 model.SetVehicleCost(santa, costCallback);
@@ -126,9 +126,6 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             {
                 GC.KeepAlive(breakCallback);
             }
-
-            // Todo maybe work with GetFixedCostOfVehicle
-
 
             return CreateResult(data, model, solution);
         }
