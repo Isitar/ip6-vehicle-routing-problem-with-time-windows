@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Google.OrTools.ConstraintSolver;
 using IRuettae.Core.Google.Routing.Models;
 using IRuettae.Core.Models;
@@ -168,7 +169,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         }
 
         /// <summary>
-        /// Returns the Routes.
+        /// Returns the Routes from the solution.
         /// </summary>
         /// <param name="data"></param>
         /// <param name="model"></param>
@@ -181,40 +182,47 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                 return new Route[0];
             }
 
-            throw new NotImplementedException();
             // Routes
-            /*for (int santa = 0; santa < data.NumberOfSantas; ++santa)
+            var routes = new List<Route>();
+            for (int santa = 0; santa < data.NumberOfSantas; ++santa)
             {
-                var route = new Route
-                {
-                    SantaId = data.SantaIds[santa],
-                };
-
-                String route = "Vehicle " + santa + ": ";
-                long order = model.Start(santa);
-                if (model.IsEnd(solution.Value(model.NextVar(order))))
+                long visit = model.Start(santa);
+                if (model.IsEnd(solution.Value(model.NextVar(visit))))
                 {
                     // empty
                 }
                 else
                 {
-                    for (; !model.IsEnd(order); order = solution.Value(model.NextVar(order)))
+                    var waypoints = new List<Waypoint>();
+                    void AddWaypoint(long v)
                     {
-                        long startTime =
-
-                        IntVar local_load = model.CumulVar(order, "capacity");
-                        IntVar local_time = model.CumulVar(order, "time");
-                        route += order + " Load(" + solution.Value(local_load) + ") " +
-                            "Time(" + solution.Min(local_time) + ", " +
-                            solution.Max(local_time) + ") -> ";
+                        var startTime = solution.Value(model.CumulVar(v, DimensionTime));
+                        var visitId = (v >= data.Visits.Length || v < 0) ? Constants.VisitIdHome : data.Visits[v].Id;
+                        waypoints.Add(new Waypoint
+                        {
+                            StartTime = (int)startTime,
+                            VisitId = visitId,
+                        });
                     }
-                    IntVar load = model.CumulVar(order, "capacity");
-                    IntVar time = model.CumulVar(order, "time");
-                    route += order + " Load(" + solution.Value(load) + ") " +
-                        "Time(" + solution.Min(time) + ", " + solution.Max(time) + ")";
+
+                    for (; !model.IsEnd(visit); visit = solution.Value(model.NextVar(visit)))
+                    {
+                        AddWaypoint(visit);
+                    }
+
+                    // add end
+                    {
+                        AddWaypoint(visit);
+                    }
+                    routes.Add(new Route
+                    {
+                        SantaId = data.SantaIds[santa],
+                        Waypoints = waypoints.ToArray(),
+                    });
                 }
-                output += route + "\n";
-            }*/
+            }
+
+            return routes.ToArray();
         }
     }
 }
