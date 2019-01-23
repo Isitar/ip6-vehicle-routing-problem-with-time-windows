@@ -38,5 +38,10 @@ namespace IRuettae.Core.Models
         {
             this.progress = progress;
         }
+
+        public override string ToString()
+        {
+            return progress.ToString("P0");
+        }
     }
 }
