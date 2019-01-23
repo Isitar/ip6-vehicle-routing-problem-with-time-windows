@@ -80,12 +80,9 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                         // remove desired on other days
                         breakVisit.Desired = breakVisit.Desired?.Where(d => Utility.IntersectionLength(d.from, d.to, from, to) > 0).ToArray() ?? new(int, int)[0];
 
-                        // set unavailable on other days
-                        breakVisit.Unavailable = new(int, int)[]
-                        {
-                                (int.MinValue, from - 1),
-                                (to + 1, int.MaxValue),
-                        };
+                        // not needed because of the new santaId
+                        // which assigns this break to a specific day
+                        breakVisit.Unavailable = new(int, int)[0];
 
                         // set santa index
                         santaIndex++;
