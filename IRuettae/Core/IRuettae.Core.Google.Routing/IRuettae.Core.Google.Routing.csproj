@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithm\BreakEvaluator.cs" />
     <Compile Include="Algorithm\Converter.cs" />
     <Compile Include="Algorithm\InternalSolver.cs" />
     <Compile Include="Algorithm\TimeEvaluator.cs" />
