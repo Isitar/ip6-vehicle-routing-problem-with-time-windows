@@ -47,7 +47,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
         public const int BreakDesiredStart = 100;
         public const int BreakDesiredEnd = 200;
 
-        public const int Hour = 3600;
+        public const int LongWay = 500;
 
         public static OptimizationInput Create()
         {
@@ -170,11 +170,11 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
                 },
                 RouteCosts = new int[,]
                 {
-                    {0, W12, Hour, Hour, Hour},
-                    {Hour, 0, Hour, Hour, Hour},
-                    {Hour, Hour, 0,Hour, Hour},
-                    {Hour, Hour, Hour, 0, W45},
-                    {Hour, Hour, Hour, Hour, 0},
+                    {0, W12, LongWay, LongWay, LongWay},
+                    {LongWay, 0, LongWay, LongWay, LongWay},
+                    {LongWay, LongWay, 0,LongWay, LongWay},
+                    {LongWay, LongWay, LongWay, 0, W45},
+                    {LongWay, LongWay, LongWay, LongWay, 0},
                 },
             };
         }
