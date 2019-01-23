@@ -64,7 +64,6 @@
   <ItemGroup>
     <Content Include="Libs\Google.OrTools.dll" />
     <Content Include="Libs\Google.Protobuf.dll" />
-    <Content Include="Notes.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IRuettae.Core\IRuettae.Core.csproj">
