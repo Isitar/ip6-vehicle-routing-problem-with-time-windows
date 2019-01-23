@@ -39,9 +39,9 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
         // days
         public const int NumberOfDays = 2;
         public const int StartDay1 = 1000;
-        public const int EndDay1 = 2000;
-        public const int StartDay2 = 5000;
-        public const int EndDay2 = 6000;
+        public const int EndDay1 = 3000;
+        public const int StartDay2 = 6000;
+        public const int EndDay2 = 8000;
 
         // break times (relative to day)
         public const int BreakDesiredStart = 100;
