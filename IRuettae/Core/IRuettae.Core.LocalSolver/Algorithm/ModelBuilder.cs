@@ -47,6 +47,41 @@ namespace IRuettae.Core.LocalSolver.Algorithm
             model.AddConstraint(model.If(solverVariables.SantaUsed[s], solverVariables.SantaVisitDurations[s] + solverVariables.SantaWalkingTime[s], 0) <= dayDuration);
         }
 
+        public void AddRouteTimeSmallerThanDayConstraint(int day, int santa)
+        {
+            var s = GetSantaId(day, santa);
+            var dayDuration = solverVariables.OptimizationInput.Days[day].to - solverVariables.OptimizationInput.Days[day].from;
+            model.AddConstraint(model.If(solverVariables.SantaUsed[s], solverVariables.SantaRouteTime[s], 0) <= dayDuration);
+        }
+
+        public LSExpression AddNoWaitBetweenVisitsConstraint()
+        {
+
+            var constraint = GetSumWaitBetweenVisits() == 0;
+            model.AddConstraint(constraint);
+            return constraint;
+        }
+
+        public void AddOvertimeConstraint(int day, int santa)
+        {
+            var s = GetSantaId(day, santa);
+            var sequence = solverVariables.VisitSequences[s];
+            var c = model.Count(sequence);
+            model.Constraint(model.If(solverVariables.SantaUsed[s], solverVariables.SantaVisitStartingTimes[s][c - 1] + solverVariables.VisitDurationArray[sequence[c - 1]] + solverVariables.DistanceToHomeArray[sequence[c - 1]], 0) <= solverVariables.OptimizationInput.Days[day].to + solverVariables.SantaOvertime[s]);
+        }
+
+        private LSExpression GetSumWaitBetweenVisits()
+        {
+            var sumWaitBetweenVisits = model.Int(0, 0);
+            for (int s = 0; s < solverVariables.NumberOfRoutes; s++)
+            {
+                sumWaitBetweenVisits += model.Sum(solverVariables.SantaWaitBetweenVisit[s]);
+            }
+
+            return sumWaitBetweenVisits;
+
+        }
+
         public void SetSantaUsed(int day, int santa)
         {
             var s = GetSantaId(day, santa);
@@ -83,11 +118,104 @@ namespace IRuettae.Core.LocalSolver.Algorithm
         public void SetSantaRouteTime(int day, int santa)
         {
             var s = GetSantaId(day, santa);
-            solverVariables.SantaRouteTime[s] = solverVariables.SantaWalkingTime[s] + solverVariables.SantaVisitDurations[s];
+            if (solverVariables.SantaWaitBetweenVisitArray[s] is null)
+            {
+                solverVariables.SantaRouteTime[s] = solverVariables.SantaWalkingTime[s] + solverVariables.SantaVisitDurations[s];
+            }
+            else
+            {
+                solverVariables.SantaRouteTime[s] = solverVariables.SantaWalkingTime[s] + solverVariables.SantaVisitDurations[s] + model.Sum(solverVariables.SantaWaitBetweenVisit[s]);
+            }
         }
 
+        public void SetVisitStartingTime(int day, int santa)
+        {
+            var s = GetSantaId(day, santa);
+            var sequence = solverVariables.VisitSequences[s];
+            var c = model.Count(sequence);
 
-        public void AddObjective()
+            var visitStartingTimeSelector = model.Function((i, prev) =>
+                            model.If(i == 0,
+                                solverVariables.OptimizationInput.Days[day].from + solverVariables.SantaWaitBeforeStart[s] + solverVariables.DistanceFromHomeArray[sequence[i]],
+                                prev + solverVariables.VisitDurationArray[sequence[i - 1]] + solverVariables.DistanceArray[sequence[i - 1], sequence[i]] + solverVariables.SantaWaitBetweenVisitArray[s][sequence[i]]
+                            )
+                        );
+
+            var visitStartingTime = model.Array(model.Range(0, c), visitStartingTimeSelector);
+            solverVariables.SantaVisitStartingTimes[s] = visitStartingTime;
+        }
+
+        public void SetDesiredDuration(int day, int santa)
+        {
+            var s = GetSantaId(day, santa);
+            var sequence = solverVariables.VisitSequences[s];
+            var c = model.Count(sequence);
+
+            var visitDesiredDurationSelector = model.Function(i =>
+                        {
+                            var v = sequence[i];
+                            var nDesired = solverVariables.VisitDesiredCountArray[v];
+
+                            var visitStart = solverVariables.SantaVisitStartingTimes[s][i];
+                            var visitEnd = visitStart + solverVariables.VisitDurationArray[sequence[i]];
+
+                            var desiredIntersection = model.Function(n =>
+                            {
+                                // desired start
+                                var x = model.If(nDesired == 0, model.Int(0, 0),
+                                    model.At(solverVariables.VisitDesiredArray, v, n, model.Int(0, 0)));
+                                // desired end
+                                var y = model.If(nDesired == 0, model.Int(0, 0),
+                                    model.At(solverVariables.VisitDesiredArray, v, n, model.Int(1, 1)));
+
+                                return model.If(model.Or(y < visitStart, x > visitEnd),
+                                    // if no intersection    
+                                    0,
+                                    //else
+                                    model.Min(y, visitEnd) - model.Max(x, visitStart)
+                                );
+                            });
+                            return model.Sum(model.Range(0, nDesired), desiredIntersection);
+                        });
+            solverVariables.SantaDesiredDuration[s] = model.Sum(model.Range(0, c), visitDesiredDurationSelector);
+        }
+
+        public void SetUnavailableDuration(int day, int santa)
+        {
+            var s = GetSantaId(day, santa);
+            var sequence = solverVariables.VisitSequences[s];
+            var c = model.Count(sequence);
+
+            var visitUnavailableDurationSelector = model.Function(i =>
+                        {
+                            var v = sequence[i];
+                            var nUnavailable = solverVariables.VisitUnavailableCountArray[v];
+
+                            var visitStart = solverVariables.SantaVisitStartingTimes[s][i];
+                            var visitEnd = visitStart + solverVariables.VisitDurationArray[sequence[i]];
+
+                            var unavailableIntersection = model.Function(n =>
+                            {
+                                // unavailable start
+                                var x = model.If(nUnavailable == 0, model.Int(0, 0),
+                                    model.At(solverVariables.VisitUnavailableArray, v, n, model.Int(0, 0)));
+                                // unavailable end
+                                var y = model.If(nUnavailable == 0, model.Int(0, 0),
+                                    model.At(solverVariables.VisitUnavailableArray, v, n, model.Int(1, 1)));
+
+                                return model.If(model.Or(y < visitStart, x > visitEnd),
+                                    // if no intersection    
+                                    0,
+                                    //else
+                                    model.Min(y, visitEnd) - model.Max(x, visitStart)
+                                );
+                            });
+                            return model.Sum(model.Range(0, nUnavailable), unavailableIntersection);
+                        });
+            solverVariables.SantaUnavailableDuration[s] = model.Sum(model.Range(0, c), visitUnavailableDurationSelector);
+        }
+
+        public void ReAddObjective()
         {
             var maxRoute = model.Max(solverVariables.SantaRouteTime);
             const int hour = 3600;
@@ -103,17 +231,39 @@ namespace IRuettae.Core.LocalSolver.Algorithm
                 }
             }
 
-            var costFunction =
-                400 * additionalSantaCount +
-                40d / hour * additionalSantaRouteTime +
-                //120d / hour * model.Sum(solverVariables.SantaUnavailableDuration) +
-                //120d / hour * model.Sum(solverVariables.SantaOvertime) +
-                //-20d / hour * model.Sum(solverVariables.SantaDesiredDuration) +
-                40d / hour * model.Sum(solverVariables.SantaRouteTime) +
-                30d / hour * maxRoute;
+            if (!(solverVariables.SantaUnavailableDuration[0] is null))
+            {
+                Console.Write("y");
+            }
+
+            LSExpression costFunction;
+            if (!(solverVariables.SantaUnavailableDuration[0] is null))
+            {
+                costFunction =
+                    400 * additionalSantaCount +
+                    40d / hour * additionalSantaRouteTime +
+                    120d / hour * model.Sum(solverVariables.SantaUnavailableDuration) +
+                    120d / hour * model.Sum(solverVariables.SantaOvertime) +
+                   -20d / hour * model.Sum(solverVariables.SantaDesiredDuration) +
+                    40d / hour * model.Sum(solverVariables.SantaRouteTime) +
+                    30d / hour * maxRoute;
+            }
+            else
+            {
+                costFunction =
+                    400 * additionalSantaCount +
+                    40d / hour * additionalSantaRouteTime +
+                    
+                    40d / hour * model.Sum(solverVariables.SantaRouteTime) +
+                    30d / hour * maxRoute;
+            }
+
+            for (int objective = 0; objective < model.GetNbObjectives(); objective++)
+            {
+                model.RemoveObjective(objective);
+            }
 
             model.Minimize(costFunction);
-
         }
 
 

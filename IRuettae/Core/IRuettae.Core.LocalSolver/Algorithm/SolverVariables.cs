@@ -22,6 +22,7 @@ namespace IRuettae.Core.LocalSolver.Algorithm
         public LSExpression[] SantaOvertime { get; }
         public LSExpression[] SantaWaitBeforeStart { get; }
         public LSExpression[][] SantaWaitBetweenVisit { get; }
+        public LSExpression[] SantaWaitBetweenVisitArray { get; }
 
 
         public LSExpression VisitDurationArray { get;  }
@@ -68,20 +69,23 @@ namespace IRuettae.Core.LocalSolver.Algorithm
             SantaOvertime = new LSExpression[numberOfRoutes];
             SantaWaitBeforeStart = new LSExpression[numberOfRoutes];
             SantaWaitBetweenVisit = new LSExpression[numberOfRoutes][];
+            SantaWaitBetweenVisitArray = new LSExpression[numberOfRoutes];
 
             int numberOfVisits = Visits.Count;
-
+            var longestDay = OptimizationInput.Days.Max(d => d.to - d.from);
             for (var k = 0; k < numberOfRoutes; k++)
             {
                 VisitSequences[k] = Model.List(numberOfVisits);
                 SantaOvertime[k] = Model.Int(0, int.MaxValue);
-                SantaWaitBeforeStart[k] = Model.Int(0, int.MaxValue);
+                SantaWaitBeforeStart[k] = Model.Int(0, longestDay);
 
                 SantaWaitBetweenVisit[k] = new LSExpression[numberOfVisits];
                 for (var i = 0; i < SantaWaitBetweenVisit[k].Length; i++)
                 {
-                    SantaWaitBetweenVisit[k][i] = Model.Int(0, int.MaxValue);
+                    SantaWaitBetweenVisit[k][i] = Model.Int(0, longestDay);
                 }
+
+                SantaWaitBetweenVisitArray[k] = Model.Array(SantaWaitBetweenVisit[k]);
             }
 
             // overflow for unused santa breaks

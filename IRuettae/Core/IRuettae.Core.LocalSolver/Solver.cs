@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Xml.Serialization;
 using IRuettae.Core.LocalSolver.Algorithm;
 using IRuettae.Core.Models;
 using localsolver;
@@ -56,10 +57,13 @@ namespace IRuettae.Core.LocalSolver
             }
 
 
-            var vrpTimeLimitFactor = 0.2;
+            //var vrpTimeLimitFactor = 0.2;
+            //var vrptwTimeLimitFactor = 0.5;
+            //var breaksOnWayTimeLimitFactor = 0.3;
+            var vrpTimeLimitFactor = 0.3;
             var vrptwTimeLimitFactor = 0.5;
-            var breaksOnWayTimeLimitFactor = 0.3;
-            if (Math.Abs(vrpTimeLimitFactor + vrptwTimeLimitFactor + breaksOnWayTimeLimitFactor - 1d) > 0.00001)
+            var vrptwBreaksOnWayTimeLimitFactor = 0.2;
+            if (Math.Abs(vrpTimeLimitFactor + vrptwTimeLimitFactor + vrptwBreaksOnWayTimeLimitFactor - 1d) > 0.00001)
             {
                 throw new Exception("programmer was stupid :)");
             }
@@ -74,7 +78,6 @@ namespace IRuettae.Core.LocalSolver
 
                 consoleProgress?.Invoke(this, "Starting to model");
 
-                #region model building
 
                 #region VRP
 
@@ -105,183 +108,108 @@ namespace IRuettae.Core.LocalSolver
                         modelBuilder.SetSantaRouteTime(day, santa);
                     }
                 }
-                modelBuilder.AddObjective();
+
+                modelBuilder.ReAddObjective();
                 model.Close();
                 var vrpPhase = localSolver.CreatePhase();
-                vrpPhase.SetTimeLimit((int)(vrpTimeLimitFactor * timeLimitMilliseconds / 1000));
 
+                vrpPhase.SetTimeLimit((int)(vrpTimeLimitFactor * timeLimitMilliseconds / 1000));
 
 
                 InitializeSolution(numberOfRoutes, numberOfFakeSantas, solverVariables.VisitSequences, breakDictionary);
                 localSolver.Solve();
+                vrpPhase.SetTimeLimit(0);
+                vrpPhase.SetEnabled(false);
+                consoleProgress?.Invoke(this, $"Solved vrp, cost: {model.GetObjective(0).GetDoubleValue()}");
 
-                //var solution = new List
-                for (var i = 0; i < numberOfRoutes; i++)
+#if DEBUG
+                PrintStatistics(consoleProgress, vrpPhase.GetStatistics());
+#endif
+
+                #endregion
+
+                // save solution for next phase
+                var vrpSolution = CreateVRPSolution(numberOfRoutes, solverVariables.VisitSequences, visits);
+
+                #region VRPTW
+
+                model.Open();
+
+                for (var day = 0; day < numberOfDays; day++)
                 {
-                    var visitIds = solverVariables.VisitSequences[i].GetCollectionValue().Select(v => (int)v).ToArray();
-
-                    // breaks
-                    for (var visitIdIndex = 0; visitIdIndex < visitIds.Length; visitIdIndex++)
+                    for (var santa = 0; santa < input.Santas.Length + numberOfFakeSantas; santa++)
                     {
-                        if (visitIds[visitIdIndex] >= input.Visits.Length)
-                        {
-                            visitIds[visitIdIndex] = visits[visitIds[visitIdIndex]].Id;
-                        }
-                    }
-
-                    Console.WriteLine($"route {i}: ");
-                    foreach (var visitId in visitIds)
-                    {
-                        Console.WriteLine($"visit {visitId}");
+                        modelBuilder.SetVisitStartingTime(day, santa);
+                        modelBuilder.SetDesiredDuration(day, santa);
+                        modelBuilder.SetUnavailableDuration(day, santa);
+                        modelBuilder.SetSantaRouteTime(day, santa);
+                        modelBuilder.AddOvertimeConstraint(day, santa);
+                        modelBuilder.AddRouteTimeSmallerThanDayConstraint(day, santa);
                     }
                 }
 
+                var noWaitBetweenVisitConstraint = modelBuilder.AddNoWaitBetweenVisitsConstraint();
+                modelBuilder.ReAddObjective();
+                model.Close();
+                var vrptwPhase = localSolver.CreatePhase();
+                vrptwPhase.SetTimeLimit((int)(vrptwTimeLimitFactor * timeLimitMilliseconds / 1000));
 
-                return null;
+
+
+                //initialize with vrp solution solution
+                InitializeSolutionWithVRP(numberOfRoutes, solverVariables.VisitSequences, vrpSolution);
+
+                localSolver.Solve();
+                vrptwPhase.SetTimeLimit(0);
+                vrptwPhase.SetEnabled(false);
+
+                var vrptwSolution = SaveVRPTWSolution(solverVariables);
+
+                consoleProgress?.Invoke(this, $"Solved vrptw, cost: {model.GetObjective(0).GetDoubleValue()}");
+#if DEBUG
+                result.Routes = BuildResultRoutes(numberOfRoutes, solverVariables.VisitSequences, solverVariables.Visits, solverVariables.SantaVisitStartingTimes, numberOfFakeSantas);
+                consoleProgress?.Invoke(this, $"cost via resultcalc: {result.Cost()}");
+                consoleProgress?.Invoke(this, $"unavailable: : {string.Join(",", solverVariables.SantaUnavailableDuration.Select(s => s.GetIntValue().ToString()).ToArray())}");
+                consoleProgress?.Invoke(this, $"desired: : {string.Join(",", solverVariables.SantaDesiredDuration.Select(s => s.GetIntValue().ToString()).ToArray())}");
+                consoleProgress?.Invoke(this, $"routeTime: : {string.Join(",", solverVariables.SantaRouteTime.Select(s => s.GetIntValue().ToString()).ToArray())}");
+                //consoleProgress?.Invoke(this, $"longestRoute: : {maxRoute.GetIntValue()}");
+                consoleProgress?.Invoke(this, $"overtime: : {string.Join(",", solverVariables.SantaOvertime.Select(o => o.GetIntValue()))}");
+                consoleProgress?.Invoke(this, $"santaWaitBeforeStart: : {string.Join(",", solverVariables.SantaWaitBeforeStart.Select(o => o.GetIntValue()))}");
+                consoleProgress?.Invoke(this, $"santaVisitDurations: : {string.Join(",", solverVariables.SantaWalkingTime.Select(o => o.GetIntValue()))}");
+                consoleProgress?.Invoke(this, $"santaWalkingTime: : {string.Join(",", solverVariables.SantaVisitDurations.Select(o => o.GetIntValue()))}");
+
+                for (var i = 0; i < numberOfRoutes; i++)
+                {
+                    consoleProgress?.Invoke(this, $"Santa {i} visit sequence: {string.Join(",", solverVariables.VisitSequences[i].GetCollectionValue().ToArray())} ");
+                    consoleProgress?.Invoke(this, $"Santa {i} visit starting time: {string.Join(",", solverVariables.SantaVisitStartingTimes[i].GetArrayValue())} ");
+                    if (UseWaitBetweenVisits)
+                    {
+                        consoleProgress?.Invoke(this, $"Santa {i} wait between visits: {string.Join(",", solverVariables.SantaWaitBetweenVisit[i].Select(x => x.GetIntValue().ToString()))} ");
+                    }
+                }
+#endif
+
                 #endregion
-                #endregion
 
-                //    for (var day = 0; day < numberOfDays; day++)
-                //    {
-                //        for (var santa = 0; santa < input.Santas.Length + numberOfFakeSantas; santa++)
-                //        {
-                //            // time slot
-                //            var currentDayIndex = day; // copy because used in lambda expression
 
-                //            var waitBetweenVisits =
-                //                UseWaitBetweenVisits ? model.Array(santaWaitBetweenVisit[s]) : model.Int(0, 0);
+                model.Open();
+                model.RemoveConstraint(noWaitBetweenVisitConstraint);
+                model.Close();
 
-                //            var visitStartingTimeSelector = model.Function((i, prev) =>
-                //                model.If(i == 0,
-                //                    input.Days[currentDayIndex].from + santaWaitBeforeStart[s] + distanceFromHomeArray[sequence[i]],
-                //                    prev + visitDurationArray[sequence[i - 1]] + distanceArray[sequence[i - 1], sequence[i]] +
-                //                    (UseWaitBetweenVisits ? waitBetweenVisits[sequence[i]] : model.Int(0, 0))
-                //                )
-                //            );
+                InitializeSolutionWithVRPTW(vrptwSolution, solverVariables);
 
-                //            var visitStartingTime = model.Array(model.Range(0, c), visitStartingTimeSelector);
-                //            santaVisitStartingTimes[s] = visitStartingTime;
+                var vrptwBreaksOnWayPhase = localSolver.CreatePhase();
+                vrptwBreaksOnWayPhase.SetTimeLimit((int)(vrptwBreaksOnWayTimeLimitFactor * timeLimitMilliseconds / 1000));
+                localSolver.Solve();
 
-                //            // desired
-                //            var visitDesiredDurationSelector = model.Function(i =>
-                //            {
-                //                var v = sequence[i];
-                //                var nDesired = visitDesiredCountArray[v];
+                result.Routes = BuildResultRoutes(numberOfRoutes, solverVariables.VisitSequences, solverVariables.Visits, solverVariables.SantaVisitStartingTimes, numberOfFakeSantas);
 
-                //                var visitStart = visitStartingTime[i];
-                //                var visitEnd = visitStart + visitDurationArray[sequence[i]];
-
-                //                var desiredIntersection = model.Function(n =>
-                //                {
-                //                    // desired start
-                //                    var x = model.If(nDesired == 0, model.Int(0, 0),
-                //                        model.At(visitDesiredArray, v, n, model.Int(0, 0)));
-                //                    // desired end
-                //                    var y = model.If(nDesired == 0, model.Int(0, 0),
-                //                        model.At(visitDesiredArray, v, n, model.Int(1, 1)));
-
-                //                    return model.If(model.Or(y < visitStart, x > visitEnd),
-                //                        // if no intersection    
-                //                        0,
-                //                        //else
-                //                        model.Min(y, visitEnd) - model.Max(x, visitStart)
-                //                    );
-                //                });
-                //                return model.Sum(model.Range(0, nDesired), desiredIntersection);
-                //            });
-                //            santaDesiredDuration[s] = model.Sum(model.Range(0, c), visitDesiredDurationSelector);
-
-                //            // unavailable
-                //            var visitUnavailableDurationSelector = model.Function(i =>
-                //            {
-                //                var v = sequence[i];
-                //                var nUnavailable = visitUnavailableCountArray[v];
-
-                //                var visitStart = visitStartingTime[i];
-                //                var visitEnd = visitStart + visitDurationArray[sequence[i]];
-
-                //                var unavailableIntersection = model.Function(n =>
-                //                {
-                //                    // unavailable start
-                //                    var x = model.If(nUnavailable == 0, model.Int(0, 0),
-                //                        model.At(visitUnavailableArray, v, n, model.Int(0, 0)));
-                //                    // unavailable end
-                //                    var y = model.If(nUnavailable == 0, model.Int(0, 0),
-                //                        model.At(visitUnavailableArray, v, n, model.Int(1, 1)));
-
-                //                    return model.If(model.Or(y < visitStart, x > visitEnd),
-                //                        // if no intersection    
-                //                        0,
-                //                        //else
-                //                        model.Min(y, visitEnd) - model.Max(x, visitStart)
-                //                    );
-                //                });
-                //                return model.Sum(model.Range(0, nUnavailable), unavailableIntersection);
-                //            });
-                //            santaUnavailableDuration[s] = model.Sum(model.Range(0, c), visitUnavailableDurationSelector);
-
-                //            // sum all up
-                //            //santaRouteTime[s] = santaWalkingTime[s] + santaVisitDurations[s] + (UseWaitBetweenVisits ? model.Sum(santaWaitBetweenVisit[s]) : model.Int(0, 0));
-
-                //            // constraint
-                //            model.Constraint(model.If(santaUsed[s], visitStartingTime[c - 1] + visitDurationArray[sequence[c - 1]] + distanceToHomeArray[sequence[c - 1]], 0) <= input.Days[currentDayIndex].to + santaOvertime[s]);
-                //        }
+                result.TimeElapsed = sw.ElapsedMilliseconds / 1000;
+                result.ResultState = ResultState.Finished;
+                sw.Stop();
+                return result;
             }
 
-            //    #endregion
-
-            //    #region costFunction
-
-            //    var maxRoute = model.Max(santaRouteTime);
-            //    const int hour = 3600;
-            //    var additionalSantaCount = model.Float(0, 0);
-            //    var additionalSantaRouteTime = model.Float(0, 0);
-            //    for (var d = 0; d < numberOfDays; d++)
-            //    {
-            //        for (var i = 0; i < numberOfFakeSantas; i++)
-            //        {
-            //            var index = d * (input.Santas.Length + numberOfFakeSantas) + input.Santas.Length + i;
-            //            additionalSantaCount += santaUsed[index];
-            //            additionalSantaRouteTime += santaRouteTime[index];
-            //        }
-            //    }
-
-
-            //    var costFunction =
-            //        400 * additionalSantaCount +
-            //        40d / hour * additionalSantaRouteTime +
-            //        120d / hour * model.Sum(santaUnavailableDuration) +
-            //        120d / hour * model.Sum(santaOvertime) +
-            //        -20d / hour * model.Sum(santaDesiredDuration) +
-            //        40d / hour * model.Sum(santaRouteTime) +
-            //        30d / hour * maxRoute;
-
-            //    #endregion
-
-            //    model.Minimize(costFunction);
-
-            //    model.Close();
-            //    consoleProgress?.Invoke(this, "Done modeling");
-
-
-
-            //    var phase = localSolver.CreatePhase();
-            //    phase.SetTimeLimit((int)((timeLimitMilliseconds - sw.ElapsedMilliseconds) / 1000));
-
-
-            //    localSolver.Solve();
-            //    consoleProgress?.Invoke(this, "Done solving");
-            //    //
-            //    result.Routes = BuildResultRoutes(numberOfRoutes, visitSequences, visits, santaVisitStartingTimes, numberOfFakeSantas);
-
-            //    consoleProgress?.Invoke(this, $"unavailable: : {string.Join(",", santaUnavailableDuration.Select(s => s.GetIntValue().ToString()).ToArray())}");
-            //    consoleProgress?.Invoke(this, $"desired: : {string.Join(",", santaDesiredDuration.Select(s => s.GetIntValue().ToString()).ToArray())}");
-            //    consoleProgress?.Invoke(this, $"routeTime: : {string.Join(",", santaRouteTime.Select(s => s.GetIntValue().ToString()).ToArray())}");
-            //    consoleProgress?.Invoke(this, $"longestRoute: : {maxRoute.GetIntValue()}");
-            //    consoleProgress?.Invoke(this, $"overtime: : {string.Join(",", santaOvertime.Select(o => o.GetIntValue()))}");
-            //    consoleProgress?.Invoke(this, $"santaWaitBeforeStart: : {string.Join(",", santaWaitBeforeStart.Select(o => o.GetIntValue()))}");
-            //    consoleProgress?.Invoke(this, $"santaVisitDurations: : {string.Join(",", santaWalkingTime.Select(o => o.GetIntValue()))}");
-            //    consoleProgress?.Invoke(this, $"santaWalkingTime: : {string.Join(",", santaVisitDurations.Select(o => o.GetIntValue()))}");
 
 
             //    for (var i = 0; i < numberOfRoutes; i++)
@@ -293,12 +221,102 @@ namespace IRuettae.Core.LocalSolver
             //            consoleProgress?.Invoke(this, $"Santa {i} wait between visits: {string.Join(",", santaWaitBetweenVisit[i].Select(x => x.GetIntValue().ToString()))} ");
             //        }
             //    }
-            //}
 
-            //result.TimeElapsed = sw.ElapsedMilliseconds / 1000;
-            //result.ResultState = ResultState.Finished;
-            //sw.Stop();
-            //return result;
+
+
+        }
+
+        private void InitializeSolutionWithVRPTW(VRPTWSolution vrptwSolution, SolverVariables solverVariables)
+        {
+            var numberOfRoutes = solverVariables.NumberOfRoutes;
+
+            for (int s = 0; s < numberOfRoutes; s++)
+            {
+                var sequence = solverVariables.VisitSequences[s].GetCollectionValue();
+                sequence.Clear();
+                foreach (var visit in vrptwSolution.SantaVisitSequence[s])
+                {
+                    sequence.Add(visit);
+                }
+
+                //var startingTimes = solverVariables.SantaVisitStartingTimes[s].GetCollectionValue();
+                //startingTimes.Clear();
+                //foreach (var startingTime in vrptwSolution.SantaVisitStartTime[s])
+                //{
+                //    startingTimes.Add(startingTime);
+                //}
+
+                solverVariables.SantaWaitBeforeStart[s].SetIntValue(vrptwSolution.SantaWaitBeforeStart[s]);
+            }
+        }
+
+        private VRPTWSolution SaveVRPTWSolution(SolverVariables solverVariables)
+        {
+            var output = new VRPTWSolution();
+            var numberOfRoutes = solverVariables.NumberOfRoutes;
+            output.SantaVisitSequence = new int[numberOfRoutes][];
+            output.SantaVisitStartTime = new int[numberOfRoutes][];
+            output.SantaWaitBeforeStart = new int[numberOfRoutes];
+
+            for (int s = 0; s < numberOfRoutes; s++)
+            {
+                output.SantaVisitSequence[s] = solverVariables.VisitSequences[s].GetCollectionValue().Select(st => (int)st).ToArray();
+                var startingTimeArr = solverVariables.SantaVisitStartingTimes[s].GetArrayValue();
+                output.SantaVisitStartTime[s] = new int[startingTimeArr.Count()];
+                for (int i = 0; i < startingTimeArr.Count(); i++)
+                {
+                    output.SantaVisitStartTime[s][i] = (int)startingTimeArr.GetIntValue(i);
+                }
+                
+                output.SantaWaitBeforeStart[s] = (int)solverVariables.SantaWaitBeforeStart[s].GetIntValue();
+            }
+
+            return output;
+        }
+
+        private void InitializeSolutionWithVRP(int numberOfRoutes, LSExpression[] visitSequences, int[][] vrpSolution)
+        {
+            for (int s = 0; s < numberOfRoutes; s++)
+            {
+                var santaVisits = visitSequences[s].GetCollectionValue();
+                santaVisits.Clear();
+
+                foreach (var vrpRoute in vrpSolution[s])
+                {
+                    santaVisits.Add(vrpRoute);
+                }
+            }
+        }
+
+        private int[][] CreateVRPSolution(int numberOfRoutes, LSExpression[] visitSequences, List<Visit> visits)
+        {
+            var output = new int[numberOfRoutes][];
+            for (var i = 0; i < numberOfRoutes; i++)
+            {
+                output[i] = visitSequences[i].GetCollectionValue().Select(v => (int)v).ToArray();
+#if DEBUG
+                var visitIds = visitSequences[i].GetCollectionValue().Select(v => (int)v).ToArray();
+
+                // breaks
+                for (var visitIdIndex = 0; visitIdIndex < visitIds.Length; visitIdIndex++)
+                {
+                    if (visitIds[visitIdIndex] >= input.Visits.Length)
+                    {
+                        visitIds[visitIdIndex] = visits[visitIds[visitIdIndex]].Id;
+                    }
+                }
+
+
+                Console.WriteLine($"route {i}: ");
+                foreach (var visitId in visitIds)
+                {
+
+                    Console.WriteLine($"visit {visitId}");
+                }
+#endif
+            }
+
+            return output;
         }
 
 
@@ -418,6 +436,18 @@ namespace IRuettae.Core.LocalSolver
                     }
                 }
             }
+        }
+
+        private void PrintStatistics(EventHandler<string> consoleProgress, LSStatistics stats)
+        {
+            consoleProgress?.Invoke(this, $"{stats.GetInfo()}");
+            consoleProgress?.Invoke(this, $"NbIterations: {stats.GetNbIterations()}");
+            consoleProgress?.Invoke(this, $"NbAcceptedMoves: {stats.GetNbAcceptedMoves()}, ({stats.GetPercentAcceptedMoves():F2}%)");
+            consoleProgress?.Invoke(this, $"NbInfeasibleMoves: {stats.GetNbInfeasibleMoves()}, ({stats.GetPercentInfeasibleMoves():F2}%)");
+            consoleProgress?.Invoke(this, $"NbImprovingMoves: {stats.GetNbImprovingMoves()}, ({stats.GetPercentImprovingMoves():F2}%)");
+            consoleProgress?.Invoke(this, $"NbRejectedMoves: {stats.GetNbRejectedMoves()}, ({stats.GetPercentRejectedMoves():F2}%)");
+            consoleProgress?.Invoke(this, $"NbMoves: {stats.GetNbMoves()}");
+            consoleProgress?.Invoke(this, $"RunningTime: {stats.GetRunningTime()}");
         }
 
 
