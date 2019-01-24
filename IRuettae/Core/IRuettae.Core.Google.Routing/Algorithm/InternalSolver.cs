@@ -111,11 +111,10 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                 model.AddDisjunction(new int[] { visit }, data.Cost.CostNotVisitedVisit);
 
                 // permit visit in unavailable
-                foreach (var (from, to) in data.Unavailable[visit])
-                {
-                    var constraint = model.solver().MakeNotBetweenCt(timeCumulVar, from, to);
-                    model.solver().Add(constraint);
-                }
+                var unavailableStarts = data.Unavailable[visit].Select(u => u.startFrom).ToList();
+                var unavailableEnds = data.Unavailable[visit].Select(u => u.startEnd).ToList();
+                var constraint = model.solver().MakeNotMemberCt(timeCumulVar, new CpIntVector(unavailableStarts), new CpIntVector(unavailableEnds));
+                model.solver().Add(constraint);
             }
 
             // Solving
@@ -139,7 +138,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                 GC.KeepAlive(breakCallback);
             }
 
-            Debug.WriteLine($"obj={solution.ObjectiveValue()}");
+            Debug.WriteLine($"obj={solution?.ObjectiveValue()}");
 
             return CreateResult(data, model, solution);
         }
@@ -183,7 +182,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         }
 
         /// <summary>
-        /// Returns the total number of breaks of the given santa.
+        /// Returns the name of the break dimension of the specific santa.
         /// </summary>
         /// <param name="santa">index of the santa</param>
         /// <returns></returns>
