@@ -110,7 +110,24 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                 timeCumulVar.SetRange(data.OverallStart, data.OverallEnd);
                 model.AddDisjunction(new int[] { visit }, data.Cost.CostNotVisitedVisit);
 
-                // permit visit in unavailable
+#if false // use hardconstraint on desire
+                var desired = GetDesired(data, visit);
+                if (desired.HasValue)
+                {
+                    // add soft time window for desired
+                    timeCumulVar.SetRange(desired.Value.from, desired.Value.to);
+                }
+                else
+                {
+                    // forbid visit in unavailable
+                    var unavailableStarts = data.Unavailable[visit].Select(u => u.startFrom).ToList();
+                    var unavailableEnds = data.Unavailable[visit].Select(u => u.startEnd).ToList();
+                    var constraint = model.solver().MakeNotMemberCt(timeCumulVar, new CpIntVector(unavailableStarts), new CpIntVector(unavailableEnds));
+                    model.solver().Add(constraint);
+                }
+#elif true // use soft desired
+
+                // forbid visit in unavailable
                 var unavailableStarts = data.Unavailable[visit].Select(u => u.startFrom).ToList();
                 var unavailableEnds = data.Unavailable[visit].Select(u => u.startEnd).ToList();
                 var constraint = model.solver().MakeNotMemberCt(timeCumulVar, new CpIntVector(unavailableStarts), new CpIntVector(unavailableEnds));
@@ -125,6 +142,15 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                     dim.SetCumulVarSoftUpperBound(visit, desired.Value.to, cost);
                     dim.SetCumulVarSoftLowerBound(visit, desired.Value.from, cost);
                 }
+#elif false // ignore desired
+                // forbid visit in unavailable
+                var unavailableStarts = data.Unavailable[visit].Select(u => u.startFrom).ToList();
+                var unavailableEnds = data.Unavailable[visit].Select(u => u.startEnd).ToList();
+                var constraint = model.solver().MakeNotMemberCt(timeCumulVar, new CpIntVector(unavailableStarts), new CpIntVector(unavailableEnds));
+                model.solver().Add(constraint);
+#else
+                // ignore desired and unavailable
+#endif
             }
 
             // Solving
