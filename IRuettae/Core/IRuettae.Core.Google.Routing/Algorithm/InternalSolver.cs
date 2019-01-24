@@ -115,13 +115,23 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                 var unavailableEnds = data.Unavailable[visit].Select(u => u.startEnd).ToList();
                 var constraint = model.solver().MakeNotMemberCt(timeCumulVar, new CpIntVector(unavailableStarts), new CpIntVector(unavailableEnds));
                 model.solver().Add(constraint);
+
+                // add soft time window for desired
+                var desired = GetDesired(data, visit);
+                if (desired.HasValue)
+                {
+                    var cost = GetDesiredCost(data, visit);
+                    var dim = model.GetDimensionOrDie(DimensionTime);
+                    dim.SetCumulVarSoftUpperBound(visit, desired.Value.to, cost);
+                    dim.SetCumulVarSoftLowerBound(visit, desired.Value.from, cost);
+                }
             }
 
             // Solving
             var searchParameters = RoutingModel.DefaultSearchParameters();
             searchParameters.FirstSolutionStrategy =
                 FirstSolutionStrategy.Types.Value.Automatic; // maybe try AllUnperformed or PathCheapestArc
-            //searchParameters.LocalSearchMetaheuristic = LocalSearchMetaheuristic.Types.Value.GuidedLocalSearch;
+            searchParameters.LocalSearchMetaheuristic = LocalSearchMetaheuristic.Types.Value.GuidedLocalSearch;
             searchParameters.TimeLimitMs = timeLimitMilliseconds;
 
             var solution = model.SolveWithParameters(searchParameters);
@@ -192,24 +202,38 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         }
 
         /// <summary>
-        /// Returns the maximal number of breaks a single visit has.
+        /// Returns the one desired that should get a soft time window.
         /// </summary>
         /// <param name="data"></param>
-        /// <param name="santa"></param>
+        /// <param name="visit"></param>
         /// <returns></returns>
-        private static int GetMaxNumberOfDesired(RoutingData data)
+        private static (int from, int to)? GetDesired(RoutingData data, int visit)
         {
-            return data.Desired.Max(d => d.Length);
+            var candidates = data.BestDesired[visit];
+            if (candidates.Length == 0)
+            {
+                return null;
+            }
+            return candidates[candidates.Length / 2];
         }
 
         /// <summary>
-        /// Returns the name of the n-th desired dimension.
+        /// Returns the cost coefficent if the soft time window is not met.
         /// </summary>
-        /// <param name="n">which dimension (0 to GetMaxNumberOfDesired()-1)</param>
+        /// <param name="data"></param>
+        /// <param name="visit"></param>
         /// <returns></returns>
-        private static string GetDesiredDimension(int n)
+        private static int GetDesiredCost(RoutingData data, int visit)
         {
-            return $"Desired{n}";
+            var desired = GetDesired(data, visit);
+            if (desired.HasValue)
+            {
+                const int Hour = 3600;
+                var duration = data.Visits[visit].Duration;
+                var maxDesired = Math.Min(duration, Utility.GetRealDesiredLength(data, desired.Value));
+                return data.Cost.CostVisitInDesiredPerHour * maxDesired / Hour;
+            }
+            return 0;
         }
 
         /// <summary>

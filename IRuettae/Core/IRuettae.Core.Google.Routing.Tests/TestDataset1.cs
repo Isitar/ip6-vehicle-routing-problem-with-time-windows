@@ -102,6 +102,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
                         Desired = new(int, int)[]
                         {
                             (StartDay1, EndDay1),
+                            (StartDay1+100, EndDay1-100), // smaller desired
                         },
                         Unavailable = new(int, int)[]
                         {

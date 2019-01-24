@@ -79,7 +79,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                         var breakVisit = (Visit)visit.Clone();
 
                         // remove desired on other days
-                        breakVisit.Desired = breakVisit.Desired?.Where(d => Utility.IntersectionLength(d.from, d.to, from, to) > 0).ToArray() ?? new(int, int)[0];
+                        breakVisit.Desired = breakVisit.Desired?.Where(d => Core.Utility.IntersectionLength(d.from, d.to, from, to) > 0).ToArray() ?? new(int, int)[0];
 
                         // not needed because of the new santaId
                         // which assigns this break to a specific day
@@ -144,7 +144,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             {
                 var duration = visit.Duration;
                 var unavailable = new List<(int, int)>();
-                foreach (var (from, to) in visit.Unavailable)
+                foreach (var (from, to) in visit.Unavailable.Where(u => u.from < u.to))
                 {
                     if (from == int.MinValue)
                     {
@@ -163,8 +163,10 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         }
 
         /// <summary>
+        /// Important: Desired which have a smaller duration
+        /// than the maximal duration of a desired are dropped.
         /// requires data.Visits
-        /// creates data.Desired
+        /// creates data.BestDesired
         /// </summary>
         private static void CreateDesired(RoutingData data)
         {
@@ -178,15 +180,13 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             {
                 var duration = visit.Duration;
                 var desired = new List<(int, int)>();
-                foreach (var (from, to) in visit.Desired)
-                {
-                    // ignore if it is outside business hours
-                    var keep = data.Input.Days.Any(d => Utility.IntersectionLength(from, to, d.from, d.to) > 0);
-                    if (!keep)
-                    {
-                        continue;
-                    }
 
+                int Length((int, int) d) => Utility.GetRealDesiredLength(data, d);
+                var maxLength = visit.Desired.Select(Length).Append(1).Max();
+
+                // filter desired which are shorter than the maximum or business hours
+                foreach (var (from, to) in visit.Desired.Where(d => Length(d) == maxLength))
+                {
                     if (to - from >= duration)
                     {
                         // entire duration can be in desired
@@ -201,7 +201,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                 desireds.Add(desired.ToArray());
             }
 
-            data.Desired = desireds.ToArray();
+            data.BestDesired = desireds.ToArray();
         }
 
         /// <summary>

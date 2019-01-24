@@ -46,11 +46,12 @@ namespace IRuettae.Core.Google.Routing.Models
         public (int startFrom, int startEnd)[][] Unavailable { get; set; }
 
         /// <summary>
-        /// Intervals in which a visit start shall be.
-        /// Desired[visitId][interval].
-        /// Desired.Length equals Visits.Length.
+        /// Best intervals in which a visit start shall be.
+        /// Better means a longer interval.
+        /// BestDesired[visitId][interval].
+        /// BestDesired.Length equals Visits.Length.
         /// </summary>
-        public (int startFrom, int startEnd)[][] Desired { get; set; }
+        public (int startFrom, int startEnd)[][] BestDesired { get; set; }
 
         /// <summary>
         /// Index of the visit which is the start of the santa.
