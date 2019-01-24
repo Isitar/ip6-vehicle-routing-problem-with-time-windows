@@ -37,6 +37,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
             CheckSantas(actual);
             CheckVisits(actual);
             CheckUnavailable(actual);
+            CheckDesired(actual);
             CheckStartEnd(actual);
             CheckNumberOfSantas(actual);
             CheckNumberOfVisits(actual);
@@ -146,7 +147,58 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
                 Assert.AreEqual(TestDataset1.EndDay2 + 1 - duration, from);
                 Assert.AreEqual(int.MaxValue, to);
             }
+        }
 
+        private void CheckDesired(RoutingData actual)
+        {
+            Assert.AreEqual(actual.Visits.Length, actual.Desired.Length);
+
+            // visit 1
+            {
+                // desired outside business hours must be removed
+                Assert.AreEqual(0, actual.Desired[0].Length);
+            }
+
+            // visit2
+            {
+                Assert.AreEqual(1, actual.Desired[1].Length);
+                var (from, to) = actual.Desired[1].Last();
+                Assert.AreEqual(TestDataset1.StartDay1, from);
+                Assert.AreEqual(TestDataset1.EndDay1 - TestDataset1.Duration2, to);
+            }
+
+            // visit3
+            {
+                Assert.AreEqual(1, actual.Desired[2].Length);
+                var (from, to) = actual.Desired[2].Last();
+                Assert.IsTrue(from < to);
+                Assert.AreEqual(TestDataset1.StartDay1 - TestDataset1.Duration3 / 2, from);
+                Assert.AreEqual(TestDataset1.StartDay1, to);
+            }
+
+            // visit5, day1
+            {
+                Assert.AreEqual(1, actual.Desired[4].Length);
+
+                var expectedFrom = TestDataset1.StartDay1 + TestDataset1.BreakDesiredEnd - TestDataset1.Duration5;
+                var expectedTo = TestDataset1.StartDay1 + TestDataset1.BreakDesiredStart;
+                var (from, to) = actual.Desired[4][0];
+                Assert.IsTrue(from < to);
+                Assert.AreEqual(expectedFrom, from);
+                Assert.AreEqual(expectedTo, to);
+            }
+
+            // visit5, day2
+            {
+                Assert.AreEqual(1, actual.Desired[5].Length);
+
+                var expectedFrom = TestDataset1.StartDay2 + TestDataset1.BreakDesiredEnd - TestDataset1.Duration5;
+                var expectedTo = TestDataset1.StartDay2 + TestDataset1.BreakDesiredStart;
+                var (from, to) = actual.Desired[5][0];
+                Assert.IsTrue(from < to);
+                Assert.AreEqual(expectedFrom, from);
+                Assert.AreEqual(expectedTo, to);
+            }
         }
 
         private void CheckStartEnd(RoutingData actual)

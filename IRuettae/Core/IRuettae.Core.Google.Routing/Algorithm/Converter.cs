@@ -17,6 +17,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             CreateSantas(data, maxNumberOfSantas);
             CreateVisits(data);
             CreateUnavailable(data);
+            CreateDesired(data);
             CreateStartEnd(data);
 
             return data;
@@ -159,6 +160,48 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             }
 
             data.Unavailable = unavailables.ToArray();
+        }
+
+        /// <summary>
+        /// requires data.Visits
+        /// creates data.Desired
+        /// </summary>
+        private static void CreateDesired(RoutingData data)
+        {
+            if (data.Visits == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            var desireds = new List<(int, int)[]>();
+            foreach (var visit in data.Visits)
+            {
+                var duration = visit.Duration;
+                var desired = new List<(int, int)>();
+                foreach (var (from, to) in visit.Desired)
+                {
+                    // ignore if it is outside business hours
+                    var keep = data.Input.Days.Any(d => Utility.IntersectionLength(from, to, d.from, d.to) > 0);
+                    if (!keep)
+                    {
+                        continue;
+                    }
+
+                    if (to - from >= duration)
+                    {
+                        // entire duration can be in desired
+                        desired.Add((from, to - duration));
+                    }
+                    else
+                    {
+                        // only a part of the visit can be in desired
+                        desired.Add((to - duration, from));
+                    }
+                }
+                desireds.Add(desired.ToArray());
+            }
+
+            data.Desired = desireds.ToArray();
         }
 
         /// <summary>

@@ -121,7 +121,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             var searchParameters = RoutingModel.DefaultSearchParameters();
             searchParameters.FirstSolutionStrategy =
                 FirstSolutionStrategy.Types.Value.Automatic; // maybe try AllUnperformed or PathCheapestArc
-            searchParameters.LocalSearchMetaheuristic = LocalSearchMetaheuristic.Types.Value.GuidedLocalSearch;
+            //searchParameters.LocalSearchMetaheuristic = LocalSearchMetaheuristic.Types.Value.GuidedLocalSearch;
             searchParameters.TimeLimitMs = timeLimitMilliseconds;
 
             var solution = model.SolveWithParameters(searchParameters);
@@ -189,6 +189,27 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         private static string GetSantaBreakDimension(int santa)
         {
             return $"Santa{santa}Break";
+        }
+
+        /// <summary>
+        /// Returns the maximal number of breaks a single visit has.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="santa"></param>
+        /// <returns></returns>
+        private static int GetMaxNumberOfDesired(RoutingData data)
+        {
+            return data.Desired.Max(d => d.Length);
+        }
+
+        /// <summary>
+        /// Returns the name of the n-th desired dimension.
+        /// </summary>
+        /// <param name="n">which dimension (0 to GetMaxNumberOfDesired()-1)</param>
+        /// <returns></returns>
+        private static string GetDesiredDimension(int n)
+        {
+            return $"Desired{n}";
         }
 
         /// <summary>

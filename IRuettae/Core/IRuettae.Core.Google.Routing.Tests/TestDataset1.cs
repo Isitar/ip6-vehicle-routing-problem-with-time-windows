@@ -81,8 +81,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
                         WayCostToHome = 0,
                         Desired = new(int, int)[]
                         {
-                            (StartDay1, EndDay1),
-                            (StartDay2, EndDay2),
+                            (EndDay2 + 100, EndDay2 + 200), // outside business hours
                         },
                         Unavailable = new(int, int)[]
                         {
@@ -120,6 +119,10 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
                         SantaId = -1,
                         WayCostFromHome = W03,
                         WayCostToHome = W30,
+                        Desired = new(int, int)[]
+                        {
+                            (StartDay1, StartDay1 + Duration3 / 2),
+                        },
                         Unavailable = new(int, int)[]
                         {
                             unavailableDay1Before,
