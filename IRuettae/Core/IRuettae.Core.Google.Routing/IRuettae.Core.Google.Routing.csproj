@@ -64,6 +64,7 @@
     <Compile Include="Models\CostSettings.cs" />
     <Compile Include="Models\RoutingData.cs" />
     <Compile Include="Models\RoutingSolverStarterData.cs" />
+    <Compile Include="Models\SolvingMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoutingSolver.cs" />
   </ItemGroup>

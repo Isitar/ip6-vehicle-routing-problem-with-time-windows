@@ -66,15 +66,42 @@ namespace IRuettae.Core.Google.Routing
         /// <returns></returns>
         private List<ITimeWindowStrategy> GetStrategies(int number)
         {
-            var strategies = new List<ITimeWindowStrategy>()
+            List<ITimeWindowStrategy> strategies;
+            switch (starterData.Mode)
+            {
+                case SolvingMode.Default:
+                    strategies = GetStrategiesDefault();
+                    break;
+                case SolvingMode.Fast:
+                    strategies = GetStrategiesFast();
+                    break;
+                default:
+                    throw new NotImplementedException("unknown SolvingMode");
+            }
+            number = Math.Max(1, Math.Min(strategies.Count, number));
+            return strategies.Take(number).ToList();
+        }
+
+        private List<ITimeWindowStrategy> GetStrategiesDefault()
+        {
+            return new List<ITimeWindowStrategy>()
             {
                 new DesiredSoftStrategy(),
                 new DesiredHardStrategy(),
                 new UnavailableOnlyStrategy(),
                 new NoneStrategy(),
             };
-            number = Math.Max(1, Math.Min(strategies.Count, number));
-            return strategies.Take(number).ToList();
+        }
+
+        private List<ITimeWindowStrategy> GetStrategiesFast()
+        {
+            return new List<ITimeWindowStrategy>()
+            {
+                new NoneStrategy(),
+                new UnavailableOnlyStrategy(),
+                new DesiredHardStrategy(),
+                new DesiredSoftStrategy(),
+            };
         }
     }
 }
