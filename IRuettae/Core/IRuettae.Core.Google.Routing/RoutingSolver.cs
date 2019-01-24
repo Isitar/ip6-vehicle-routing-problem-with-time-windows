@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using IRuettae.Core.Google.Routing.Algorithm;
+using IRuettae.Core.Google.Routing.Algorithm.TimeWindow;
 using IRuettae.Core.Google.Routing.Models;
 using IRuettae.Core.Models;
 
@@ -34,21 +37,44 @@ namespace IRuettae.Core.Google.Routing
             var sw = Stopwatch.StartNew();
 
             LogMessage("Solving started.");
-            LogPercentage(0.01);
+            LogPercentage(0.0);
 
-            var data = Converter.Convert(input, starterData.MaxNumberOfSantas);
+            // Create input data for internal solver.
+            // Use mostly one per core.
+            var runs = GetStrategies(Environment.ProcessorCount).Select(s => (data: Converter.Convert(input, starterData.MaxNumberOfSantas), strategy: s)).ToArray();
 
             LogMessage("Conversion of input finished.");
-            LogPercentage(0.02);
+            LogPercentage(0.01);
 
             // solve
-            var ret = InternalSolver.Solve(data, timeLimitMilliseconds);
-            ret.TimeElapsed = (int)sw.Elapsed.TotalSeconds;
+            var results = runs.AsParallel().Select(r => InternalSolver.Solve(r.data, timeLimitMilliseconds, r.strategy)).ToArray();
 
+            // get best result
+            var bestResult = results.OrderBy(r => r.Cost()).First();
+
+            bestResult.TimeElapsed = (int)sw.Elapsed.TotalSeconds;
             LogMessage("Internal solve finished.");
             LogPercentage(1);
 
-            return ret;
+            return bestResult;
+        }
+
+        /// <summary>
+        /// Returns the time window strategies that should be used.
+        /// </summary>
+        /// <param name="number">number of strategies</param>
+        /// <returns></returns>
+        private List<ITimeWindowStrategy> GetStrategies(int number)
+        {
+            var strategies = new List<ITimeWindowStrategy>()
+            {
+                new DesiredSoftStrategy(),
+                new DesiredHardStrategy(),
+                new UnavailableOnlyStrategy(),
+                new NoneStrategy(),
+            };
+            number = Math.Max(1, Math.Min(strategies.Count, number));
+            return strategies.Take(number).ToList();
         }
     }
 }

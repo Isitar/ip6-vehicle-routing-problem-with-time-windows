@@ -54,6 +54,11 @@
     <Compile Include="Algorithm\InternalSolver.cs" />
     <Compile Include="Algorithm\CostEvaluator.cs" />
     <Compile Include="Algorithm\TimeEvaluator.cs" />
+    <Compile Include="Algorithm\TimeWindow\UnavailableOnlyStrategy.cs" />
+    <Compile Include="Algorithm\TimeWindow\NoneStrategy.cs" />
+    <Compile Include="Algorithm\TimeWindow\DesiredSoftStrategy.cs" />
+    <Compile Include="Algorithm\TimeWindow\DesiredHardStrategy.cs" />
+    <Compile Include="Algorithm\TimeWindow\ITimeWindowStrategy.cs" />
     <Compile Include="Algorithm\Utility.cs" />
     <Compile Include="Example\CapacitatedVehicleRoutingProblemWithTimeWindows.cs" />
     <Compile Include="Models\CostSettings.cs" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Google.OrTools.ConstraintSolver;
+using IRuettae.Core.Google.Routing.Algorithm.TimeWindow;
 using IRuettae.Core.Google.Routing.Models;
 using IRuettae.Core.Models;
 
@@ -22,7 +23,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// requires data.Start
         /// requires data.End
         /// </summary>
-        public static OptimizationResult Solve(RoutingData data, long timeLimitMilliseconds)
+        public static OptimizationResult Solve(RoutingData data, long timeLimitMilliseconds, ITimeWindowStrategy strategy)
         {
             if (false
                 || data.SantaIds == null
@@ -106,51 +107,13 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             // setting up visits (=orders)
             for (int visit = 0; visit < data.NumberOfVisits; ++visit)
             {
-                var timeCumulVar = model.CumulVar(visit, DimensionTime);
-                timeCumulVar.SetRange(data.OverallStart, data.OverallEnd);
+                var cumulTimeVar = model.CumulVar(visit, DimensionTime);
+                cumulTimeVar.SetRange(data.OverallStart, data.OverallEnd);
                 model.AddDisjunction(new int[] { visit }, data.Cost.CostNotVisitedVisit);
 
-#if false // use hardconstraint on desire
-                var desired = GetDesired(data, visit);
-                if (desired.HasValue)
-                {
-                    // add soft time window for desired
-                    timeCumulVar.SetRange(desired.Value.from, desired.Value.to);
-                }
-                else
-                {
-                    // forbid visit in unavailable
-                    var unavailableStarts = data.Unavailable[visit].Select(u => u.startFrom).ToList();
-                    var unavailableEnds = data.Unavailable[visit].Select(u => u.startEnd).ToList();
-                    var constraint = model.solver().MakeNotMemberCt(timeCumulVar, new CpIntVector(unavailableStarts), new CpIntVector(unavailableEnds));
-                    model.solver().Add(constraint);
-                }
-#elif true // use soft desired
-
-                // forbid visit in unavailable
-                var unavailableStarts = data.Unavailable[visit].Select(u => u.startFrom).ToList();
-                var unavailableEnds = data.Unavailable[visit].Select(u => u.startEnd).ToList();
-                var constraint = model.solver().MakeNotMemberCt(timeCumulVar, new CpIntVector(unavailableStarts), new CpIntVector(unavailableEnds));
-                model.solver().Add(constraint);
-
-                // add soft time window for desired
-                var desired = GetDesired(data, visit);
-                if (desired.HasValue)
-                {
-                    var cost = GetDesiredCost(data, visit);
-                    var dim = model.GetDimensionOrDie(DimensionTime);
-                    dim.SetCumulVarSoftUpperBound(visit, desired.Value.to, cost);
-                    dim.SetCumulVarSoftLowerBound(visit, desired.Value.from, cost);
-                }
-#elif false // ignore desired
-                // forbid visit in unavailable
-                var unavailableStarts = data.Unavailable[visit].Select(u => u.startFrom).ToList();
-                var unavailableEnds = data.Unavailable[visit].Select(u => u.startEnd).ToList();
-                var constraint = model.solver().MakeNotMemberCt(timeCumulVar, new CpIntVector(unavailableStarts), new CpIntVector(unavailableEnds));
-                model.solver().Add(constraint);
-#else
-                // ignore desired and unavailable
-#endif
+                // add desired / unvailable according to strategy
+                var timeDimension = model.GetDimensionOrDie(DimensionTime);
+                strategy.AddConstraints(data, model, cumulTimeVar, timeDimension, visit);
             }
 
             // Solving
@@ -233,7 +196,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// <param name="data"></param>
         /// <param name="visit"></param>
         /// <returns></returns>
-        private static (int from, int to)? GetDesired(RoutingData data, int visit)
+        public static (int from, int to)? GetDesired(RoutingData data, int visit)
         {
             var candidates = data.BestDesired[visit];
             if (candidates.Length == 0)
@@ -249,7 +212,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// <param name="data"></param>
         /// <param name="visit"></param>
         /// <returns></returns>
-        private static int GetDesiredCost(RoutingData data, int visit)
+        public static int GetDesiredCoefficient(RoutingData data, int visit)
         {
             var desired = GetDesired(data, visit);
             if (desired.HasValue)
