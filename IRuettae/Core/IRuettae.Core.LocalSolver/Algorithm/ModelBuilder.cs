@@ -18,11 +18,17 @@ namespace IRuettae.Core.LocalSolver.Algorithm
             this.model = this.solverVariables.Model;
         }
 
+        /// <summary>
+        /// Adds constraint that visitsequences need to be a partition (no overlap and every id included)
+        /// </summary>
         public void AddPartitionConstraint()
         {
             model.Constraint(model.Partition(solverVariables.VisitSequences));
         }
 
+        /// <summary>
+        /// normal visits cannot be in last sequence (break backup sequence)
+        /// </summary>
         public void AddVisitsNotInLastSequenceConstraint()
         {
             for (var i = 0; i < solverVariables.Visits.Count; i++)
@@ -34,19 +40,34 @@ namespace IRuettae.Core.LocalSolver.Algorithm
             }
         }
 
+        /// <summary>
+        /// Breaks need to be in normal sequences if santa is used, otherwise it needs to be in the backup sequence
+        /// </summary>
+        /// <param name="day">the day the route takes part</param>
+        /// <param name="santa">the santa that takes the route</param>
+        /// <param name="breakId">the break to add the constraint for</param>
         public void AddBreakConstraint(int day, int santa, int breakId)
         {
             var s = GetSantaId(day, santa);
             model.Constraint(model.If(solverVariables.SantaUsed[s], model.Contains(solverVariables.VisitSequences[s], breakId), model.Contains(solverVariables.VisitSequences[solverVariables.NumberOfRoutes], breakId)));
         }
 
+        /// <summary>
+        /// Adds a constraint that the visitduraiton + walking time needs to be smaller than the dayduration
+        /// </summary>
+        /// <param name="day">the day the route takes part</param>
+        /// <param name="santa">the santa that takes the route</param>
         public void AddVisitDurationPlusWalkingTimeSmallerThanDayConstraint(int day, int santa)
         {
             var s = GetSantaId(day, santa);
             var dayDuration = solverVariables.OptimizationInput.Days[day].to - solverVariables.OptimizationInput.Days[day].from;
             model.AddConstraint(model.If(solverVariables.SantaUsed[s], solverVariables.SantaVisitDurations[s] + solverVariables.SantaWalkingTime[s], 0) <= dayDuration);
         }
-
+        /// <summary>
+        /// Adds a constraint that the santaRouteTime needs to be smaller than the day duration
+        /// </summary>
+        /// <param name="day">the day the route takes part</param>
+        /// <param name="santa">the santa that takes the route</param>
         public void AddRouteTimeSmallerThanDayConstraint(int day, int santa)
         {
             var s = GetSantaId(day, santa);
@@ -54,14 +75,22 @@ namespace IRuettae.Core.LocalSolver.Algorithm
             model.AddConstraint(model.If(solverVariables.SantaUsed[s], solverVariables.SantaRouteTime[s], 0) <= dayDuration);
         }
 
+        /// <summary>
+        /// Adds a constraint that no wait between visits is possible
+        /// </summary>
+        /// <returns>the constraint as ls expression</returns>
         public LSExpression AddNoWaitBetweenVisitsConstraint()
         {
-
             var constraint = GetSumWaitBetweenVisits() == 0;
             model.AddConstraint(constraint);
             return constraint;
         }
 
+        /// <summary>
+        /// adds a constraint that time after the day-end is considered overtime
+        /// </summary>
+        /// <param name="day"></param>
+        /// <param name="santa"></param>
         public void AddOvertimeConstraint(int day, int santa)
         {
             var s = GetSantaId(day, santa);
@@ -70,6 +99,10 @@ namespace IRuettae.Core.LocalSolver.Algorithm
             model.Constraint(model.If(solverVariables.SantaUsed[s], solverVariables.SantaVisitStartingTimes[s][c - 1] + solverVariables.VisitDurationArray[sequence[c - 1]] + solverVariables.DistanceToHomeArray[sequence[c - 1]], 0) <= solverVariables.OptimizationInput.Days[day].to + solverVariables.SantaOvertime[s]);
         }
 
+        /// <summary>
+        /// returns the sum of all waits between visits as lsexpression
+        /// </summary>
+        /// <returns>the sum of all waits between visits</returns>
         private LSExpression GetSumWaitBetweenVisits()
         {
             var sumWaitBetweenVisits = model.Int(0, 0);
@@ -82,6 +115,11 @@ namespace IRuettae.Core.LocalSolver.Algorithm
 
         }
 
+        /// <summary>
+        /// Sets the SantaUsed variable
+        /// </summary>
+        /// <param name="day"></param>
+        /// <param name="santa"></param>
         public void SetSantaUsed(int day, int santa)
         {
             var s = GetSantaId(day, santa);
@@ -91,6 +129,11 @@ namespace IRuettae.Core.LocalSolver.Algorithm
             solverVariables.SantaUsed[s] = c > 0;
         }
 
+        /// <summary>
+        /// Sets the SantaWalkingTime variable
+        /// </summary>
+        /// <param name="day"></param>
+        /// <param name="santa"></param>
         public void SetSantaWalkingTime(int day, int santa)
         {
             var s = GetSantaId(day, santa);
@@ -105,6 +148,11 @@ namespace IRuettae.Core.LocalSolver.Algorithm
 
         }
 
+        /// <summary>
+        /// Sets the SantaVisitDurations variable
+        /// </summary>
+        /// <param name="day"></param>
+        /// <param name="santa"></param>
         public void SetSantaVisitDurationTime(int day, int santa)
         {
             var s = GetSantaId(day, santa);
@@ -115,6 +163,11 @@ namespace IRuettae.Core.LocalSolver.Algorithm
             solverVariables.SantaVisitDurations[s] = model.Sum(model.Range(0, c), visitDurationSelector);
         }
 
+        /// <summary>
+        /// Sets the SantaRouteTime variable
+        /// </summary>
+        /// <param name="day"></param>
+        /// <param name="santa"></param>
         public void SetSantaRouteTime(int day, int santa)
         {
             var s = GetSantaId(day, santa);
@@ -128,7 +181,12 @@ namespace IRuettae.Core.LocalSolver.Algorithm
             }
         }
 
-        public void SetVisitStartingTime(int day, int santa)
+        /// <summary>
+        /// Sets the SantaVisitStartingTimes variable
+        /// </summary>
+        /// <param name="day"></param>
+        /// <param name="santa"></param>
+        public void SetVisitStartingTimes(int day, int santa)
         {
             var s = GetSantaId(day, santa);
             var sequence = solverVariables.VisitSequences[s];
@@ -145,6 +203,11 @@ namespace IRuettae.Core.LocalSolver.Algorithm
             solverVariables.SantaVisitStartingTimes[s] = visitStartingTime;
         }
 
+        /// <summary>
+        /// Sets the SantaDesiredDuration variable
+        /// </summary>
+        /// <param name="day"></param>
+        /// <param name="santa"></param>
         public void SetDesiredDuration(int day, int santa)
         {
             var s = GetSantaId(day, santa);
@@ -180,6 +243,11 @@ namespace IRuettae.Core.LocalSolver.Algorithm
             solverVariables.SantaDesiredDuration[s] = model.Sum(model.Range(0, c), visitDesiredDurationSelector);
         }
 
+        /// <summary>
+        /// Sets the SantaUnavailableDuration variable
+        /// </summary>
+        /// <param name="day"></param>
+        /// <param name="santa"></param>
         public void SetUnavailableDuration(int day, int santa)
         {
             var s = GetSantaId(day, santa);
@@ -215,6 +283,10 @@ namespace IRuettae.Core.LocalSolver.Algorithm
             solverVariables.SantaUnavailableDuration[s] = model.Sum(model.Range(0, c), visitUnavailableDurationSelector);
         }
 
+        /// <summary>
+        /// Adds the objective function.
+        /// Previously set objective functions will be removed
+        /// </summary>
         public void ReAddObjective()
         {
             var maxRoute = model.Max(solverVariables.SantaRouteTime);
@@ -229,11 +301,6 @@ namespace IRuettae.Core.LocalSolver.Algorithm
                     additionalSantaCount += solverVariables.SantaUsed[index];
                     additionalSantaRouteTime += solverVariables.SantaRouteTime[index];
                 }
-            }
-
-            if (!(solverVariables.SantaUnavailableDuration[0] is null))
-            {
-                Console.Write("y");
             }
 
             LSExpression costFunction;
@@ -258,6 +325,7 @@ namespace IRuettae.Core.LocalSolver.Algorithm
                     30d / hour * maxRoute;
             }
 
+            // remove previously set objective functions
             for (int objective = 0; objective < model.GetNbObjectives(); objective++)
             {
                 model.RemoveObjective(objective);
@@ -266,7 +334,12 @@ namespace IRuettae.Core.LocalSolver.Algorithm
             model.Minimize(costFunction);
         }
 
-
+        /// <summary>
+        /// Returns the route id for a given santa and day.
+        /// </summary>
+        /// <param name="day"></param>
+        /// <param name="santa"></param>
+        /// <returns>the route id</returns>
         private int GetSantaId(int day, int santa)
         {
             return (solverVariables.NumberOfSantas + solverVariables.NumberOfFakeSantas) * day + santa;

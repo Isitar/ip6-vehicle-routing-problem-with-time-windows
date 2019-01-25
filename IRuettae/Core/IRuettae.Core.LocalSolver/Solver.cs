@@ -57,11 +57,8 @@ namespace IRuettae.Core.LocalSolver
             }
 
 
-            //var vrpTimeLimitFactor = 0.2;
-            //var vrptwTimeLimitFactor = 0.5;
-            //var breaksOnWayTimeLimitFactor = 0.3;
-            var vrpTimeLimitFactor = 0.3;
-            var vrptwTimeLimitFactor = 0.5;
+            var vrpTimeLimitFactor = 0.2;
+            var vrptwTimeLimitFactor = 0.6;
             var vrptwBreaksOnWayTimeLimitFactor = 0.2;
             if (Math.Abs(vrpTimeLimitFactor + vrptwTimeLimitFactor + vrptwBreaksOnWayTimeLimitFactor - 1d) > 0.00001)
             {
@@ -139,7 +136,7 @@ namespace IRuettae.Core.LocalSolver
                 {
                     for (var santa = 0; santa < input.Santas.Length + numberOfFakeSantas; santa++)
                     {
-                        modelBuilder.SetVisitStartingTime(day, santa);
+                        modelBuilder.SetVisitStartingTimes(day, santa);
                         modelBuilder.SetDesiredDuration(day, santa);
                         modelBuilder.SetUnavailableDuration(day, santa);
                         modelBuilder.SetSantaRouteTime(day, santa);
@@ -172,7 +169,6 @@ namespace IRuettae.Core.LocalSolver
                 consoleProgress?.Invoke(this, $"unavailable: : {string.Join(",", solverVariables.SantaUnavailableDuration.Select(s => s.GetIntValue().ToString()).ToArray())}");
                 consoleProgress?.Invoke(this, $"desired: : {string.Join(",", solverVariables.SantaDesiredDuration.Select(s => s.GetIntValue().ToString()).ToArray())}");
                 consoleProgress?.Invoke(this, $"routeTime: : {string.Join(",", solverVariables.SantaRouteTime.Select(s => s.GetIntValue().ToString()).ToArray())}");
-                //consoleProgress?.Invoke(this, $"longestRoute: : {maxRoute.GetIntValue()}");
                 consoleProgress?.Invoke(this, $"overtime: : {string.Join(",", solverVariables.SantaOvertime.Select(o => o.GetIntValue()))}");
                 consoleProgress?.Invoke(this, $"santaWaitBeforeStart: : {string.Join(",", solverVariables.SantaWaitBeforeStart.Select(o => o.GetIntValue()))}");
                 consoleProgress?.Invoke(this, $"santaVisitDurations: : {string.Join(",", solverVariables.SantaWalkingTime.Select(o => o.GetIntValue()))}");
@@ -182,11 +178,9 @@ namespace IRuettae.Core.LocalSolver
                 {
                     consoleProgress?.Invoke(this, $"Santa {i} visit sequence: {string.Join(",", solverVariables.VisitSequences[i].GetCollectionValue().ToArray())} ");
                     consoleProgress?.Invoke(this, $"Santa {i} visit starting time: {string.Join(",", solverVariables.SantaVisitStartingTimes[i].GetArrayValue())} ");
-                    if (UseWaitBetweenVisits)
-                    {
-                        consoleProgress?.Invoke(this, $"Santa {i} wait between visits: {string.Join(",", solverVariables.SantaWaitBetweenVisit[i].Select(x => x.GetIntValue().ToString()))} ");
-                    }
                 }
+                PrintStatistics(consoleProgress, vrptwPhase.GetStatistics());
+
 #endif
 
                 #endregion
@@ -204,6 +198,28 @@ namespace IRuettae.Core.LocalSolver
 
                 result.Routes = BuildResultRoutes(numberOfRoutes, solverVariables.VisitSequences, solverVariables.Visits, solverVariables.SantaVisitStartingTimes, numberOfFakeSantas);
 
+#if DEBUG
+                result.Routes = BuildResultRoutes(numberOfRoutes, solverVariables.VisitSequences, solverVariables.Visits, solverVariables.SantaVisitStartingTimes, numberOfFakeSantas);
+                consoleProgress?.Invoke(this, $"cost via resultcalc: {result.Cost()}");
+                consoleProgress?.Invoke(this, $"unavailable: : {string.Join(",", solverVariables.SantaUnavailableDuration.Select(s => s.GetIntValue().ToString()).ToArray())}");
+                consoleProgress?.Invoke(this, $"desired: : {string.Join(",", solverVariables.SantaDesiredDuration.Select(s => s.GetIntValue().ToString()).ToArray())}");
+                consoleProgress?.Invoke(this, $"routeTime: : {string.Join(",", solverVariables.SantaRouteTime.Select(s => s.GetIntValue().ToString()).ToArray())}");
+                //consoleProgress?.Invoke(this, $"longestRoute: : {maxRoute.GetIntValue()}");
+                consoleProgress?.Invoke(this, $"overtime: : {string.Join(",", solverVariables.SantaOvertime.Select(o => o.GetIntValue()))}");
+                consoleProgress?.Invoke(this, $"santaWaitBeforeStart: : {string.Join(",", solverVariables.SantaWaitBeforeStart.Select(o => o.GetIntValue()))}");
+                consoleProgress?.Invoke(this, $"santaVisitDurations: : {string.Join(",", solverVariables.SantaWalkingTime.Select(o => o.GetIntValue()))}");
+                consoleProgress?.Invoke(this, $"santaWalkingTime: : {string.Join(",", solverVariables.SantaVisitDurations.Select(o => o.GetIntValue()))}");
+
+
+                for (var i = 0; i < numberOfRoutes; i++)
+                {
+                    consoleProgress?.Invoke(this, $"Santa {i} visit sequence: {string.Join(",", solverVariables.VisitSequences[i].GetCollectionValue().ToArray())} ");
+                    consoleProgress?.Invoke(this, $"Santa {i} visit starting time: {string.Join(",", solverVariables.SantaVisitStartingTimes[i].GetArrayValue())} ");
+                    consoleProgress?.Invoke(this, $"Santa {i} wait between visits: {string.Join(",", solverVariables.SantaWaitBetweenVisit[i].Select(x => x.GetIntValue().ToString()))} ");
+                }
+                PrintStatistics(consoleProgress, vrptwBreaksOnWayPhase.GetStatistics());
+#endif
+
                 result.TimeElapsed = sw.ElapsedMilliseconds / 1000;
                 result.ResultState = ResultState.Finished;
                 sw.Stop();
@@ -212,15 +228,7 @@ namespace IRuettae.Core.LocalSolver
 
 
 
-            //    for (var i = 0; i < numberOfRoutes; i++)
-            //    {
-            //        consoleProgress?.Invoke(this, $"Santa {i} visit sequence: {string.Join(",", visitSequences[i].GetCollectionValue().ToArray())} ");
-            //        consoleProgress?.Invoke(this, $"Santa {i} visit starting time: {string.Join(",", santaVisitStartingTimes[i].GetArrayValue())} ");
-            //        if (UseWaitBetweenVisits)
-            //        {
-            //            consoleProgress?.Invoke(this, $"Santa {i} wait between visits: {string.Join(",", santaWaitBetweenVisit[i].Select(x => x.GetIntValue().ToString()))} ");
-            //        }
-            //    }
+
 
 
 
@@ -230,7 +238,7 @@ namespace IRuettae.Core.LocalSolver
         {
             var numberOfRoutes = solverVariables.NumberOfRoutes;
 
-            for (int s = 0; s < numberOfRoutes; s++)
+            for (int s = 0; s <= numberOfRoutes; s++)
             {
                 var sequence = solverVariables.VisitSequences[s].GetCollectionValue();
                 sequence.Clear();
@@ -238,8 +246,17 @@ namespace IRuettae.Core.LocalSolver
                 {
                     sequence.Add(visit);
                 }
+            }
+            for (int s = 0; s < numberOfRoutes; s++)
+            {
+                // initialize wait on way = 0
+                foreach (var waitBetweenVisit in solverVariables.SantaWaitBetweenVisit[s])
+                {
+                    waitBetweenVisit.SetIntValue(0);
+                }
 
-                //var startingTimes = solverVariables.SantaVisitStartingTimes[s].GetCollectionValue();
+                //var startingTimes = solverVariables.SantaVisitStartingTimes[s].GetArrayValue();
+
                 //startingTimes.Clear();
                 //foreach (var startingTime in vrptwSolution.SantaVisitStartTime[s])
                 //{
@@ -254,29 +271,34 @@ namespace IRuettae.Core.LocalSolver
         {
             var output = new VRPTWSolution();
             var numberOfRoutes = solverVariables.NumberOfRoutes;
-            output.SantaVisitSequence = new int[numberOfRoutes][];
+            output.SantaVisitSequence = new int[numberOfRoutes + 1][];
             output.SantaVisitStartTime = new int[numberOfRoutes][];
             output.SantaWaitBeforeStart = new int[numberOfRoutes];
 
-            for (int s = 0; s < numberOfRoutes; s++)
+            for (int s = 0; s <= numberOfRoutes; s++)
             {
                 output.SantaVisitSequence[s] = solverVariables.VisitSequences[s].GetCollectionValue().Select(st => (int)st).ToArray();
+            }
+
+            for (int s = 0; s < numberOfRoutes; s++)
+            {
                 var startingTimeArr = solverVariables.SantaVisitStartingTimes[s].GetArrayValue();
                 output.SantaVisitStartTime[s] = new int[startingTimeArr.Count()];
                 for (int i = 0; i < startingTimeArr.Count(); i++)
                 {
                     output.SantaVisitStartTime[s][i] = (int)startingTimeArr.GetIntValue(i);
                 }
-                
+
                 output.SantaWaitBeforeStart[s] = (int)solverVariables.SantaWaitBeforeStart[s].GetIntValue();
             }
+
 
             return output;
         }
 
         private void InitializeSolutionWithVRP(int numberOfRoutes, LSExpression[] visitSequences, int[][] vrpSolution)
         {
-            for (int s = 0; s < numberOfRoutes; s++)
+            for (int s = 0; s <= numberOfRoutes; s++)
             {
                 var santaVisits = visitSequences[s].GetCollectionValue();
                 santaVisits.Clear();
@@ -290,30 +312,10 @@ namespace IRuettae.Core.LocalSolver
 
         private int[][] CreateVRPSolution(int numberOfRoutes, LSExpression[] visitSequences, List<Visit> visits)
         {
-            var output = new int[numberOfRoutes][];
-            for (var i = 0; i < numberOfRoutes; i++)
+            var output = new int[numberOfRoutes + 1][];
+            for (var i = 0; i <= numberOfRoutes; i++)
             {
                 output[i] = visitSequences[i].GetCollectionValue().Select(v => (int)v).ToArray();
-#if DEBUG
-                var visitIds = visitSequences[i].GetCollectionValue().Select(v => (int)v).ToArray();
-
-                // breaks
-                for (var visitIdIndex = 0; visitIdIndex < visitIds.Length; visitIdIndex++)
-                {
-                    if (visitIds[visitIdIndex] >= input.Visits.Length)
-                    {
-                        visitIds[visitIdIndex] = visits[visitIds[visitIdIndex]].Id;
-                    }
-                }
-
-
-                Console.WriteLine($"route {i}: ");
-                foreach (var visitId in visitIds)
-                {
-
-                    Console.WriteLine($"visit {visitId}");
-                }
-#endif
             }
 
             return output;
