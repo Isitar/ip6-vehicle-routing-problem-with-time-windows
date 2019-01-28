@@ -9,8 +9,8 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
     {
         public int MaxNumberOfSantas { get; private set; }
         public long MaxNumberOfGenerations { get; private set; } = long.MaxValue;
-        public int PopulationSize { get; private set; } = 131072;
-        // 2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768,65536,131072,
+        public int PopulationSize { get; private set; } = 262144;
+        // 2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768,65536,131072,262144
 
         public double ElitismPercentage { get; private set; } = 0.357;
         public double DirectMutationPercentage { get; private set; } = 0.378;
