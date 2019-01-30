@@ -54,6 +54,7 @@ namespace IRuettae.Core.ILP2
             using (var env = new GRBEnv($"{DateTime.Now:yy-MM-dd-HH-mm-ss}_gurobi.log"))
             using (var model = new GRBModel(env))
             {
+                
                 var numberOfRoutes = input.Santas.Length * input.Days.Length;
                 var v = new GRBVar[numberOfRoutes][]; // [santa] visits [visit]
                 var w = new GRBVar[numberOfRoutes][]; // [santa] uses [way]
@@ -221,6 +222,9 @@ namespace IRuettae.Core.ILP2
                 model.Parameters.TimeLimit = timelimitMiliseconds / 1000;
                 model.Parameters.MIPFocus = 2;
                 model.Parameters.Cuts = 3;
+                model.Parameters.IntFeasTol = 0.01;
+                model.Parameters.ScaleFlag = 2;
+                model.Parameters.ObjScale = -0.5;
                 //model.Parameters.FlowCoverCuts = 1;
                 //model.Parameters.Method = ;
                 //model.Parameters.TuneTimeLimit = 12 * 60 * 60;
