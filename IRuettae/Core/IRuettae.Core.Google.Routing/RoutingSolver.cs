@@ -49,11 +49,19 @@ namespace IRuettae.Core.Google.Routing
             // solve
             var results = runs.AsParallel().Select(r => InternalSolver.Solve(r.data, timeLimitMilliseconds, r.strategy)).ToArray();
 
+            // print strategies / results
+            LogPercentage(0.99);
+            LogMessage("Runs finished. Printing result:");
+            for (int i = 0; i < runs.Length; i++)
+            {
+                LogMessage($"Strategy: {runs[i].strategy.GetType().Name} Cost: {results[i].Cost()}");
+            }
+
             // get best result
             var bestResult = results.OrderBy(r => r.Cost()).First();
 
             bestResult.TimeElapsed = (int)sw.Elapsed.TotalSeconds;
-            LogMessage("Internal solve finished.");
+            LogMessage("Solver finished.");
             LogPercentage(1);
 
             return bestResult;
