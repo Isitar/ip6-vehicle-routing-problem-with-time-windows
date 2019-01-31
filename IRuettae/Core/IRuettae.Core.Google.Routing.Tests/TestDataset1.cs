@@ -139,6 +139,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
                         SantaId = -1,
                         WayCostFromHome = W04,
                         WayCostToHome = W40,
+                        Desired = new(int,int)[0],
                         Unavailable = new(int, int)[]
                         {
                             unavailableDay1Before,
