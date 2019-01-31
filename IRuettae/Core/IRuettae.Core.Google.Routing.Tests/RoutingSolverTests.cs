@@ -18,10 +18,7 @@ namespace IRuettae.Core.Google.Routing.Tests
         public void TestSolve_Simple()
         {
             var input = TestDataset1.Create();
-            var solver = new RoutingSolver(input, new RoutingSolverStarterData
-            {
-                MaxNumberOfSantas = 2,
-            });
+            var solver = new RoutingSolver(input, new RoutingSolverStarterData(2, SolvingMode.Default));
 
             var actual = solver.Solve(10, null, null);
 
@@ -35,10 +32,7 @@ namespace IRuettae.Core.Google.Routing.Tests
         public void TestSolve_AdditionalSanta()
         {
             var input = TestDataset1.Create();
-            var solver = new RoutingSolver(input, new RoutingSolverStarterData
-            {
-                MaxNumberOfSantas = 3,
-            });
+            var solver = new RoutingSolver(input, new RoutingSolverStarterData(3, SolvingMode.Default));
 
             var actual = solver.Solve(10, null, null);
 

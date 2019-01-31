@@ -11,11 +11,22 @@ namespace IRuettae.Core.Google.Routing.Models
         public SolvingMode Mode { get; private set; }
 
         /// <summary>
-        /// user should use GetDefault
+        /// use GetDefault
         /// </summary>
         private RoutingSolverStarterData()
         {
 
+        }
+
+        /// <summary>
+        /// Constructor for testing purpose.
+        /// </summary>
+        /// <param name="maxNumberOfSantas"></param>
+        /// <param name="mode"></param>
+        public RoutingSolverStarterData(int maxNumberOfSantas, SolvingMode mode)
+        {
+            MaxNumberOfSantas = maxNumberOfSantas;
+            Mode = mode;
         }
 
         public static RoutingSolverStarterData GetDefault(OptimizationInput input)
@@ -23,7 +34,7 @@ namespace IRuettae.Core.Google.Routing.Models
             return new RoutingSolverStarterData
             {
                 MaxNumberOfSantas = input.NumberOfSantas(),
-                Mode = input.NumberOfVisits() <= 50 ? SolvingMode.Default : SolvingMode.Fast,
+                Mode = SolvingMode.Default,
             };
         }
     }
