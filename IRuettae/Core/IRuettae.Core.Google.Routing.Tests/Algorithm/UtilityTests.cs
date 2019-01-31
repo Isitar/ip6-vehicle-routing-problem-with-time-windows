@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.Google.Routing.Tests.Algorithm;
 using IRuettae.Core.Google.Routing.Models;
-using IRuettae.Core.Google.Routing.Algorithm;
 
 namespace IRuettae.Core.Google.Routing.Tests.Algorithm
 {
