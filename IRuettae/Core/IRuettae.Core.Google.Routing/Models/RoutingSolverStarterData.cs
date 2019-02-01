@@ -34,7 +34,7 @@ namespace IRuettae.Core.Google.Routing.Models
             return new RoutingSolverStarterData
             {
                 MaxNumberOfSantas = input.NumberOfSantas(),
-                Mode = SolvingMode.Default,
+                Mode = input.NumberOfVisits() <= 50 ? SolvingMode.Default : SolvingMode.Fast,
             };
         }
     }
