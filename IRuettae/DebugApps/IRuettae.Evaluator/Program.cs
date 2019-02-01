@@ -154,6 +154,7 @@ namespace IRuettae.Evaluator
                     {
                         Console.WriteLine($"Progress: {report}");
                     }
+                    // todo meyerj
 #if true
                     using (var sw = new StreamWriter(savepath + "-log.txt", true))
                     {
