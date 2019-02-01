@@ -47,6 +47,9 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Solver.cs" />
+    <Compile Include="VRPCallback.cs" />
+    <Compile Include="VRPSolver.Constraints.cs" />
+    <Compile Include="VRPSolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IRuettae.Core\IRuettae.Core.csproj">
@@ -57,5 +60,9 @@
   <ItemGroup>
     <Content Include="lib\gurobi80.netstandard20.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Solver.Constraints.cs" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
