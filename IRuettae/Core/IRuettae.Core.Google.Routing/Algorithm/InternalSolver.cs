@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Google.OrTools.ConstraintSolver;
+using IRuettae.Core.Google.Routing.Algorithm.TimeWindow;
 using IRuettae.Core.Google.Routing.Models;
 using IRuettae.Core.Models;
 
@@ -22,7 +23,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// requires data.Start
         /// requires data.End
         /// </summary>
-        public static OptimizationResult Solve(RoutingData data, long timeLimitMilliseconds)
+        public static OptimizationResult Solve(RoutingData data, long timeLimitMilliseconds, ITimeWindowStrategy strategy)
         {
             if (false
                 || data.SantaIds == null
@@ -98,16 +99,13 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             // setting up visits (=orders)
             for (int visit = 0; visit < data.NumberOfVisits; ++visit)
             {
-                var timeCumulVar = model.CumulVar(visit, DimensionTime);
-                timeCumulVar.SetRange(data.OverallStart, data.OverallEnd);
+                var cumulTimeVar = model.CumulVar(visit, DimensionTime);
+                cumulTimeVar.SetRange(data.OverallStart, data.OverallEnd);
                 model.AddDisjunction(new int[] { visit }, data.Cost.CostNotVisitedVisit);
 
-                // permit visit in unavailable
-                foreach (var (from, to) in data.Unavailable[visit])
-                {
-                    var constraint = model.solver().MakeNotBetweenCt(timeCumulVar, from, to);
-                    model.solver().Add(constraint);
-                }
+                // add desired / unvailable according to strategy
+                var timeDimension = model.GetDimensionOrDie(DimensionTime);
+                strategy.AddConstraints(data, model, cumulTimeVar, timeDimension, visit);
             }
 
             // Solving
@@ -130,7 +128,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                 GC.KeepAlive(breakCallback);
             }
 
-            Debug.WriteLine($"obj={solution.ObjectiveValue()}");
+            Debug.WriteLine($"obj={solution?.ObjectiveValue()}");
 
             return CreateResult(data, model, solution);
         }
@@ -174,13 +172,48 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         }
 
         /// <summary>
-        /// Returns the total number of breaks of the given santa.
+        /// Returns the name of the break dimension of the specific santa.
         /// </summary>
         /// <param name="santa">index of the santa</param>
         /// <returns></returns>
         private static string GetSantaBreakDimension(int santa)
         {
             return $"Santa{santa}Break";
+        }
+
+        /// <summary>
+        /// Returns the one desired that should get a soft time window.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="visit"></param>
+        /// <returns></returns>
+        public static (int from, int to)? GetDesired(RoutingData data, int visit)
+        {
+            var candidates = data.BestDesired[visit];
+            if (candidates.Length == 0)
+            {
+                return null;
+            }
+            return candidates[candidates.Length / 2];
+        }
+
+        /// <summary>
+        /// Returns the cost coefficent if the soft time window is not met.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="visit"></param>
+        /// <returns></returns>
+        public static int GetDesiredCoefficient(RoutingData data, int visit)
+        {
+            var desired = GetDesired(data, visit);
+            if (desired.HasValue)
+            {
+                const int Hour = 3600;
+                var duration = data.Visits[visit].Duration;
+                var maxDesired = Math.Min(duration, Utility.GetRealDesiredLength(data, desired.Value));
+                return data.Cost.CostVisitInDesiredPerHour * maxDesired / Hour;
+            }
+            return 0;
         }
 
         /// <summary>
