@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Google.OrTools.ConstraintSolver;
+﻿using System.Linq;
 using IRuettae.Core.Models;
 
 namespace IRuettae.Core.Google.Routing.Models
@@ -70,25 +65,13 @@ namespace IRuettae.Core.Google.Routing.Models
         /// Returns the number of santas.
         /// This includes duplicated santas.
         /// </summary>
-        public int NumberOfSantas
-        {
-            get
-            {
-                return SantaIds == null ? 0 : SantaIds.Length;
-            }
-        }
+        public int NumberOfSantas => SantaIds?.Length ?? 0;
 
         /// <summary>
         /// Returns the number of visits.
         /// This includes duplicated breaks.
         /// </summary>
-        public int NumberOfVisits
-        {
-            get
-            {
-                return Visits == null ? 0 : Visits.Length;
-            }
-        }
+        public int NumberOfVisits => Visits?.Length ?? 0;
 
 
         /// <summary>

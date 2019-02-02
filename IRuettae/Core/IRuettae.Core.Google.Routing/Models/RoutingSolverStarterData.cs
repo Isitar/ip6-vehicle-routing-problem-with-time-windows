@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using IRuettae.Core.Models;
+﻿using IRuettae.Core.Models;
 
 namespace IRuettae.Core.Google.Routing.Models
 {

@@ -36,9 +36,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                 throw new ArgumentNullException();
             }
 
-            var model =
-                new RoutingModel(data.Visits.Length, data.SantaIds.Length,
-                                 data.SantaStartIndex, data.SantaEndIndex);
+            var model = new RoutingModel(data.Visits.Length, data.SantaIds.Length, data.SantaStartIndex, data.SantaEndIndex);
 
             // setting up dimensions
             var maxTime = GetMaxTime(data);
@@ -77,15 +75,9 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             for (int santa = 0; santa < data.NumberOfSantas; santa++)
             {
                 // must be a new instance per santa
-                NodeEvaluator2 costCallback;
-                if (data.Input.IsAdditionalSanta(data.SantaIds[santa]))
-                {
-                    costCallback = new CostEvaluator(data, data.Cost.CostWorkPerHour + data.Cost.CostAdditionalSantaPerHour, data.Cost.CostAdditionalSanta);
-                }
-                else
-                {
-                    costCallback = new CostEvaluator(data, data.Cost.CostWorkPerHour, 0);
-                }
+                NodeEvaluator2 costCallback = data.Input.IsAdditionalSanta(data.SantaIds[santa])
+                    ? new CostEvaluator(data, data.Cost.CostWorkPerHour + data.Cost.CostAdditionalSantaPerHour, data.Cost.CostAdditionalSanta)
+                    : new CostEvaluator(data, data.Cost.CostWorkPerHour, 0);
                 costCallbacks[santa] = costCallback;
                 model.SetVehicleCost(santa, costCallback);
 
@@ -118,8 +110,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
 
             // Solving
             var searchParameters = RoutingModel.DefaultSearchParameters();
-            searchParameters.FirstSolutionStrategy =
-                FirstSolutionStrategy.Types.Value.Automatic; // maybe try AllUnperformed or PathCheapestArc
+            searchParameters.FirstSolutionStrategy = FirstSolutionStrategy.Types.Value.Automatic; // maybe try AllUnperformed or PathCheapestArc
             searchParameters.LocalSearchMetaheuristic = LocalSearchMetaheuristic.Types.Value.GuidedLocalSearch;
             searchParameters.TimeLimitMs = timeLimitMilliseconds;
 
@@ -143,7 +134,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         }
 
         /// <summary>
-        /// Returns the total lenght of the time dimension.
+        /// Returns the total length of the time dimension.
         /// </summary>
         /// <returns></returns>
         public static int GetMaxTime(RoutingData data)
@@ -161,7 +152,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         }
 
         /// <summary>
-        /// Returns the lastest time for the santas to return home.
+        /// Returns the latest time for the santas to return home.
         /// </summary>
         /// <returns></returns>
         public static int GetDayEnd(RoutingData data, int day)
