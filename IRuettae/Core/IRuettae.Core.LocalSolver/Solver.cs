@@ -15,21 +15,24 @@ namespace IRuettae.Core.LocalSolver
     public class Solver : ISolver
     {
         private readonly OptimizationInput input;
+        private readonly double vrpTimeLimitFactor;
+        private readonly double vrptwTimeLimitFactor;
 
         /// <summary>
         /// Instantiates a new LocalSolver.Solver class with the given optimization input
         /// </summary>
         /// <param name="input">the optimization input being used to solve the problem</param>
-        /// <param name="useWaitsBetweenVisits"></param>
         /// <param name="useFakeSantas"></param>
-        public Solver(OptimizationInput input, bool useWaitsBetweenVisits = true, bool useFakeSantas = false)
+        /// <param name="vrpTimeLimitFactor"></param>
+        /// <param name="vrptwTimeLimitFactor"></param>
+        public Solver(OptimizationInput input, double vrpTimeLimitFactor, double vrptwTimeLimitFactor, bool useFakeSantas = false)
         {
             this.input = input;
-            UseWaitBetweenVisits = useWaitsBetweenVisits;
+            this.vrpTimeLimitFactor = vrpTimeLimitFactor;
+            this.vrptwTimeLimitFactor = vrptwTimeLimitFactor;
             UseFakeSantas = useFakeSantas;
         }
 
-        public bool UseWaitBetweenVisits { get; }
         public bool UseFakeSantas { get; }
 
         /// <inheritdoc />
@@ -57,9 +60,7 @@ namespace IRuettae.Core.LocalSolver
             }
 
 
-            var vrpTimeLimitFactor = 0.2;
-            var vrptwTimeLimitFactor = 0.6;
-            var vrptwBreaksOnWayTimeLimitFactor = 0.2;
+            var vrptwBreaksOnWayTimeLimitFactor = 1 - vrpTimeLimitFactor - vrptwTimeLimitFactor;
             if (Math.Abs(vrpTimeLimitFactor + vrptwTimeLimitFactor + vrptwBreaksOnWayTimeLimitFactor - 1d) > 0.00001)
             {
                 throw new Exception("programmer was stupid :)");
@@ -68,6 +69,7 @@ namespace IRuettae.Core.LocalSolver
 
             using (var localSolver = new localsolver.LocalSolver())
             {
+                
                 var model = localSolver.GetModel();
 
                 var solverVariables = new SolverVariables(model, numberOfRoutes, visits, input.RouteCosts, input, numberOfFakeSantas);
@@ -111,7 +113,7 @@ namespace IRuettae.Core.LocalSolver
                 var vrpPhase = localSolver.CreatePhase();
 
                 vrpPhase.SetTimeLimit((int)(vrpTimeLimitFactor * timeLimitMilliseconds / 1000));
-
+                
 
                 InitializeSolution(numberOfRoutes, numberOfFakeSantas, solverVariables.VisitSequences, breakDictionary);
                 localSolver.Solve();

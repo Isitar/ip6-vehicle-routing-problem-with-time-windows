@@ -140,7 +140,7 @@ namespace IRuettae.Evaluator
                                 timelimit /= fastFactor;
                                 goto case Algorithms.LocalSolver;
                             case Algorithms.LocalSolver:
-                                solver = new IRuettae.Core.LocalSolver.Solver(input, false, false);
+                                solver = new IRuettae.Core.LocalSolver.Solver(input, 0.1,0.8,false);
                                 savepath += "_LocalSolver";
                                 break;
                             case Algorithms.GA:
