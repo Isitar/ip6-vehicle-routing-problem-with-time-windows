@@ -101,9 +101,9 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             {
                 var cumulTimeVar = model.CumulVar(visit, DimensionTime);
                 cumulTimeVar.SetRange(data.OverallStart, data.OverallEnd);
-                model.AddDisjunction(new int[] { visit }, data.Cost.CostNotVisitedVisit);
+                model.AddDisjunction(new[] { visit }, data.Cost.CostNotVisitedVisit);
 
-                // add desired / unvailable according to strategy
+                // add desired / unavailable according to strategy
                 var timeDimension = model.GetDimensionOrDie(DimensionTime);
                 strategy.AddConstraints(data, model, cumulTimeVar, timeDimension, visit);
             }
@@ -198,7 +198,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         }
 
         /// <summary>
-        /// Returns the cost coefficent if the soft time window is not met.
+        /// Returns the cost coefficient if the soft time window is not met.
         /// </summary>
         /// <param name="data"></param>
         /// <param name="visit"></param>
@@ -208,10 +208,10 @@ namespace IRuettae.Core.Google.Routing.Algorithm
             var desired = GetDesired(data, visit);
             if (desired.HasValue)
             {
-                const int Hour = 3600;
+                const int hour = 3600;
                 var duration = data.Visits[visit].Duration;
                 var maxDesired = Math.Min(duration, Utility.GetRealDesiredLength(data, desired.Value));
-                return data.Cost.CostVisitInDesiredPerHour * maxDesired / Hour;
+                return data.Cost.CostVisitInDesiredPerHour * maxDesired / hour;
             }
             return 0;
         }

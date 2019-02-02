@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Google.OrTools.ConstraintSolver;
+﻿using Google.OrTools.ConstraintSolver;
 using IRuettae.Core.Google.Routing.Models;
 
 namespace IRuettae.Core.Google.Routing.Algorithm.TimeWindow
 {
     /// <summary>
-    /// use hardconstraint on desire
-    /// hardconstraint on unavailable otherwise
+    /// use hard-constraint on desire
+    /// hard-constraint on unavailable otherwise
     /// </summary>
     internal class DesiredHardStrategy : ITimeWindowStrategy
     {
