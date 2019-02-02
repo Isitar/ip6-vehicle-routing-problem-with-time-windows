@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using IRuettae.Core.Google.Routing.Models;
 using IRuettae.Core.Models;
 
@@ -25,6 +23,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// <summary>
         /// creates data.SantaIds
         /// </summary>
+        /// <param name="data">routing input data</param>
         /// <param name="maxNumberOfSantas"></param>
         private static void CreateSantas(RoutingData data, int maxNumberOfSantas)
         {
@@ -138,6 +137,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                 throw new ArgumentNullException();
             }
 
+            
             var unavailables = new List<(int, int)[]>();
             foreach (var visit in data.Visits)
             {

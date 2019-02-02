@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Google.OrTools.ConstraintSolver;
+﻿using Google.OrTools.ConstraintSolver;
 using IRuettae.Core.Google.Routing.Models;
 using IRuettae.Core.Models;
 
