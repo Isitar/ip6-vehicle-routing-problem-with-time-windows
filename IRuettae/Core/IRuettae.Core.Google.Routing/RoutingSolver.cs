@@ -19,8 +19,6 @@ namespace IRuettae.Core.Google.Routing
 
         public OptimizationResult Solve(long timeLimitMilliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
         {
-            //CapacitatedVehicleRoutingProblemWithTimeWindows.Main(new String[0]);
-
             // convenience
             void LogPercentage(double percentage)
             {
