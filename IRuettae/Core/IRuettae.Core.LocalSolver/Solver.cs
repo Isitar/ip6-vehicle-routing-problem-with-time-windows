@@ -122,7 +122,7 @@ namespace IRuettae.Core.LocalSolver
                 #endregion VRP
 
                 // save solution for next phase
-                var vrpSolution = CreateVRPSolution(numberOfRoutes, solverVariables.VisitSequences, visits);
+                var vrpSolution = CreateVRPSolution(numberOfRoutes, solverVariables.VisitSequences);
 
                 #region VRPTW
 
@@ -215,11 +215,15 @@ namespace IRuettae.Core.LocalSolver
 
                 result.TimeElapsed = sw.ElapsedMilliseconds / 1000;
                 result.ResultState = ResultState.Finished;
-                sw.Stop();
                 return result;
             }
         }
 
+        /// <summary>
+        /// initializes solver variables with precalculated vrptw solution
+        /// </summary>
+        /// <param name="vrptwSolution">the precalculated vrptw solution</param>
+        /// <param name="solverVariables">the solver variables to be filled</param>
         private void InitializeSolutionWithVRPTW(VRPTWSolution vrptwSolution, SolverVariables solverVariables)
         {
             var numberOfRoutes = solverVariables.NumberOfRoutes;
@@ -241,18 +245,15 @@ namespace IRuettae.Core.LocalSolver
                     waitBetweenVisit.SetIntValue(0);
                 }
 
-                //var startingTimes = solverVariables.SantaVisitStartingTimes[s].GetArrayValue();
-
-                //startingTimes.Clear();
-                //foreach (var startingTime in vrptwSolution.SantaVisitStartTime[s])
-                //{
-                //    startingTimes.Add(startingTime);
-                //}
-
                 solverVariables.SantaWaitBeforeStart[s].SetIntValue(vrptwSolution.SantaWaitBeforeStart[s]);
             }
         }
 
+        /// <summary>
+        /// saves the calculated vrptw solution
+        /// </summary>
+        /// <param name="solverVariables">the solver variables used to calculate the vrptw</param>
+        /// <returns>a vrptw solution object containing the routes</returns>
         private VRPTWSolution SaveVRPTWSolution(SolverVariables solverVariables)
         {
             var output = new VRPTWSolution();
@@ -281,6 +282,12 @@ namespace IRuettae.Core.LocalSolver
             return output;
         }
 
+        /// <summary>
+        /// Initializes the visitSequence with a precalculated vrp solution
+        /// </summary>
+        /// <param name="numberOfRoutes">the number of routes</param>
+        /// <param name="visitSequences">the visit sequences to be initialized</param>
+        /// <param name="vrpSolution">the precalculated vrp solution</param>
         private void InitializeSolutionWithVRP(int numberOfRoutes, LSExpression[] visitSequences, int[][] vrpSolution)
         {
             for (int s = 0; s <= numberOfRoutes; s++)
@@ -295,7 +302,13 @@ namespace IRuettae.Core.LocalSolver
             }
         }
 
-        private int[][] CreateVRPSolution(int numberOfRoutes, LSExpression[] visitSequences, List<Visit> visits)
+        /// <summary>
+        /// Creates a vrpsolution from calculated visitSequence
+        /// </summary>
+        /// <param name="numberOfRoutes">the nubmer of routes</param>
+        /// <param name="visitSequences">the calculated visitsequence</param>
+        /// <returns>an jagged array, [santa][seqNumber] = visit </returns>
+        private int[][] CreateVRPSolution(int numberOfRoutes, LSExpression[] visitSequences)
         {
             var output = new int[numberOfRoutes + 1][];
             for (var i = 0; i <= numberOfRoutes; i++)
@@ -305,7 +318,6 @@ namespace IRuettae.Core.LocalSolver
 
             return output;
         }
-
 
         /// <summary>
         /// Builds and returns a route array with the given parameters in a solved state
