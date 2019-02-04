@@ -122,7 +122,7 @@ namespace IRuettae.Core.LocalSolver
                 #endregion VRP
 
                 // save solution for next phase
-                var vrpSolution = CreateVRPSolution(numberOfRoutes, solverVariables.VisitSequences);
+                var vrpSolution = SavePhaseSolution(solverVariables);
 
                 #region VRPTW
 
@@ -148,13 +148,13 @@ namespace IRuettae.Core.LocalSolver
                 vrptwPhase.SetTimeLimit((int)(vrptwTimeLimitFactor * timeLimitMilliseconds / 1000));
 
                 // initialize with vrp solution solution
-                InitializeSolutionWithVRP(numberOfRoutes, solverVariables.VisitSequences, vrpSolution);
+                InitializeSolutionWithPrecalculatedSolution(vrpSolution, solverVariables);
 
                 localSolver.Solve();
                 vrptwPhase.SetTimeLimit(0);
                 vrptwPhase.SetEnabled(false);
 
-                var vrptwSolution = SaveVRPTWSolution(solverVariables);
+                var vrptwSolution = SavePhaseSolution(solverVariables);
 
                 consoleProgress?.Invoke(this, $"Solved vrptw, cost: {model.GetObjective(0).GetDoubleValue()}");
 #if DEBUG
@@ -183,7 +183,7 @@ namespace IRuettae.Core.LocalSolver
                 model.RemoveConstraint(noWaitBetweenVisitConstraint);
                 model.Close();
 
-                InitializeSolutionWithVRPTW(vrptwSolution, solverVariables);
+                InitializeSolutionWithPrecalculatedSolution(vrptwSolution, solverVariables);
 
                 var vrptwBreaksOnWayPhase = localSolver.CreatePhase();
                 vrptwBreaksOnWayPhase.SetTimeLimit((int)(vrptwBreaksOnWayTimeLimitFactor * timeLimitMilliseconds / 1000));
@@ -220,11 +220,11 @@ namespace IRuettae.Core.LocalSolver
         }
 
         /// <summary>
-        /// initializes solver variables with precalculated vrptw solution
+        /// initializes solver variables with precalculated phase solution
         /// </summary>
-        /// <param name="vrptwSolution">the precalculated vrptw solution</param>
+        /// <param name="phaseSolution">the precalculated phase solution</param>
         /// <param name="solverVariables">the solver variables to be filled</param>
-        private static void InitializeSolutionWithVRPTW(VRPTWSolution vrptwSolution, SolverVariables solverVariables)
+        private static void InitializeSolutionWithPrecalculatedSolution(PhaseSolution phaseSolution, SolverVariables solverVariables)
         {
             var numberOfRoutes = solverVariables.NumberOfRoutes;
 
@@ -232,31 +232,38 @@ namespace IRuettae.Core.LocalSolver
             {
                 var sequence = solverVariables.VisitSequences[s].GetCollectionValue();
                 sequence.Clear();
-                foreach (var visit in vrptwSolution.SantaVisitSequence[s])
+                foreach (var visit in phaseSolution.SantaVisitSequence[s])
                 {
                     sequence.Add(visit);
                 }
             }
+
             for (int s = 0; s < numberOfRoutes; s++)
             {
-                // initialize wait on way = 0
-                foreach (var waitBetweenVisit in solverVariables.SantaWaitBetweenVisit[s])
+                if (solverVariables.SantaWaitBetweenVisit != null)
                 {
-                    waitBetweenVisit.SetIntValue(0);
+                    // initialize wait on way = 0
+                    foreach (var waitBetweenVisit in solverVariables.SantaWaitBetweenVisit[s])
+                    {
+                        waitBetweenVisit.SetIntValue(0);
+                    }
                 }
 
-                solverVariables.SantaWaitBeforeStart[s].SetIntValue(vrptwSolution.SantaWaitBeforeStart[s]);
+                if (phaseSolution.SantaWaitBeforeStart != null)
+                {
+                    solverVariables.SantaWaitBeforeStart[s].SetIntValue(phaseSolution.SantaWaitBeforeStart[s]);
+                }
             }
         }
 
         /// <summary>
-        /// saves the calculated vrptw solution
+        /// saves the calculated phase solution
         /// </summary>
-        /// <param name="solverVariables">the solver variables used to calculate the vrptw</param>
-        /// <returns>a vrptw solution object containing the routes</returns>
-        private static VRPTWSolution SaveVRPTWSolution(SolverVariables solverVariables)
+        /// <param name="solverVariables">the solver variables used to calculate the vrp/vrptw</param>
+        /// <returns>a phase solution object containing the routes</returns>
+        private static PhaseSolution SavePhaseSolution(SolverVariables solverVariables)
         {
-            var output = new VRPTWSolution();
+            var output = new PhaseSolution();
             var numberOfRoutes = solverVariables.NumberOfRoutes;
             output.SantaVisitSequence = new int[numberOfRoutes + 1][];
             output.SantaVisitStartTime = new int[numberOfRoutes][];
@@ -267,57 +274,26 @@ namespace IRuettae.Core.LocalSolver
                 output.SantaVisitSequence[s] = solverVariables.VisitSequences[s].GetCollectionValue().Select(st => (int)st).ToArray();
             }
 
-            for (int s = 0; s < numberOfRoutes; s++)
+            if ((solverVariables.SantaVisitStartingTimes != null )
+                && (solverVariables.SantaVisitStartingTimes.Length > 0 )
+                && !(solverVariables.SantaVisitStartingTimes[0] is null))
             {
-                var startingTimeArr = solverVariables.SantaVisitStartingTimes[s].GetArrayValue();
-                output.SantaVisitStartTime[s] = new int[startingTimeArr.Count()];
-                for (int i = 0; i < startingTimeArr.Count(); i++)
+                for (int s = 0; s < numberOfRoutes; s++)
                 {
-                    output.SantaVisitStartTime[s][i] = (int)startingTimeArr.GetIntValue(i);
-                }
+                    var startingTimeArr = solverVariables.SantaVisitStartingTimes[s].GetArrayValue();
+                    output.SantaVisitStartTime[s] = new int[startingTimeArr.Count()];
+                    for (int i = 0; i < startingTimeArr.Count(); i++)
+                    {
+                        output.SantaVisitStartTime[s][i] = (int) startingTimeArr.GetIntValue(i);
+                    }
 
-                output.SantaWaitBeforeStart[s] = (int)solverVariables.SantaWaitBeforeStart[s].GetIntValue();
+                    output.SantaWaitBeforeStart[s] = (int) solverVariables.SantaWaitBeforeStart[s].GetIntValue();
+                }
             }
 
             return output;
         }
 
-        /// <summary>
-        /// Initializes the visitSequence with a precalculated vrp solution
-        /// </summary>
-        /// <param name="numberOfRoutes">the number of routes</param>
-        /// <param name="visitSequences">the visit sequences to be initialized</param>
-        /// <param name="vrpSolution">the precalculated vrp solution</param>
-        private static void InitializeSolutionWithVRP(int numberOfRoutes, LSExpression[] visitSequences, int[][] vrpSolution)
-        {
-            for (int s = 0; s <= numberOfRoutes; s++)
-            {
-                var santaVisits = visitSequences[s].GetCollectionValue();
-                santaVisits.Clear();
-
-                foreach (var vrpRoute in vrpSolution[s])
-                {
-                    santaVisits.Add(vrpRoute);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Creates a vrpsolution from calculated visitSequence
-        /// </summary>
-        /// <param name="numberOfRoutes">the nubmer of routes</param>
-        /// <param name="visitSequences">the calculated visitsequence</param>
-        /// <returns>an jagged array, [santa][seqNumber] = visit </returns>
-        private static int[][] CreateVRPSolution(int numberOfRoutes, LSExpression[] visitSequences)
-        {
-            var output = new int[numberOfRoutes + 1][];
-            for (var i = 0; i <= numberOfRoutes; i++)
-            {
-                output[i] = visitSequences[i].GetCollectionValue().Select(v => (int)v).ToArray();
-            }
-
-            return output;
-        }
 
         /// <summary>
         /// Builds and returns a route array with the given parameters in a solved state
