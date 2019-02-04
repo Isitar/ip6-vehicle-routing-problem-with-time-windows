@@ -103,7 +103,7 @@ namespace IRuettae.Core.LocalSolver
                     }
                 }
 
-                modelBuilder.ReAddObjective();
+                modelBuilder.ReAddObjective(false);
                 model.Close();
                 var vrpPhase = localSolver.CreatePhase();
 
@@ -142,7 +142,7 @@ namespace IRuettae.Core.LocalSolver
                 }
 
                 var noWaitBetweenVisitConstraint = modelBuilder.AddNoWaitBetweenVisitsConstraint();
-                modelBuilder.ReAddObjective();
+                modelBuilder.ReAddObjective(true);
                 model.Close();
                 var vrptwPhase = localSolver.CreatePhase();
                 vrptwPhase.SetTimeLimit((int)(vrptwTimeLimitFactor * timeLimitMilliseconds / 1000));

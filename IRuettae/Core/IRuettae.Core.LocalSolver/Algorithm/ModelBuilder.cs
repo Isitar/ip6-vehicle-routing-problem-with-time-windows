@@ -285,7 +285,8 @@ namespace IRuettae.Core.LocalSolver.Algorithm
         /// Adds the objective function.
         /// Previously set objective functions will be removed
         /// </summary>
-        public void ReAddObjective()
+        /// <param name="useTimeWindows">Wheter to use time window in cost function or not</param>
+        public void ReAddObjective(bool useTimeWindows)
         {
             var maxRoute = model.Max(solverVariables.SantaRouteTime);
             const int hour = 3600;
@@ -302,7 +303,7 @@ namespace IRuettae.Core.LocalSolver.Algorithm
             }
 
             LSExpression costFunction;
-            if (!(solverVariables.SantaUnavailableDuration[0] is null))
+            if (!useTimeWindows)
             {
                 costFunction =
                     400 * additionalSantaCount +
