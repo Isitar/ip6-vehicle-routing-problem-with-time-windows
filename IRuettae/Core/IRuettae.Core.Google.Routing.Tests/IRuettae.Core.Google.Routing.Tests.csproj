@@ -37,6 +37,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Google.OrTools, Version=6.7.5064.28967, Culture=neutral, PublicKeyToken=c435c0a701c42932, processorArchitecture=AMD64">
