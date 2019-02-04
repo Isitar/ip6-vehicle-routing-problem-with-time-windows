@@ -47,7 +47,7 @@ namespace IRuettae.Tuning.LocalSolverGridSearch
                             // ReSharper disable PossibleLossOfFraction
                             var solver = new IRuettae.Core.LocalSolver.Solver(dataSet, vrpTimeLimitFactor / gridFactorX, vrptwTimeLimitFactor / gridFactorY);
                             allCosts[run][vrpTimeLimitFactor, vrptwTimeLimitFactor][i] = solver.Solve(timeLimit, null, null).Cost();
-                            
+
                             cumCost += allCosts[run][vrpTimeLimitFactor, vrptwTimeLimitFactor][i];
                             i++;
                         }
@@ -56,7 +56,6 @@ namespace IRuettae.Tuning.LocalSolverGridSearch
                         grid[run][vrpTimeLimitFactor, vrptwTimeLimitFactor] = cumCost;
                     }
                 }
-
 
                 // write result in csv file
                 using (var sw = new StreamWriter($"grid{run}.csv"))
@@ -101,8 +100,6 @@ namespace IRuettae.Tuning.LocalSolverGridSearch
                     }
                 }
             }
-
-
 
             Console.ReadLine();
         }
