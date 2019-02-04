@@ -224,7 +224,7 @@ namespace IRuettae.Core.LocalSolver
         /// </summary>
         /// <param name="vrptwSolution">the precalculated vrptw solution</param>
         /// <param name="solverVariables">the solver variables to be filled</param>
-        private void InitializeSolutionWithVRPTW(VRPTWSolution vrptwSolution, SolverVariables solverVariables)
+        private static void InitializeSolutionWithVRPTW(VRPTWSolution vrptwSolution, SolverVariables solverVariables)
         {
             var numberOfRoutes = solverVariables.NumberOfRoutes;
 
@@ -254,7 +254,7 @@ namespace IRuettae.Core.LocalSolver
         /// </summary>
         /// <param name="solverVariables">the solver variables used to calculate the vrptw</param>
         /// <returns>a vrptw solution object containing the routes</returns>
-        private VRPTWSolution SaveVRPTWSolution(SolverVariables solverVariables)
+        private static VRPTWSolution SaveVRPTWSolution(SolverVariables solverVariables)
         {
             var output = new VRPTWSolution();
             var numberOfRoutes = solverVariables.NumberOfRoutes;
@@ -288,7 +288,7 @@ namespace IRuettae.Core.LocalSolver
         /// <param name="numberOfRoutes">the number of routes</param>
         /// <param name="visitSequences">the visit sequences to be initialized</param>
         /// <param name="vrpSolution">the precalculated vrp solution</param>
-        private void InitializeSolutionWithVRP(int numberOfRoutes, LSExpression[] visitSequences, int[][] vrpSolution)
+        private static void InitializeSolutionWithVRP(int numberOfRoutes, LSExpression[] visitSequences, int[][] vrpSolution)
         {
             for (int s = 0; s <= numberOfRoutes; s++)
             {
@@ -308,7 +308,7 @@ namespace IRuettae.Core.LocalSolver
         /// <param name="numberOfRoutes">the nubmer of routes</param>
         /// <param name="visitSequences">the calculated visitsequence</param>
         /// <returns>an jagged array, [santa][seqNumber] = visit </returns>
-        private int[][] CreateVRPSolution(int numberOfRoutes, LSExpression[] visitSequences)
+        private static int[][] CreateVRPSolution(int numberOfRoutes, LSExpression[] visitSequences)
         {
             var output = new int[numberOfRoutes + 1][];
             for (var i = 0; i <= numberOfRoutes; i++)
