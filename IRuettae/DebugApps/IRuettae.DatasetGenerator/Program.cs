@@ -5,6 +5,26 @@ namespace IRuettae.DatasetGenerator
 {
     class Program
     {
+        private static void GenerateLocalSolverTuningDatasets()
+        {
+            var generator = new DatasetGenerator(4000,
+                4000,
+                15,
+                2,
+                2,
+                new[] {4, 4},
+                new[] {2, 4},
+                -1,
+                true,
+                "IRuettae.Tuning.LocalSolverGridSearch.DataSets",
+                "OptimizationDataSets"
+            );
+            for (int i = 0; i < 20; i++)
+            {
+                File.WriteAllText($"OptimizationDataSets.DataSetFifteen{i}.cs", generator.Generate($"DataSetFifteen{i}"));
+            }
+        }
+
         static void GenerateAllDatasets()
         {
             File.WriteAllText("DatasetFactory.DataSet1.cs", new DatasetGenerator(4000, 4000, 10, 2, 1, new[] { 0, 0 }, new[] { 0, 0 }, -1, false).Generate("DataSet1"));
@@ -22,7 +42,8 @@ namespace IRuettae.DatasetGenerator
 
         static void Main(string[] args)
         {
-            GenerateAllDatasets();
+            //GenerateLocalSolverTuningDatasets();
+            //GenerateAllDatasets();
             BigHr();
             Console.WriteLine("Program written to generate code for different datasets.");
             Console.WriteLine();
