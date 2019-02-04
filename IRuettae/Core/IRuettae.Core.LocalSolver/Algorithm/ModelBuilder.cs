@@ -303,7 +303,7 @@ namespace IRuettae.Core.LocalSolver.Algorithm
             }
 
             LSExpression costFunction;
-            if (!useTimeWindows)
+            if (useTimeWindows)
             {
                 costFunction =
                     400 * additionalSantaCount +
