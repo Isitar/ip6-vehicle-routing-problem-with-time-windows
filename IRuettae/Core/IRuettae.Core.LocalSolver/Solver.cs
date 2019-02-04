@@ -59,17 +59,14 @@ namespace IRuettae.Core.LocalSolver
                 }
             }
 
-
             var vrptwBreaksOnWayTimeLimitFactor = 1 - vrpTimeLimitFactor - vrptwTimeLimitFactor;
             if (Math.Abs(vrpTimeLimitFactor + vrptwTimeLimitFactor + vrptwBreaksOnWayTimeLimitFactor - 1d) > 0.00001)
             {
-                throw new Exception("programmer was stupid :)");
+                throw new Exception("programmer was stupid :). Time limit factors don't add up to 1.");
             }
-
 
             using (var localSolver = new localsolver.LocalSolver())
             {
-                
                 var model = localSolver.GetModel();
 
                 var solverVariables = new SolverVariables(model, numberOfRoutes, visits, input.RouteCosts, input, numberOfFakeSantas);
@@ -77,12 +74,10 @@ namespace IRuettae.Core.LocalSolver
 
                 consoleProgress?.Invoke(this, "Starting to model");
 
-
                 #region VRP
 
                 modelBuilder.AddPartitionConstraint();
                 modelBuilder.AddVisitsNotInLastSequenceConstraint();
-
 
                 for (var day = 0; day < numberOfDays; day++)
                 {
@@ -113,7 +108,6 @@ namespace IRuettae.Core.LocalSolver
                 var vrpPhase = localSolver.CreatePhase();
 
                 vrpPhase.SetTimeLimit((int)(vrpTimeLimitFactor * timeLimitMilliseconds / 1000));
-                
 
                 InitializeSolution(numberOfRoutes, numberOfFakeSantas, solverVariables.VisitSequences, breakDictionary);
                 localSolver.Solve();
@@ -125,7 +119,7 @@ namespace IRuettae.Core.LocalSolver
                 PrintStatistics(consoleProgress, vrpPhase.GetStatistics());
 #endif
 
-                #endregion
+                #endregion VRP
 
                 // save solution for next phase
                 var vrpSolution = CreateVRPSolution(numberOfRoutes, solverVariables.VisitSequences, visits);
@@ -153,9 +147,7 @@ namespace IRuettae.Core.LocalSolver
                 var vrptwPhase = localSolver.CreatePhase();
                 vrptwPhase.SetTimeLimit((int)(vrptwTimeLimitFactor * timeLimitMilliseconds / 1000));
 
-
-
-                //initialize with vrp solution solution
+                // initialize with vrp solution solution
                 InitializeSolutionWithVRP(numberOfRoutes, solverVariables.VisitSequences, vrpSolution);
 
                 localSolver.Solve();
@@ -185,8 +177,7 @@ namespace IRuettae.Core.LocalSolver
 
 #endif
 
-                #endregion
-
+                #endregion VRPTW
 
                 model.Open();
                 model.RemoveConstraint(noWaitBetweenVisitConstraint);
@@ -227,13 +218,6 @@ namespace IRuettae.Core.LocalSolver
                 sw.Stop();
                 return result;
             }
-
-
-
-
-
-
-
         }
 
         private void InitializeSolutionWithVRPTW(VRPTWSolution vrptwSolution, SolverVariables solverVariables)
@@ -293,7 +277,6 @@ namespace IRuettae.Core.LocalSolver
 
                 output.SantaWaitBeforeStart[s] = (int)solverVariables.SantaWaitBeforeStart[s].GetIntValue();
             }
-
 
             return output;
         }
@@ -453,7 +436,5 @@ namespace IRuettae.Core.LocalSolver
             consoleProgress?.Invoke(this, $"NbMoves: {stats.GetNbMoves()}");
             consoleProgress?.Invoke(this, $"RunningTime: {stats.GetRunningTime()}");
         }
-
-
     }
 }

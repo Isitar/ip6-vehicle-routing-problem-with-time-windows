@@ -24,11 +24,10 @@ namespace IRuettae.Core.LocalSolver.Algorithm
         public LSExpression[][] SantaWaitBetweenVisit { get; }
         public LSExpression[] SantaWaitBetweenVisitArray { get; }
 
-
-        public LSExpression VisitDurationArray { get;  }
-        public LSExpression DistanceToHomeArray { get;  }
-        public LSExpression DistanceFromHomeArray { get;  }
-        public LSExpression DistanceArray { get;  }
+        public LSExpression VisitDurationArray { get; }
+        public LSExpression DistanceToHomeArray { get; }
+        public LSExpression DistanceFromHomeArray { get; }
+        public LSExpression DistanceArray { get; }
 
         public LSExpression VisitUnavailableCountArray { get; set; }
         public LSExpression VisitUnavailableArray { get; set; }
@@ -121,8 +120,6 @@ namespace IRuettae.Core.LocalSolver.Algorithm
             VisitUnavailableCountArray = model.Array(visits.Select(v => v.Unavailable.Length).ToArray());
         }
 
-       
-
         /// <summary>
         /// Takes the input route costs and the visits from params to create a jagged array containing all route costs
         /// </summary>
@@ -140,7 +137,6 @@ namespace IRuettae.Core.LocalSolver.Algorithm
                     routeCostJagged[i][j] = routeCosts[visits[i].Id, visits[j].Id];
                 }
             }
-
             return routeCostJagged;
         }
     }

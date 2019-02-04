@@ -63,6 +63,7 @@ namespace IRuettae.Core.LocalSolver.Algorithm
             var dayDuration = solverVariables.OptimizationInput.Days[day].to - solverVariables.OptimizationInput.Days[day].from;
             model.AddConstraint(model.If(solverVariables.SantaUsed[s], solverVariables.SantaVisitDurations[s] + solverVariables.SantaWalkingTime[s], 0) <= dayDuration);
         }
+
         /// <summary>
         /// Adds a constraint that the santaRouteTime needs to be smaller than the day duration
         /// </summary>
@@ -110,9 +111,7 @@ namespace IRuettae.Core.LocalSolver.Algorithm
             {
                 sumWaitBetweenVisits += model.Sum(solverVariables.SantaWaitBetweenVisit[s]);
             }
-
             return sumWaitBetweenVisits;
-
         }
 
         /// <summary>
@@ -145,7 +144,6 @@ namespace IRuettae.Core.LocalSolver.Algorithm
                                   + model.If(solverVariables.SantaUsed[s],
                                       solverVariables.DistanceFromHomeArray[sequence[0]] + solverVariables.DistanceToHomeArray[sequence[c - 1]],
                                       0);
-
         }
 
         /// <summary>
@@ -232,7 +230,7 @@ namespace IRuettae.Core.LocalSolver.Algorithm
                                     model.At(solverVariables.VisitDesiredArray, v, n, model.Int(1, 1)));
 
                                 return model.If(model.Or(y < visitStart, x > visitEnd),
-                                    // if no intersection    
+                                    // if no intersection
                                     0,
                                     //else
                                     model.Min(y, visitEnd) - model.Max(x, visitStart)
@@ -272,7 +270,7 @@ namespace IRuettae.Core.LocalSolver.Algorithm
                                     model.At(solverVariables.VisitUnavailableArray, v, n, model.Int(1, 1)));
 
                                 return model.If(model.Or(y < visitStart, x > visitEnd),
-                                    // if no intersection    
+                                    // if no intersection
                                     0,
                                     //else
                                     model.Min(y, visitEnd) - model.Max(x, visitStart)
@@ -320,7 +318,7 @@ namespace IRuettae.Core.LocalSolver.Algorithm
                 costFunction =
                     400 * additionalSantaCount +
                     40d / hour * additionalSantaRouteTime +
-                    
+
                     40d / hour * model.Sum(solverVariables.SantaRouteTime) +
                     30d / hour * maxRoute;
             }
