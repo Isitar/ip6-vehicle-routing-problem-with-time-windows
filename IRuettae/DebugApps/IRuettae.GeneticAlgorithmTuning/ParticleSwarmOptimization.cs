@@ -13,7 +13,10 @@ namespace IRuettae.GeneticAlgorithmTuning
         // 17280 evaluations should take about 3 hours with degree of parallelism=8
         // 17280=3600*3/(5/8)
         // there are 7 design variables to optimze
-        // the values are taken from // Todo cite
+        // the values are taken from:
+        // "Good Parameters for Particle Swarm Optimization"
+        // by Magnus Erik Hvass Pedersen
+        // Hvass Laboratories
 #if false
         // config 1
         // problem dimension=10
