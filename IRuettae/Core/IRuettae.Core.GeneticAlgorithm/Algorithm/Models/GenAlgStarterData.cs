@@ -9,8 +9,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
     {
         public int MaxNumberOfSantas { get; private set; }
         public long MaxNumberOfGenerations { get; private set; } = long.MaxValue;
-        public int PopulationSize { get; private set; } = 1048576;
-        // 2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768,65536,131072,262144,524288,1048576
+        public int PopulationSize { get; private set; }
 
         public double ElitismPercentage { get; private set; } = 0.357;
         public double DirectMutationPercentage { get; private set; } = 0.378;
@@ -33,9 +32,61 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
                 MaxNumberOfSantas = input.Santas.Length,
             };
 
+            #region PopulationSize
+            {
+                const int sizeDefault = 262144;
+                const int sizeBigger = 16;
+
+                // number of visits
+                var x = input.Visits.Length;
+                // PopulationSize
+                double y;
+
+                // x -> y
+                // 10 -> 262144
+                // 20 -> 262144
+                // 31 -> 262144
+                // 35 -> 262144
+                // 50 -> 131072
+                // 100 -> 16384
+                // 200 -> 16
+                // 1000 -> 16
+
+                if (x > 35 && x <= 50) // (35,50]
+                {
+                    // linear interpolation
+                    // generated with https://mycurvefit.com/
+                    // linear fit method: linear regression
+                    // y = -8738.133*x + 567978.7
+                    y = Math.Round(-8738.133 * x + 567978.7);
+                }
+                else if (x > 50 && x < 200) // (50,200)
+                {
+                    // non-linear approximation
+                    // generated with https://mycurvefit.com/
+                    // non-linear fit method: exponential basic
+                    // y = -250.92 + 1036717 * e ^ (-0.0413231 * x)
+                    y = Math.Round(-250.92 + 1036717 * Math.Pow(Math.E, (-0.0413231 * x)));
+                }
+                else if (x >= 200) // [200,inf]
+                {
+                    y = sizeBigger;
+                }
+                else // [-inf,35]
+                {
+                    y = sizeDefault;
+                }
+
+                starterData.PopulationSize = (int)y;
+            }
+            #endregion PopulationSize
+
             return starterData;
         }
 
+        /// <summary>
+        /// use GetDefault
+        /// </summary>
         private GenAlgStarterData()
         {
 

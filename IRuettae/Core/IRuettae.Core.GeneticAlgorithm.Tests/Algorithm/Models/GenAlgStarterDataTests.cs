@@ -24,6 +24,35 @@ namespace IRuettae.Core.GeneticAlgorithm.Tests.Algorithm.Models
         const int n = 10;
 
         [TestMethod]
+        public void TestDefault()
+        {
+            var tests = new List<(int numberOfVisits, int expected)>()
+            {
+                (1, 262144),
+                (10, 262144),
+                (20, 262144),
+                (31, 262144),
+                (35, 262144),
+                (50, 131072),
+                (100, 16384),
+                (200, 16),
+                (201, 16),
+                (1000, 16),
+                (50000000, 16),
+            };
+
+            foreach (var (numberOfVisits, expected) in tests)
+            {
+                var data = GenAlgStarterData.GetDefault(new OptimizationInput
+                {
+                    Santas = new Santa[2],
+                    Visits = new Visit[numberOfVisits],
+                });
+                Assert.AreEqual(expected, data.PopulationSize);
+            }
+        }
+
+        [TestMethod]
         public void TestIsValid_Default()
         {
             var data = GenAlgStarterData.GetDefault(new OptimizationInput()
