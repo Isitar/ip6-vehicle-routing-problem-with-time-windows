@@ -1,0 +1,14 @@
+Solver: ILP Ip5 Gurobi
+Dataset2: 10 visits, 1 santas, 2 days 5 desired d1, 5 desired d2
+TimeElapsed [s]: 599
+Cost: 512
+NumberOfNotVisitedFamilies: 0
+NumberOfMissingBreaks: 0
+NumberOfAdditionalSantas: 0
+AdditionalSantaWorkTime: 0
+VisitTimeInUnavailable: 0
+WayTimeOutsideBusinessHours: 0
+VisitTimeInDesired: 9728
+SantaWorkTime: 36898
+LongestDay: 18703
+NumberOfRoutes: 2

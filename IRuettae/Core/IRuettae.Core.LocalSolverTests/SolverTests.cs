@@ -65,7 +65,7 @@ namespace IRuettae.Core.LocalSolver.Tests
                 },
             };
 
-            var solver = new Solver(input);
+            var solver = new Solver(input,0,1);
             var output = solver.Solve(3000L, null, null);
             Assert.IsNotNull(output);
             Assert.IsNotNull(output.Routes);
@@ -115,7 +115,7 @@ namespace IRuettae.Core.LocalSolver.Tests
                 },
             };
 
-            var solver = new Solver(input);
+            var solver = new Solver(input,0,1);
             var output = solver.Solve(3000L, null, null);
             Assert.IsNotNull(output);
             Assert.IsNotNull(output.Routes);
@@ -167,7 +167,7 @@ namespace IRuettae.Core.LocalSolver.Tests
                 },
             };
 
-            var solver = new Solver(input);
+            var solver = new Solver(input,0, 1);
             var output = solver.Solve(3000L, null, null);
             Assert.IsNotNull(output);
             Assert.IsNotNull(output.Routes);
@@ -182,7 +182,7 @@ namespace IRuettae.Core.LocalSolver.Tests
         public void TestBreaksCorrect()
         {
             var (input, _) = DatasetFactory.LocalSolverBreakDataSet();
-            var solver = new Solver(input);
+            var solver = new Solver(input, 0, 1);
             var output = solver.Solve(10000L, null, null);
             Assert.IsNotNull(output);
             Assert.IsNotNull(output.Routes);

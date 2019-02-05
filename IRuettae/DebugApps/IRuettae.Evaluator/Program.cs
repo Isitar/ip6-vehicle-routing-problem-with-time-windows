@@ -6,8 +6,12 @@ using System.Text;
 using IRuettae.Core;
 using IRuettae.Core.GeneticAlgorithm;
 using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
+using IRuettae.Core.Google.Routing;
+using IRuettae.Core.Google.Routing.Models;
 using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm.Models;
+using IRuettae.Core.ILPIp5Gurobi;
+using IRuettae.Core.ILPIp5Gurobi.Algorithm.Models;
 using IRuettae.Core.LocalSolver;
 using IRuettae.Core.Models;
 using Newtonsoft.Json;
@@ -21,9 +25,13 @@ namespace IRuettae.Evaluator
             ILP = 1,
             GA = 2,
             LocalSolver = 3,
+            ILPIP5Gurobi = 5,
+            GoogleRouting = 6,
             ILPFast = 10,
             GAFast = 20,
             LocalSolverFast = 30,
+            ILPIP5GurobiFast = 50,
+            GoogleRoutingFast = 60,
         }
 
         /// <summary>
@@ -34,9 +42,13 @@ namespace IRuettae.Evaluator
             {Algorithms.ILP,"ILP"},
             {Algorithms.GA, "GA" },
             {Algorithms.LocalSolver, "LocalSolver" },
+            {Algorithms.ILPIP5Gurobi, "ILP Ip5 Gurobi" },
+            {Algorithms.GoogleRouting, "Google OR-Tools Routing" },
             {Algorithms.ILPFast,"ILP Fast"},
             {Algorithms.GAFast, "GA Fast" },
             {Algorithms.LocalSolverFast, "LocalSolver Fast" },
+            {Algorithms.ILPIP5GurobiFast, "ILP Ip5 Gurobi Fast" },
+            {Algorithms.GoogleRoutingFast, "Google OR-Tools Routing Fast" },
         };
 
         static readonly Dictionary<int, string> DatasetDictionary = new Dictionary<int, string>()
@@ -60,10 +72,13 @@ namespace IRuettae.Evaluator
         {
             do
             {
-                EvaluateAlgorithm();
-                Console.Write("New run? [Y/N]: ");
+                EvaluateAlgorithm(args);
+                if (args.Length == 0)
+                {
+                    Console.Write("New run? [Y/N]: ");
+                }
 
-            } while (Console.ReadLine().ToUpper().Equals("Y"));
+            } while (args.Length == 0 && Console.ReadLine().ToUpper().Equals("Y"));
         }
 
         private static void TestResultDrawer()
@@ -74,23 +89,23 @@ namespace IRuettae.Evaluator
             ResultDrawer.DrawResult("debug.gif", result, DatasetFactory.DataSet3().coordinates);
         }
 
-        private static void EvaluateAlgorithm()
+        private static void EvaluateAlgorithm(string[] args)
         {
             BigHr();
             Console.WriteLine("Program written to evaluate the different optimisation algorithms.");
             Console.WriteLine();
 
-            var algorithmSelection = QueryAlgorithmSelection();
+            var algorithmSelection = args.Length == 0 ? QueryAlgorithmSelection() : (Algorithms)Enum.Parse(typeof(Algorithms), args[0]);
 
             SmallHr();
             Console.WriteLine();
 
-            var datasetSelection = QueryDatasetSelection();
+            var datasetSelection = args.Length == 0 ? QueryDatasetSelection() : GetDatasetSelection(int.Parse(args[1]));
 
             SmallHr();
             Console.WriteLine();
 
-            var runs = QueryNumberOfRuns();
+            var runs = args.Length == 0 ? QueryNumberOfRuns() : int.Parse(args[2]);
 
             SmallHr();
             Console.WriteLine();
@@ -100,112 +115,145 @@ namespace IRuettae.Evaluator
 
             for (int i = 0; i < runs; i++)
             {
+
                 foreach (var dataset in datasetSelection)
                 {
-                    var (input, coordinates, timelimit) = GetDataset(dataset);
-
-                    string savepath = $"{DateTime.Now:yy-MM-dd-HH-mm-ss}_DataSet_{dataset}";
-                    ISolver solver = null;
-                    var fastFactor = 60;
-                    switch (algorithmSelection)
-                    {
-                        case Algorithms.ILPFast:
-                            timelimit /= fastFactor;
-                            goto case Algorithms.ILP;
-                        case Algorithms.ILP:
-                            solver = new ILPSolver(input, new ILPStarterData
-                            {
-                                ClusteringMIPGap = 0,
-                                SchedulingMIPGap = 0,
-
-                                ClusteringTimeLimitMiliseconds = (long)(0.7 * timelimit),
-                                SchedulingTimeLimitMiliseconds = (long)(0.3 * timelimit),
-                                TimeSliceDuration = 120
-                            });
-                            savepath += "_ILP";
-                            break;
-                        case Algorithms.LocalSolverFast:
-                            timelimit /= fastFactor;
-                            goto case Algorithms.LocalSolver;
-                        case Algorithms.LocalSolver:
-                            solver = new IRuettae.Core.LocalSolver.Solver(input);
-                            savepath += "_LocalSolver";
-                            break;
-                        case Algorithms.GA:
-                            solver = new GenAlgSolver(input, GenAlgStarterData.GetDefault(input));
-                            savepath += "_GA";
-                            break;
-                        case Algorithms.GAFast:
-                            timelimit /= 60;
-                            solver = new GenAlgSolver(input, GenAlgStarterData.GetDefault(input));
-                            savepath += "_GAFast";
-                            break;
-                    }
-
-                    AddUnavailableBetweenDays(input);
-
-                    OptimizationResult result = null;
-
-                    void WriteConsoleInfo(object sender, string s)
-                    {
-                        Console.WriteLine($"Info ({DateTime.Now:HH-mm-ss}): {s}");
-                    }
-                    void WriteConsoleProgress(object sender, ProgressReport report)
-                    {
-                        Console.WriteLine($"Progress: {report}");
-                    }
-#if DEBUG
-                    using (var sw = new StreamWriter(savepath + "-log.txt", true))
-                    {
-                        result = solver.Solve(timelimit, WriteConsoleProgress,
-                            (sender, s) =>
-                            {
-                                WriteConsoleInfo(sender, s);
-                                sw.WriteLine(s);
-                            });
-                    }
-#else
-                    result = solver.Solve(timelimit, WriteConsoleProgress, WriteConsoleInfo);
-#endif
-
-                    BigHr();
-
-                    File.WriteAllText(savepath + ".json", JsonConvert.SerializeObject(result));
-
-                    var summary = new StringBuilder();
-                    summary.AppendLine($"Solver: {AlgorithmsDictionary[algorithmSelection]}");
-                    summary.AppendLine($"Dataset{dataset}: {DatasetDictionary[dataset]}");
-                    summary.AppendLine($"TimeElapsed [s]: {result.TimeElapsed}");
                     try
                     {
-                        if (!result.IsValid())
+                        var (input, coordinates, timelimit) = GetDataset(dataset);
+
+                        string savepath = $"{DateTime.Now:yy-MM-dd-HH-mm-ss}_DataSet_{dataset}";
+                        ISolver solver = null;
+                        var fastFactor = 60;
+                        switch (algorithmSelection)
                         {
-                            summary.AppendLine(
-                                $"IMPORTANT: This result seems to be invalid. The reason is \"{result.Validate()}\"");
+                            case Algorithms.ILPFast:
+                                timelimit /= fastFactor;
+                                goto case Algorithms.ILP;
+                            case Algorithms.ILP:
+                                solver = new ILPSolver(input, new ILPStarterData
+                                {
+                                    ClusteringMIPGap = 0,
+                                    SchedulingMIPGap = 0,
+
+                                    ClusteringTimeLimitMiliseconds = (long)(0.7 * timelimit),
+                                    SchedulingTimeLimitMiliseconds = (long)(0.3 * timelimit),
+                                    TimeSliceDuration = 120
+                                });
+                                savepath += "_ILP";
+                                break;
+                            case Algorithms.LocalSolverFast:
+                                timelimit /= fastFactor;
+                                goto case Algorithms.LocalSolver;
+                            case Algorithms.LocalSolver:
+                                solver = new IRuettae.Core.LocalSolver.Solver(input, 0.1,0.8,false);
+                                savepath += "_LocalSolver";
+                                break;
+                            case Algorithms.GA:
+                                solver = new GenAlgSolver(input, GenAlgStarterData.GetDefault(input));
+                                savepath += "_GA";
+                                break;
+                            case Algorithms.GAFast:
+                                timelimit /= fastFactor;
+                                solver = new GenAlgSolver(input, GenAlgStarterData.GetDefault(input));
+                                savepath += "_GAFast";
+                                break;
+                            case Algorithms.ILPIP5GurobiFast:
+                                timelimit /= fastFactor;
+                                goto case Algorithms.ILPIP5Gurobi;
+                            case Algorithms.ILPIP5Gurobi:
+                                solver = new ILPIp5GurobiSolver(input, new ILPIp5GurobiStarterData
+                                {
+                                    ClusteringMIPGap = 0,
+                                    SchedulingMIPGap = 0,
+
+                                    ClusteringTimeLimitMiliseconds = (long)(0.7 * timelimit),
+                                    SchedulingTimeLimitMiliseconds = (long)(0.3 * timelimit),
+                                    TimeSliceDuration = 120
+                                });
+                                savepath += "_ILPIp5Gurobi";
+                                break;
+                            case Algorithms.GoogleRoutingFast:
+                                timelimit /= fastFactor;
+                                solver = new RoutingSolver(input, RoutingSolverStarterData.GetDefault(input));
+                                savepath += "_GoogleRoutingFast";
+                                break;
+                            case Algorithms.GoogleRouting:
+                                solver = new RoutingSolver(input, RoutingSolverStarterData.GetDefault(input));
+                                savepath += "_GoogleRouting";
+                                break;
                         }
+
+                        AddUnavailableBetweenDays(input);
+
+                        OptimizationResult result = null;
+
+                        void WriteConsoleInfo(object sender, string s)
+                        {
+                            Console.WriteLine($"Info ({DateTime.Now:HH-mm-ss}): {s}");
+                        }
+
+                        void WriteConsoleProgress(object sender, ProgressReport report)
+                        {
+                            Console.WriteLine($"Progress: {report}");
+                        }
+#if DEBUG
+                        using (var sw = new StreamWriter(savepath + "-log.txt", true))
+                        {
+                            result = solver.Solve(timelimit, WriteConsoleProgress,
+                                (sender, s) =>
+                                {
+                                    WriteConsoleInfo(sender, s);
+                                    sw.WriteLine(s);
+                                });
+                        }
+#else
+                        result = solver.Solve(timelimit, WriteConsoleProgress, WriteConsoleInfo);
+#endif
+
+                        BigHr();
+
+                        File.WriteAllText(savepath + ".json", JsonConvert.SerializeObject(result));
+
+                        var summary = new StringBuilder();
+                        summary.AppendLine($"Solver: {AlgorithmsDictionary[algorithmSelection]}");
+                        summary.AppendLine($"Dataset{dataset}: {DatasetDictionary[dataset]}");
+                        summary.AppendLine($"TimeElapsed [s]: {result.TimeElapsed}");
+                        try
+                        {
+                            if (!result.IsValid())
+                            {
+                                summary.AppendLine(
+                                    $"IMPORTANT: This result seems to be invalid. The reason is \"{result.Validate()}\"");
+                            }
+                        }
+                        catch
+                        {
+                            summary.AppendLine("error while checking invalidity");
+                        }
+
+                        summary.AppendLine($"Cost: {result.Cost()}");
+                        summary.AppendLine($"NumberOfNotVisitedFamilies: {result.NumberOfNotVisitedFamilies()}");
+                        summary.AppendLine($"NumberOfMissingBreaks: {result.NumberOfMissingBreaks()}");
+                        summary.AppendLine($"NumberOfAdditionalSantas: {result.NumberOfAdditionalSantas()}");
+                        summary.AppendLine($"AdditionalSantaWorkTime: {result.AdditionalSantaWorkTime()}");
+                        summary.AppendLine($"VisitTimeInUnavailable: {result.VisitTimeInUnavailable()}");
+                        summary.AppendLine($"WayTimeOutsideBusinessHours: {result.WayTimeOutsideBusinessHours()}");
+                        summary.AppendLine($"VisitTimeInDesired: {result.VisitTimeInDesired()}");
+                        summary.AppendLine($"SantaWorkTime: {result.SantaWorkTime()}");
+                        summary.AppendLine($"LongestDay: {result.LongestDay()}");
+                        summary.AppendLine($"NumberOfRoutes: {result.NumberOfRoutes()}");
+
+                        File.WriteAllText(savepath + ".txt", summary.ToString());
+                        Console.WriteLine();
+                        Console.WriteLine("Done solving");
+                        Console.WriteLine(summary.ToString());
+                        ResultDrawer.DrawResult(savepath, result, coordinates);
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        summary.AppendLine("error while checking invalidity");
+                        Console.WriteLine($"An exception occured: {e.Message}");
                     }
-
-                    summary.AppendLine($"Cost: {result.Cost()}");
-                    summary.AppendLine($"NumberOfNotVisitedFamilies: { result.NumberOfNotVisitedFamilies()}");
-                    summary.AppendLine($"NumberOfMissingBreaks: { result.NumberOfMissingBreaks()}");
-                    summary.AppendLine($"NumberOfAdditionalSantas: { result.NumberOfAdditionalSantas()}");
-                    summary.AppendLine($"AdditionalSantaWorkTime: { result.AdditionalSantaWorkTime()}");
-                    summary.AppendLine($"VisitTimeInUnavailable: { result.VisitTimeInUnavailable()}");
-                    summary.AppendLine($"WayTimeOutsideBusinessHours: { result.WayTimeOutsideBusinessHours()}");
-                    summary.AppendLine($"VisitTimeInDesired: { result.VisitTimeInDesired()}");
-                    summary.AppendLine($"SantaWorkTime: { result.SantaWorkTime()}");
-                    summary.AppendLine($"LongestDay: { result.LongestDay()}");
-                    summary.AppendLine($"NumberOfRoutes: { result.NumberOfRoutes()}");
-
-                    File.WriteAllText(savepath + ".txt", summary.ToString());
-                    Console.WriteLine();
-                    Console.WriteLine("Done solving");
-                    Console.WriteLine(summary.ToString());
-                    ResultDrawer.DrawResult(savepath, result, coordinates);
                 }
             }
         }
@@ -319,14 +367,12 @@ namespace IRuettae.Evaluator
 
             Console.WriteLine($"You selected dataset {datasetSelection}: {DatasetDictionary[datasetSelection]}");
 
-            if (datasetSelection == 0)
-            {
-                return DatasetDictionary.Keys.Where(k => k != 0);
-            }
-            else
-            {
-                return new[] { datasetSelection };
-            }
+            return GetDatasetSelection(datasetSelection);
+        }
+
+        private static IEnumerable<int> GetDatasetSelection(int datasetSelection)
+        {
+            return datasetSelection == 0 ? DatasetDictionary.Keys.Where(k => k != 0) : new[] { datasetSelection };
         }
 
         private static int QueryNumberOfRuns()
