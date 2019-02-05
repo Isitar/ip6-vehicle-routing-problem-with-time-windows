@@ -54,7 +54,7 @@ namespace IRuettae.ResultEvaluator
 
 
                     var regex = new Regex(
-                        "Solver\\d*: (?<solver>[\\w+\\s]*)\\nDataset(?<dataset>\\d+):(.|\\n)*Cost: (?<cost>\\d*)",
+                        "Solver\\d*: (?<solver>[\\w-+\\s]*)\\nDataset(?<dataset>\\d+):(.|\\n)*Cost: (?<cost>\\d*)",
                         RegexOptions.IgnoreCase | RegexOptions.Multiline);
                     var fileContent = File.ReadAllText(file);
                     var match = regex.Match(fileContent);
