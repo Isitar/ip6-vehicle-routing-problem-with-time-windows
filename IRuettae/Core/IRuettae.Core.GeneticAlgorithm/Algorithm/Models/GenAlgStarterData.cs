@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Text;
 using IRuettae.Core.Models;
 
 namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
@@ -8,16 +7,16 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
     public class GenAlgStarterData
     {
         public int MaxNumberOfSantas { get; private set; }
-        public long MaxNumberOfGenerations { get; private set; } = long.MaxValue;
+        public long MaxNumberOfGenerations { get; } = long.MaxValue;
         public int PopulationSize { get; private set; }
 
-        public double ElitismPercentage { get; private set; } = 0.357;
-        public double DirectMutationPercentage { get; private set; } = 0.378;
-        public double RandomPercentage { get; private set; } = 0.0;
+        public double ElitismPercentage { get; } = 0.357;
+        public double DirectMutationPercentage { get; } = 0.378;
+        public double RandomPercentage { get; } = 0.0;
 
-        public double OrderBasedCrossoverProbability { get; private set; } = 0.884;
-        public double MutationProbability { get; private set; } = 0.0;
-        public double PositionMutationProbability { get; private set; } = 0.886;
+        public double OrderBasedCrossoverProbability { get; } = 0.884;
+        public double MutationProbability { get; } = 0.0;
+        public double PositionMutationProbability { get; } = 0.886;
 
         /// <summary>
         ///Create default regarding the input
@@ -27,7 +26,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
         public static GenAlgStarterData GetDefault(OptimizationInput input)
         {
 
-            var starterData = new GenAlgStarterData()
+            var starterData = new GenAlgStarterData
             {
                 MaxNumberOfSantas = input.Santas.Length,
             };
