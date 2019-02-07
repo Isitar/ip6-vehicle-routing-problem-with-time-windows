@@ -30,7 +30,6 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 
             // Elitism
             {
-
                 // number of best individuals that should get taken directly to the next generation
                 // must be at least one to save best solution
                 var numberOfEliteIndividuals = (int)Math.Max(1, population.Count * starterData.ElitismPercentage);
@@ -48,7 +47,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
                 newPopulation.AddRange(selection);
             }
 
-            // Random
+            // New random individuals
             {
                 var numberOfRandom = (int)(population.Count * starterData.RandomPercentage);
                 var random = RandomFactory.Instance;
