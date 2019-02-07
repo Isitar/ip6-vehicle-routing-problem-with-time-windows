@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
 
 namespace IRuettae.Core.GeneticAlgorithm.Algorithm
@@ -29,14 +30,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <returns></returns>
         public List<(Genotype, Genotype)> SelectParents(List<Genotype> population, int numberOfPairs)
         {
-            var ret = new List<(Genotype, Genotype)>(numberOfPairs);
-            for (; numberOfPairs > 0; numberOfPairs--)
-            {
-                var parent1 = GetParent(population);
-                var parent2 = GetParent(population);
-                ret.Add((parent1, parent2));
-            }
-            return ret;
+            return Enumerable.Range(0, numberOfPairs).Select(_ => (GetParent(population), GetParent(population))).ToList();
         }
 
         /// <summary>
@@ -47,12 +41,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <returns></returns>
         public List<Genotype> SelectIndividuals(List<Genotype> population, int numberOfIndividuals)
         {
-            var ret = new List<Genotype>(numberOfIndividuals);
-            for (; numberOfIndividuals > 0; numberOfIndividuals--)
-            {
-                ret.Add(GetParent(population));
-            }
-            return ret;
+            return Enumerable.Range(0, numberOfIndividuals).Select(_ => GetParent(population)).ToList();
         }
 
         /// <summary>
