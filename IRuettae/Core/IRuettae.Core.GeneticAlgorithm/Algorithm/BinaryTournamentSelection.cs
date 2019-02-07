@@ -29,9 +29,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <param name="numberOfPairs"></param>
         /// <returns></returns>
         public List<(Genotype, Genotype)> SelectParents(List<Genotype> population, int numberOfPairs)
-        {
-            return Enumerable.Range(0, numberOfPairs).Select(_ => (GetParent(population), GetParent(population))).ToList();
-        }
+            => Enumerable.Range(0, numberOfPairs).Select(_ => (GetParent(population), GetParent(population))).ToList();
 
         /// <summary>
         /// Returns numberOfIndividuals genotypes from population.
@@ -40,9 +38,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <param name="numberOfIndividuals"></param>
         /// <returns></returns>
         public List<Genotype> SelectIndividuals(List<Genotype> population, int numberOfIndividuals)
-        {
-            return Enumerable.Range(0, numberOfIndividuals).Select(_ => GetParent(population)).ToList();
-        }
+            => Enumerable.Range(0, numberOfIndividuals).Select(_ => GetParent(population)).ToList();
 
         /// <summary>
         ///
