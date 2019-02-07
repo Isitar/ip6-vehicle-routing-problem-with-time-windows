@@ -51,7 +51,11 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
                 // 200 -> 16
                 // 1000 -> 16
 
-                if (x > 35 && x <= 50) // (35,50]
+                if (x <= 35) // [-inf,35]
+                {
+                    y = sizeDefault;
+                }
+                else if (x > 35 && x <= 50) // (35,50]
                 {
                     // linear interpolation
                     // generated with https://mycurvefit.com/
@@ -67,13 +71,9 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
                     // y = -250.92 + 1036717 * e ^ (-0.0413231 * x)
                     y = Math.Round(-250.92 + 1036717 * Math.Pow(Math.E, (-0.0413231 * x)));
                 }
-                else if (x >= 200) // [200,inf]
+                else // [200,inf]
                 {
                     y = sizeBigger;
-                }
-                else // [-inf,35]
-                {
-                    y = sizeDefault;
                 }
 
                 starterData.PopulationSize = (int)y;
