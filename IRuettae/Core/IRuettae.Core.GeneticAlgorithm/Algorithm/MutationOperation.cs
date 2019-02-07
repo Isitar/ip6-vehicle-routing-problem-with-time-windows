@@ -6,7 +6,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 {
     public class MutationOperation
     {
-        private const double ProbabilityPositionMutation = 0.5;
+        private readonly double positionMutationProbability;
         private readonly Random random;
 
         /// <summary>
@@ -15,9 +15,10 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// </summary>
         private const double MutationSizeStdevFactor = 1d / 4d;
 
-        public MutationOperation(Random random)
+        public MutationOperation(Random random, double positionMutationProbability)
         {
             this.random = random;
+            this.positionMutationProbability = positionMutationProbability;
         }
 
         /// <summary>
@@ -29,21 +30,31 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         {
             foreach (var individual in population)
             {
-                if (random.NextDouble() < probability)
-                {
-                    // no mutation
-                    continue;
-                }
+                Mutate(individual, probability);
+            }
+        }
 
-                var p = random.NextDouble();
-                if (p < ProbabilityPositionMutation)
-                {
-                    PositionMutate(individual);
-                }
-                else
-                {
-                    InversionMutate(individual);
-                }
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="individual"></param>
+        /// <param name="probability">between 0 and 1</param>
+        public void Mutate(Genotype individual, double probability)
+        {
+            if (random.NextDouble() < probability)
+            {
+                // no mutation
+                return;
+            }
+
+            var p = random.NextDouble();
+            if (p < positionMutationProbability)
+            {
+                PositionMutate(individual);
+            }
+            else
+            {
+                InversionMutate(individual);
             }
         }
 

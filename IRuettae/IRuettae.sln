@@ -79,6 +79,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Core.Google.Routin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.Tuning.LocalSolverGridSearch", "DebugApps\IRuettae.Tuning.LocalSolverGridSearch\IRuettae.Tuning.LocalSolverGridSearch.csproj", "{1E8D2261-924A-44B5-83F5-74178BF886A0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRuettae.GeneticAlgorithmTuning", "DebugApps\IRuettae.GeneticAlgorithmTuning\IRuettae.GeneticAlgorithmTuning.csproj", "{B36DD6A1-4017-4252-B9CF-DD69597B6CE8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug With RealGoogle|Any CPU = Debug With RealGoogle|Any CPU
@@ -272,6 +274,12 @@ Global
 		{1E8D2261-924A-44B5-83F5-74178BF886A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E8D2261-924A-44B5-83F5-74178BF886A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E8D2261-924A-44B5-83F5-74178BF886A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B36DD6A1-4017-4252-B9CF-DD69597B6CE8}.Debug With RealGoogle|Any CPU.ActiveCfg = Debug|Any CPU
+		{B36DD6A1-4017-4252-B9CF-DD69597B6CE8}.Debug With RealGoogle|Any CPU.Build.0 = Debug|Any CPU
+		{B36DD6A1-4017-4252-B9CF-DD69597B6CE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B36DD6A1-4017-4252-B9CF-DD69597B6CE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B36DD6A1-4017-4252-B9CF-DD69597B6CE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B36DD6A1-4017-4252-B9CF-DD69597B6CE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -308,6 +316,7 @@ Global
 		{6E92CD1C-AD25-4845-8335-FB0EB813CE73} = {4AFFAE11-44BE-4405-B3F8-A60826387129}
 		{74331164-A8FD-498D-B4F8-F10A12AD4FFA} = {4AFFAE11-44BE-4405-B3F8-A60826387129}
 		{1E8D2261-924A-44B5-83F5-74178BF886A0} = {F60824C4-90B4-4C99-BF8C-A185BCA036B0}
+		{B36DD6A1-4017-4252-B9CF-DD69597B6CE8} = {F60824C4-90B4-4C99-BF8C-A185BCA036B0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46C1937C-3FE9-4F20-B1E3-E40616B3A48D}

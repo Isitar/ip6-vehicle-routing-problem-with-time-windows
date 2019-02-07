@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{48054F06-CCF2-4F00-BF6A-70F44C86BEF5}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>IRuettae.Core.GeneticAlgorithm</RootNamespace>
-    <AssemblyName>IRuettae.Core.GeneticAlgorithm</AssemblyName>
+    <ProjectGuid>{B36DD6A1-4017-4252-B9CF-DD69597B6CE8}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>IRuettae.GeneticAlgorithmTuning</RootNamespace>
+    <AssemblyName>IRuettae.GeneticAlgorithmTuning</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -20,16 +21,15 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -42,25 +42,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Algorithm\BinaryTournamentSelection.cs" />
-    <Compile Include="Algorithm\CostCalculator.cs" />
-    <Compile Include="Algorithm\Decoder.cs" />
-    <Compile Include="Algorithm\EvolutionOperation.cs" />
-    <Compile Include="Algorithm\Helpers\ExtensionMethods.cs" />
-    <Compile Include="Algorithm\Helpers\RandomFactory.cs" />
-    <Compile Include="Algorithm\Helpers\SimplifiedOptimizationResult.cs" />
-    <Compile Include="Algorithm\Models\GenAlgStarterData.cs" />
-    <Compile Include="Algorithm\Models\Genotype.cs" />
-    <Compile Include="Algorithm\MutationOperation.cs" />
-    <Compile Include="Algorithm\PopulationGenerator.cs" />
-    <Compile Include="Algorithm\RecombinationOperation.cs" />
-    <Compile Include="Algorithm\RepairOperation.cs" />
-    <Compile Include="GenAlgSolver.cs" />
+    <Compile Include="DatasetFactory.DatasetGATuning.cs" />
+    <Compile Include="ParticleSwarmOptimization.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IRuettae.Core\IRuettae.Core.csproj">
-      <Project>{e6f0ffc6-7f26-4286-ae57-44411eb66118}</Project>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\IRuettae.Core.GeneticAlgorithm\IRuettae.Core.GeneticAlgorithm.csproj">
+      <Project>{48054F06-CCF2-4F00-BF6A-70F44C86BEF5}</Project>
+      <Name>IRuettae.Core.GeneticAlgorithm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\IRuettae.Core\IRuettae.Core.csproj">
+      <Project>{E6F0FFC6-7F26-4286-AE57-44411EB66118}</Project>
       <Name>IRuettae.Core</Name>
     </ProjectReference>
   </ItemGroup>
