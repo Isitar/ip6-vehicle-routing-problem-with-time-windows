@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Gurobi;
 
-namespace IRuettae.Core.ILP2
+namespace IRuettae.Core.ILP2.VRPSolver
 {
-    class VRPCallback : GRBCallback
+    internal class VRPCallbackSolverCallback : GRBCallback
     {
         private GRBVar[][] vars;
         private readonly Func<GRBVar[], int, int, GRBVar> accessVar;
         private readonly Func<double[], double[,]> convertBack;
 
-        public VRPCallback(GRBVar[][] vars, Func<GRBVar[], int, int, GRBVar> accessVar, Func<double[], double[,]> convertBack)
+        public VRPCallbackSolverCallback(GRBVar[][] vars, Func<GRBVar[], int, int, GRBVar> accessVar, Func<double[], double[,]> convertBack)
         {
             this.vars = vars;
             this.accessVar = accessVar;

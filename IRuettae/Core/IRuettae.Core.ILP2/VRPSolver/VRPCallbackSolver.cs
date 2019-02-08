@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Gurobi;
 using IRuettae.Core.Models;
 
-namespace IRuettae.Core.ILP2
+namespace IRuettae.Core.ILP2.VRPSolver
 {
-    internal partial class VRPSolver
+    public partial class VRPCallbackSolver
     {
         private OptimizationInput input;
         private int[,] distances;
         private int[] visitDurations;
 
-        public VRPSolver(OptimizationInput input)
+        public VRPCallbackSolver(OptimizationInput input)
         {
             this.input = input;
 
@@ -116,7 +114,7 @@ namespace IRuettae.Core.ILP2
                     , GRB.MINIMIZE);
 
                 vrpModel.Parameters.LazyConstraints = 1;
-                vrpModel.SetCallback(new VRPCallback(w, AccessW, ConvertBack));
+                vrpModel.SetCallback(new VRPCallbackSolverCallback(w, AccessW, ConvertBack));
                 vrpModel.Parameters.TimeLimit = timeLimitMilliseconds;
                 vrpModel.Optimize();
                 if (vrpModel.SolCount == 0)

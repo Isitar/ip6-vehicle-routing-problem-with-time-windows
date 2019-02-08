@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Gurobi;
+using IRuettae.Core.ILP2.VRPSolver;
 using IRuettae.Core.Models;
 
 namespace IRuettae.Core.ILP2
@@ -56,8 +57,24 @@ namespace IRuettae.Core.ILP2
             // first solve vrp, take result as initial solution.
 
             var sw = Stopwatch.StartNew();
-            var vrpSolution = new VRPSolver(input).SolveVRP((int)(timelimitMiliseconds / 5000));
-            sw.Stop();
+            var vrpSolution = new VRPCallbackSolver(input).SolveVRP((int)(timelimitMiliseconds / 5000));
+            var timeWindowIsRelevant = !input.Visits.All(visit =>
+            {
+                if (visit.Desired.Length > 0) return false;
+
+                return !visit.Unavailable.Any(unavailable =>
+                {
+                    var (unavailableFrom, unavailableTo) = unavailable;
+                    foreach (var (dayFrom, dayTo) in input.Days)
+                    {
+                        if (IntersectionLength(unavailableFrom, unavailableTo, dayFrom, dayTo) > 0)
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+            });
 
             consoleProgress?.Invoke(this, $"vrp needed {sw.ElapsedMilliseconds}ms, remaining {timelimitMiliseconds - sw.ElapsedMilliseconds}");
 
@@ -157,39 +174,6 @@ namespace IRuettae.Core.ILP2
                     }
                 }
 
-                // symmetrie breaking constriant if timewindow is irrelevant
-                if (input.Visits.All(visit =>
-                {
-                    if (visit.Desired.Length > 0) return false;
-
-                    if (visit.Unavailable.Any(unavailable =>
-                    {
-                        var (unavailableFrom, unavailableTo) = unavailable;
-                        foreach (var (dayFrom, dayTo) in input.Days)
-                        {
-                            if (IntersectionLength(unavailableFrom, unavailableTo, dayFrom, dayTo) > 0)
-                            {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }))
-                    {
-                        return false;
-                    }
-
-                    return true;
-                }))
-                {
-                    for (int s = 0; s < numberOfRoutes; s++)
-                    {
-                        for (int i = 1; i < visitDurations.Length; i++)
-                        {
-                            model.AddGenConstrIndicator(AccessW(w[s], 0, i), 1, c[s][0] == 0, null);
-                            model.AddGenConstrIndicator(AccessW(w[s], 0, i), 1, c[s][i] == input.Visits[i - 1].WayCostFromHome, null);
-                        }
-                    }
-                }
                 #endregion
 
                 // TARGET FUNCTION
@@ -234,13 +218,6 @@ namespace IRuettae.Core.ILP2
                 model.Parameters.IntFeasTol = 0.01;
                 model.Parameters.ScaleFlag = 2;
                 model.Parameters.ObjScale = -0.5;
-                //model.Parameters.FlowCoverCuts = 1;
-                //model.Parameters.Method = ;
-                //model.Parameters.TuneTimeLimit = 12 * 60 * 60;
-                //model.Tune();
-
-                // model.GetTuneResult(model.TuneResultCount);
-
 
                 InitializeWithVRPSolution(vrpSolution, numberOfRoutes, model, v, w, c);
                 model.Optimize();

@@ -73,7 +73,16 @@ namespace IRuettae.Core.LocalSolver.Algorithm
         {
             var s = GetSantaId(day, santa);
             var dayDuration = solverVariables.OptimizationInput.Days[day].to - solverVariables.OptimizationInput.Days[day].from;
-            model.AddConstraint(model.If(solverVariables.SantaUsed[s], solverVariables.SantaRouteTime[s], 0) <= dayDuration);
+            if (solverVariables.SantaOvertime[s] is null)
+            {
+                model.AddConstraint(model.If(solverVariables.SantaUsed[s], solverVariables.SantaRouteTime[s], 0) <=
+                                    dayDuration);
+            }
+            else
+            {
+                model.AddConstraint(model.If(solverVariables.SantaUsed[s], solverVariables.SantaRouteTime[s] + solverVariables.SantaOvertime[s], 0) <=
+                                    dayDuration);
+            }
         }
 
         /// <summary>
@@ -97,7 +106,9 @@ namespace IRuettae.Core.LocalSolver.Algorithm
             var s = GetSantaId(day, santa);
             var sequence = solverVariables.VisitSequences[s];
             var c = model.Count(sequence);
-            model.Constraint(model.If(solverVariables.SantaUsed[s], solverVariables.SantaVisitStartingTimes[s][c - 1] + solverVariables.VisitDurationArray[sequence[c - 1]] + solverVariables.DistanceToHomeArray[sequence[c - 1]], 0) <= solverVariables.OptimizationInput.Days[day].to + solverVariables.SantaOvertime[s]);
+            model.Constraint(model.If(solverVariables.SantaUsed[s],
+                                 solverVariables.SantaVisitStartingTimes[s][c - 1] + solverVariables.VisitDurationArray[sequence[c - 1]] + solverVariables.DistanceToHomeArray[sequence[c - 1]], 
+                                 0) <= solverVariables.OptimizationInput.Days[day].to + solverVariables.SantaOvertime[s]);
         }
 
         /// <summary>

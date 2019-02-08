@@ -47,9 +47,9 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Solver.cs" />
-    <Compile Include="VRPCallback.cs" />
-    <Compile Include="VRPSolver.Constraints.cs" />
-    <Compile Include="VRPSolver.cs" />
+    <Compile Include="VRPSolver\VRPCallbackSolverCallback.cs" />
+    <Compile Include="VRPSolver\VRPSolver.Constraints.cs" />
+    <Compile Include="VRPSolver\VRPCallbackSolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IRuettae.Core\IRuettae.Core.csproj">

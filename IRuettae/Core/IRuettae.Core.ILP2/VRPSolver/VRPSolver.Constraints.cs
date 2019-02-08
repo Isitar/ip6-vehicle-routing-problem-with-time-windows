@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.SymbolStore;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Gurobi;
 
-namespace IRuettae.Core.ILP2
+namespace IRuettae.Core.ILP2.VRPSolver
 {
-    internal partial class VRPSolver
+    public partial class VRPCallbackSolver
     {
         private void VisitVisitedOnce(GRBModel model, int numberOfRoutes, GRBVar[][] v)
         {
