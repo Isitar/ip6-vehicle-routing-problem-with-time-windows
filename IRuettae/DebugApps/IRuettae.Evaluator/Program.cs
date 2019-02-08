@@ -7,6 +7,8 @@ using System.Text;
 using IRuettae.Core;
 using IRuettae.Core.GeneticAlgorithm;
 using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
+using IRuettae.Core.Google.Routing;
+using IRuettae.Core.Google.Routing.Models;
 using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm.Models;
 using IRuettae.Core.ILPIp5Gurobi;
@@ -26,11 +28,13 @@ namespace IRuettae.Evaluator
             LocalSolver = 3,
             ILP2 = 4,
             ILPIP5Gurobi = 5,
+            GoogleRouting = 6,
             ILPFast = 10,
             GAFast = 20,
             LocalSolverFast = 30,
             ILP2Fast = 40,
             ILPIP5GurobiFast = 50,
+            GoogleRoutingFast = 60,
         }
 
         /// <summary>
@@ -43,11 +47,13 @@ namespace IRuettae.Evaluator
             {Algorithms.LocalSolver, "LocalSolver" },
             {Algorithms.ILP2, "ILP 2" },
             {Algorithms.ILPIP5Gurobi, "ILP Ip5 Gurobi" },
+            {Algorithms.GoogleRouting, "Google OR-Tools Routing" },
             {Algorithms.ILPFast,"ILP Fast"},
             {Algorithms.GAFast, "GA Fast" },
             {Algorithms.LocalSolverFast, "LocalSolver Fast" },
             {Algorithms.ILP2Fast, "ILP 2 Fast" },
             {Algorithms.ILPIP5GurobiFast, "ILP Ip5 Gurobi Fast" },
+            {Algorithms.GoogleRoutingFast, "Google OR-Tools Routing Fast" },
         };
 
         static readonly Dictionary<int, string> DatasetDictionary = new Dictionary<int, string>()
@@ -145,7 +151,7 @@ namespace IRuettae.Evaluator
                                 timelimit /= fastFactor;
                                 goto case Algorithms.LocalSolver;
                             case Algorithms.LocalSolver:
-                                solver = new IRuettae.Core.LocalSolver.Solver(input, false, false);
+                                solver = new IRuettae.Core.LocalSolver.Solver(input, 0.1, 0.8, false);
                                 savepath += "_LocalSolver";
                                 break;
                             case Algorithms.GA:
@@ -178,6 +184,15 @@ namespace IRuettae.Evaluator
                                     TimeSliceDuration = 120
                                 });
                                 savepath += "_ILPIp5Gurobi";
+                                break;
+                            case Algorithms.GoogleRoutingFast:
+                                timelimit /= fastFactor;
+                                solver = new RoutingSolver(input, RoutingSolverStarterData.GetDefault(input));
+                                savepath += "_GoogleRoutingFast";
+                                break;
+                            case Algorithms.GoogleRouting:
+                                solver = new RoutingSolver(input, RoutingSolverStarterData.GetDefault(input));
+                                savepath += "_GoogleRouting";
                                 break;
                         }
 

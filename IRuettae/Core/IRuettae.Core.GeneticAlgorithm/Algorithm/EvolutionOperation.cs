@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using IRuettae.Core.GeneticAlgorithm.Algorithm.Helpers;
 using IRuettae.Core.GeneticAlgorithm.Algorithm.Models;
@@ -8,7 +9,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
     public class EvolutionOperation
     {
         private readonly BinaryTournamentSelection selectionOperation = new BinaryTournamentSelection(RandomFactory.Instance);
-        private readonly MutationOperation mutationOperation = new MutationOperation(RandomFactory.Instance);
+        private readonly MutationOperation mutationOperation;
         private readonly RecombinationOperation recombinationOperation;
         private readonly GenAlgStarterData starterData;
 
@@ -16,6 +17,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         {
             this.starterData = starterData;
             this.recombinationOperation = new RecombinationOperation(RandomFactory.Instance, starterData.OrderBasedCrossoverProbability);
+            this.mutationOperation = new MutationOperation(RandomFactory.Instance, starterData.PositionMutationProbability);
         }
 
         public void Evolve(List<Genotype> population)
@@ -23,15 +25,50 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             // Order by Cost
             population.Sort((i1, i2) => i1.Cost.CompareTo(i2.Cost));
 
-            // Evolve
-            var parents = selectionOperation.SelectParents(population, population.Count - 1);
-            var newPopulation = parents.Select(p => recombinationOperation.Recombinate(p.Item1, p.Item2)).ToList();
-
-            // Mutate
-            mutationOperation.Mutate(newPopulation, starterData.MutationProbability);
+            // result
+            var newPopulation = new List<Genotype>(population.Count);
 
             // Elitism
-            newPopulation.Add(population[0]);
+            {
+                // number of best individuals that should get taken directly to the next generation
+                // must be at least one to save best solution
+                var numberOfEliteIndividuals = (int)Math.Max(1, population.Count * starterData.ElitismPercentage);
+                newPopulation.AddRange(population.Take(numberOfEliteIndividuals));
+            }
+
+            // Direct mutation
+            {
+                var numberOfDirectMutation = (int)(population.Count * starterData.DirectMutationPercentage);
+                var selection = selectionOperation.SelectIndividuals(population, numberOfDirectMutation);
+
+                // mutate (always)
+                mutationOperation.Mutate(selection, 1.0);
+
+                newPopulation.AddRange(selection);
+            }
+
+            // New random individuals
+            {
+                var numberOfRandom = (int)(population.Count * starterData.RandomPercentage);
+                var random = RandomFactory.Instance;
+                for (int i = 0; i < numberOfRandom; i++)
+                {
+                    var temp = new Genotype(population[0]);
+                    temp.Shuffle(random);
+                    newPopulation.Add(temp);
+                }
+            }
+
+            // Fill up with recombination & mutation
+            {
+                var parents = selectionOperation.SelectParents(population, population.Count - newPopulation.Count);
+                var recombinatedPopulation = parents.Select(p => recombinationOperation.Recombinate(p.Item1, p.Item2)).ToList();
+
+                // Mutate with probability
+                mutationOperation.Mutate(recombinatedPopulation, starterData.MutationProbability);
+
+                newPopulation.AddRange(recombinatedPopulation);
+            }
 
             // Swap
             population.Clear();

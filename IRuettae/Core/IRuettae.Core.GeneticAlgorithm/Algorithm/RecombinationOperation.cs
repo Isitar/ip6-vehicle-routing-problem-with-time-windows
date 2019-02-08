@@ -8,7 +8,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
     public class RecombinationOperation
     {
         private readonly double orderBasedCrossoverProbability;
-        private Random random;
+        private readonly Random random;
 
         /// <summary>
         /// Factor to be multiplied with population size

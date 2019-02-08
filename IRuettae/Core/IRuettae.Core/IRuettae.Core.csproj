@@ -52,6 +52,8 @@
     <Compile Include="Models\Visit.cs" />
     <Compile Include="Models\Waypoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

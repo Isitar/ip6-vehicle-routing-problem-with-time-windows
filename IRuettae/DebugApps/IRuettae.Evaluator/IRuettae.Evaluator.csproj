@@ -106,6 +106,10 @@
       <Project>{48054F06-CCF2-4F00-BF6A-70F44C86BEF5}</Project>
       <Name>IRuettae.Core.GeneticAlgorithm</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\IRuettae.Core.Google.Routing\IRuettae.Core.Google.Routing.csproj">
+      <Project>{74331164-a8fd-498d-b4f8-f10a12ad4ffa}</Project>
+      <Name>IRuettae.Core.Google.Routing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\IRuettae.Core.ILPIp5Gurobi\IRuettae.Core.ILPIp5Gurobi.csproj">
       <Project>{6b0c008e-522d-4a5a-b854-ca14fa22c715}</Project>
       <Name>IRuettae.Core.ILPIp5Gurobi</Name>
