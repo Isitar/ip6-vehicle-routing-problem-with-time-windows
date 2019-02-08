@@ -98,14 +98,14 @@ namespace IRuettae.Core.ILP2.VRPSolver.Tests
                 Assert.AreEqual(2, simpleVRPInstanceResult.Count);
                 Assert.AreEqual(5, simpleVRPInstanceResult[0].Length);
                 Assert.AreEqual(5, simpleVRPInstanceResult[1].Length);
-                Assert.AreEqual(11,getRouteLength(simpleVRPInstance.RouteCosts,
+                Assert.AreEqual(11,GetRouteLength(simpleVRPInstance.RouteCosts,
                     simpleVRPInstance.Visits.Select(v => v.WayCostFromHome).ToArray(),
                     simpleVRPInstance.Visits.Select(v => v.WayCostToHome).ToArray(),
                     simpleVRPInstanceResult[0].Skip(1).Select(v => v-1).ToArray()
                     )
                 );
 
-                Assert.AreEqual(11, getRouteLength(simpleVRPInstance.RouteCosts,
+                Assert.AreEqual(11, GetRouteLength(simpleVRPInstance.RouteCosts,
                         simpleVRPInstance.Visits.Select(v => v.WayCostFromHome).ToArray(),
                         simpleVRPInstance.Visits.Select(v => v.WayCostToHome).ToArray(),
                         simpleVRPInstanceResult[1].Skip(1).Select(v => v - 1).ToArray()
@@ -115,7 +115,7 @@ namespace IRuettae.Core.ILP2.VRPSolver.Tests
         }
 
 
-        private static int getRouteLength(int[,] distance, int[] distFromHome, int[] distToHome, int[] sequence)
+        private static int GetRouteLength(int[,] distance, int[] distFromHome, int[] distToHome, int[] sequence)
         {
             var length = distFromHome[sequence[0]];
             for (int i = 1; i < sequence.Length; i++)
