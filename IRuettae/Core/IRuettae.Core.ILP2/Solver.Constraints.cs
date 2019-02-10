@@ -81,11 +81,24 @@ namespace IRuettae.Core.ILP2
             }
         }
 
-        private void FillMinRoutes(GRBModel model, GRBVar[] minRoutes, GRBVar[][] c)
+        private void FillMinRoutes(GRBModel model, GRBVar[] minRoutes, GRBVar[][] c, GRBVar[][] v)
         {
             for (int s = 0; s < minRoutes.Length; s++)
             {
-                model.AddGenConstrMin(minRoutes[s], c[s], 0, null);
+                var (dayStart, dayEnd) = input.Days[s / input.Santas.Length];
+
+                for (int i = 0; i < visitDurations.Length; i++)
+                {
+                    model.AddConstr(minRoutes[s] <= c[s][i] - (distances[0, i]) * v[s][i] + (1 - v[s][i]) * (dayEnd - dayStart), null);
+                }
+            }
+        }
+
+        private void MinRouteSmallerThanMaxRoute(GRBModel model, GRBVar[] minRoutes, GRBVar[] maxRoutes)
+        {
+            for (int s = 0; s < minRoutes.Length; s++)
+            {
+                model.AddConstr(minRoutes[s] <= maxRoutes[s], $"minRoutesSmallerThanMaxRoutesForSanta{s}");
             }
         }
 

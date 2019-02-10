@@ -13,7 +13,7 @@ namespace IRuettae.Core.ILP2
     public partial class Solver : ISolver
     {
         private readonly OptimizationInput input;
-        private readonly double vrpTimeLimitFactor;
+        private double vrpTimeLimitFactor;
         private readonly int[,] distances;
         private readonly int[] visitDurations;
 
@@ -63,16 +63,13 @@ namespace IRuettae.Core.ILP2
         public OptimizationResult Solve(long timelimitMiliseconds, EventHandler<ProgressReport> progress,
             EventHandler<string> consoleProgress)
         {
+            var sw = Stopwatch.StartNew();
             var output = new OptimizationResult
             {
                 OptimizationInput = input
             };
 
-
-            // first solve vrp, take result as initial solution.
-
-            var sw = Stopwatch.StartNew();
-            var vrpSolution = new VRPCallbackSolver(input).SolveVRP((int)(timelimitMiliseconds * vrpTimeLimitFactor));
+           
             var timeWindowIsRelevant = !input.Visits.All(visit =>
             {
                 if (visit.Desired.Length > 0) return false;
@@ -90,6 +87,13 @@ namespace IRuettae.Core.ILP2
                     return false;
                 });
             });
+
+            // first solve vrp, take result as initial solution.
+            if (!timeWindowIsRelevant)
+            {
+                vrpTimeLimitFactor = 1;
+            }
+            var vrpSolution = new VRPCallbackSolver(input).SolveVRP((int)(timelimitMiliseconds * vrpTimeLimitFactor));
 
             consoleProgress?.Invoke(this, $"vrp needed {sw.ElapsedMilliseconds}ms, remaining {timelimitMiliseconds - sw.ElapsedMilliseconds}");
 
@@ -181,7 +185,8 @@ namespace IRuettae.Core.ILP2
                 UnavailableOverlap(model, numberOfRoutes, v, w, c, unavailableDuration, true);
 
                 FillMaxRoute(model, maxRoutes, c, v);
-                FillMinRoutes(model, minRoutes, c);
+                FillMinRoutes(model, minRoutes, c, v);
+                MinRouteSmallerThanMaxRoute(model, minRoutes, maxRoutes);
 
                 // Symmetry breaking constraint if no breaks
                 if (!input.Visits.Any(visit => visit.IsBreak))
@@ -203,7 +208,7 @@ namespace IRuettae.Core.ILP2
                 var longestRoute = model.AddVar(0, input.Days.Max(d => d.to - d.from), 0, GRB.CONTINUOUS, "longestRoute");
                 for (int s = 0; s < numberOfRoutes; s++)
                 {
-                    totalWayTime += maxRoutes[s] - minRoutes[s];
+                    totalWayTime += (maxRoutes[s] - minRoutes[s]);
                     model.AddConstr(longestRoute >= maxRoutes[s] - minRoutes[s], $"longesRouteConstr{s}");
                 }
 
@@ -244,7 +249,7 @@ namespace IRuettae.Core.ILP2
 
                 InitializeWithVRPSolution(vrpSolution, numberOfRoutes, model, v, w, c);
                 model.Optimize();
-                output.TimeElapsed = sw.ElapsedMilliseconds/1000;
+                output.TimeElapsed = sw.ElapsedMilliseconds / 1000;
                 try
                 {
                     BuildResult(output, numberOfRoutes, w, c);
@@ -252,6 +257,14 @@ namespace IRuettae.Core.ILP2
                     consoleProgress?.Invoke(this, $"totalWayTime: {totalWayTime.Value}");
                     consoleProgress?.Invoke(this, $"DesiredDuration: {desiredSum.Value}");
                     consoleProgress?.Invoke(this, $"UnavailableDuration: {unavailableSum.Value}");
+                    for (int s = 0; s < numberOfRoutes; s++)
+                    {
+                        consoleProgress?.Invoke(this, $"maxRoutes[{s}]: {maxRoutes[s].X}, {minRoutes[s].X} , ->{maxRoutes[s].X - minRoutes[s].X}");
+                        for (int visitIndex = 0; visitIndex < visitDurations.Length; visitIndex++)
+                        {
+                            consoleProgress?.Invoke(this, $"c[{s}][{visitIndex}] ({v[s][visitIndex].X}): {c[s][visitIndex].X}");
+                        }
+                    }
                 }
                 catch (Exception e)
                 {
@@ -273,7 +286,6 @@ namespace IRuettae.Core.ILP2
                 var route = new Route { SantaId = s % input.Santas.Length };
                 var wpList = new List<Waypoint>();
 
-                var lastId = 0;
                 var day = s / input.Santas.Length;
                 var lastVisitId = -1;
                 foreach (var visitId in vrpSolution[s])
@@ -308,7 +320,7 @@ namespace IRuettae.Core.ILP2
             }
 
             output.Routes = routes.ToArray();
-            
+
         }
 
         private void InitializeWithVRPSolution(List<int[]> vrpSolution, int numberOfRoutes, GRBModel model, GRBVar[][] v, GRBVar[][] w, GRBVar[][] c)
