@@ -13,13 +13,20 @@ namespace IRuettae.Core.ILP2
     public partial class Solver : ISolver
     {
         private readonly OptimizationInput input;
+        private readonly double vrpTimeLimitFactor;
         private readonly int[,] distances;
         private readonly int[] visitDurations;
 
 
-        public Solver(OptimizationInput input)
+        /// <summary>
+        /// Creates a new solver
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="vrpTimeLimitFactor"></param>
+        public Solver(OptimizationInput input, double vrpTimeLimitFactor)
         {
             this.input = input;
+            this.vrpTimeLimitFactor = vrpTimeLimitFactor;
 
             visitDurations = input.Visits.Select(v => v.Duration).Prepend(0).ToArray();
             distances = new int[input.Visits.Length + 1, input.Visits.Length + 1];
@@ -40,6 +47,14 @@ namespace IRuettae.Core.ILP2
             distances[0, 0] = 0;
         }
 
+
+        /// <summary>
+        /// 2 dimensional array access for one dimensional arr
+        /// </summary>
+        /// <param name="w">the arr</param>
+        /// <param name="i"></param>
+        /// <param name="j"></param>
+        /// <returns>grbvar at w[i*dist + j]</returns>
         private GRBVar AccessW(GRBVar[] w, int i, int j)
         {
             return w[i * distances.GetLength(0) + j];
@@ -57,7 +72,7 @@ namespace IRuettae.Core.ILP2
             // first solve vrp, take result as initial solution.
 
             var sw = Stopwatch.StartNew();
-            var vrpSolution = new VRPCallbackSolver(input).SolveVRP(180);
+            var vrpSolution = new VRPCallbackSolver(input).SolveVRP((int)(timelimitMiliseconds * vrpTimeLimitFactor));
             var timeWindowIsRelevant = !input.Visits.All(visit =>
             {
                 if (visit.Desired.Length > 0) return false;
@@ -75,8 +90,15 @@ namespace IRuettae.Core.ILP2
                     return false;
                 });
             });
-            
+
             consoleProgress?.Invoke(this, $"vrp needed {sw.ElapsedMilliseconds}ms, remaining {timelimitMiliseconds - sw.ElapsedMilliseconds}");
+
+            if (!timeWindowIsRelevant)
+            {
+                BuildResultFromVRP(output, vrpSolution);
+                output.TimeElapsed = sw.ElapsedMilliseconds / 1000;
+                return output;
+            }
 
             timelimitMiliseconds -= sw.ElapsedMilliseconds;
             using (var env = new GRBEnv($"{DateTime.Now:yy-MM-dd-HH-mm-ss}_gurobi.log"))
@@ -207,21 +229,22 @@ namespace IRuettae.Core.ILP2
                 LowerBoundTotalWaytime(model, totalWayTime);
 
                 model.SetObjective(
-                    +(12d ) * unavailableSum
+                    +(12d) * unavailableSum
                     + (4d) * totalWayTime
                     - (2d) * desiredSum
                     + (3d) * longestRoute
                     , GRB.MINIMIZE);
                 model.Parameters.TimeLimit = timelimitMiliseconds / 1000;
                 model.Parameters.MIPFocus = 2;
-                model.Parameters.Cuts = 3;
-                model.Parameters.IntFeasTol = 0.01;
-                model.Parameters.ScaleFlag = 2;
-                model.Parameters.ObjScale = -0.5;
+                //model.Parameters.StartNodeLimit = 1000;
+                //model.Parameters.Cuts = 3;
+                //model.Parameters.IntFeasTol = 0.01;
+                //model.Parameters.ScaleFlag = 2;
+                //model.Parameters.ObjScale = -0.5;
 
                 InitializeWithVRPSolution(vrpSolution, numberOfRoutes, model, v, w, c);
                 model.Optimize();
-                output.TimeElapsed = sw.ElapsedMilliseconds;
+                output.TimeElapsed = sw.ElapsedMilliseconds/1000;
                 try
                 {
                     BuildResult(output, numberOfRoutes, w, c);
@@ -241,11 +264,55 @@ namespace IRuettae.Core.ILP2
             return output;
         }
 
+        private void BuildResultFromVRP(OptimizationResult output, List<int[]> vrpSolution)
+        {
+            var routes = new List<Route>();
+            for (int s = 0; s < vrpSolution.Count; s++)
+            {
+                Console.WriteLine($"Santa {s} uses way");
+                var route = new Route { SantaId = s % input.Santas.Length };
+                var wpList = new List<Waypoint>();
+
+                var lastId = 0;
+                var day = s / input.Santas.Length;
+                var lastVisitId = -1;
+                foreach (var visitId in vrpSolution[s])
+                {
+                    if (visitId == 0)
+                    {
+                        wpList.Add(new Waypoint { StartTime = input.Days[day].from, VisitId = -1 });
+                    }
+                    else
+                    {
+                        wpList.Add(new Waypoint
+                        {
+                            StartTime = wpList.Last().StartTime + visitDurations[lastVisitId] + distances[lastVisitId, visitId],
+                            VisitId = visitId - 1
+                        });
+                    }
+                    lastVisitId = visitId;
+                }
+
+                if (wpList.Count == 0)
+                {
+                    continue;
+                }
+                wpList.Add(new Waypoint
+                {
+                    StartTime = wpList.Last().StartTime + visitDurations[lastVisitId] + distances[lastVisitId, 0],
+                    VisitId = -1
+                });
+                route.Waypoints = wpList.ToArray();
+
+                routes.Add(route);
+            }
+
+            output.Routes = routes.ToArray();
+            
+        }
+
         private void InitializeWithVRPSolution(List<int[]> vrpSolution, int numberOfRoutes, GRBModel model, GRBVar[][] v, GRBVar[][] w, GRBVar[][] c)
         {
-
-            model.Write($"{input.Visits.Length}.lp");
-            return;
 
             if (vrpSolution == null)
             {

@@ -43,6 +43,47 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataSets\OptimizationDataSets.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet0.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet1.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet10.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet11.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet12.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet13.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet14.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet15.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet16.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet17.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet18.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet19.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet2.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet3.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet4.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet5.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet6.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet7.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet8.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet9.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen0.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen1.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen10.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen11.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen12.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen13.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen14.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen15.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen16.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen17.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen18.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen19.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen2.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen3.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen4.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen5.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen6.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen7.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen8.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen9.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

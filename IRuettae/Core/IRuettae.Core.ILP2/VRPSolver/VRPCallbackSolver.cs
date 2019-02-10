@@ -115,7 +115,7 @@ namespace IRuettae.Core.ILP2.VRPSolver
 
                 vrpModel.Parameters.LazyConstraints = 1;
                 vrpModel.SetCallback(new VRPCallbackSolverCallback(w, AccessW, ConvertBack));
-                vrpModel.Parameters.TimeLimit = timeLimitMilliseconds;
+                vrpModel.Parameters.TimeLimit = timeLimitMilliseconds / 1000;
                 vrpModel.Optimize();
                 if (vrpModel.SolCount == 0)
                 {
