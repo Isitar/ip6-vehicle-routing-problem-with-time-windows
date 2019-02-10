@@ -55,17 +55,20 @@ namespace IRuettae.Core.ILP2.VRPSolver
                         if (tour.Length < n)
                         {
                             // Add subtour elimination constraint
-                            var expr = new GRBLinExpr(0);
-                            for (int i = 0; i < tour.Length; i++)
+                            for (int s2 = 0; s2 < vars.Length; s2++)
                             {
-                                for (int j = 0; j < tour.Length; j++)
+                                var expr = new GRBLinExpr(0);
+                                for (int i = 0; i < tour.Length; i++)
                                 {
-                                    expr += accessVar(vars[s], tspToVRPVisitMap[tour[i]], tspToVRPVisitMap[tour[j]]);
+                                    for (int j = 0; j < tour.Length; j++)
+                                    {
+                                        expr += accessVar(vars[s2], tspToVRPVisitMap[tour[i]], tspToVRPVisitMap[tour[j]]);
+                                    }
                                 }
-                            }
 
-                            invalidSols.Add((tour.Length, expr));
-                            AddLazy(expr <= tour.Length - 1);
+                                invalidSols.Add((tour.Length, expr));
+                                AddLazy(expr <= tour.Length - 1);
+                            }
 
                         }
                     }

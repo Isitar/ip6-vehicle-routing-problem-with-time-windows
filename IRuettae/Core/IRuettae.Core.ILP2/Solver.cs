@@ -57,7 +57,7 @@ namespace IRuettae.Core.ILP2
             // first solve vrp, take result as initial solution.
 
             var sw = Stopwatch.StartNew();
-            var vrpSolution = new VRPCallbackSolver(input).SolveVRP((int)(timelimitMiliseconds / 5000));
+            var vrpSolution = new VRPCallbackSolver(input).SolveVRP(180);
             var timeWindowIsRelevant = !input.Visits.All(visit =>
             {
                 if (visit.Desired.Length > 0) return false;
@@ -75,7 +75,7 @@ namespace IRuettae.Core.ILP2
                     return false;
                 });
             });
-
+            
             consoleProgress?.Invoke(this, $"vrp needed {sw.ElapsedMilliseconds}ms, remaining {timelimitMiliseconds - sw.ElapsedMilliseconds}");
 
             timelimitMiliseconds -= sw.ElapsedMilliseconds;
@@ -207,10 +207,10 @@ namespace IRuettae.Core.ILP2
                 LowerBoundTotalWaytime(model, totalWayTime);
 
                 model.SetObjective(
-                    +(120d / 3600d) * unavailableSum
-                    + (40d / 3600d) * totalWayTime
-                    - (20d / 3600d) * desiredSum
-                    + (30d / 3600d) * longestRoute
+                    +(12d ) * unavailableSum
+                    + (4d) * totalWayTime
+                    - (2d) * desiredSum
+                    + (3d) * longestRoute
                     , GRB.MINIMIZE);
                 model.Parameters.TimeLimit = timelimitMiliseconds / 1000;
                 model.Parameters.MIPFocus = 2;
@@ -221,7 +221,7 @@ namespace IRuettae.Core.ILP2
 
                 InitializeWithVRPSolution(vrpSolution, numberOfRoutes, model, v, w, c);
                 model.Optimize();
-
+                output.TimeElapsed = sw.ElapsedMilliseconds;
                 try
                 {
                     BuildResult(output, numberOfRoutes, w, c);
@@ -243,6 +243,10 @@ namespace IRuettae.Core.ILP2
 
         private void InitializeWithVRPSolution(List<int[]> vrpSolution, int numberOfRoutes, GRBModel model, GRBVar[][] v, GRBVar[][] w, GRBVar[][] c)
         {
+
+            model.Write($"{input.Visits.Length}.lp");
+            return;
+
             if (vrpSolution == null)
             {
                 return;

@@ -198,39 +198,39 @@ namespace IRuettae.Core.ILP2
             {
                 var day = s / input.Santas.Length;
                 var (dayStart, dayEnd) = input.Days[day];
+                var dayDuration = dayEnd - dayStart;
                 for (int i = 1; i < visitDurations.Length; i++)
                 {
                     var visit = input.Visits[i - 1];
                     for (int d = 0; d < visit.Desired.Length; d++)
                     {
-                        var (from, to) = visit.Desired[d];
+                        var (desiredFrom, desiredTo) = visit.Desired[d];
                         // check if desired on day
-                        if (to < dayStart || from > dayEnd)
+                        if (desiredTo < dayStart || desiredFrom > dayEnd)
                         {
                             model.AddConstr(desiredDuration[s][i][d] == 0, $"desiredDuration[{s}][{i}][{d}] == 0, outside of day");
                             continue;
                         }
 
-                        var maxDesiredDuration = Math.Min(visit.Duration, to - from);
+                        var maxDesiredDuration = Math.Min(visit.Duration, desiredTo - desiredFrom);
                         model.AddConstr(desiredDuration[s][i][d] <= maxDesiredDuration * v[s][i], $"desired[{s}][{i}][{d}] only possible if v[{s}][{i}]");
 
-                        var desiredStart = model.AddVar(Math.Max(from, dayStart), dayEnd, 0, GRB.CONTINUOUS, $"desiredStart[{s}][{i}][{d}]");
+                        var desiredStart = model.AddVar(Math.Max(desiredFrom - dayStart, 0), dayDuration, 0, GRB.CONTINUOUS, $"desiredStart[{s}][{i}][{d}]");
 
-                        model.AddConstr(desiredStart >= c[s][i] + dayStart, $"desiredStart[{s}[{i}][{d}] >= visitStart");
+                        model.AddConstr(desiredStart >= c[s][i], $"desiredStart[{s}[{i}][{d}] >= visitStart");
 
-                        var desiredEnd = model.AddVar(0, to, 0, GRB.CONTINUOUS, $"desiredEnd[{s}][{i}][{d}]");
+                        var desiredEnd = model.AddVar(0, desiredTo-dayStart, 0, GRB.CONTINUOUS, $"desiredEnd[{s}][{i}][{d}]");
 
-
-                        model.AddConstr(desiredEnd <= c[s][i] + visit.Duration * v[s][i] + dayStart, $"desiredEnd[{s}[{i}][{d}] <= visitEnd");
-                        var y = model.AddVar(0, 1, 0, GRB.BINARY, null);
+                        model.AddConstr(desiredEnd <= c[s][i] + visit.Duration * v[s][i], $"desiredEnd[{s}[{i}][{d}] <= visitEnd");
+                        var binDecisionVariable = model.AddVar(0, 1, 0, GRB.BINARY, null);
 
 
                         // if positive, duration = end -start
-                        model.AddGenConstrIndicator(y, 0, desiredEnd - desiredStart >= 0, null);
-                        model.AddGenConstrIndicator(y, 0, desiredDuration[s][i][d] == desiredEnd - desiredStart, null);
+                        model.AddGenConstrIndicator(binDecisionVariable, 0, desiredEnd - desiredStart >= 0, null);
+                        model.AddGenConstrIndicator(binDecisionVariable, 0, desiredDuration[s][i][d] == desiredEnd - desiredStart, null);
                         // if negative, duration = 0
-                        model.AddGenConstrIndicator(y, 1, desiredEnd - desiredStart <= 0, null);
-                        model.AddGenConstrIndicator(y, 1, desiredDuration[s][i][d] == 0, null);
+                        model.AddGenConstrIndicator(binDecisionVariable, 1, desiredEnd - desiredStart <= 0, null);
+                        model.AddGenConstrIndicator(binDecisionVariable, 1, desiredDuration[s][i][d] == 0, null);
                     }
                 }
             }
@@ -251,16 +251,16 @@ namespace IRuettae.Core.ILP2
             {
                 var day = s / input.Santas.Length;
                 var (dayStart, dayEnd) = input.Days[day];
-
+                var dayDuration = dayEnd - dayStart;
                 for (int i = 1; i < visitDurations.Length; i++)
                 {
                     var visit = input.Visits[i - 1];
                     for (int d = 0; d < visit.Unavailable.Length; d++)
                     {
                         // check if unavailable is on this day
-                        var (from, to) = visit.Unavailable[d];
+                        var (unavailableFrom, unavailableTo) = visit.Unavailable[d];
 
-                        if (to < dayStart || from > dayEnd)
+                        if (unavailableTo < dayStart || unavailableFrom > dayEnd)
                         {
                             model.AddConstr(unavailableDuration[s][i][d] == 0, $"unavailalbe[{s}][{i}][{d}] == 0, outside of day");
                             continue;
@@ -272,26 +272,26 @@ namespace IRuettae.Core.ILP2
                             model.AddConstr(unavailableDuration[s][i][d] == 0, $"unavailalbe[{s}][{i}][{d}] == 0, hard constraint");
                         }
 
-                        var maxUnavailableDuration = Math.Min(visit.Duration, to - from);
+                        var maxUnavailableDuration = Math.Min(visit.Duration, unavailableTo - unavailableFrom);
                         model.AddConstr(unavailableDuration[s][i][d] <= maxUnavailableDuration * v[s][i], $"unavailable[{s}][{i}][{d}] only possible if v[{s}][{i}]");
 
-                        var unavailableStart = model.AddVar(from, dayEnd, 0, GRB.CONTINUOUS, $"unavailableStart[{s}][{i}][{d}]");
+                        var unavailableStart = model.AddVar(unavailableFrom-dayStart, dayDuration, 0, GRB.CONTINUOUS, $"unavailableStart[{s}][{i}][{d}]");
                         var binHelperStart = model.AddVar(0, 1, 0, GRB.BINARY, $"binHelperUnavailableStart[{s}][{i}][{d}]");
 
-                        var visitStart = c[s][i] + dayStart;
+                        var visitStart = c[s][i];
 
-                        model.AddConstr(unavailableStart >= visitStart - dayEnd * (1 - v[s][i]), null);
-                        model.AddGenConstrIndicator(binHelperStart, 0, unavailableStart <= @from, null);
+                        model.AddConstr(unavailableStart >= visitStart - dayDuration * (1 - v[s][i]), null);
+                        model.AddGenConstrIndicator(binHelperStart, 0, unavailableStart <= unavailableFrom-dayStart, null);
                         model.AddGenConstrIndicator(binHelperStart, 1, unavailableStart <= visitStart, null);
 
 
-                        var unavailableEnd = model.AddVar(0, to, 0, GRB.CONTINUOUS, $"unavailableEnd[{s}][{i}][{d}]");
+                        var unavailableEnd = model.AddVar(0, unavailableTo-dayStart, 0, GRB.CONTINUOUS, $"unavailableEnd[{s}][{i}][{d}]");
                         var binHelperEnd = model.AddVar(0, 1, 0, GRB.BINARY, $"binHelperUnavailableEnd[{s}][{i}][{d}]");
 
-                        var visitEnd = c[s][i] + dayStart + visit.Duration * v[s][i];
+                        var visitEnd = visitStart + visit.Duration * v[s][i];
 
                         model.AddConstr(unavailableEnd <= visitEnd, $"unavailableEnd[{s}[{i}][{d}] <= visitEnd");
-                        model.AddGenConstrIndicator(binHelperEnd, 0, unavailableEnd >= to, null);
+                        model.AddGenConstrIndicator(binHelperEnd, 0, unavailableEnd >= unavailableTo - dayStart, null);
                         model.AddGenConstrIndicator(binHelperEnd, 1, unavailableEnd >= visitEnd, null);
 
                         model.AddConstr(
