@@ -1,0 +1,14 @@
+Solver: LocalSolver
+Dataset4: 20 visits, 2 santas
+TimeElapsed [s]: 1198
+Cost: 912
+NumberOfNotVisitedFamilies: 0
+NumberOfMissingBreaks: 0
+NumberOfAdditionalSantas: 0
+AdditionalSantaWorkTime: 0
+VisitTimeInUnavailable: 0
+WayTimeOutsideBusinessHours: 0
+VisitTimeInDesired: 0
+SantaWorkTime: 68940
+LongestDay: 17433
+NumberOfRoutes: 4
