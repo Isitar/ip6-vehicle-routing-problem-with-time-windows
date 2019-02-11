@@ -1,5 +1,5 @@
 using IRuettae.Core.Models;
-namespace IRuettae.Tuning.LocalSolverGridSearch.DataSets
+namespace IRuettae.Tuning.ILP2Tuning.DataSets
 {
 internal partial class OptimizationDataSets
 {

@@ -69,7 +69,7 @@ namespace IRuettae.Core.ILP2
                 OptimizationInput = input
             };
 
-           
+
             var timeWindowIsRelevant = !input.Visits.All(visit =>
             {
                 if (visit.Desired.Length > 0) return false;
@@ -240,7 +240,7 @@ namespace IRuettae.Core.ILP2
                     + (3d) * longestRoute
                     , GRB.MINIMIZE);
                 model.Parameters.TimeLimit = timelimitMiliseconds / 1000;
-                model.Parameters.MIPFocus = 2;
+                //model.Parameters.MIPFocus = 3;
                 //model.Parameters.StartNodeLimit = 1000;
                 //model.Parameters.Cuts = 3;
                 //model.Parameters.IntFeasTol = 0.01;
@@ -252,6 +252,12 @@ namespace IRuettae.Core.ILP2
                 output.TimeElapsed = sw.ElapsedMilliseconds / 1000;
                 try
                 {
+                    if (model.SolCount == 0 && vrpSolution != null)
+                    {
+                        consoleProgress?.Invoke(this, "No solution found -> try with vrpsolution");
+                        BuildResultFromVRP(output, vrpSolution);
+                        return output;
+                    }
                     BuildResult(output, numberOfRoutes, w, c);
                     consoleProgress?.Invoke(this, $"longestRoute: {longestRoute.X}");
                     consoleProgress?.Invoke(this, $"totalWayTime: {totalWayTime.Value}");
@@ -282,7 +288,6 @@ namespace IRuettae.Core.ILP2
             var routes = new List<Route>();
             for (int s = 0; s < vrpSolution.Count; s++)
             {
-                Console.WriteLine($"Santa {s} uses way");
                 var route = new Route { SantaId = s % input.Santas.Length };
                 var wpList = new List<Waypoint>();
 
@@ -370,7 +375,7 @@ namespace IRuettae.Core.ILP2
 
             for (int s = 0; s < numberOfRoutes; s++)
             {
-                Console.WriteLine($"Santa {s} uses way");
+                Debug.WriteLine($"Santa {s} uses way");
                 var route = new Route();
                 var wpList = new List<Waypoint>();
                 route.SantaId = s % input.Santas.Length;
@@ -418,7 +423,7 @@ namespace IRuettae.Core.ILP2
                     {
                         if (Math.Round(AccessW(w[s], i, j).X, 0) > 0)
                         {
-                            Console.WriteLine($"[{i},{j}]=\t{c[s][j].X}");
+                            Debug.WriteLine($"[{i},{j}]=\t{c[s][j].X}");
                         }
                     }
                 }

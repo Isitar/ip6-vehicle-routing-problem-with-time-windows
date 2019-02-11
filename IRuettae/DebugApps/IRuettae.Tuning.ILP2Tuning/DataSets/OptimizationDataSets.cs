@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IRuettae.Core.Models;
 
-namespace IRuettae.Tuning.LocalSolverGridSearch.DataSets
+namespace IRuettae.Tuning.ILP2Tuning.DataSets
 {
     internal partial class OptimizationDataSets
     {
