@@ -239,7 +239,7 @@ namespace IRuettae.Core.ILP2
                     - (2d) * desiredSum
                     + (3d) * longestRoute
                     , GRB.MINIMIZE);
-                model.Parameters.TimeLimit = timelimitMiliseconds / 1000;
+                model.Parameters.TimeLimit = Math.Max(0,timelimitMiliseconds / 1000);
                 //model.Parameters.MIPFocus = 3;
                 //model.Parameters.StartNodeLimit = 1000;
                 //model.Parameters.Cuts = 3;

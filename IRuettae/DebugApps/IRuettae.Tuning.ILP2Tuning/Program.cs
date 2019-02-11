@@ -12,13 +12,13 @@ namespace IRuettae.Tuning.ILP2Tuning
         static void Main(string[] args)
         {
 
-            var dataSets = new DataSets.OptimizationDataSets().DataSetsFifteen.Take(10).ToArray();
+            var dataSets = new DataSets.OptimizationDataSets().TwentyDataSets.Take(15).ToArray();
 
             const int numValuesPerRow = 11;
-            const int numRuns = 2;
+            const int numRuns = 1;
             var table = new int[numRuns][];
             var allCosts = new int[numRuns][][];
-            const int timeLimit = 75000;
+            const int timeLimit = 360 * 1000;
 
             {
                 var calcDuration = ((numValuesPerRow) * dataSets.Length * (timeLimit / 1000) * numRuns);
@@ -41,7 +41,7 @@ namespace IRuettae.Tuning.ILP2Tuning
                     foreach (var dataSet in dataSets)
                     {
                         // ReSharper disable PossibleLossOfFraction
-                        var solver = new IRuettae.Core.ILP2.Solver(dataSet, vrpTimeLimitFactor / (numValuesPerRow - 1));
+                        var solver = new IRuettae.Core.ILP2.Solver(dataSet, (double)vrpTimeLimitFactor / (double)(numValuesPerRow - 1));
                         allCosts[run][vrpTimeLimitFactor][i] = solver.Solve(timeLimit, null, null).Cost();
 
                         cumCost += allCosts[run][vrpTimeLimitFactor][i];
