@@ -91,12 +91,12 @@ namespace IRuettae.ResultEvaluator
             foreach (var solver in resultDict.Keys.OrderBy(k => k))
             {
                 sb.AppendLine(solver);
-                sb.AppendLine("DataSet;Avg;Min;Max;25-percentile;Measures");
+                sb.AppendLine("DataSet;Avg;Min;Max;25-percentile;Measures;Run1;Run2;Run3;Run4;Run5");
                 foreach (var dataSet in resultDict[solver].Keys.OrderBy(int.Parse))
                 {
                     var resultList = resultDict[solver][dataSet];
                     //Console.WriteLine($"{dataSet}: [{string.Join(",", resultList)}], avg: {resultList.Average()}, min: {resultList.Min()}, max: {resultList.Max()}, 25%percentile: {resultList.OrderBy(r => -r).Take((int)Math.Ceiling(resultList.Count * 0.25)).Average()}");
-                    sb.AppendLine($"{dataSet};{resultList.Average():F1};{resultList.Min():F1};{resultList.Max():F1};{resultList.OrderBy(r => -r).Take((int)Math.Ceiling(resultList.Count * 0.25)).Average():F1};{string.Join(",",resultList)}");
+                    sb.AppendLine($"{dataSet};{resultList.Average():F1};{resultList.Min():F1};{resultList.Max():F1};{resultList.OrderBy(r => -r).Take((int)Math.Ceiling(resultList.Count * 0.25)).Average():F1};{string.Join(",",resultList)};{string.Join(";", resultList)}");
                 }
 
                 sb.AppendLine(new string('-', 40));

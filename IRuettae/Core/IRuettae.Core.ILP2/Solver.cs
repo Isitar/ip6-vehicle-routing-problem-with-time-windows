@@ -93,7 +93,8 @@ namespace IRuettae.Core.ILP2
             {
                 vrpTimeLimitFactor = 1;
             }
-            var vrpSolution = new VRPCallbackSolver(input).SolveVRP((int)(timelimitMiliseconds * vrpTimeLimitFactor));
+
+            var vrpSolution = input.Visits.Length > 75 ? FakeVRPSolution(input.Santas.Length * input.Days.Length) : new VRPCallbackSolver(input).SolveVRP((int)(timelimitMiliseconds * vrpTimeLimitFactor));
 
             consoleProgress?.Invoke(this, $"vrp needed {sw.ElapsedMilliseconds}ms, remaining {timelimitMiliseconds - sw.ElapsedMilliseconds}");
 
@@ -130,8 +131,8 @@ namespace IRuettae.Core.ILP2
                     var dayDuration = dayEnd - dayStart;
                     for (int i = 0; i < v[s].Length; i++)
                     {
-                        v[s][i] = model.AddVar(0, 1, 0.0, GRB.BINARY, $"v[{s}][{i}]");
-                        c[s][i] = model.AddVar(0, dayDuration, 0, GRB.CONTINUOUS, $"c[{s}][{i}]");
+                        v[s][i] = model.AddVar(0, 1, 0.0, GRB.BINARY, GurobiVarName($"v[{s}][{i}]"));
+                        c[s][i] = model.AddVar(0, dayDuration, 0, GRB.CONTINUOUS, GurobiVarName($"c[{s}][{i}]"));
 
                         if (i > 0)
                         {
@@ -142,20 +143,20 @@ namespace IRuettae.Core.ILP2
                             for (int d = 0; d < visit.Desired.Length; d++)
                             {
                                 var ub = Math.Max(0, Math.Min(visit.Duration, visit.Desired[d].to - visit.Desired[d].from));
-                                desiredDuration[s][i][d] = model.AddVar(0, ub, 0, GRB.CONTINUOUS, $"desiredDuration[{s}][{i}][{d}]");
+                                desiredDuration[s][i][d] = model.AddVar(0, ub, 0, GRB.CONTINUOUS, GurobiVarName($"desiredDuration[{s}][{i}][{d}]"));
                             }
 
                             for (int u = 0; u < visit.Unavailable.Length; u++)
                             {
                                 var ub = Math.Max(0, Math.Min(visit.Duration, visit.Unavailable[u].to - visit.Unavailable[u].from));
-                                unavailableDuration[s][i][u] = model.AddVar(0, ub, 0, GRB.CONTINUOUS, $"unavailableDuration[{s}][{i}][{u}]");
+                                unavailableDuration[s][i][u] = model.AddVar(0, ub, 0, GRB.CONTINUOUS, GurobiVarName($"unavailableDuration[{s}][{i}][{u}]"));
                             }
                         }
                     }
 
                     w[s] = model.AddVars(distances.GetLength(0) * distances.GetLength(1), GRB.BINARY);
-                    maxRoutes[s] = model.AddVar(0, dayEnd - dayStart, 0, GRB.CONTINUOUS, $"santa{s} maxRoute");
-                    minRoutes[s] = model.AddVar(0, dayEnd - dayStart, 0, GRB.CONTINUOUS, $"santa{s} minRoute");
+                    maxRoutes[s] = model.AddVar(0, dayEnd - dayStart, 0, GRB.CONTINUOUS, GurobiVarName($"santa{s} maxRoute"));
+                    minRoutes[s] = model.AddVar(0, dayEnd - dayStart, 0, GRB.CONTINUOUS, GurobiVarName($"santa{s} minRoute"));
                 }
 
                 #endregion
@@ -221,12 +222,14 @@ namespace IRuettae.Core.ILP2
                         var visit = input.Visits[i - 1];
                         for (int d = 0; d < visit.Desired.Length; d++)
                         {
-                            desiredSum += desiredDuration[s][i][d];
+                            if (!(desiredDuration[s][i][d] is null))
+                            { desiredSum += desiredDuration[s][i][d]; }
                         }
 
                         for (int u = 0; u < visit.Unavailable.Length; u++)
                         {
-                            unavailableSum += unavailableDuration[s][i][u];
+                            if (!(unavailableDuration[s][i][u] is null))
+                            { unavailableSum += unavailableDuration[s][i][u]; }
                         }
                     }
                 }
@@ -239,14 +242,7 @@ namespace IRuettae.Core.ILP2
                     - (2d) * desiredSum
                     + (3d) * longestRoute
                     , GRB.MINIMIZE);
-                model.Parameters.TimeLimit = Math.Max(0,timelimitMiliseconds / 1000);
-                //model.Parameters.MIPFocus = 3;
-                //model.Parameters.StartNodeLimit = 1000;
-                //model.Parameters.Cuts = 3;
-                //model.Parameters.IntFeasTol = 0.01;
-                //model.Parameters.ScaleFlag = 2;
-                //model.Parameters.ObjScale = -0.5;
-
+                model.Parameters.TimeLimit = Math.Max(0, timelimitMiliseconds / 1000);
                 InitializeWithVRPSolution(vrpSolution, numberOfRoutes, model, v, w, c);
                 model.Optimize();
                 output.TimeElapsed = sw.ElapsedMilliseconds / 1000;
@@ -282,6 +278,48 @@ namespace IRuettae.Core.ILP2
 
             return output;
         }
+
+        private List<int[]> FakeVRPSolution(int numberOfRoutes)
+        {
+            var visitSequences = new List<int[]>();
+            var rest = input.Visits.Count(visit => !visit.IsBreak) % numberOfRoutes;
+            var visitsPerRoute = input.Visits.Count(visit => !visit.IsBreak) / numberOfRoutes;
+            var visitIndex = 1;
+            for (var day = 0; day < input.Days.Length; day++)
+            {
+                for (var santa = 0; santa < input.Santas.Length; santa++)
+                {
+                    var visitSequence = new List<int> { 0 };
+                    var s = input.Santas.Length * day + santa;
+                    foreach (var breakVisit in input.Visits.Where(visit => visit.IsBreak && (visit.SantaId == santa)))
+                    {
+                        visitSequence.Add(breakVisit.Id + 1);
+                    }
+
+                    for (var i = 0; i < visitsPerRoute; i++)
+                    {
+                        visitSequence.Add(visitIndex);
+                        visitIndex++;
+                    }
+
+                    if (day + 1 == input.Days.Length && santa + 1 == input.Santas.Length)
+                    {
+                        for (int i = 0; i < rest; i++)
+                        {
+                            visitSequence.Add(visitIndex);
+                            visitIndex++;
+                        }
+                    }
+
+                    visitSequence.Add(0);
+
+                    visitSequences.Add(visitSequence.ToArray());
+                }
+            }
+
+            return visitSequences;
+        }
+
 
         private void BuildResultFromVRP(OptimizationResult output, List<int[]> vrpSolution)
         {
@@ -365,7 +403,11 @@ namespace IRuettae.Core.ILP2
 
                     lastVisit = currVisit;
                 }
-                AccessW(w[s], lastVisit, 0).Start = 1;
+
+                if (lastVisit != 0)
+                {
+                    AccessW(w[s], lastVisit, 0).Start = 1;
+                }
             }
         }
 

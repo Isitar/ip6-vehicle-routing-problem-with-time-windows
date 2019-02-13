@@ -116,6 +116,7 @@ namespace IRuettae.Core.ILP2.VRPSolver
                 vrpModel.Parameters.LazyConstraints = 1;
                 vrpModel.SetCallback(new VRPCallbackSolverCallback(w, AccessW, ConvertBack));
                 vrpModel.Parameters.TimeLimit = timeLimitMilliseconds / 1000;
+                InitializeModel(w, v, numberOfRoutes, input.Visits, input.Santas.Length);
                 vrpModel.Optimize();
                 if (vrpModel.SolCount == 0)
                 {
@@ -142,8 +143,52 @@ namespace IRuettae.Core.ILP2.VRPSolver
                     routes.Add(route.ToArray());
                 }
 
-
+                vrpModel.Reset();
                 return routes;
+            }
+        }
+
+        private void InitializeModel(GRBVar[][] w, GRBVar[][] v, int numberOfRoutes, Visit[] inputVisits, int numberOfSantas)
+        {
+            var rest = inputVisits.Count(visit => !visit.IsBreak) % numberOfRoutes;
+            var visitsPerRoute = inputVisits.Count(visit => !visit.IsBreak) / numberOfRoutes;
+            var visitIndex = 1;
+            for (var day = 0; day < input.Days.Length; day++)
+            {
+                for (var santa = 0; santa < numberOfSantas; santa++)
+                {
+                    var visitSequence = new List<int> { 0 };
+                    var s = numberOfSantas * day + santa;
+                    foreach (var breakVisit in inputVisits.Where(visit => visit.IsBreak && (visit.SantaId == santa)))
+                    {
+                        v[s][breakVisit.Id + 1].Start = 1;
+                        visitSequence.Add(breakVisit.Id + 1);
+                    }
+
+                    for (var i = 0; i < visitsPerRoute; i++)
+                    {
+                        v[s][visitIndex].Start = 1;
+                        visitSequence.Add(visitIndex);
+                        visitIndex++;
+                    }
+
+                    if (day + 1 == input.Days.Length && santa + 1 == numberOfSantas)
+                    {
+                        for (int i = 0; i < rest; i++)
+                        {
+                            v[s][visitIndex].Start = 1;
+                            visitSequence.Add(visitIndex);
+                            visitIndex++;
+                        }
+                    }
+
+                    visitSequence.Add(0);
+
+                    for (int i = 1; i < visitSequence.Count; i++)
+                    {
+                        AccessW(w[s], visitSequence[i - 1], visitSequence[i]).Start = 1;
+                    }
+                }
             }
         }
     }

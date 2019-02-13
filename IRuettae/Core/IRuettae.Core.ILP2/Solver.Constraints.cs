@@ -31,19 +31,19 @@ namespace IRuettae.Core.ILP2
             {
                 var w0i = new GRBLinExpr(0);
                 var wi0 = new GRBLinExpr(0);
-                var santaUsed = model.AddVar(0, 1, 0, GRB.BINARY, $"Santa{s} used");
+                var santaUsed = model.AddVar(0, 1, 0, GRB.BINARY, GurobiVarName($"Santa{s} used"));
                 var santaUsedSum = new GRBLinExpr(0);
                 for (int i = 1; i < distances.GetLength(0); i++)
                 {
                     w0i += AccessW(w[s], 0, i);
                     wi0 += AccessW(w[s], i, 0);
-                    model.AddConstr(santaUsed >= v[s][i], $"santa_used[{s}] >= v[{s}][{i}]");
+                    model.AddConstr(santaUsed >= v[s][i], GurobiVarName($"santa_used[{s}]_>=_v[{s}][{i}]"));
                     santaUsedSum += v[s][i];
                 }
 
-                model.AddConstr(santaUsed <= santaUsedSum, $"santa_used[{s}] <= sum(v[{s}][i])");
-                model.AddConstr(w0i == santaUsed, $"way from home santa {s}");
-                model.AddConstr(wi0 == santaUsed, $"way to home santa {s}");
+                model.AddConstr(santaUsed <= santaUsedSum, GurobiVarName($"santa_used[{s}]_<=_sum(v[{s}][i])"));
+                model.AddConstr(w0i == santaUsed, GurobiVarName($"way_from_home_santa_{s}"));
+                model.AddConstr(wi0 == santaUsed, GurobiVarName($"way_to_home_santa_{s}"));
             }
         }
 
@@ -64,8 +64,8 @@ namespace IRuettae.Core.ILP2
                     }
 
                     model.AddConstr(wki == wik, null);
-                    model.AddConstr(wki == v[s][i], $"if visit {i} is visited by santa {s}, incoming way has to be used");
-                    model.AddConstr(wik == v[s][i], $"if visit {i} is visited by santa {s}, outgoing way has to be used");
+                    model.AddConstr(wki == v[s][i], GurobiVarName($"if visit {i} is visited by santa {s}, incoming way has to be used"));
+                    model.AddConstr(wik == v[s][i], GurobiVarName($"if visit {i} is visited by santa {s}, outgoing way has to be used"));
                 }
             }
         }
@@ -98,7 +98,7 @@ namespace IRuettae.Core.ILP2
         {
             for (int s = 0; s < minRoutes.Length; s++)
             {
-                model.AddConstr(minRoutes[s] <= maxRoutes[s], $"minRoutesSmallerThanMaxRoutesForSanta{s}");
+                model.AddConstr(minRoutes[s] <= maxRoutes[s], GurobiVarName($"minRoutesSmallerThanMaxRoutesForSanta{s}"));
             }
         }
 
@@ -124,8 +124,8 @@ namespace IRuettae.Core.ILP2
                     }
                 }
 
-                model.AddConstr(wki == 1, $"v{i} incoming ways == 1");
-                model.AddConstr(wik == 1, $"v{i} outgoing ways == 1");
+                model.AddConstr(wki == 1, GurobiVarName($"v{i} incoming ways == 1"));
+                model.AddConstr(wik == 1, GurobiVarName($"v{i} outgoing ways == 1"));
             }
         }
 
@@ -144,7 +144,7 @@ namespace IRuettae.Core.ILP2
                     }
                 }
 
-                model.AddConstr(sumVisitsVisited == sumWaysUsed, $"Santa {s} visits visited + home == ways used");
+                model.AddConstr(sumVisitsVisited == sumWaysUsed, GurobiVarName($"Santa {s} visits visited + home == ways used"));
             }
         }
 
@@ -163,7 +163,7 @@ namespace IRuettae.Core.ILP2
                     sum += v[s][i];
                 }
 
-                model.AddConstr(sum == 1, $"visit {i} visited once");
+                model.AddConstr(sum == 1, GurobiVarName($"visit {i} visited once"));
             }
         }
 
@@ -200,7 +200,7 @@ namespace IRuettae.Core.ILP2
                 // selfies
                 for (int i = 0; i < distances.GetLength(0); i++)
                 {
-                    model.AddConstr(AccessW(w[s], i, i) == 0, $"no selfie for {s} {i}");
+                    model.AddConstr(AccessW(w[s], i, i) == 0, GurobiVarName($"no selfie for {s} {i}"));
                 }
             }
         }
@@ -221,20 +221,22 @@ namespace IRuettae.Core.ILP2
                         // check if desired on day
                         if (desiredTo < dayStart || desiredFrom > dayEnd)
                         {
-                            model.AddConstr(desiredDuration[s][i][d] == 0, $"desiredDuration[{s}][{i}][{d}] == 0, outside of day");
+                            model.Remove(desiredDuration[s][i][d]);
+                            desiredDuration[s][i][d] = null; //free up memory
+                            //model.AddConstr(desiredDuration[s][i][d] == 0, GurobiVarName($"desiredDuration[{s}][{i}][{d}] == 0, outside of day"));
                             continue;
                         }
 
                         var maxDesiredDuration = Math.Min(visit.Duration, desiredTo - desiredFrom);
-                        model.AddConstr(desiredDuration[s][i][d] <= maxDesiredDuration * v[s][i], $"desired[{s}][{i}][{d}] only possible if v[{s}][{i}]");
+                        model.AddConstr(desiredDuration[s][i][d] <= maxDesiredDuration * v[s][i], GurobiVarName($"desired[{s}][{i}][{d}] only possible if v[{s}][{i}]"));
 
-                        var desiredStart = model.AddVar(Math.Max(desiredFrom - dayStart, 0), dayDuration, 0, GRB.CONTINUOUS, $"desiredStart[{s}][{i}][{d}]");
+                        var desiredStart = model.AddVar(Math.Max(desiredFrom - dayStart, 0), dayDuration, 0, GRB.CONTINUOUS, GurobiVarName($"desiredStart[{s}][{i}][{d}]"));
 
-                        model.AddConstr(desiredStart >= c[s][i], $"desiredStart[{s}[{i}][{d}] >= visitStart");
+                        model.AddConstr(desiredStart >= c[s][i], GurobiVarName($"desiredStart[{s}[{i}][{d}] >= visitStart"));
 
-                        var desiredEnd = model.AddVar(0, desiredTo-dayStart, 0, GRB.CONTINUOUS, $"desiredEnd[{s}][{i}][{d}]");
+                        var desiredEnd = model.AddVar(0, desiredTo-dayStart, 0, GRB.CONTINUOUS, GurobiVarName($"desiredEnd[{s}][{i}][{d}]"));
 
-                        model.AddConstr(desiredEnd <= c[s][i] + visit.Duration * v[s][i], $"desiredEnd[{s}[{i}][{d}] <= visitEnd");
+                        model.AddConstr(desiredEnd <= c[s][i] + visit.Duration * v[s][i], GurobiVarName($"desiredEnd[{s}[{i}][{d}] <= visitEnd"));
                         var binDecisionVariable = model.AddVar(0, 1, 0, GRB.BINARY, null);
 
 
@@ -275,21 +277,23 @@ namespace IRuettae.Core.ILP2
 
                         if (unavailableTo < dayStart || unavailableFrom > dayEnd)
                         {
-                            model.AddConstr(unavailableDuration[s][i][d] == 0, $"unavailalbe[{s}][{i}][{d}] == 0, outside of day");
+                            model.Remove(unavailableDuration[s][i][d]);
+                            unavailableDuration[s][i][d] = null;
+                            //model.AddConstr(unavailableDuration[s][i][d] == 0, GurobiVarName($"unavailalbe[{s}][{i}][{d}] == 0, outside of day"));
                             continue;
                         }
 
                         // temp
                         if (hardConstraint)
                         {
-                            model.AddConstr(unavailableDuration[s][i][d] == 0, $"unavailalbe[{s}][{i}][{d}] == 0, hard constraint");
+                            model.AddConstr(unavailableDuration[s][i][d] == 0, GurobiVarName($"unavailalbe[{s}][{i}][{d}] == 0, hard constraint"));
                         }
 
                         var maxUnavailableDuration = Math.Min(visit.Duration, unavailableTo - unavailableFrom);
-                        model.AddConstr(unavailableDuration[s][i][d] <= maxUnavailableDuration * v[s][i], $"unavailable[{s}][{i}][{d}] only possible if v[{s}][{i}]");
+                        model.AddConstr(unavailableDuration[s][i][d] <= maxUnavailableDuration * v[s][i], GurobiVarName($"unavailable[{s}][{i}][{d}] only possible if v[{s}][{i}]"));
 
-                        var unavailableStart = model.AddVar(unavailableFrom-dayStart, dayDuration, 0, GRB.CONTINUOUS, $"unavailableStart[{s}][{i}][{d}]");
-                        var binHelperStart = model.AddVar(0, 1, 0, GRB.BINARY, $"binHelperUnavailableStart[{s}][{i}][{d}]");
+                        var unavailableStart = model.AddVar(unavailableFrom-dayStart, dayDuration, 0, GRB.CONTINUOUS, GurobiVarName($"unavailableStart[{s}][{i}][{d}]"));
+                        var binHelperStart = model.AddVar(0, 1, 0, GRB.BINARY, GurobiVarName($"binHelperUnavailableStart[{s}][{i}][{d}]"));
 
                         var visitStart = c[s][i];
 
@@ -298,18 +302,18 @@ namespace IRuettae.Core.ILP2
                         model.AddGenConstrIndicator(binHelperStart, 1, unavailableStart <= visitStart, null);
 
 
-                        var unavailableEnd = model.AddVar(0, unavailableTo-dayStart, 0, GRB.CONTINUOUS, $"unavailableEnd[{s}][{i}][{d}]");
-                        var binHelperEnd = model.AddVar(0, 1, 0, GRB.BINARY, $"binHelperUnavailableEnd[{s}][{i}][{d}]");
+                        var unavailableEnd = model.AddVar(0, unavailableTo-dayStart, 0, GRB.CONTINUOUS, GurobiVarName($"unavailableEnd[{s}][{i}][{d}]"));
+                        var binHelperEnd = model.AddVar(0, 1, 0, GRB.BINARY, GurobiVarName($"binHelperUnavailableEnd[{s}][{i}][{d}]"));
 
                         var visitEnd = visitStart + visit.Duration * v[s][i];
 
-                        model.AddConstr(unavailableEnd <= visitEnd, $"unavailableEnd[{s}[{i}][{d}] <= visitEnd");
+                        model.AddConstr(unavailableEnd <= visitEnd, GurobiVarName($"unavailableEnd[{s}[{i}][{d}] <= visitEnd"));
                         model.AddGenConstrIndicator(binHelperEnd, 0, unavailableEnd >= unavailableTo - dayStart, null);
                         model.AddGenConstrIndicator(binHelperEnd, 1, unavailableEnd >= visitEnd, null);
 
                         model.AddConstr(
                             unavailableDuration[s][i][d] >= unavailableEnd - unavailableStart,
-                            $"unavailable overlap[{s}][{i}][{d}]");
+                            GurobiVarName($"unavailable overlap[{s}][{i}][{d}]"));
                     }
                 }
             }
@@ -319,6 +323,11 @@ namespace IRuettae.Core.ILP2
         {
             // lower boudn totalWayTime
             model.AddConstr(totalWayTime >= visitDurations.Sum(), null);
+        }
+
+        private string GurobiVarName(string varname)
+        {
+            return varname.Replace(" ", "_");
         }
     }
 }

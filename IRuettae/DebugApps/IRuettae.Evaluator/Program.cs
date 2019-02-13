@@ -126,7 +126,6 @@ namespace IRuettae.Evaluator
                     try
                     {
                         var (input, coordinates, timelimit) = GetDataset(dataset);
-
                         string savepath = $"{DateTime.Now:yy-MM-dd-HH-mm-ss}_DataSet_{dataset}";
                         ISolver solver = null;
                         var fastFactor = 60;
@@ -167,7 +166,7 @@ namespace IRuettae.Evaluator
                                 timelimit /= fastFactor;
                                 goto case Algorithms.ILP2;
                             case Algorithms.ILP2:
-                                solver = new IRuettae.Core.ILP2.Solver(input, 0.5);
+                                solver = new IRuettae.Core.ILP2.Solver(input, 0.1);
                                 savepath += "_ILP2";
                                 break;
                             case Algorithms.ILPIP5GurobiFast:
