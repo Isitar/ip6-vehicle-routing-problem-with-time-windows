@@ -23,8 +23,8 @@ namespace IRuettae.Evaluator
             SELECT From_id ,concat('{',group_concat(Duration order by to_id, ''),'},')
             from way
             WHERE TRUE
-	            AND To_id > 100
-	            AND From_id > 100
+                AND To_id > 100
+                AND From_id > 100
             GROUP BY From_id
             ORDER BY To_id;
 
@@ -155,6 +155,14 @@ namespace IRuettae.Evaluator
                 // Note: The labels refer to the santa (letter) and the row (number)
                 // from the Excel with the routes per Santa of our customer.
                 // See mail from 18. dec 2018
+
+                // Routes are (visit.Id):
+                // empty
+                // Z: 18,19,20,21,22,23,24
+                // M: 25,26,27,28,29,30
+                // A: 31,3,4,5,2,32,1,0
+                // W: 11,6,7,8,10,9
+                // G: 13,12,15,14,16,17
                 Visits = new[]
                 {
                     new Visit{Duration=1500, Id=0,WayCostFromHome=701, WayCostToHome=701,Unavailable =new [] {(0,10800)},Desired =new [] {(90000, 102600) }},//A9
