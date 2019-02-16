@@ -397,8 +397,9 @@ namespace IRuettae.Core.ILP2
                     if (lastVisit != currVisit)
                     {
                         AccessW(w[s], lastVisit, currVisit).Start = 1;
-                        c[s][currVisit].Start =
-                            lastTimeStamp + visitDurations[lastVisit] + distances[lastVisit, currVisit];
+
+                        lastTimeStamp = lastTimeStamp + visitDurations[lastVisit] + distances[lastVisit, currVisit];
+                        c[s][currVisit].Start = lastTimeStamp;
                     }
 
                     lastVisit = currVisit;

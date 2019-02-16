@@ -16,10 +16,10 @@ namespace IRuettae.Core.ILP2
             {
                 for (int i = 1; i < distances.GetLength(0); i++)
                 {
-                    model.AddGenConstrIndicator(v[s][i], 0, c[s][i] == 0, null);
+                    model.AddGenConstrIndicator(v[s][i], 0, c[s][i] == 0, GurobiVarName($"if v[{s}][{i}] == 0: c[{s}][{i}] == 0"));
                     for (int k = 0; k < distances.GetLength(1); k++)
                     {
-                        model.AddGenConstrIndicator(AccessW(w[s], k, i), 1, c[s][i] >= c[s][k] + distances[k, i] + visitDurations[k], null);
+                        model.AddGenConstrIndicator(AccessW(w[s], k, i), 1, c[s][i] >= c[s][k] + distances[k, i] + visitDurations[k], GurobiVarName($"if w[{s}][{k},{i}] c[{s}][{i}] >= c[{s}][{k}]+ dist+duration"));
                     }
                 }
             }
@@ -63,7 +63,7 @@ namespace IRuettae.Core.ILP2
                         wik += AccessW(w[s], i, k);
                     }
 
-                    model.AddConstr(wki == wik, null);
+                    model.AddConstr(wki == wik, GurobiVarName($"w[{s}][k,{i}] == w[{s}][{i},k]"));
                     model.AddConstr(wki == v[s][i], GurobiVarName($"if visit {i} is visited by santa {s}, incoming way has to be used"));
                     model.AddConstr(wik == v[s][i], GurobiVarName($"if visit {i} is visited by santa {s}, outgoing way has to be used"));
                 }
@@ -76,7 +76,7 @@ namespace IRuettae.Core.ILP2
             {
                 for (int i = 0; i < visitDurations.Length; i++)
                 {
-                    model.AddConstr(maxRoutes[s] >= c[s][i] + (visitDurations[i] + distances[i, 0]) * v[s][i], null);
+                    model.AddConstr(maxRoutes[s] >= c[s][i] + (visitDurations[i] + distances[i, 0]) * v[s][i], GurobiVarName($"maxRoute[{s}] >= visit {i} +duration+dist home"));
                 }
             }
         }
@@ -89,7 +89,7 @@ namespace IRuettae.Core.ILP2
 
                 for (int i = 0; i < visitDurations.Length; i++)
                 {
-                    model.AddConstr(minRoutes[s] <= c[s][i] - (distances[0, i]) * v[s][i] + (1 - v[s][i]) * (dayEnd - dayStart), null);
+                    model.AddConstr(minRoutes[s] <= c[s][i] - (distances[0, i]) * v[s][i] + (1 - v[s][i]) * (dayEnd - dayStart), GurobiVarName($"minRoute[{s}] <= visit {i} - dist from home bigM"));
                 }
             }
         }
@@ -181,14 +181,14 @@ namespace IRuettae.Core.ILP2
                 for (var day = 0; day < input.Days.Length; day++)
                 {
                     var s = visit.SantaId + day * input.Santas.Length;
-                    model.AddGenConstrOr(v[s][i], v[s].Take(i - 1).Skip(1).ToArray(), null); // assignment if used
+                    model.AddGenConstrOr(v[s][i], v[s].Take(i - 1).Skip(1).ToArray(), GurobiVarName($"break v[{s}]{i}] ")); // assignment if used
                     breakRoutes.Add(s);
                 }
 
                 // break cannot be visited by another santa
                 foreach (var nonBreakRoute in Enumerable.Range(0, numberOfRoutes).Except(breakRoutes))
                 {
-                    model.AddConstr(v[nonBreakRoute][i] == 0, null);
+                    model.AddConstr(v[nonBreakRoute][i] == 0, GurobiVarName($"v[{nonBreakRoute}][{i}]==0,nonbreakroute"));
                 }
             }
         }
@@ -237,7 +237,7 @@ namespace IRuettae.Core.ILP2
                         var desiredEnd = model.AddVar(0, desiredTo-dayStart, 0, GRB.CONTINUOUS, GurobiVarName($"desiredEnd[{s}][{i}][{d}]"));
 
                         model.AddConstr(desiredEnd <= c[s][i] + visit.Duration * v[s][i], GurobiVarName($"desiredEnd[{s}[{i}][{d}] <= visitEnd"));
-                        var binDecisionVariable = model.AddVar(0, 1, 0, GRB.BINARY, null);
+                        var binDecisionVariable = model.AddVar(0, 1, 0, GRB.BINARY, GurobiVarName($"binDesiredDecisionVar[{s}][{i}][{d}]"));
 
 
                         // if positive, duration = end -start
