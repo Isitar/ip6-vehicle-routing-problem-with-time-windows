@@ -82,6 +82,43 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         /// <returns></returns>
         private Route GetRoute(Genotype genotype, ref int currentGenPos, int startTimeOfDay)
         {
+            // First v
+            // egal
+            // 0
+            // 0
+            // 86400
+            // 88200
+            // 86400
+
+            // start
+            // egal
+            // 2: 0-52=-52
+            // 10: 0-604=-604
+            // 17: 86400-(86615-86400)=86185
+            // 26: 88200-(87005-86400)=87595
+            // 33: 86400-(87682-86400)=85118
+
+            if (currentGenPos == 2)
+            {
+                startTimeOfDay = -52;
+            }
+            if (currentGenPos == 10)
+            {
+                startTimeOfDay = -604;
+            }
+            if (currentGenPos == 17)
+            {
+                startTimeOfDay = 86185;
+            }
+            if (currentGenPos == 26)
+            {
+                startTimeOfDay = 87595;
+            }
+            if (currentGenPos == 33)
+            {
+                startTimeOfDay = 85118;
+            }
+
             var waypoints = new List<Waypoint>
             {
                 // add start at home
