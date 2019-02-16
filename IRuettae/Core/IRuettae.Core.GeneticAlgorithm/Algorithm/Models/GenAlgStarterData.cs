@@ -7,7 +7,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
     public class GenAlgStarterData
     {
         public int MaxNumberOfSantas { get; private set; }
-        public long MaxNumberOfGenerations { get; } = 0;// long.MaxValue;
+        public long MaxNumberOfGenerations { get; } = long.MaxValue;
         public int PopulationSize { get; private set; }
 
         public double ElitismPercentage { get; } = 0.357;
