@@ -14,7 +14,7 @@ namespace IRuettae.Evaluator
 
             SELECT Concat('(', round(1000*(`Long` * 78.71 -651),0), ',', round(1000*(`Lat` *111 -5257),0), '),')
             from visit
-            WHERE Id > 100 
+            WHERE Id > 100
             order by id;
          *
          * RouteCost
@@ -23,8 +23,8 @@ namespace IRuettae.Evaluator
             SELECT From_id ,concat('{',group_concat(Duration order by to_id, ''),'},')
             from way
             WHERE TRUE
-	            AND To_id > 100
-	            AND From_id > 100
+                AND To_id > 100
+                AND From_id > 100
             GROUP BY From_id
             ORDER BY To_id;
 
@@ -46,7 +46,7 @@ namespace IRuettae.Evaluator
                                   END,
                      '},')
 
-             
+
             FROM visit v
               JOIN way wHome ON v.Id = wHome.To_id AND wHome.From_id = 100
               JOIN way wToHome ON v.Id = wToHome.From_id AND wToHome.To_id = 100
@@ -152,41 +152,52 @@ namespace IRuettae.Evaluator
                     new Santa { Id = 2 },
                 },
 
+                // Note: The labels refer to the santa (letter) and the row (number)
+                // from the Excel with the routes per Santa of our customer.
+                // See mail from 18. dec 2018
+
+                // Routes are (visit.Id):
+                // empty
+                // Z: 18,19,20,21,22,23,24
+                // M: 25,26,27,28,29,30
+                // A: 31,3,4,5,2,32,1,0
+                // W: 11,6,7,8,10,9
+                // G: 13,12,15,14,16,17
                 Visits = new[]
                 {
-                    new Visit{Duration=1500, Id=0,WayCostFromHome=701, WayCostToHome=701,Unavailable =new [] {(0,10800)},Desired =new [] {(90000, 102600) }},
-                    new Visit{Duration=1800, Id=1,WayCostFromHome=594, WayCostToHome=594,Unavailable =new [] {(0,10800)},Desired =new [] {(86400,102600)}},
-                    new Visit{Duration=1500, Id=2,WayCostFromHome=286, WayCostToHome=286,Unavailable =new (int from, int to)[0],Desired =new [] {(86400,102600)}},
-                    new Visit{Duration=1500, Id=3,WayCostFromHome=449, WayCostToHome=449,Unavailable =new (int from, int to)[0],Desired =new [] {(86400,102600)}},
-                    new Visit{Duration=1800, Id=4,WayCostFromHome=495, WayCostToHome=495,Unavailable =new [] {(0,10800)},Desired =new [] {(86400,102600)}},
-                    new Visit{Duration=1200, Id=5,WayCostFromHome=564, WayCostToHome=564,Unavailable =new [] {(0,10800)},Desired =new [] {(86400,102600)}},
-                    new Visit{Duration=1500, Id=6,WayCostFromHome=189, WayCostToHome=189,Unavailable =new [] {(0,10800)},Desired =new [] {(86400,102600)}},
-                    new Visit{Duration=1500, Id=7,WayCostFromHome=539, WayCostToHome=539,Unavailable =new [] {(0,10800)},Desired =new [] {(86400,102600)}},
-                    new Visit{Duration=1500, Id=8,WayCostFromHome=651, WayCostToHome=651,Unavailable =new [] {(0,10800)},Desired =new [] {(88200,102600)}},
-                    new Visit{Duration=1200, Id=9,WayCostFromHome=812, WayCostToHome=812,Unavailable =new (int from, int to)[0],Desired =new [] {(86400,102600)}},
-                    new Visit{Duration=1200, Id=10,WayCostFromHome=664, WayCostToHome=664,Unavailable =new [] {(0,10800)},Desired =new [] {(86400,102600)}},
-                    new Visit{Duration=1200, Id=11,WayCostFromHome=605, WayCostToHome=605,Unavailable =new [] {(0,10800)},Desired =new [] {(86400,102600)}},
-                    new Visit{Duration=2700, Id=12,WayCostFromHome=1145, WayCostToHome=1145,Unavailable =new [] {(0,10800)},Desired =new [] {(88200,91800)}},
-                    new Visit{Duration=1500, Id=13,WayCostFromHome=1282, WayCostToHome=1282,Unavailable =new [] {(0,10800)},Desired =new [] {(88230,102600)}},
-                    new Visit{Duration=1500, Id=14,WayCostFromHome=1553, WayCostToHome=1553,Unavailable =new [] {(0,10800)},Desired =new [] {(86400,102600)}},
-                    new Visit{Duration=1500, Id=15,WayCostFromHome=1145, WayCostToHome=1145,Unavailable =new [] {(86400,90000)},Desired =new [] {(90000,93600)}},
-                    new Visit{Duration=1800, Id=16,WayCostFromHome=1255, WayCostToHome=1255,Unavailable =new (int from, int to)[0],Desired =new [] {(86400,102600)}},
-                    new Visit{Duration=1500, Id=17,WayCostFromHome=1290, WayCostToHome=1290,Unavailable =new [] {(86400,10800)},Desired =new [] {(0,3600)}},
-                    new Visit{Duration=1800, Id=18,WayCostFromHome=52, WayCostToHome=52,Unavailable =new [] {(86400,97200)},Desired =new [] {(3600,16200)}},
-                    new Visit{Duration=1500, Id=19,WayCostFromHome=170, WayCostToHome=170,Unavailable =new [] {(86400,97200)},Desired =new [] {(3600,16200)}},
-                    new Visit{Duration=1800, Id=20,WayCostFromHome=266, WayCostToHome=266,Unavailable =new [] {(86400,90000)},Desired =new [] {(3600,16200)}},
-                    new Visit{Duration=1500, Id=21,WayCostFromHome=417, WayCostToHome=417,Unavailable =new (int from, int to)[0],Desired =new [] {(3600,16200)}},
-                    new Visit{Duration=1500, Id=22,WayCostFromHome=1294, WayCostToHome=1294,Unavailable =new (int from, int to)[0],Desired =new [] {(3600,16200)}},
-                    new Visit{Duration=1800, Id=23,WayCostFromHome=1125, WayCostToHome=1125,Unavailable =new [] {(86400,97200)},Desired =new [] {(7200,10800)}},
-                    new Visit{Duration=1500, Id=24,WayCostFromHome=2202, WayCostToHome=2202,Unavailable =new [] {(86400,97200)},Desired =new [] {(5400,16200)}},
-                    new Visit{Duration=1200, Id=25,WayCostFromHome=604, WayCostToHome=604,Unavailable =new [] {(86400,93600)},Desired =new [] {(3600,16200)}},
-                    new Visit{Duration=1500, Id=26,WayCostFromHome=605, WayCostToHome=605,Unavailable =new (int from, int to)[0],Desired =new [] {(3600,16200)}},
-                    new Visit{Duration=2100, Id=27,WayCostFromHome=524, WayCostToHome=524,Unavailable =new [] {(86400,97200)},Desired =new [] {(3600,16200)}},
-                    new Visit{Duration=1800, Id=28,WayCostFromHome=613, WayCostToHome=613,Unavailable =new [] {(86400,97200)},Desired =new [] {(5400,16200)}},
-                    new Visit{Duration=1500, Id=29,WayCostFromHome=260, WayCostToHome=260,Unavailable =new [] {(86400,97200)},Desired =new [] {(3600,16200)}},
-                    new Visit{Duration=2100, Id=30,WayCostFromHome=555, WayCostToHome=555,Unavailable =new [] {(86400,97200)},Desired =new [] {(3600,16200)}},
-                    new Visit{Duration=1500, Id=31,WayCostFromHome=215, WayCostToHome=215,Unavailable =new (int from, int to)[0],Desired =new (int from, int to)[0]},
-                    new Visit{Duration=1800, Id=32,WayCostFromHome=365, WayCostToHome=365,Unavailable =new (int from, int to)[0],Desired =new [] {(90000,100800)}, IsBreak = true, SantaId = 0}, // affolter
+                    new Visit{Duration=1500, Id=0,WayCostFromHome=701, WayCostToHome=701,Unavailable =new [] {(0,10800)},Desired =new [] {(90000, 102600) }},//A9
+                    new Visit{Duration=1800, Id=1,WayCostFromHome=594, WayCostToHome=594,Unavailable =new [] {(0,10800)},Desired =new [] {(86400,102600)}},//A8
+                    new Visit{Duration=1500, Id=2,WayCostFromHome=286, WayCostToHome=286,Unavailable =new (int from, int to)[0],Desired =new [] {(86400,102600)}},//A6
+                    new Visit{Duration=1500, Id=3,WayCostFromHome=449, WayCostToHome=449,Unavailable =new (int from, int to)[0],Desired =new [] {(86400,102600)}},//A3
+                    new Visit{Duration=1800, Id=4,WayCostFromHome=495, WayCostToHome=495,Unavailable =new [] {(0,10800)},Desired =new [] {(86400,102600)}},//A4
+                    new Visit{Duration=1200, Id=5,WayCostFromHome=564, WayCostToHome=564,Unavailable =new [] {(0,10800)},Desired =new [] {(86400,102600)}},//A5
+                    new Visit{Duration=1500, Id=6,WayCostFromHome=189, WayCostToHome=189,Unavailable =new [] {(0,10800)},Desired =new [] {(86400,102600)}},//W3
+                    new Visit{Duration=1500, Id=7,WayCostFromHome=539, WayCostToHome=539,Unavailable =new [] {(0,10800)},Desired =new [] {(86400,102600)}},//W4
+                    new Visit{Duration=1500, Id=8,WayCostFromHome=651, WayCostToHome=651,Unavailable =new [] {(0,10800)},Desired =new [] {(88200,102600)}},//W5
+                    new Visit{Duration=1200, Id=9,WayCostFromHome=812, WayCostToHome=812,Unavailable =new (int from, int to)[0],Desired =new [] {(86400,102600)}},//W7
+                    new Visit{Duration=1200, Id=10,WayCostFromHome=664, WayCostToHome=664,Unavailable =new [] {(0,10800)},Desired =new [] {(86400,102600)}},//W6
+                    new Visit{Duration=1200, Id=11,WayCostFromHome=605, WayCostToHome=605,Unavailable =new [] {(0,10800)},Desired =new [] {(86400,102600)}},//W2
+                    new Visit{Duration=2700, Id=12,WayCostFromHome=1145, WayCostToHome=1145,Unavailable =new [] {(0,10800)},Desired =new [] {(88200,91800)}},//G3
+                    new Visit{Duration=1500, Id=13,WayCostFromHome=1282, WayCostToHome=1282,Unavailable =new [] {(0,10800)},Desired =new [] {(88230,102600)}},//G2
+                    new Visit{Duration=1500, Id=14,WayCostFromHome=1553, WayCostToHome=1553,Unavailable =new [] {(0,10800)},Desired =new [] {(86400,102600)}},//G5
+                    new Visit{Duration=1500, Id=15,WayCostFromHome=1145, WayCostToHome=1145,Unavailable =new [] {(86400,90000)},Desired =new [] {(90000,93600)}},//G4
+                    new Visit{Duration=1800, Id=16,WayCostFromHome=1255, WayCostToHome=1255,Unavailable =new (int from, int to)[0],Desired =new [] {(86400,102600)}},//G6
+                    new Visit{Duration=1500, Id=17,WayCostFromHome=1290, WayCostToHome=1290,Unavailable =new [] {(86400,10800)},Desired =new [] {(0,3600)}},//G7
+                    new Visit{Duration=1800, Id=18,WayCostFromHome=52, WayCostToHome=52,Unavailable =new [] {(86400,97200)},Desired =new [] {(3600,16200)}},//Z2
+                    new Visit{Duration=1500, Id=19,WayCostFromHome=170, WayCostToHome=170,Unavailable =new [] {(86400,97200)},Desired =new [] {(3600,16200)}},//Z3
+                    new Visit{Duration=1800, Id=20,WayCostFromHome=266, WayCostToHome=266,Unavailable =new [] {(86400,90000)},Desired =new [] {(3600,16200)}},//Z4
+                    new Visit{Duration=1500, Id=21,WayCostFromHome=417, WayCostToHome=417,Unavailable =new (int from, int to)[0],Desired =new [] {(3600,16200)}},//Z5
+                    new Visit{Duration=1500, Id=22,WayCostFromHome=1294, WayCostToHome=1294,Unavailable =new (int from, int to)[0],Desired =new [] {(3600,16200)}},//Z6
+                    new Visit{Duration=1800, Id=23,WayCostFromHome=1125, WayCostToHome=1125,Unavailable =new [] {(86400,97200)},Desired =new [] {(7200,10800)}},//Z7
+                    new Visit{Duration=1500, Id=24,WayCostFromHome=2202, WayCostToHome=2202,Unavailable =new [] {(86400,97200)},Desired =new [] {(5400,16200)}},//Z8
+                    new Visit{Duration=1200, Id=25,WayCostFromHome=604, WayCostToHome=604,Unavailable =new [] {(86400,93600)},Desired =new [] {(3600,16200)}},//M2
+                    new Visit{Duration=1500, Id=26,WayCostFromHome=605, WayCostToHome=605,Unavailable =new (int from, int to)[0],Desired =new [] {(3600,16200)}},//M3
+                    new Visit{Duration=2100, Id=27,WayCostFromHome=524, WayCostToHome=524,Unavailable =new [] {(86400,97200)},Desired =new [] {(3600,16200)}},//M4
+                    new Visit{Duration=1800, Id=28,WayCostFromHome=613, WayCostToHome=613,Unavailable =new [] {(86400,97200)},Desired =new [] {(5400,16200)}},//M5
+                    new Visit{Duration=1500, Id=29,WayCostFromHome=260, WayCostToHome=260,Unavailable =new [] {(86400,97200)},Desired =new [] {(3600,16200)}},//M6
+                    new Visit{Duration=2100, Id=30,WayCostFromHome=555, WayCostToHome=555,Unavailable =new [] {(86400,97200)},Desired =new [] {(3600,16200)}},//M7
+                    new Visit{Duration=1500, Id=31,WayCostFromHome=215, WayCostToHome=215,Unavailable =new (int from, int to)[0],Desired =new (int from, int to)[0]},//A2
+                    new Visit{Duration=1800, Id=32,WayCostFromHome=365, WayCostToHome=365,Unavailable =new (int from, int to)[0],Desired =new [] {(90000,100800)}, IsBreak = true, SantaId = 0},//A7 (affolter)
                     //new Visit{Duration=900, Id=33,WayCostFromHome=1125, WayCostToHome=1125,Unavailable =new [] {(86400,97200)},Desired =new [] {(7200,10800)}, IsBreak = true, SantaId = 1}, // zender
                 }
             };
