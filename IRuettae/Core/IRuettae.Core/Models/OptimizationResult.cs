@@ -228,7 +228,7 @@ namespace IRuettae.Core.Models
         /// </summary>
         /// <param name="route"></param>
         /// <returns></returns>
-        private (int from, int to) FindDay(Route route)
+        public (int from, int to) FindDay(Route route)
         {
             foreach (var day in OptimizationInput.Days)
             {
