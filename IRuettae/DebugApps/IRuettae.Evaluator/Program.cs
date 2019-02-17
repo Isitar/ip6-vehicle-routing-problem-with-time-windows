@@ -72,8 +72,8 @@ namespace IRuettae.Evaluator
             {11, "200 visits, 20 santas, 2 days, 75 desired d1, 75 desired d2, 40 unavailable d1, 40 unavailable d2, 40 breaks" },
             {12, "1000 visits, 100 santas, 2 days, 300 desired d1, 300 desired d2, 150 unavailable d1, 150 unavailable d2, 200 breaks" },
             {55, "Datasets for desired / unavailable impacts Tests Normal" },
-            {56, "Datasets for desired / unavailable impact Tests Desired" },
-            {57, "Datasets for desired / unavailable impacts Tests Unavailable" },
+            {56, "Datasets for desired / unavailable impact Tests Unavailable" },
+            {57, "Datasets for desired / unavailable impacts Tests Desired" },
         };
 
         static void Main(string[] args)
