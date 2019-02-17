@@ -375,6 +375,24 @@ namespace IRuettae.Core.ILP2
             }
             for (int s = 0; s < numberOfRoutes; s++)
             {
+                if (vrpSolution[s].Length == 1)
+                {
+                    // initialize with 0
+                    for (int visitIndex = 0; visitIndex < visitDurations.Length; visitIndex++)
+                    {
+                        v[s][visitIndex].Start = 0;
+                        c[s][visitIndex].Start = 0;
+                    }
+                    for (int i = 0; i < distances.GetLength(0); i++)
+                    {
+                        for (int j = 0; j < distances.GetLength(0); j++)
+                        {
+                            AccessW(w[s], i, j).Start = 0;
+                        }
+                    }
+                    continue;
+                }
+
                 // initialize v[s]
                 for (int visitIndex = 0; visitIndex < visitDurations.Length; visitIndex++)
                 {
