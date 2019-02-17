@@ -34,20 +34,22 @@ namespace IRuettae.ResultFixer
         static void Main(string[] args)
         {
 
-            var datasets = new List<(int x, int y)[]>();
-            datasets.Add(DatasetFactory.DataSet1().coordinates);
-            datasets.Add(DatasetFactory.DataSet2().coordinates);
-            datasets.Add(DatasetFactory.DataSet3().coordinates);
-            datasets.Add(DatasetFactory.DataSet4().coordinates);
-            datasets.Add(DatasetFactory.DataSet5().coordinates);
-            datasets.Add(DatasetFactory.DataSet6().coordinates);
-            datasets.Add(DatasetFactory.DataSet7().coordinates);
-            datasets.Add(DatasetFactory.DataSet8().coordinates);
-            datasets.Add(DatasetFactory.DataSet9().coordinates);
-            datasets.Add(DatasetFactory.DataSet10().coordinates);
-            datasets.Add(DatasetFactory.DataSet11().coordinates);
-            datasets.Add(DatasetFactory.DataSet12().coordinates);
-            
+            var datasets = new List<(int x, int y)[]>
+            {
+                DatasetFactory.DataSet1().coordinates,
+                DatasetFactory.DataSet2().coordinates,
+                DatasetFactory.DataSet3().coordinates,
+                DatasetFactory.DataSet4().coordinates,
+                DatasetFactory.DataSet5().coordinates,
+                DatasetFactory.DataSet6().coordinates,
+                DatasetFactory.DataSet7().coordinates,
+                DatasetFactory.DataSet8().coordinates,
+                DatasetFactory.DataSet9().coordinates,
+                DatasetFactory.DataSet10().coordinates,
+                DatasetFactory.DataSet11().coordinates,
+                DatasetFactory.DataSet12().coordinates
+            };
+
             foreach (var file in Directory.GetFiles(@"W:\Git\ip6-temp\Results","*_6_*.json", SearchOption.AllDirectories))
             {
                 var dataset = int.Parse(file.Split('_')[2]);
@@ -56,16 +58,16 @@ namespace IRuettae.ResultFixer
             }
         }
 
-        static void fixResult(string filename, string solver, int dataset)
+        static void FixResult(string filename, string solver, int dataset)
         {
             var result = JsonConvert.DeserializeObject<OptimizationResult>(File.ReadAllText(filename));
 
             foreach (var route in result.Routes)
             {
-                var day = result.FindDay(route);
-                if (route.Waypoints[0].StartTime < day.from)
+                var (dayStart, _) = result.FindDay(route);
+                if (route.Waypoints[0].StartTime < dayStart)
                 {
-                    route.Waypoints[0].StartTime = day.from;
+                    route.Waypoints[0].StartTime = dayStart;
                 }
             }
             File.WriteAllText(Path.GetFileNameWithoutExtension(filename) + ".json", JsonConvert.SerializeObject(result));

@@ -40,7 +40,7 @@ namespace IRuettae.DatasetGenerator
         /// <param name="generatedClassname"></param>
         public DatasetGenerator(int mapWidth, int mapHeight, int numberOfVisits, int numberOfDays, int numberOfSantas, int[] numberOfDesired,
             int[] numberOfUnavailable, int workingDayDuration = -1, bool generateBreaks = false, string generatedNamespace = "IRuettae.Evaluator",
-            string generatedClassname = "DatasetFactory")
+            string generatedClassname = "DatasetFactory", int? seed = null)
         {
             this.mapWidth = mapWidth;
             this.mapHeight = mapHeight;
@@ -55,6 +55,12 @@ namespace IRuettae.DatasetGenerator
             this.generatedClassname = generatedClassname;
             this.numberOfBreaks = generateBreaks ? numberOfSantas * numberOfDays : 0;
             this.numberOfUniqueVisits = this.numberOfVisits - this.numberOfBreaks / this.numberOfDays;
+
+            if (seed.HasValue)
+            {
+                random = new Random(seed.Value);
+                GaussianRandomGenerator.Random = random;
+            }
         }
 
         /// <summary>

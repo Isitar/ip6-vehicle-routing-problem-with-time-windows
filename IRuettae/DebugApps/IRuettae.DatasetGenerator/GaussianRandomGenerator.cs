@@ -4,7 +4,7 @@ namespace IRuettae.DatasetGenerator
 {
     public class GaussianRandomGenerator
     {
-        private static readonly Random Random = new Random();
+        public static Random Random = new Random();
 
         public static double RandomNormal()
         {
