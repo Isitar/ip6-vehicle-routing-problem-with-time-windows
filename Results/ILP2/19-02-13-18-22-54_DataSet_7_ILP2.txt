@@ -1,0 +1,14 @@
+Solver: ILP 2
+Dataset7: Real example 2017
+TimeElapsed [s]: 5399
+Cost: 700
+NumberOfNotVisitedFamilies: 0
+NumberOfMissingBreaks: 0
+NumberOfAdditionalSantas: 0
+AdditionalSantaWorkTime: 0
+VisitTimeInUnavailable: 0
+WayTimeOutsideBusinessHours: 0
+VisitTimeInDesired: 39900
+SantaWorkTime: 71897
+LongestDay: 14736
+NumberOfRoutes: 6
