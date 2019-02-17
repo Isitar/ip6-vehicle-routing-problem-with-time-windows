@@ -1,0 +1,15 @@
+Solver: ILP 2
+Dataset11: 200 visits, 20 santas, 2 days, 75 desired d1, 75 desired d2, 40 unavailable d1, 40 unavailable d2, 40 breaks
+TimeElapsed [s]: 7219
+IMPORTANT: This result seems to be invalid. The reason is "Santa (0, (86400, 118800)) is used more than once on the same day."
+Cost: -40324
+NumberOfNotVisitedFamilies: 0
+NumberOfMissingBreaks: 0
+NumberOfAdditionalSantas: 0
+AdditionalSantaWorkTime: 0
+VisitTimeInUnavailable: 10357
+WayTimeOutsideBusinessHours: -1406085
+VisitTimeInDesired: 255985
+SantaWorkTime: 670737
+LongestDay: 20277
+NumberOfRoutes: 40
