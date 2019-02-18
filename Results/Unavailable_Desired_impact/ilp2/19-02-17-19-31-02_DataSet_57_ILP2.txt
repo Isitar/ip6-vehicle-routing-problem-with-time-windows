@@ -1,0 +1,14 @@
+Solver: ILP 2
+Dataset57: Datasets for desired / unavailable impacts Tests Unavailable
+TimeElapsed [s]: 299
+Cost: 603
+NumberOfNotVisitedFamilies: 0
+NumberOfMissingBreaks: 0
+NumberOfAdditionalSantas: 0
+AdditionalSantaWorkTime: 0
+VisitTimeInUnavailable: 0
+WayTimeOutsideBusinessHours: 0
+VisitTimeInDesired: 40275
+SantaWorkTime: 61742
+LongestDay: 16853
+NumberOfRoutes: 4
