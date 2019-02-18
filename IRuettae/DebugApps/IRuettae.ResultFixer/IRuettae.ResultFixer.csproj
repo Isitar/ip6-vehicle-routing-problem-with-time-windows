@@ -56,6 +56,9 @@
     <Compile Include="Datasets\DatasetFactory.DataSet3.cs" />
     <Compile Include="Datasets\DatasetFactory.DataSet4.cs" />
     <Compile Include="Datasets\DatasetFactory.DataSet5.cs" />
+    <Compile Include="Datasets\DatasetFactory.DataSet55Desired.cs" />
+    <Compile Include="Datasets\DatasetFactory.DataSet55Normal.cs" />
+    <Compile Include="Datasets\DatasetFactory.DataSet55Unavailable.cs" />
     <Compile Include="Datasets\DatasetFactory.DataSet6.cs" />
     <Compile Include="Datasets\DatasetFactory.DataSet7.cs" />
     <Compile Include="Datasets\DatasetFactory.DataSet8.cs" />

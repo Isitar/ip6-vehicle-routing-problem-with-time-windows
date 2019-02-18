@@ -34,27 +34,30 @@ namespace IRuettae.ResultFixer
         static void Main(string[] args)
         {
 
-            var datasets = new List<(int x, int y)[]>
-            {
-                DatasetFactory.DataSet1().coordinates,
-                DatasetFactory.DataSet2().coordinates,
-                DatasetFactory.DataSet3().coordinates,
-                DatasetFactory.DataSet4().coordinates,
-                DatasetFactory.DataSet5().coordinates,
-                DatasetFactory.DataSet6().coordinates,
-                DatasetFactory.DataSet7().coordinates,
-                DatasetFactory.DataSet8().coordinates,
-                DatasetFactory.DataSet9().coordinates,
-                DatasetFactory.DataSet10().coordinates,
-                DatasetFactory.DataSet11().coordinates,
-                DatasetFactory.DataSet12().coordinates
-            };
+            var datasets = new (int x, int y)[100][];
 
-            foreach (var file in Directory.GetFiles(@"W:\Git\ip6-temp\Results","*_6_*.json", SearchOption.AllDirectories))
+            datasets[0] = DatasetFactory.DataSet1().coordinates;
+            datasets[1] = DatasetFactory.DataSet2().coordinates;
+            datasets[2] = DatasetFactory.DataSet3().coordinates;
+            datasets[3] = DatasetFactory.DataSet4().coordinates;
+            datasets[4] = DatasetFactory.DataSet5().coordinates;
+            datasets[5] = DatasetFactory.DataSet6().coordinates;
+            datasets[6] = DatasetFactory.DataSet7().coordinates;
+            datasets[7] = DatasetFactory.DataSet8().coordinates;
+            datasets[8] = DatasetFactory.DataSet9().coordinates;
+            datasets[9] = DatasetFactory.DataSet10().coordinates;
+            datasets[10] = DatasetFactory.DataSet11().coordinates;
+            datasets[11] = DatasetFactory.DataSet12().coordinates;
+
+            datasets[54] = DatasetFactory.DataSet55Normal().coordinates;
+            datasets[55] = DatasetFactory.DataSet55Unavailable().coordinates;
+            datasets[56] = DatasetFactory.DataSet55Desired().coordinates;
+
+            foreach (var file in Directory.GetFiles(@"C:\git\ip6-vehicle-routing-problem-with-time-windows\Results\Unavailable_Desired_impact", "*_56_*.json", SearchOption.AllDirectories))
             {
-                var dataset = int.Parse(file.Split('_')[2]);
+                var dataset = int.Parse(Path.GetFileName(file).Split('_')[2]);
                 var result = JsonConvert.DeserializeObject<OptimizationResult>(File.ReadAllText(file));
-                ResultDrawer.DrawResult(Path.GetFileNameWithoutExtension(file) + ".gif",result, datasets[dataset-1]);
+                ResultDrawer.DrawResult(Path.GetFileNameWithoutExtension(file) + ".gif", result, datasets[dataset - 1]);
             }
         }
 
