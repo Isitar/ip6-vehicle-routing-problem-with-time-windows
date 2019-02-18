@@ -1,0 +1,14 @@
+Solver: Google OR-Tools Routing
+Dataset57: Datasets for desired / unavailable impacts Tests Unavailable
+TimeElapsed [s]: 300
+Cost: 581
+NumberOfNotVisitedFamilies: 0
+NumberOfMissingBreaks: 0
+NumberOfAdditionalSantas: 0
+AdditionalSantaWorkTime: 0
+VisitTimeInUnavailable: 0
+WayTimeOutsideBusinessHours: 0
+VisitTimeInDesired: 45505
+SantaWorkTime: 61947
+LongestDay: 17397
+NumberOfRoutes: 4
