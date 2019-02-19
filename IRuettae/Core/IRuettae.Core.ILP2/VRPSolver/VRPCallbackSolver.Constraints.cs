@@ -25,7 +25,6 @@ namespace IRuettae.Core.ILP2.VRPSolver
             }
         }
 
-
         private void IncomingOutgoingWaysConstraints(GRBModel model, int numberOfRoutes, GRBVar[][] w, GRBVar[][] v)
         {
             for (int i = 1; i < distances.GetLength(0); i++)

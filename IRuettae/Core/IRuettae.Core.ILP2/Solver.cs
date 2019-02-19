@@ -17,7 +17,6 @@ namespace IRuettae.Core.ILP2
         private readonly int[,] distances;
         private readonly int[] visitDurations;
 
-
         /// <summary>
         /// Creates a new solver
         /// </summary>
@@ -68,7 +67,6 @@ namespace IRuettae.Core.ILP2
             {
                 OptimizationInput = input
             };
-
 
             var timeWindowIsRelevant = !input.Visits.All(visit =>
             {
@@ -159,7 +157,7 @@ namespace IRuettae.Core.ILP2
                     minRoutes[s] = model.AddVar(0, dayEnd - dayStart, 0, GRB.CONTINUOUS, GurobiVarName($"santa{s} minRoute"));
                 }
 
-                #endregion
+                #endregion initialize Variables
 
 
                 #region add constraints
@@ -202,7 +200,7 @@ namespace IRuettae.Core.ILP2
                     }
                 }
 
-                #endregion
+                #endregion add constraints
 
                 // TARGET FUNCTION
                 var totalWayTime = new GRBLinExpr(0);
@@ -275,7 +273,6 @@ namespace IRuettae.Core.ILP2
                 }
             }
 
-
             return output;
         }
 
@@ -320,7 +317,6 @@ namespace IRuettae.Core.ILP2
             return visitSequences;
         }
 
-
         private void BuildResultFromVRP(OptimizationResult output, List<int[]> vrpSolution)
         {
             var routes = new List<Route>();
@@ -363,7 +359,6 @@ namespace IRuettae.Core.ILP2
             }
 
             output.Routes = routes.ToArray();
-
         }
 
         private void InitializeWithVRPSolution(List<int[]> vrpSolution, int numberOfRoutes, GRBModel model, GRBVar[][] v, GRBVar[][] w, GRBVar[][] c)
@@ -443,13 +438,12 @@ namespace IRuettae.Core.ILP2
                 var lastId = 0;
                 var day = s / input.Santas.Length;
 
-
                 do
                 {
                     var (id, startingTime) = GetNextVisit(lastId, w[s], c[s]);
                     if (id == 0)
                     {
-                        // if last visit 
+                        // if last visit
                         var lastVisit = input.Visits[lastId - 1];
                         wpList.Add(new Waypoint { StartTime = wpList.Last().StartTime + lastVisit.Duration + lastVisit.WayCostToHome, VisitId = id - 1 });
                     }
@@ -465,7 +459,6 @@ namespace IRuettae.Core.ILP2
                 {
                     continue;
                 }
-
 
                 var firstWaypoint = wpList.First();
                 var firstVisit = input.Visits[firstWaypoint.VisitId];

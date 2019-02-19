@@ -56,7 +56,6 @@ namespace IRuettae.Core.ILP2
                     var wki = new GRBLinExpr(0);
                     var wik = new GRBLinExpr(0);
 
-
                     for (int k = 0; k < distances.GetLength(1); k++)
                     {
                         wki += AccessW(w[s], k, i);
@@ -113,7 +112,6 @@ namespace IRuettae.Core.ILP2
 
                 var wki = new GRBLinExpr(0);
                 var wik = new GRBLinExpr(0);
-
 
                 for (int s = 0; s < numberOfRoutes; s++)
                 {
@@ -234,11 +232,10 @@ namespace IRuettae.Core.ILP2
 
                         model.AddConstr(desiredStart >= c[s][i], GurobiVarName($"desiredStart[{s}[{i}][{d}] >= visitStart"));
 
-                        var desiredEnd = model.AddVar(0, desiredTo-dayStart, 0, GRB.CONTINUOUS, GurobiVarName($"desiredEnd[{s}][{i}][{d}]"));
+                        var desiredEnd = model.AddVar(0, desiredTo - dayStart, 0, GRB.CONTINUOUS, GurobiVarName($"desiredEnd[{s}][{i}][{d}]"));
 
                         model.AddConstr(desiredEnd <= c[s][i] + visit.Duration * v[s][i], GurobiVarName($"desiredEnd[{s}[{i}][{d}] <= visitEnd"));
                         var binDecisionVariable = model.AddVar(0, 1, 0, GRB.BINARY, GurobiVarName($"binDesiredDecisionVar[{s}][{i}][{d}]"));
-
 
                         // if positive, duration = end -start
                         model.AddGenConstrIndicator(binDecisionVariable, 0, desiredEnd - desiredStart >= 0, null);
@@ -292,17 +289,16 @@ namespace IRuettae.Core.ILP2
                         var maxUnavailableDuration = Math.Min(visit.Duration, unavailableTo - unavailableFrom);
                         model.AddConstr(unavailableDuration[s][i][d] <= maxUnavailableDuration * v[s][i], GurobiVarName($"unavailable[{s}][{i}][{d}] only possible if v[{s}][{i}]"));
 
-                        var unavailableStart = model.AddVar(unavailableFrom-dayStart, dayDuration, 0, GRB.CONTINUOUS, GurobiVarName($"unavailableStart[{s}][{i}][{d}]"));
+                        var unavailableStart = model.AddVar(unavailableFrom - dayStart, dayDuration, 0, GRB.CONTINUOUS, GurobiVarName($"unavailableStart[{s}][{i}][{d}]"));
                         var binHelperStart = model.AddVar(0, 1, 0, GRB.BINARY, GurobiVarName($"binHelperUnavailableStart[{s}][{i}][{d}]"));
 
                         var visitStart = c[s][i];
 
                         model.AddConstr(unavailableStart >= visitStart - dayDuration * (1 - v[s][i]), null);
-                        model.AddGenConstrIndicator(binHelperStart, 0, unavailableStart <= unavailableFrom-dayStart, null);
+                        model.AddGenConstrIndicator(binHelperStart, 0, unavailableStart <= unavailableFrom - dayStart, null);
                         model.AddGenConstrIndicator(binHelperStart, 1, unavailableStart <= visitStart, null);
 
-
-                        var unavailableEnd = model.AddVar(0, unavailableTo-dayStart, 0, GRB.CONTINUOUS, GurobiVarName($"unavailableEnd[{s}][{i}][{d}]"));
+                        var unavailableEnd = model.AddVar(0, unavailableTo - dayStart, 0, GRB.CONTINUOUS, GurobiVarName($"unavailableEnd[{s}][{i}][{d}]"));
                         var binHelperEnd = model.AddVar(0, 1, 0, GRB.BINARY, GurobiVarName($"binHelperUnavailableEnd[{s}][{i}][{d}]"));
 
                         var visitEnd = visitStart + visit.Duration * v[s][i];

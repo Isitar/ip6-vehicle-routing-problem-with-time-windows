@@ -69,7 +69,6 @@ namespace IRuettae.Core.ILP2.VRPSolver
                                 invalidSols.Add((tour.Length, expr));
                                 AddLazy(expr <= tour.Length - 1);
                             }
-
                         }
                     }
 
@@ -110,7 +109,9 @@ namespace IRuettae.Core.ILP2.VRPSolver
             int i, node, len, start;
 
             for (i = 0; i < n; i++)
+            {
                 seen[i] = false;
+            }
 
             start = 0;
             bestlen = n + 1;
@@ -155,8 +156,5 @@ namespace IRuettae.Core.ILP2.VRPSolver
 
             return tour;
         }
-
-
-
     }
 }

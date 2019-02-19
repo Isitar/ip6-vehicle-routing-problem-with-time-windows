@@ -76,7 +76,7 @@ namespace IRuettae.Core.ILP2.VRPSolver
 
                     w[s] = vrpModel.AddVars(distances.GetLength(0) * distances.GetLength(1), GRB.BINARY);
                 }
-                #endregion
+                #endregion initialize Variables
 
                 #region add constraints
                 SelfieConstraint(vrpModel, numberOfRoutes, w);
@@ -86,7 +86,7 @@ namespace IRuettae.Core.ILP2.VRPSolver
                 IncomingOutgoingSantaHome(vrpModel, numberOfRoutes, w, v);
                 NumberOfWaysMatchForSanta(vrpModel, numberOfRoutes, v, w);
                 BreakHandling(vrpModel, numberOfRoutes, v);
-                #endregion
+                #endregion add constraints
 
                 var totalWayTime = new GRBLinExpr(0);
                 var longestRoute = vrpModel.AddVar(0, input.Days.Max(d => d.to - d.from), 0, GRB.CONTINUOUS,
@@ -106,7 +106,6 @@ namespace IRuettae.Core.ILP2.VRPSolver
                     totalWayTime += routeTime;
                     vrpModel.AddConstr(longestRoute >= routeTime, $"longesRouteConstr{s}");
                 }
-
 
                 vrpModel.SetObjective(
                     +(40d / 3600d) * totalWayTime
