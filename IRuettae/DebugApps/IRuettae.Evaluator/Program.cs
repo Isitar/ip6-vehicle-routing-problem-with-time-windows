@@ -71,9 +71,9 @@ namespace IRuettae.Evaluator
             {10, "100 visits, 10 santas, 2 days, 35 desired d1, 35 desired d2, 20 unavailable d1, 20 unavailable d2, 20 breaks" },
             {11, "200 visits, 20 santas, 2 days, 75 desired d1, 75 desired d2, 40 unavailable d1, 40 unavailable d2, 40 breaks" },
             {12, "1000 visits, 100 santas, 2 days, 300 desired d1, 300 desired d2, 150 unavailable d1, 150 unavailable d2, 200 breaks" },
-            {55, "Datasets for desired / unavailable impacts Tests Normal" },
+            {55, "Datasets for desired / unavailable impact Tests Normal" },
             {56, "Datasets for desired / unavailable impact Tests Unavailable" },
-            {57, "Datasets for desired / unavailable impacts Tests Desired" },
+            {57, "Datasets for desired / unavailable impact Tests Desired" },
         };
 
         static void Main(string[] args)
@@ -398,7 +398,7 @@ namespace IRuettae.Evaluator
 
         private static IEnumerable<int> GetDatasetSelection(int datasetSelection)
         {
-            var specialCases = new[] { 0, 55,56,57 };
+            var specialCases = new[] { 0, 55, 56, 57 };
             switch (datasetSelection)
             {
                 case 0:
@@ -406,7 +406,7 @@ namespace IRuettae.Evaluator
                 case 55:
                 case 56:
                 case 57:
-                    return new[] {55, 56, 57};
+                    return new[] { 55, 56, 57 };
                 default:
                     return new[] { datasetSelection };
             }
