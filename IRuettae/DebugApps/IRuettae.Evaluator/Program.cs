@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using IRuettae.Core;
 using IRuettae.Core.GeneticAlgorithm;
@@ -25,11 +26,13 @@ namespace IRuettae.Evaluator
             ILP = 1,
             GA = 2,
             LocalSolver = 3,
+            ILP2 = 4,
             ILPIP5Gurobi = 5,
             GoogleRouting = 6,
             ILPFast = 10,
             GAFast = 20,
             LocalSolverFast = 30,
+            ILP2Fast = 40,
             ILPIP5GurobiFast = 50,
             GoogleRoutingFast = 60,
         }
@@ -42,11 +45,13 @@ namespace IRuettae.Evaluator
             {Algorithms.ILP,"ILP"},
             {Algorithms.GA, "GA" },
             {Algorithms.LocalSolver, "LocalSolver" },
+            {Algorithms.ILP2, "ILP 2" },
             {Algorithms.ILPIP5Gurobi, "ILP Ip5 Gurobi" },
             {Algorithms.GoogleRouting, "Google OR-Tools Routing" },
             {Algorithms.ILPFast,"ILP Fast"},
             {Algorithms.GAFast, "GA Fast" },
             {Algorithms.LocalSolverFast, "LocalSolver Fast" },
+            {Algorithms.ILP2Fast, "ILP 2 Fast" },
             {Algorithms.ILPIP5GurobiFast, "ILP Ip5 Gurobi Fast" },
             {Algorithms.GoogleRoutingFast, "Google OR-Tools Routing Fast" },
         };
@@ -66,9 +71,9 @@ namespace IRuettae.Evaluator
             {10, "100 visits, 10 santas, 2 days, 35 desired d1, 35 desired d2, 20 unavailable d1, 20 unavailable d2, 20 breaks" },
             {11, "200 visits, 20 santas, 2 days, 75 desired d1, 75 desired d2, 40 unavailable d1, 40 unavailable d2, 40 breaks" },
             {12, "1000 visits, 100 santas, 2 days, 300 desired d1, 300 desired d2, 150 unavailable d1, 150 unavailable d2, 200 breaks" },
-            {55, "Datasets for desired / unavailable impacts Tests Normal" },
-            {56, "Datasets for desired / unavailable impact Tests Desired" },
-            {57, "Datasets for desired / unavailable impacts Tests Unavailable" },
+            {55, "Datasets for desired / unavailable impact Tests Normal" },
+            {56, "Datasets for desired / unavailable impact Tests Unavailable" },
+            {57, "Datasets for desired / unavailable impact Tests Desired" },
         };
 
         static void Main(string[] args)
@@ -124,7 +129,6 @@ namespace IRuettae.Evaluator
                     try
                     {
                         var (input, coordinates, timelimit) = GetDataset(dataset);
-
                         string savepath = $"{DateTime.Now:yy-MM-dd-HH-mm-ss}_DataSet_{dataset}";
                         ISolver solver = null;
                         var fastFactor = 60;
@@ -160,6 +164,13 @@ namespace IRuettae.Evaluator
                                 timelimit /= fastFactor;
                                 solver = new GenAlgSolver(input, GenAlgStarterData.GetDefault(input));
                                 savepath += "_GAFast";
+                                break;
+                            case Algorithms.ILP2Fast:
+                                timelimit /= fastFactor;
+                                goto case Algorithms.ILP2;
+                            case Algorithms.ILP2:
+                                solver = new IRuettae.Core.ILP2.Solver(input, 0.1);
+                                savepath += "_ILP2";
                                 break;
                             case Algorithms.ILPIP5GurobiFast:
                                 timelimit /= fastFactor;
@@ -387,7 +398,7 @@ namespace IRuettae.Evaluator
 
         private static IEnumerable<int> GetDatasetSelection(int datasetSelection)
         {
-            var specialCases = new[] { 0, 55,56,57 };
+            var specialCases = new[] { 0, 55, 56, 57 };
             switch (datasetSelection)
             {
                 case 0:
@@ -395,7 +406,7 @@ namespace IRuettae.Evaluator
                 case 55:
                 case 56:
                 case 57:
-                    return new[] {55, 56, 57};
+                    return new[] { 55, 56, 57 };
                 default:
                     return new[] { datasetSelection };
             }

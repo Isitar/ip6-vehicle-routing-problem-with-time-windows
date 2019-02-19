@@ -1,0 +1,14 @@
+Solver: GA
+Dataset57: Datasets for desired / unavailable impacts Tests Desired
+TimeElapsed [s]: 304
+Cost: 640
+NumberOfNotVisitedFamilies: 0
+NumberOfMissingBreaks: 0
+NumberOfAdditionalSantas: 0
+AdditionalSantaWorkTime: 0
+VisitTimeInUnavailable: 0
+WayTimeOutsideBusinessHours: 0
+VisitTimeInDesired: 33130
+SantaWorkTime: 61439
+LongestDay: 16925
+NumberOfRoutes: 4

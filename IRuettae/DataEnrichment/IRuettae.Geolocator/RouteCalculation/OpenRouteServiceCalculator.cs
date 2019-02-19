@@ -83,8 +83,8 @@ namespace IRuettae.GeoCalculations.RouteCalculation
         public (double distance, double duration) CalculateWalkingDistance(double fromLat, double fromLong, double toLat,
             double toLong)
         {
-            var result = CalculateWalkingDistanceMatrix(new[] { (fromLat, fromLong), (toLat, toLong) });
-            return (result.distance[0, 1], result.duration[0, 1]);
+            var (distance, duration) = CalculateWalkingDistanceMatrix(new[] { (fromLat, fromLong), (toLat, toLong) });
+            return (distance[0, 1], duration[0, 1]);
         }
     }
 }

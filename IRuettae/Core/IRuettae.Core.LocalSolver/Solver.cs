@@ -73,7 +73,7 @@ namespace IRuettae.Core.LocalSolver
                 var modelBuilder = new ModelBuilder(solverVariables);
 
                 consoleProgress?.Invoke(this, "Starting to model");
-
+                
                 #region VRP
 
                 modelBuilder.AddPartitionConstraint();

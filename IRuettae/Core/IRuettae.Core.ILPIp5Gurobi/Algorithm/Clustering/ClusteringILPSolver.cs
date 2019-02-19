@@ -89,9 +89,9 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Clustering
             var targetFunction = new GRBLinExpr(0);
             var hour = 3600;
 
-
             var longestDay = model.AddVar(0, int.MaxValue, 0, GRB.INTEGER, "longest day");
             var workingTimeSum = new GRBLinExpr(0);
+
             foreach (var santa in Enumerable.Range(0, solverData.NumberOfSantas))
             {
                 var santaWorkingTime = solverData.Variables.SantaVisitTime[santa] + solverData.Variables.SantaRouteCost[santa];

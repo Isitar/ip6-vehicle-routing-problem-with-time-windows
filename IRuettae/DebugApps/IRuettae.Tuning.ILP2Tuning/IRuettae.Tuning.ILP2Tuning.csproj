@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{49119F99-B392-4D8E-B058-757B366150A4}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>IRuettae.Tuning.ILP2Tuning</RootNamespace>
+    <AssemblyName>IRuettae.Tuning.ILP2Tuning</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DataSets\OptimizationDataSets.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet0.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet1.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet10.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet11.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet12.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet13.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet14.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet15.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet16.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet17.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet18.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet19.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet2.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet3.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet4.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet5.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet6.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet7.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet8.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSet9.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen0.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen1.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen10.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen11.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen12.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen13.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen14.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen15.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen16.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen17.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen18.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen19.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen2.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen3.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen4.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen5.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen6.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen7.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen8.cs" />
+    <Compile Include="DataSets\OptimizationDataSets.DataSetFifteen9.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\IRuettae.Core.ILP2\IRuettae.Core.ILP2.csproj">
+      <Project>{540b2cd0-d967-48a3-8ef5-e3106eda5883}</Project>
+      <Name>IRuettae.Core.ILP2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\IRuettae.Core\IRuettae.Core.csproj">
+      <Project>{e6f0ffc6-7f26-4286-ae57-44411eb66118}</Project>
+      <Name>IRuettae.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

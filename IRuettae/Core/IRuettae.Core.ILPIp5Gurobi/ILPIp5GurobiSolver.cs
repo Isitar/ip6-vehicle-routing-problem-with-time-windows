@@ -168,7 +168,7 @@ namespace IRuettae.Core.ILPIp5Gurobi
                                 wp.Visit = wp.Visit == 0
                                     ? Constants.VisitIdHome
                                     : schedulingInputVariable.VisitIds[wp.Visit - 1];
-                                wp.StartTime = wp.Visit == Constants.VisitIdHome ? 0 : wp.StartTime;
+                                wp.StartTime = Math.Max(wp.StartTime, 0);
                                 wp.StartTime *= ip5GurobiStarterData.TimeSliceDuration;
                                 wp.StartTime += schedulingInputVariable.DayStarts[jCopy];
                                 realWaypointList.Add(wp);
