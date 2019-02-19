@@ -1,0 +1,14 @@
+Solver: GA
+Dataset55: Datasets for desired / unavailable impacts Tests Normal
+TimeElapsed [s]: 302
+Cost: 809
+NumberOfNotVisitedFamilies: 0
+NumberOfMissingBreaks: 0
+NumberOfAdditionalSantas: 0
+AdditionalSantaWorkTime: 0
+VisitTimeInUnavailable: 0
+WayTimeOutsideBusinessHours: 0
+VisitTimeInDesired: 0
+SantaWorkTime: 60937
+LongestDay: 15806
+NumberOfRoutes: 4
