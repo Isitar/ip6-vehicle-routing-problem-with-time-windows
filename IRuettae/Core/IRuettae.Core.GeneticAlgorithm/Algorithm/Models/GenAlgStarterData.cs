@@ -26,7 +26,6 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
         /// <returns></returns>
         public static GenAlgStarterData GetDefault(OptimizationInput input)
         {
-
             var starterData = new GenAlgStarterData
             {
                 MaxNumberOfSantas = input.Santas.Length,
@@ -103,9 +102,20 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
         /// </summary>
         private GenAlgStarterData()
         {
-
         }
 
+        /// <summary>
+        /// Should only be used by unit tests.
+        /// </summary>
+        /// <param name="maxNumberOfSantas"></param>
+        /// <param name="maxNumberOfGenerations"></param>
+        /// <param name="populationSize"></param>
+        /// <param name="elitismPercentage"></param>
+        /// <param name="directMutationPercentage"></param>
+        /// <param name="randomPercentage"></param>
+        /// <param name="orderBasedCrossoverProbability"></param>
+        /// <param name="mutationProbability"></param>
+        /// <param name="positionMutationProbability"></param>
         public GenAlgStarterData(int maxNumberOfSantas, long maxNumberOfGenerations, int populationSize, double elitismPercentage, double directMutationPercentage, double randomPercentage, double orderBasedCrossoverProbability, double mutationProbability, double positionMutationProbability)
         {
             MaxNumberOfSantas = maxNumberOfSantas;
@@ -169,7 +179,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
                 return false;
             }
 
-            // check if PopulationSize does not change
+            // make sure PopulationSize is stable
             var size = (int)Math.Max(1, ElitismPercentage * PopulationSize) + (int)(DirectMutationPercentage * PopulationSize) + (int)(RandomPercentage * PopulationSize);
             if (size < 0 || size > PopulationSize)
             {
