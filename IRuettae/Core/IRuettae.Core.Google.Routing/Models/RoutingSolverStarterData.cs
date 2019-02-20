@@ -1,4 +1,5 @@
-﻿using IRuettae.Core.Models;
+﻿using System.Linq;
+using IRuettae.Core.Models;
 
 namespace IRuettae.Core.Google.Routing.Models
 {
@@ -33,6 +34,14 @@ namespace IRuettae.Core.Google.Routing.Models
                 MaxNumberOfSantas = input.NumberOfSantas(),
                 Mode = input.NumberOfVisits() <= 50 ? SolvingMode.Default : SolvingMode.Fast,
             };
+        }
+
+        public static RoutingSolverStarterData GetDefaultAdditionalSantas(OptimizationInput input)
+        {
+            // get default and set MaxNumberOfSantas
+            var ret = GetDefault(input);
+            ret.MaxNumberOfSantas = input.Visits.Count(v => !v.IsBreak);
+            return ret;
         }
     }
 }
