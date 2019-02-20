@@ -19,7 +19,8 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
         public double PositionMutationProbability { get; } = 0.886;
 
         /// <summary>
-        ///Create default regarding the input
+        /// Create default regarding the input.
+        /// The MaxNumberOfSantas will be set so that additional santas are permitted.
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -81,6 +82,20 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
             #endregion PopulationSize
 
             return starterData;
+        }
+
+        /// <summary>
+        /// Create default regarding the input.
+        /// The MaxNumberOfSantas will be set so that additional santas are allowed.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static GenAlgStarterData GetDefaultAdditionalSantas(OptimizationInput input)
+        {
+            // take default and change MaxNumberOfSantas
+            var ret = GetDefault(input);
+            ret.MaxNumberOfSantas = input.Visits.Length;
+            return ret;
         }
 
         /// <summary>

@@ -43,12 +43,20 @@ namespace IRuettae.Core.GeneticAlgorithm.Tests.Algorithm.Models
 
             foreach (var (numberOfVisits, expected) in tests)
             {
-                var data = GenAlgStarterData.GetDefault(new OptimizationInput
+                var input = new OptimizationInput
                 {
                     Santas = new Santa[2],
                     Visits = new Visit[numberOfVisits],
-                });
-                Assert.AreEqual(expected, data.PopulationSize);
+                };
+                var datas = new[] {
+                    GenAlgStarterData.GetDefault(input),
+                    GenAlgStarterData.GetDefaultAdditionalSantas(input),
+                };
+
+                foreach (var data in datas)
+                {
+                    Assert.AreEqual(expected, data.PopulationSize);
+                }
             }
         }
 
@@ -56,6 +64,17 @@ namespace IRuettae.Core.GeneticAlgorithm.Tests.Algorithm.Models
         public void TestIsValid_Default()
         {
             var data = GenAlgStarterData.GetDefault(new OptimizationInput()
+            {
+                Santas = new Santa[5],
+                Visits = new Visit[10],
+            });
+            Assert.IsTrue(data.IsValid());
+        }
+
+        [TestMethod]
+        public void TestIsValid_DefaultAdditionalSantas()
+        {
+            var data = GenAlgStarterData.GetDefaultAdditionalSantas(new OptimizationInput()
             {
                 Santas = new Santa[5],
                 Visits = new Visit[10],
