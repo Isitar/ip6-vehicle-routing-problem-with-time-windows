@@ -14,6 +14,7 @@ namespace IRuettae.Core.ILP2
     {
         private readonly OptimizationInput input;
         private double vrpTimeLimitFactor;
+        private readonly string name;
         private readonly int[,] distances;
         private readonly int[] visitDurations;
 
@@ -22,10 +23,11 @@ namespace IRuettae.Core.ILP2
         /// </summary>
         /// <param name="input"></param>
         /// <param name="vrpTimeLimitFactor"></param>
-        public Solver(OptimizationInput input, double vrpTimeLimitFactor)
+        public Solver(OptimizationInput input, double vrpTimeLimitFactor, string name = "")
         {
             this.input = input;
             this.vrpTimeLimitFactor = vrpTimeLimitFactor;
+            this.name = name;
 
             visitDurations = input.Visits.Select(v => v.Duration).Prepend(0).ToArray();
             distances = new int[input.Visits.Length + 1, input.Visits.Length + 1];
@@ -242,6 +244,13 @@ namespace IRuettae.Core.ILP2
                     , GRB.MINIMIZE);
                 model.Parameters.TimeLimit = Math.Max(0, timelimitMiliseconds / 1000);
                 InitializeWithVRPSolution(vrpSolution, numberOfRoutes, model, v, w, c);
+
+#if DEBUG
+                model.Write($"{name}_{visitDurations.Length}.mst");
+                model.Write($"{name}_{visitDurations.Length}.mps");
+                model.Write($"{name}_{visitDurations.Length}.lp");
+#endif
+
                 model.Optimize();
                 output.TimeElapsed = sw.ElapsedMilliseconds / 1000;
                 try
