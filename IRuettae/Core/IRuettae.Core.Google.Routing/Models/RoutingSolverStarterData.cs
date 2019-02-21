@@ -40,7 +40,7 @@ namespace IRuettae.Core.Google.Routing.Models
         {
             // get default and set MaxNumberOfSantas
             var ret = GetDefault(input);
-            ret.MaxNumberOfSantas = input.Visits.Count(v => !v.IsBreak);
+            ret.MaxNumberOfSantas = input.Visits.Length;
             return ret;
         }
     }
