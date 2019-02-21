@@ -37,7 +37,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
                 const int sizeBigger = 16;
 
                 // number of visits
-                var x = input.Visits.Length;
+                var x = input.Visits.Count(v => !v.IsBreak) + input.Visits.Count(v => v.IsBreak) * input.Days.Length;
                 // PopulationSize
                 double y;
 
@@ -45,23 +45,23 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
                 // 10 -> 262144
                 // 20 -> 262144
                 // 31 -> 262144
-                // 35 -> 262144
+                // 34 -> 262144
                 // 50 -> 131072
                 // 100 -> 16384
                 // 200 -> 16
                 // 1000 -> 16
 
-                if (x <= 35) // [-inf,35]
+                if (x <= 34) // [-inf,34]
                 {
                     y = sizeDefault;
                 }
-                else if (x > 35 && x <= 50) // (35,50]
+                else if (x > 34 && x <= 50) // (34,50]
                 {
                     // linear interpolation
                     // generated with https://mycurvefit.com/
                     // linear fit method: linear regression
-                    // y = -8738.133*x + 567978.7
-                    y = Math.Round(-8738.133 * x + 567978.7);
+                    // y = -8192*x + 540672
+                    y = -8192 * x + 540672;
                 }
                 else if (x > 50 && x < 200) // (50,200)
                 {
