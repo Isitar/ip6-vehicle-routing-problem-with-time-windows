@@ -295,7 +295,7 @@ namespace IRuettae.Core.ILP2
 
                         var visitStart = c[s][i];
 
-                        model.AddConstr(unavailableStart >= visitStart - dayDuration * (1 - v[s][i]), null);
+                        model.AddConstr(unavailableStart >= visitStart, null);
                         model.AddGenConstrIndicator(binHelperStart, 0, unavailableStart <= unavailableFrom - dayStart, null);
                         model.AddGenConstrIndicator(binHelperStart, 1, unavailableStart <= visitStart, null);
 
