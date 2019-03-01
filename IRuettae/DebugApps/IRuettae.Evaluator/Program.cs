@@ -169,7 +169,7 @@ namespace IRuettae.Evaluator
                                 timelimit /= fastFactor;
                                 goto case Algorithms.ILP2;
                             case Algorithms.ILP2:
-                                solver = new IRuettae.Core.ILP2.Solver(input, 0.1);
+                                solver = new IRuettae.Core.ILP2.Solver(input, 0.1, dataset.ToString());
                                 savepath += "_ILP2";
                                 break;
                             case Algorithms.ILPIP5GurobiFast:

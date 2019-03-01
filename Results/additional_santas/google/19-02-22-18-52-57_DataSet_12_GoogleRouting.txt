@@ -1,0 +1,14 @@
+Solver: Google OR-Tools Routing
+Dataset12: 1000 visits, 100 santas, 2 days, 300 desired d1, 300 desired d2, 150 unavailable d1, 150 unavailable d2, 200 breaks
+TimeElapsed [s]: 7997
+Cost: 36958
+NumberOfNotVisitedFamilies: 0
+NumberOfMissingBreaks: 0
+NumberOfAdditionalSantas: 0
+AdditionalSantaWorkTime: 0
+VisitTimeInUnavailable: 203812
+WayTimeOutsideBusinessHours: 0
+VisitTimeInDesired: 588601
+SantaWorkTime: 2984736
+LongestDay: 32388
+NumberOfRoutes: 200

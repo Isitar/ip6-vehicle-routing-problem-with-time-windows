@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace IRuettae.Core.ILP2
             {
                 for (int i = 1; i < distances.GetLength(0); i++)
                 {
-                    model.AddGenConstrIndicator(v[s][i], 0, c[s][i] == 0, GurobiVarName($"if v[{s}][{i}] == 0: c[{s}][{i}] == 0"));
+                    model.AddGenConstrIndicator(v[s][i], 0, c[s][i] == 0, GurobiVarName($"if v[{s}][{i}] == 0 c[{s}][{i}] == 0"));
                     for (int k = 0; k < distances.GetLength(1); k++)
                     {
                         model.AddGenConstrIndicator(AccessW(w[s], k, i), 1, c[s][i] >= c[s][k] + distances[k, i] + visitDurations[k], GurobiVarName($"if w[{s}][{k},{i}] c[{s}][{i}] >= c[{s}][{k}]+ dist+duration"));
@@ -294,7 +295,7 @@ namespace IRuettae.Core.ILP2
 
                         var visitStart = c[s][i];
 
-                        model.AddConstr(unavailableStart >= visitStart - dayDuration * (1 - v[s][i]), null);
+                        model.AddConstr(unavailableStart >= visitStart, null);
                         model.AddGenConstrIndicator(binHelperStart, 0, unavailableStart <= unavailableFrom - dayStart, null);
                         model.AddGenConstrIndicator(binHelperStart, 1, unavailableStart <= visitStart, null);
 
@@ -323,7 +324,12 @@ namespace IRuettae.Core.ILP2
 
         private string GurobiVarName(string varname)
         {
-            return varname.Replace(" ", "_");
+            return varname
+                .Replace(";", "")
+                .Replace(">=", "gt")
+                .Replace("<=", "st")
+                .Replace("==", "eq")
+                .Replace(" ", "_");
         }
     }
 }
