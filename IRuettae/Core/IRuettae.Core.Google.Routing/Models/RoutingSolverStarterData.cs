@@ -36,6 +36,15 @@ namespace IRuettae.Core.Google.Routing.Models
             };
         }
 
+        public static RoutingSolverStarterData GetTest(OptimizationInput input)
+        {
+            return new RoutingSolverStarterData
+            {
+                MaxNumberOfSantas = input.NumberOfSantas(),
+                Mode = input.NumberOfVisits() > 50 ? SolvingMode.Default : SolvingMode.Fast,
+            };
+        }
+
         public static RoutingSolverStarterData GetDefaultAdditionalSantas(OptimizationInput input)
         {
             // get default and set MaxNumberOfSantas
