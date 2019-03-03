@@ -1,0 +1,6 @@
+Solving started.
+Conversion of input finished.
+Runs finished. Printing result:
+Strategy: NoneStrategy Cost: 2283
+Strategy: UnavailableOnlyStrategy Cost: 1723
+Solver finished.

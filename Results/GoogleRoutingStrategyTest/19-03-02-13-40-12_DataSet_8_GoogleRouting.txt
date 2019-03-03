@@ -1,0 +1,14 @@
+Solver: Google routing test
+Dataset8: Real example 2018
+TimeElapsed [s]: 5400
+Cost: 690
+NumberOfNotVisitedFamilies: 0
+NumberOfMissingBreaks: 0
+NumberOfAdditionalSantas: 0
+AdditionalSantaWorkTime: 0
+VisitTimeInUnavailable: 0
+WayTimeOutsideBusinessHours: 0
+VisitTimeInDesired: 31509
+SantaWorkTime: 68445
+LongestDay: 12486
+NumberOfRoutes: 6
