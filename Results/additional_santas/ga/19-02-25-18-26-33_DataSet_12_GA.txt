@@ -1,0 +1,14 @@
+Solver: GA
+Dataset12: 1000 visits, 100 santas, 2 days, 300 desired d1, 300 desired d2, 150 unavailable d1, 150 unavailable d2, 200 breaks
+TimeElapsed [s]: 7200
+Cost: 199669
+NumberOfNotVisitedFamilies: 0
+NumberOfMissingBreaks: 0
+NumberOfAdditionalSantas: 292
+AdditionalSantaWorkTime: 3171439
+VisitTimeInUnavailable: 106282
+WayTimeOutsideBusinessHours: 0
+VisitTimeInDesired: 372891
+SantaWorkTime: 4131157
+LongestDay: 30865
+NumberOfRoutes: 488
