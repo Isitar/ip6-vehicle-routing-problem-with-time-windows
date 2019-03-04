@@ -1,0 +1,14 @@
+Solver: Google routing test
+Dataset12: 1000 visits, 100 santas, 2 days, 300 desired d1, 300 desired d2, 150 unavailable d1, 150 unavailable d2, 200 breaks
+TimeElapsed [s]: 7262
+Cost: 448000
+NumberOfNotVisitedFamilies: 800
+NumberOfMissingBreaks: 0
+NumberOfAdditionalSantas: 0
+AdditionalSantaWorkTime: 0
+VisitTimeInUnavailable: 0
+WayTimeOutsideBusinessHours: 0
+VisitTimeInDesired: 0
+SantaWorkTime: 0
+LongestDay: 0
+NumberOfRoutes: 0

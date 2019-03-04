@@ -23,11 +23,16 @@ namespace IRuettae.Core.GeneticAlgorithm
         /// <param name="starterData"></param>
         public GenAlgSolver(OptimizationInput input, GenAlgStarterData starterData)
         {
+            if (!starterData.IsValid())
+            {
+                throw new ArgumentException("The given GenAlgStarterData is invalid.");
+            }
+
             this.input = input;
             this.starterData = starterData;
         }
 
-        public OptimizationResult Solve(long timeLimitMiliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
+        public OptimizationResult Solve(long timeLimitMilliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
         {
             this.progress = progress;
             this.consoleProgress = consoleProgress;
@@ -37,9 +42,9 @@ namespace IRuettae.Core.GeneticAlgorithm
             Log(new ProgressReport(0.01));
 
             // adjust time limit if unlimited
-            if (timeLimitMiliseconds == 0)
+            if (timeLimitMilliseconds == 0)
             {
-                timeLimitMiliseconds = long.MaxValue;
+                timeLimitMilliseconds = long.MaxValue;
             }
 
             // init population
@@ -63,7 +68,7 @@ namespace IRuettae.Core.GeneticAlgorithm
             var evolutionOperation = new EvolutionOperation(starterData);
             var repairOperation = new RepairOperation(input, mapping);
             long generation = 0;
-            for (; generation < starterData.MaxNumberOfGenerations && sw.ElapsedMilliseconds < timeLimitMiliseconds; generation++)
+            for (; generation < starterData.MaxNumberOfGenerations && sw.ElapsedMilliseconds < timeLimitMilliseconds; generation++)
             {
                 // evolve
                 evolutionOperation.Evolve(population);

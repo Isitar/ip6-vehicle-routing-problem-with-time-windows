@@ -39,6 +39,7 @@ namespace IRuettae.ResultEvaluator
             }
 
             var resultDict = new Dictionary<string, Dictionary<string, List<int>>>();
+            var timeDict = new Dictionary<string, Dictionary<string, List<int>>>();
             //var results = new List<Result>();
 
             foreach (var file in Directory.GetFiles(path, "*.txt", SearchOption.AllDirectories))
@@ -54,7 +55,7 @@ namespace IRuettae.ResultEvaluator
 
 
                     var regex = new Regex(
-                        "Solver\\d*: (?<solver>[\\w+\\s]*)\\nDataset(?<dataset>\\d+):(.|\\n)*Cost: (?<cost>\\d*)",
+                        "Solver\\d*: (?<solver>[\\w-+\\s]*)\\nDataset(?<dataset>\\d+):(.|\\n)*TimeElapsed \\[s]: (?<time>\\d+)(\\n|.)*Cost: (?<cost>\\d*)",
                         RegexOptions.IgnoreCase | RegexOptions.Multiline);
                     var fileContent = File.ReadAllText(file);
                     var match = regex.Match(fileContent);
@@ -65,6 +66,7 @@ namespace IRuettae.ResultEvaluator
                     }
                     var solver = match.Groups["solver"].Value;
                     var dataSet = match.Groups["dataset"].Value;
+                    var time = Convert.ToInt32(match.Groups["time"].Value);
                     var cost = Convert.ToInt32(match.Groups["cost"].Value);
                     if (!resultDict.ContainsKey(solver))
                     {
@@ -76,7 +78,18 @@ namespace IRuettae.ResultEvaluator
                         resultDict[solver].Add(dataSet, new List<int>());
                     }
 
+                    if (!timeDict.ContainsKey(solver))
+                    {
+                        timeDict.Add(solver, new Dictionary<string, List<int>>());
+                    }
+
+                    if (!timeDict[solver].ContainsKey(dataSet))
+                    {
+                        timeDict[solver].Add(dataSet, new List<int>());
+                    }
+
                     resultDict[solver][dataSet].Add(cost);
+                    timeDict[solver][dataSet].Add(time);
                     //results.Add(new Result { Cost = cost, DataSet = dataSet, Solver = solver });
                 }
                 catch (Exception e)
@@ -91,12 +104,12 @@ namespace IRuettae.ResultEvaluator
             foreach (var solver in resultDict.Keys.OrderBy(k => k))
             {
                 sb.AppendLine(solver);
-                sb.AppendLine("DataSet;Avg;Min;Max;25-percentile;Measures");
+                sb.AppendLine("DataSet;Avg;Min;Max;25-percentile;Measures;Run1;Run2;Run3;Run4;Run5;time");
                 foreach (var dataSet in resultDict[solver].Keys.OrderBy(int.Parse))
                 {
                     var resultList = resultDict[solver][dataSet];
                     //Console.WriteLine($"{dataSet}: [{string.Join(",", resultList)}], avg: {resultList.Average()}, min: {resultList.Min()}, max: {resultList.Max()}, 25%percentile: {resultList.OrderBy(r => -r).Take((int)Math.Ceiling(resultList.Count * 0.25)).Average()}");
-                    sb.AppendLine($"{dataSet};{resultList.Average():F1};{resultList.Min():F1};{resultList.Max():F1};{resultList.OrderBy(r => -r).Take((int)Math.Ceiling(resultList.Count * 0.25)).Average():F1};{string.Join(",",resultList)}");
+                    sb.AppendLine($"{dataSet};{resultList.Average():F1};{resultList.Min():F1};{resultList.Max():F1};{resultList.OrderBy(r => -r).Take((int)Math.Ceiling(resultList.Count * 0.25)).Average():F1};{string.Join(",",resultList)};{string.Join(";", resultList)};{string.Join(",",timeDict[solver][dataSet])}");
                 }
 
                 sb.AppendLine(new string('-', 40));

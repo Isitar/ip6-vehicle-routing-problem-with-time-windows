@@ -1,0 +1,15 @@
+Solver: ILP Ip5 Gurobi
+Dataset57: Datasets for desired / unavailable impacts Tests Unavailable
+TimeElapsed [s]: 391
+IMPORTANT: This result seems to be invalid. The reason is "Santa (1, (86400, 115200)) is used more than once on the same day."
+Cost: -245
+NumberOfNotVisitedFamilies: 0
+NumberOfMissingBreaks: 0
+NumberOfAdditionalSantas: 0
+AdditionalSantaWorkTime: 0
+VisitTimeInUnavailable: 0
+WayTimeOutsideBusinessHours: -38191
+VisitTimeInDesired: 15131
+SantaWorkTime: 80852
+LongestDay: 25560
+NumberOfRoutes: 4

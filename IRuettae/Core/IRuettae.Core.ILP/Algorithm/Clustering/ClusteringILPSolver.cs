@@ -102,6 +102,7 @@ namespace IRuettae.Core.ILP.Algorithm.Clustering
 
             var workingTimeFactor = (40d / hour);
             var longestDayFactor = (30d / hour);
+            
 
             targetFunction = workingTimeFactor * santaWorkingTime.Sum()
                              + longestDayFactor * longestDay;

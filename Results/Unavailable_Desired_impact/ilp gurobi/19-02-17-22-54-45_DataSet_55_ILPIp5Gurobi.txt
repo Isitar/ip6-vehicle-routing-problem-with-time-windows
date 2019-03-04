@@ -1,0 +1,14 @@
+Solver: ILP Ip5 Gurobi
+Dataset55: Datasets for desired / unavailable impacts Tests Normal
+TimeElapsed [s]: 391
+Cost: 801
+NumberOfNotVisitedFamilies: 0
+NumberOfMissingBreaks: 0
+NumberOfAdditionalSantas: 0
+AdditionalSantaWorkTime: 0
+VisitTimeInUnavailable: 0
+WayTimeOutsideBusinessHours: 0
+VisitTimeInDesired: 0
+SantaWorkTime: 60476
+LongestDay: 15455
+NumberOfRoutes: 4

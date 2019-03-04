@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Threading;
 
 namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Helpers
 {
-    internal sealed class RandomFactory
+    /// <summary>
+    /// Thread safe
+    /// </summary>
+    internal static class RandomFactory
     {
-        /// <summary>
-        /// Warning: Random is not thread safe
-        /// </summary>
-        public static Random Instance { get; } = new Random();
+        private static readonly ThreadLocal<Random> Instances = new ThreadLocal<Random>(() => new Random());
+
+        public static Random Instance => Instances.Value;
     }
 }

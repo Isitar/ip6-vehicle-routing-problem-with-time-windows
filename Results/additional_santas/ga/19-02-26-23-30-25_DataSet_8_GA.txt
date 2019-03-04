@@ -1,0 +1,14 @@
+Solver: GA
+Dataset8: Real example 2018
+TimeElapsed [s]: 5408
+Cost: 854
+NumberOfNotVisitedFamilies: 0
+NumberOfMissingBreaks: 0
+NumberOfAdditionalSantas: 0
+AdditionalSantaWorkTime: 0
+VisitTimeInUnavailable: 0
+WayTimeOutsideBusinessHours: 0
+VisitTimeInDesired: 29785
+SantaWorkTime: 79203
+LongestDay: 16688
+NumberOfRoutes: 6

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using IRuettae.Core.ILP.Algorithm.Models;
 using IRuettae.Core.ILP.Algorithm.Scheduling.Detail;
@@ -102,11 +103,11 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
                 
                 for (int i = 1; i < solverData.Input.Presolved.Length; i++)
                 {
-                    totalTimePresolved += solverData.Input.VisitsDuration[i];
-                    totalTimePresolved += solverData.Input.Distances[i-1, i];
+                    totalTimePresolved += solverData.Input.VisitsDuration[Array.IndexOf(solverData.Input.VisitIds, solverData.Input.Presolved[i] -1 )];
+                    totalTimePresolved += solverData.Input.Distances[i > 1 ? Array.IndexOf(solverData.Input.VisitIds, solverData.Input.Presolved[i-1] -1) : 0, Array.IndexOf(solverData.Input.VisitIds, solverData.Input.Presolved[i] -1)];
                 }
 
-                totalTimePresolved += solverData.Input.Distances[solverData.Input.Presolved.Length - 1, 0];
+                totalTimePresolved += solverData.Input.Distances[Array.IndexOf(solverData.Input.VisitIds, solverData.Input.Presolved.Last() -1), 0];
                 solver.Add(targetFunction <= totalTimePresolved * WaytimeWeight);
             }
 
@@ -177,11 +178,12 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
                 for (int day = 0; day < solverData.NumberOfDays; day++)
                 {
                     Debug.WriteLine($"Day: {day}");
+                    var str = new StringBuilder();
                     for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                     {
-                        Debug.Write(solverData.Variables.SantaEnRoute[day][santa, timeslice].SolutionValue());
+                        str.Append(solverData.Variables.SantaEnRoute[day][santa, timeslice].SolutionValue());
                     }
-                    Debug.WriteLine($" (SantaEnRoute)");
+                    Debug.WriteLine($"SantaEnRoute: {str}");
                     Debug.WriteLine(string.Empty);
                 }
                 Debug.WriteLine(string.Empty);
@@ -200,11 +202,12 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
                     Debug.WriteLine($"Day: {day}");
                     for (int visit = 1; visit < solverData.NumberOfVisits; visit++)
                     {
+                        var str = new StringBuilder();
                         for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                         {
-                            Debug.Write(solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice].SolutionValue());
+                            str.Append(solverData.Variables.VisitsPerSanta[day][santa][visit, timeslice].SolutionValue());
                         }
-                        Debug.WriteLine($" (Visit {visit})");
+                        Debug.WriteLine($"Visit {visit}: {str}");
                     }
                     Debug.WriteLine(string.Empty);
                 }
@@ -222,16 +225,18 @@ namespace IRuettae.Core.ILP.Algorithm.Scheduling
                 for (int day = 0; day < solverData.NumberOfDays; day++)
                 {
                     Debug.WriteLine($"Day: {day}");
+                    var str= new StringBuilder();
                     for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                     {
-                        Debug.Write(solverData.Variables.VisitStart[day][visit, timeslice].SolutionValue());
+                        str.Append(solverData.Variables.VisitStart[day][visit, timeslice].SolutionValue());
                     }
-                    Debug.WriteLine(" (VisitStart)");
+                    Debug.WriteLine($"VisitStart: {str}");
+                    str.Clear();
                     for (int timeslice = 0; timeslice < solverData.SlicesPerDay[day]; timeslice++)
                     {
-                        Debug.Write(solverData.Variables.Visits[day][visit, timeslice].SolutionValue());
+                        str.Append(solverData.Variables.Visits[day][visit, timeslice].SolutionValue());
                     }
-                    Debug.WriteLine(" (Visits)");
+                    Debug.WriteLine($"Visits: {str}");
                     Debug.WriteLine(string.Empty);
                 }
                 Debug.WriteLine(string.Empty);

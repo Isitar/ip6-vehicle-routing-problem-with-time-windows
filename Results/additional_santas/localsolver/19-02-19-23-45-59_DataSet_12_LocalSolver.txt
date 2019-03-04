@@ -1,0 +1,14 @@
+Solver: LocalSolver
+Dataset12: 1000 visits, 100 santas, 2 days, 300 desired d1, 300 desired d2, 150 unavailable d1, 150 unavailable d2, 200 breaks
+TimeElapsed [s]: 7290
+Cost: 22346
+NumberOfNotVisitedFamilies: 0
+NumberOfMissingBreaks: 0
+NumberOfAdditionalSantas: 0
+AdditionalSantaWorkTime: 0
+VisitTimeInUnavailable: 0
+WayTimeOutsideBusinessHours: 0
+VisitTimeInDesired: 1671477
+SantaWorkTime: 2825140
+LongestDay: 28904
+NumberOfRoutes: 164

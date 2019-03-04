@@ -168,6 +168,7 @@ namespace IRuettae.Core.ILP
                                 wp.Visit = wp.Visit == 0
                                     ? Constants.VisitIdHome
                                     : schedulingInputVariable.VisitIds[wp.Visit - 1];
+                                wp.StartTime = Math.Max(wp.StartTime, 0);
                                 wp.StartTime *= starterData.TimeSliceDuration;
                                 wp.StartTime += schedulingInputVariable.DayStarts[jCopy];
                                 realWaypointList.Add(wp);

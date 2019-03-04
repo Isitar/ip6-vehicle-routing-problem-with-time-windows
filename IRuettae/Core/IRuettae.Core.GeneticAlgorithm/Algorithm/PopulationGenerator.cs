@@ -27,7 +27,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         public (List<Genotype>, Dictionary<int, int>) Generate(OptimizationInput input, int numberOfIndividuals, int maxNumberOfSantas)
         {
             var numberOfSeparators = input.Days.Length * maxNumberOfSantas - 1;
-            var alleleToVisitIdMapping = CreateAlleles(input, numberOfSeparators);
+            var alleleToVisitIdMapping = CreateAlleles(input);
 
             var elements = new Genotype();
             elements.AddRange(alleleToVisitIdMapping.Keys);
@@ -45,7 +45,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             return (population, alleleToVisitIdMapping);
         }
 
-        private static Dictionary<int, int> CreateAlleles(OptimizationInput input, int numberOfSeparators)
+        private static Dictionary<int, int> CreateAlleles(OptimizationInput input)
         {
             var alleleToVisitIdMapping = new Dictionary<int, int>();
             // normal visits

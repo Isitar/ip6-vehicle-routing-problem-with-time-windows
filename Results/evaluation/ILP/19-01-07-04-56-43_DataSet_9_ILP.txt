@@ -1,0 +1,14 @@
+Solver: ILP
+Dataset9: 50 visits, 5 santas, 2 days, 15 desired d1, 15 desired d2, 11 unavailable d1, 11 unavailable d2, 10 breaks
+TimeElapsed [s]: 3781
+Cost: 22400
+NumberOfNotVisitedFamilies: 40
+NumberOfMissingBreaks: 0
+NumberOfAdditionalSantas: 0
+AdditionalSantaWorkTime: 0
+VisitTimeInUnavailable: 0
+WayTimeOutsideBusinessHours: 0
+VisitTimeInDesired: 0
+SantaWorkTime: 0
+LongestDay: 0
+NumberOfRoutes: 0

@@ -1,0 +1,14 @@
+Solver: ILP Ip5 Gurobi
+Dataset7: Real example 2017
+TimeElapsed [s]: 8660
+Cost: 735
+NumberOfNotVisitedFamilies: 0
+NumberOfMissingBreaks: 0
+NumberOfAdditionalSantas: 0
+AdditionalSantaWorkTime: 0
+VisitTimeInUnavailable: 0
+WayTimeOutsideBusinessHours: 0
+VisitTimeInDesired: 35100
+SantaWorkTime: 73200
+LongestDay: 13920
+NumberOfRoutes: 6

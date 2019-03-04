@@ -140,7 +140,7 @@ namespace IRuettae.Preprocessing.Mapping
             {
                 for (int j = 1; j < distances.GetLength(1); j++)
                 {
-                    distances[i, j] = SecondsToTimeslice(input.RouteCosts[i - 1, j - 1]);
+                    distances[i, j] = SecondsToTimeslice(input.RouteCosts[Visits[i - 1].Id, Visits[j - 1].Id]);
                 }
             }
 

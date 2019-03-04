@@ -21,6 +21,9 @@ namespace IRuettae.DatasetGenerator
         private readonly int numberOfBreaks;
         private readonly int numberOfUniqueVisits;
 
+        private readonly string generatedNamespace;
+        private readonly string generatedClassname;
+
         /// <summary>
         /// Generates a dataset with the given parameters
         /// </summary>
@@ -33,8 +36,11 @@ namespace IRuettae.DatasetGenerator
         /// <param name="numberOfUnavailable">array containing how many visits should have unavailable time for day [i]</param>
         /// <param name="workingDayDuration">fixed working day duration, ignored if -1</param>
         /// <param name="generateBreaks">generate breaks or not</param>
+        /// <param name="generatedNamespace"></param>
+        /// <param name="generatedClassname"></param>
         public DatasetGenerator(int mapWidth, int mapHeight, int numberOfVisits, int numberOfDays, int numberOfSantas, int[] numberOfDesired,
-            int[] numberOfUnavailable, int workingDayDuration = -1, bool generateBreaks = false)
+            int[] numberOfUnavailable, int workingDayDuration = -1, bool generateBreaks = false, string generatedNamespace = "IRuettae.Evaluator",
+            string generatedClassname = "DatasetFactory", int? seed = null)
         {
             this.mapWidth = mapWidth;
             this.mapHeight = mapHeight;
@@ -45,8 +51,16 @@ namespace IRuettae.DatasetGenerator
             this.numberOfUnavailable = numberOfUnavailable;
             this.workingDayDuration = workingDayDuration;
             this.generateBreaks = generateBreaks;
+            this.generatedNamespace = generatedNamespace;
+            this.generatedClassname = generatedClassname;
             this.numberOfBreaks = generateBreaks ? numberOfSantas * numberOfDays : 0;
             this.numberOfUniqueVisits = this.numberOfVisits - this.numberOfBreaks / this.numberOfDays;
+
+            if (seed.HasValue)
+            {
+                random = new Random(seed.Value);
+                GaussianRandomGenerator.Random = random;
+            }
         }
 
         /// <summary>
@@ -121,9 +135,9 @@ namespace IRuettae.DatasetGenerator
 
             var sb = new StringBuilder();
             sb.AppendLine("using IRuettae.Core.Models;");
-            sb.AppendLine("namespace IRuettae.Evaluator");
+            sb.AppendLine($"namespace {generatedNamespace}");
             sb.AppendLine("{");
-            sb.AppendLine("internal partial class DatasetFactory");
+            sb.AppendLine($"internal partial class {generatedClassname}");
             sb.AppendLine("{");
             sb.AppendLine("/// <summary>");
             sb.AppendLine($"/// {numberOfVisits} Visits, {numberOfDays} Days, {numberOfSantas} Santas");

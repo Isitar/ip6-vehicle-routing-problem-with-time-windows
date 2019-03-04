@@ -1,0 +1,6 @@
+Solving started.
+Conversion of input finished.
+Runs finished. Printing result:
+Strategy: DesiredSoftStrategy Cost: 89600
+Strategy: DesiredHardStrategy Cost: 89600
+Solver finished.
