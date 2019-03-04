@@ -1,0 +1,5 @@
+digraph Subtour_Problem {
+  A [shape=pentagon]
+  A -> B -> C -> D -> A;
+   E -> F -> G ->E;
+}
