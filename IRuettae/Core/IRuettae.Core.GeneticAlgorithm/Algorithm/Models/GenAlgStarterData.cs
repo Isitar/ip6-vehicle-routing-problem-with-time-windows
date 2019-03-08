@@ -24,15 +24,25 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
             MaxNumberOfSantas = input.Santas.Length;
         }
 
-        public GenAlgStarterData(OptimizationInput input, int maxNumberOfSantas)
+        public GenAlgStarterData(OptimizationInput input, int maxNumberOfAdditionalSantas)
         {
+            if (maxNumberOfAdditionalSantas < 0)
+            {
+                throw new ArgumentException("MaxNumberOfAdditionalSantas must not be negative.");
+            }
             PopulationSize = CalculatePopulationSize(input);
-            MaxNumberOfSantas = maxNumberOfSantas == 0 ? input.Santas.Length : maxNumberOfSantas;
+            MaxNumberOfSantas = input.Santas.Length + maxNumberOfAdditionalSantas;
         }
 
-        public GenAlgStarterData(int maxNumberOfSantas, int maxNumberOfGenerations, int populationSize)
+        /// <summary>
+        /// Only use this, if you really need to.
+        /// </summary>
+        /// <param name="maxNumberOfSantas"></param>
+        /// <param name="maxNumberOfGenerations"></param>
+        /// <param name="populationSize"></param>
+        public GenAlgStarterData(OptimizationInput input, int maxNumberOfAdditionalSantas, int maxNumberOfGenerations, int populationSize)
         {
-            MaxNumberOfSantas = maxNumberOfSantas;
+            MaxNumberOfSantas = input.Santas.Length + maxNumberOfAdditionalSantas;
             MaxNumberOfGenerations = maxNumberOfGenerations;
             PopulationSize = populationSize;
         }
