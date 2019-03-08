@@ -23,12 +23,12 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         {
             if (firstIndex >= Data.Visits.Length)
             {
-                throw new ArgumentOutOfRangeException(nameof(firstIndex), "index must be smaller than numberOfVisits");
+                throw new ArgumentOutOfRangeException(nameof(firstIndex), firstIndex, "index must be smaller than numberOfVisits");
             }
 
             if (secondIndex >= Data.Visits.Length)
             {
-                throw new ArgumentOutOfRangeException(nameof(secondIndex), "index must be smaller than numberOfVisits");
+                throw new ArgumentOutOfRangeException(nameof(secondIndex), secondIndex, "index must be smaller than numberOfVisits");
             }
 
             bool firstIsHome = Data.Visits[firstIndex].Id == Constants.VisitIdHome;

@@ -32,7 +32,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         {
             if (firstIndex >= data.Visits.Length)
             {
-                throw new ArgumentOutOfRangeException(nameof(firstIndex), "index must be smaller than numberOfVisits");
+                throw new ArgumentOutOfRangeException(nameof(firstIndex), firstIndex, "index must be smaller than numberOfVisits");
             }
 
             var visit = data.Visits[firstIndex];
