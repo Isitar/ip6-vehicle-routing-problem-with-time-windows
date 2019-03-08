@@ -3,7 +3,7 @@ using IRuettae.Core.Models;
 
 namespace IRuettae.Core.Google.Routing.Models
 {
-    public class RoutingSolverStarterData
+    public class RoutingSolverStarterData : IStarterData
     {
         public int MaxNumberOfSantas { get; private set; }
         public SolvingMode Mode { get; private set; }

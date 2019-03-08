@@ -41,6 +41,12 @@ namespace IRuettae.Core.Google.Routing
             // Use mostly one per core.
             var runs = GetStrategies(Environment.ProcessorCount).Select(s => (data: Converter.Convert(input, starterData.MaxNumberOfSantas), strategy: s)).ToArray();
 
+            // adapt timelimit so that no overdraw is made
+            if (runs.Length > Environment.ProcessorCount)
+            {
+                timeLimitMilliseconds /= (long)Math.Ceiling((double)runs.Length / Environment.ProcessorCount);
+            }
+
             LogMessage("Conversion of input finished.");
             LogPercentage(0.01);
 
@@ -81,10 +87,22 @@ namespace IRuettae.Core.Google.Routing
                 case SolvingMode.Fast:
                     strategies = GetStrategiesFast();
                     break;
+                case SolvingMode.All:
+                    strategies = GetStrategiesDefault();
+                    break;
                 default:
                     throw new NotImplementedException("unknown SolvingMode");
             }
+
+            // limit number of strategies
             number = Math.Max(1, Math.Min(strategies.Count, number));
+
+            if (starterData.Mode == SolvingMode.All)
+            {
+                // remove limit
+                number = strategies.Count;
+            }
+
             return strategies.Take(number).ToList();
         }
 
