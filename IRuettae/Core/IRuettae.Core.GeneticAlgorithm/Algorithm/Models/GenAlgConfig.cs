@@ -4,7 +4,7 @@ using IRuettae.Core.Models;
 
 namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
 {
-    public class GenAlgStarterData : IStarterData
+    public class GenAlgConfig : ISolverConfig
     {
         public int MaxNumberOfSantas { get; set; }
         public long MaxNumberOfGenerations { get; set; } = long.MaxValue;
@@ -18,7 +18,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
         public double MutationProbability { get; } = 0.0;
         public double PositionMutationProbability { get; } = 0.886;
 
-        public GenAlgStarterData(OptimizationInput input, int maxNumberOfAdditionalSantas = 0)
+        public GenAlgConfig(OptimizationInput input, int maxNumberOfAdditionalSantas = 0)
         {
             if (maxNumberOfAdditionalSantas < 0)
             {
@@ -34,7 +34,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
         /// <param name="maxNumberOfSantas"></param>
         /// <param name="maxNumberOfGenerations"></param>
         /// <param name="populationSize"></param>
-        public GenAlgStarterData(OptimizationInput input, int maxNumberOfAdditionalSantas, int maxNumberOfGenerations, int populationSize)
+        public GenAlgConfig(OptimizationInput input, int maxNumberOfAdditionalSantas, int maxNumberOfGenerations, int populationSize)
         {
             MaxNumberOfSantas = input.Santas.Length + maxNumberOfAdditionalSantas;
             MaxNumberOfGenerations = maxNumberOfGenerations;
@@ -53,7 +53,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
         /// <param name="orderBasedCrossoverProbability"></param>
         /// <param name="mutationProbability"></param>
         /// <param name="positionMutationProbability"></param>
-        public GenAlgStarterData(int maxNumberOfSantas, long maxNumberOfGenerations, int populationSize, double elitismPercentage, double directMutationPercentage, double randomPercentage, double orderBasedCrossoverProbability, double mutationProbability, double positionMutationProbability)
+        public GenAlgConfig(int maxNumberOfSantas, long maxNumberOfGenerations, int populationSize, double elitismPercentage, double directMutationPercentage, double randomPercentage, double orderBasedCrossoverProbability, double mutationProbability, double positionMutationProbability)
         {
             MaxNumberOfSantas = maxNumberOfSantas;
             MaxNumberOfGenerations = maxNumberOfGenerations;

@@ -4,14 +4,14 @@ using IRuettae.Core.Models;
 
 namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
 {
-    public class ParallelGenAlgStarterData : IStarterData
+    public class ParallelGenAlgConfig : ISolverConfig
     {
-        public GenAlgStarterData GenAlgStarterData { get; set; }
+        public GenAlgConfig GenAlgConfig { get; set; }
         public int NumberOfRuns { get; set; }
 
-        public ParallelGenAlgStarterData(GenAlgStarterData starterData, int numberOfRuns)
+        public ParallelGenAlgConfig(GenAlgConfig config, int numberOfRuns)
         {
-            GenAlgStarterData = starterData;
+            GenAlgConfig = config;
             NumberOfRuns = numberOfRuns;
         }
 

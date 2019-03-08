@@ -3,7 +3,7 @@ using IRuettae.Core.Models;
 
 namespace IRuettae.Core.Google.Routing.Models
 {
-    public class GoogleRoutingStarterData : IStarterData
+    public class GoogleRoutingConfig : ISolverConfig
     {
         public int MaxNumberOfSantas { get; private set; }
         public SolvingMode Mode { get; private set; }
@@ -11,7 +11,7 @@ namespace IRuettae.Core.Google.Routing.Models
         /// <summary>
         /// use GetDefault
         /// </summary>
-        private GoogleRoutingStarterData()
+        private GoogleRoutingConfig()
         {
 
         }
@@ -21,22 +21,22 @@ namespace IRuettae.Core.Google.Routing.Models
         /// </summary>
         /// <param name="maxNumberOfSantas"></param>
         /// <param name="mode"></param>
-        public GoogleRoutingStarterData(int maxNumberOfSantas, SolvingMode mode)
+        public GoogleRoutingConfig(int maxNumberOfSantas, SolvingMode mode)
         {
             MaxNumberOfSantas = maxNumberOfSantas;
             Mode = mode;
         }
 
-        public static GoogleRoutingStarterData GetDefault(OptimizationInput input)
+        public static GoogleRoutingConfig GetDefault(OptimizationInput input)
         {
-            return new GoogleRoutingStarterData
+            return new GoogleRoutingConfig
             {
                 MaxNumberOfSantas = input.NumberOfSantas(),
                 Mode = input.NumberOfVisits() <= 50 ? SolvingMode.Default : SolvingMode.Fast,
             };
         }
 
-        public static GoogleRoutingStarterData GetDefaultAdditionalSantas(OptimizationInput input)
+        public static GoogleRoutingConfig GetDefaultAdditionalSantas(OptimizationInput input)
         {
             // get default and set MaxNumberOfSantas
             var ret = GetDefault(input);

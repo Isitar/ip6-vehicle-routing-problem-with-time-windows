@@ -18,7 +18,7 @@ namespace IRuettae.Core.Google.Routing.Tests
         public void TestSolve_Simple()
         {
             var input = TestDataset1.Create();
-            var solver = new GoogleRoutingSolver(input, new GoogleRoutingStarterData(2, SolvingMode.Default));
+            var solver = new GoogleRoutingSolver(input, new GoogleRoutingConfig(2, SolvingMode.Default));
 
             var actual = solver.Solve(10, null, null);
 
@@ -32,7 +32,7 @@ namespace IRuettae.Core.Google.Routing.Tests
         public void TestSolve_AdditionalSanta()
         {
             var input = TestDataset1.Create();
-            var solver = new GoogleRoutingSolver(input, new GoogleRoutingStarterData(3, SolvingMode.Default));
+            var solver = new GoogleRoutingSolver(input, new GoogleRoutingConfig(3, SolvingMode.Default));
 
             var actual = solver.Solve(10, null, null);
 

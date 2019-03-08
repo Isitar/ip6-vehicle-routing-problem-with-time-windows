@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IRuettae.Core.LocalSolver.Models
 {
-    public class LocalSolverConfig : IStarterData
+    public class LocalSolverConfig : ISolverConfig
     {
         public double VrpTimeLimitFactor { get; set; }
         public double VrptwTimeLimitFactor { get; set; }

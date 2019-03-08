@@ -12,12 +12,12 @@ namespace IRuettae.Core.Google.Routing
     public class GoogleRoutingSolver : ISolver
     {
         private readonly OptimizationInput input;
-        private readonly GoogleRoutingStarterData starterData;
+        private readonly GoogleRoutingConfig config;
 
-        public GoogleRoutingSolver(OptimizationInput input, GoogleRoutingStarterData starterData)
+        public GoogleRoutingSolver(OptimizationInput input, GoogleRoutingConfig config)
         {
             this.input = input;
-            this.starterData = starterData;
+            this.config = config;
         }
 
         public OptimizationResult Solve(long timeLimitMilliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
@@ -39,7 +39,7 @@ namespace IRuettae.Core.Google.Routing
 
             // Create input data for internal solver.
             // Use mostly one per core.
-            var runs = GetStrategies(Environment.ProcessorCount).Select(s => (data: Converter.Convert(input, starterData.MaxNumberOfSantas), strategy: s)).ToArray();
+            var runs = GetStrategies(Environment.ProcessorCount).Select(s => (data: Converter.Convert(input, config.MaxNumberOfSantas), strategy: s)).ToArray();
 
             // adapt timelimit so that no overdraw is made
             if (runs.Length > Environment.ProcessorCount)
@@ -79,7 +79,7 @@ namespace IRuettae.Core.Google.Routing
         private List<ITimeWindowStrategy> GetStrategies(int number)
         {
             List<ITimeWindowStrategy> strategies;
-            switch (starterData.Mode)
+            switch (config.Mode)
             {
                 case SolvingMode.Default:
                     strategies = GetStrategiesDefault();
@@ -97,7 +97,7 @@ namespace IRuettae.Core.Google.Routing
             // limit number of strategies
             number = Math.Max(1, Math.Min(strategies.Count, number));
 
-            if (starterData.Mode == SolvingMode.All)
+            if (config.Mode == SolvingMode.All)
             {
                 // remove limit
                 number = strategies.Count;

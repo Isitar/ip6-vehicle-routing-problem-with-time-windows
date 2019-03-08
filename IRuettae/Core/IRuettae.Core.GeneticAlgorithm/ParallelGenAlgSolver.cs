@@ -14,22 +14,22 @@ namespace IRuettae.Core.GeneticAlgorithm
     public class ParallelGenAlgSolver : ISolver
     {
         private readonly OptimizationInput input;
-        private readonly ParallelGenAlgStarterData starterData;
+        private readonly ParallelGenAlgConfig config;
 
         /// <summary>
         ///
         /// </summary>
         /// <param name="input"></param>
-        /// <param name="starterData"></param>
-        public ParallelGenAlgSolver(OptimizationInput input, ParallelGenAlgStarterData starterData)
+        /// <param name="config"></param>
+        public ParallelGenAlgSolver(OptimizationInput input, ParallelGenAlgConfig config)
         {
-            if (!starterData.GenAlgStarterData.IsValid())
+            if (!config.GenAlgConfig.IsValid())
             {
-                throw new ArgumentException("The given GenAlgStarterData is invalid.");
+                throw new ArgumentException("The given GenAlgConfig is invalid.", "config");
             }
 
             this.input = input;
-            this.starterData = starterData;
+            this.config = config;
         }
 
         public OptimizationResult Solve(long timeLimitMilliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
@@ -38,17 +38,17 @@ namespace IRuettae.Core.GeneticAlgorithm
             progress?.Invoke(this, new ProgressReport(0.01));
 
             // adapt timelimit so that no overdraw is made
-            if (starterData.NumberOfRuns > Environment.ProcessorCount)
+            if (config.NumberOfRuns > Environment.ProcessorCount)
             {
-                timeLimitMilliseconds /= (long)Math.Ceiling((double)starterData.NumberOfRuns / Environment.ProcessorCount);
+                timeLimitMilliseconds /= (long)Math.Ceiling((double)config.NumberOfRuns / Environment.ProcessorCount);
             }
 
-            var orderedResults = Enumerable.Range(0, starterData.NumberOfRuns)
+            var orderedResults = Enumerable.Range(0, config.NumberOfRuns)
                 .AsParallel()
                 .Select(v =>
                 {
                     var log = new StringBuilder();
-                    var result = new GenAlgSolver(input, starterData.GenAlgStarterData).Solve(timeLimitMilliseconds, null, (obj, msg) => log.AppendLine(msg));
+                    var result = new GenAlgSolver(input, config.GenAlgConfig).Solve(timeLimitMilliseconds, null, (obj, msg) => log.AppendLine(msg));
                     return (result: result, log: log.ToString());
                 })
                 .OrderBy(run => run.result.Cost())

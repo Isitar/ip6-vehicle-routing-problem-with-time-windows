@@ -58,7 +58,7 @@
     <Compile Include="Algorithm\Clustering\Detail\VariableBuilder.cs" />
     <Compile Include="Algorithm\Clustering\SolverInputData.cs" />
     <Compile Include="Algorithm\ISolver.cs" />
-    <Compile Include="Algorithm\Models\ILPIp5GurobiStarterData.cs" />
+    <Compile Include="Algorithm\Models\ILPIp5GurobiConfig.cs" />
     <Compile Include="Algorithm\Models\SchedulingOptimizationGoals.cs" />
     <Compile Include="Algorithm\ResultState.cs" />
     <Compile Include="Algorithm\Route.cs" />
