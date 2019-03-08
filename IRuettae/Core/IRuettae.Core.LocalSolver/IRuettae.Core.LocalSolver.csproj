@@ -50,6 +50,7 @@
     <Compile Include="Algorithm\ModelBuilder.cs" />
     <Compile Include="Algorithm\SolverVariables.cs" />
     <Compile Include="Algorithm\PhaseSolution.cs" />
+    <Compile Include="Models\LocalSolverConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Solver.cs" />
   </ItemGroup>
