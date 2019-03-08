@@ -66,6 +66,7 @@
 <ul class="compare-container">
     <li class="item-labels">
         <div class="item-group-head">&nbsp;</div>
+        <div class="item-group">@Html.DisplayNameFor(m => m.Algorithm)</div>
         <div class="item-group">@Html.DisplayNameFor(m => m.Cost)</div>
         <div class="item-group">@Html.DisplayNameFor(m => m.NumberOfNotVisitedFamilies)</div>
         <div class="item-group">@Html.DisplayNameFor(m => m.NumberOfMissingBreaks)</div>
@@ -94,7 +95,8 @@
 
             <a href="@Url.Action("Result", new {id = routeCalculationVM.Id})" class="btn btn-dark btn-sm"><i class="fa fa-eye"></i> Details</a>
         </div>
-        <div class="item-group @(routeCalculationVM.Cost == Model.Max(m => m.Cost) ? "best-val" : "")">@routeCalculationVM.Cost</div>
+        <div class="item-group @(routeCalculationVM.Cost == Model.Min(m => m.Cost) ? "best-val" : "")">@routeCalculationVM.Algorithm</div>
+        <div class="item-group @(routeCalculationVM.Cost == Model.Min(m => m.Cost) ? "best-val" : "")">@routeCalculationVM.Cost</div>
         <div class="item-group @(routeCalculationVM.NumberOfNotVisitedFamilies == Model.Min(m => m.NumberOfNotVisitedFamilies) ? "best-val" : "")">@routeCalculationVM.NumberOfNotVisitedFamilies</div>
         <div class="item-group @(routeCalculationVM.NumberOfNotVisitedFamilies == Model.Min(m => m.NumberOfMissingBreaks) ? "best-val" : "")">@routeCalculationVM.NumberOfMissingBreaks</div>
         <div class="item-group @(routeCalculationVM.NumberOfAdditionalSantas == Model.Min(m => m.NumberOfAdditionalSantas) ? "best-val" : "")">@routeCalculationVM.NumberOfAdditionalSantas</div>
