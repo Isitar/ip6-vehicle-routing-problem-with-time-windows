@@ -69,8 +69,8 @@ namespace IRuettae.GeneticAlgorithmTuning
 
             // create solver
             var (input, _) = DatasetFactory.DatasetGATuning();
-            var starterData = new GenAlgStarterData(input.NumberOfSantas(), maxNumberOfGenerations, (int)parameters[6], parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters[5]);
-            var solver = new GenAlgSolver(input, starterData);
+            var config = new GenAlgConfig(input.NumberOfSantas(), maxNumberOfGenerations, (int)parameters[6], parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters[5]);
+            var solver = new GenAlgSolver(input, config);
 
             // run numberOfRuns times and return average
             return Enumerable.Range(0, numberOfRuns)

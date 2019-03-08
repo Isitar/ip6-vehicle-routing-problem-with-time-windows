@@ -14,6 +14,7 @@ using IRuettae.Core.ILP.Algorithm.Models;
 using IRuettae.Core.ILPIp5Gurobi;
 using IRuettae.Core.ILPIp5Gurobi.Algorithm.Models;
 using IRuettae.Core.LocalSolver;
+using IRuettae.Core.LocalSolver.Models;
 using IRuettae.Core.Models;
 using Newtonsoft.Json;
 
@@ -138,7 +139,7 @@ namespace IRuettae.Evaluator
                                 timelimit /= fastFactor;
                                 goto case Algorithms.ILP;
                             case Algorithms.ILP:
-                                solver = new ILPSolver(input, new ILPStarterData
+                                solver = new ILPSolver(input, new ILPConfig
                                 {
                                     ClusteringMIPGap = 0,
                                     SchedulingMIPGap = 0,
@@ -153,16 +154,21 @@ namespace IRuettae.Evaluator
                                 timelimit /= fastFactor;
                                 goto case Algorithms.LocalSolver;
                             case Algorithms.LocalSolver:
-                                solver = new IRuettae.Core.LocalSolver.Solver(input, 0.1, 0.8, false);
+                                solver = new Solver(input, new LocalSolverConfig
+                                {
+                                    VrpTimeLimitFactor = 0.1,
+                                    VrptwTimeLimitFactor = 0.8,
+                                    MaxNumberOfAdditionalSantas = 0,
+                                });
                                 savepath += "_LocalSolver";
                                 break;
                             case Algorithms.GA:
-                                solver = new GenAlgSolver(input, new GenAlgStarterData(input));
+                                solver = new GenAlgSolver(input, new GenAlgConfig(input));
                                 savepath += "_GA";
                                 break;
                             case Algorithms.GAFast:
                                 timelimit /= fastFactor;
-                                solver = new GenAlgSolver(input, new GenAlgStarterData(input));
+                                solver = new GenAlgSolver(input, new GenAlgConfig(input));
                                 savepath += "_GAFast";
                                 break;
                             case Algorithms.ILP2Fast:
@@ -176,7 +182,7 @@ namespace IRuettae.Evaluator
                                 timelimit /= fastFactor;
                                 goto case Algorithms.ILPIP5Gurobi;
                             case Algorithms.ILPIP5Gurobi:
-                                solver = new ILPIp5GurobiSolver(input, new ILPIp5GurobiStarterData
+                                solver = new ILPIp5GurobiSolver(input, new ILPIp5GurobiConfig
                                 {
                                     ClusteringMIPGap = 0,
                                     SchedulingMIPGap = 0,
@@ -189,11 +195,11 @@ namespace IRuettae.Evaluator
                                 break;
                             case Algorithms.GoogleRoutingFast:
                                 timelimit /= fastFactor;
-                                solver = new GoogleRoutingSolver(input, GoogleRoutingStarterData.GetDefault(input));
+                                solver = new GoogleRoutingSolver(input, GoogleRoutingConfig.GetDefault(input));
                                 savepath += "_GoogleRoutingFast";
                                 break;
                             case Algorithms.GoogleRouting:
-                                solver = new GoogleRoutingSolver(input, GoogleRoutingStarterData.GetDefault(input));
+                                solver = new GoogleRoutingSolver(input, GoogleRoutingConfig.GetDefault(input));
                                 savepath += "_GoogleRouting";
                                 break;
                         }

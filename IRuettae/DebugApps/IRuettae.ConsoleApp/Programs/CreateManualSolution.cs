@@ -35,7 +35,7 @@ namespace IRuettae.ConsoleApp.Programs
                 (new DateTime(2017, 12, 09, 17, 0, 0), new DateTime(2017, 12, 09, 22, 0, 0)),
             };
 
-            var routes = new(int santaId, int day, int[] visitIds)[]
+            var routes = new (int santaId, int day, int[] visitIds)[]
                 {
                 (8,0,new[]{ 1,2,3,4,5 }),
                 (11,0,new[]{ 34,35,25,26,27,28}),
@@ -65,7 +65,7 @@ namespace IRuettae.ConsoleApp.Programs
                 (new DateTime(2017, 12, 09, 17, 0, 0), new DateTime(2017, 12, 09, 22, 0, 0)),
             };
 
-            var routes = new(int santaId, int day, int[] visitIds)[]
+            var routes = new (int santaId, int day, int[] visitIds)[]
                 {
                 (8,0,new[]{ 1,2,3,4,5 }),
                 (11,0,new[]{ 34,35,25,26,27,28}),
@@ -86,7 +86,7 @@ namespace IRuettae.ConsoleApp.Programs
 
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
-                var starterData = new ManualStarterData()
+                var config = new ManualConfig()
                 {
                     Routes = routes,
                 };
@@ -102,7 +102,7 @@ namespace IRuettae.ConsoleApp.Programs
                     TimePerChildOffsetMinutes = beta0,
                     Year = year,
                     Algorithm = AlgorithmType.Manual,
-                    AlgorithmData = JsonConvert.SerializeObject(starterData),
+                    AlgorithmData = JsonConvert.SerializeObject(config),
                 };
                 rc = dbSession.Merge(rc);
             }
