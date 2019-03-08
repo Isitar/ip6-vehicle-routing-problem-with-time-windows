@@ -78,6 +78,14 @@ namespace IRuettae.WebApi.Helpers
                 var converter = new PersistenceToCoreConverter();
                 var optimizationInput = converter.Convert(routeCalculation.Days, startVisit, visits, santas);
 
+                // remove unnecessary santas
+                {
+                    // maximum number of additional santas to reach the theoretical optimum
+                    var maxAdditional = optimizationInput.NumberOfVisits() - optimizationInput.NumberOfSantas();
+                    maxAdditional = Math.Max(0, maxAdditional);
+                    routeCalculation.MaxNumberOfAdditionalSantas = Math.Min(routeCalculation.MaxNumberOfAdditionalSantas, maxAdditional);
+                }
+
                 var solverConfig = SolverConfigFactory.CreateSolverConfig(routeCalculation, optimizationInput);
                 routeCalculation.AlgorithmData = JsonConvert.SerializeObject(solverConfig);
 
