@@ -16,6 +16,11 @@ namespace IRuettae.Core.Google.Routing
 
         public GoogleRoutingSolver(OptimizationInput input, GoogleRoutingConfig config)
         {
+            if (config.MaxNumberOfAdditionalSantas < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(config), config, $"{nameof(config.MaxNumberOfAdditionalSantas)} must not be negative");
+            }
+
             this.input = input;
             this.config = config;
         }
@@ -39,7 +44,7 @@ namespace IRuettae.Core.Google.Routing
 
             // Create input data for internal solver.
             // Use mostly one per core.
-            var runs = GetStrategies(Environment.ProcessorCount).Select(s => (data: Converter.Convert(input, config.MaxNumberOfSantas), strategy: s)).ToArray();
+            var runs = GetStrategies(Environment.ProcessorCount).Select(s => (data: Converter.Convert(input, config.MaxNumberOfAdditionalSantas), strategy: s)).ToArray();
 
             // adapt timelimit so that no overdraw is made
             if (runs.Length > Environment.ProcessorCount)
