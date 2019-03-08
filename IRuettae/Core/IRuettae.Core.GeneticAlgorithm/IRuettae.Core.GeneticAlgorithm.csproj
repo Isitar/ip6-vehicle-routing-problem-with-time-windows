@@ -49,6 +49,7 @@
     <Compile Include="Algorithm\Helpers\ExtensionMethods.cs" />
     <Compile Include="Algorithm\Helpers\RandomFactory.cs" />
     <Compile Include="Algorithm\Helpers\SimplifiedOptimizationResult.cs" />
+    <Compile Include="Algorithm\Models\ParallelGenAlgStarterData.cs" />
     <Compile Include="Algorithm\Models\GenAlgStarterData.cs" />
     <Compile Include="Algorithm\Models\Genotype.cs" />
     <Compile Include="Algorithm\MutationOperation.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="Algorithm\RecombinationOperation.cs" />
     <Compile Include="Algorithm\RepairOperation.cs" />
     <Compile Include="GenAlgSolver.cs" />
+    <Compile Include="ParallelGenAlgSolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
