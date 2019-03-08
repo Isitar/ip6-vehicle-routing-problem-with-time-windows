@@ -31,8 +31,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Tests.Algorithm.Models
                 (1, 262144),
                 (10, 262144),
                 (20, 262144),
-                (31, 262144),
-                (35, 262144),
+                (34, 262144),
                 (50, 131072),
                 (100, 16384),
                 (200, 16),
@@ -47,10 +46,11 @@ namespace IRuettae.Core.GeneticAlgorithm.Tests.Algorithm.Models
                 {
                     Santas = new Santa[2],
                     Visits = new Visit[numberOfVisits],
+                    Days = new (int, int)[2],
                 };
                 var datas = new[] {
-                    GenAlgStarterData.GetDefault(input),
-                    GenAlgStarterData.GetDefaultAdditionalSantas(input),
+                    new GenAlgStarterData(input),
+                    new GenAlgStarterData(input,2),
                 };
 
                 foreach (var data in datas)
@@ -63,10 +63,11 @@ namespace IRuettae.Core.GeneticAlgorithm.Tests.Algorithm.Models
         [TestMethod]
         public void TestIsValid_Default()
         {
-            var data = GenAlgStarterData.GetDefault(new OptimizationInput()
+            var data = new GenAlgStarterData(new OptimizationInput()
             {
                 Santas = new Santa[5],
                 Visits = new Visit[10],
+                Days = new (int, int)[2],
             });
             Assert.IsTrue(data.IsValid());
         }
@@ -74,11 +75,13 @@ namespace IRuettae.Core.GeneticAlgorithm.Tests.Algorithm.Models
         [TestMethod]
         public void TestIsValid_DefaultAdditionalSantas()
         {
-            var data = GenAlgStarterData.GetDefaultAdditionalSantas(new OptimizationInput()
+            var data = new GenAlgStarterData(new OptimizationInput()
             {
                 Santas = new Santa[5],
                 Visits = new Visit[10],
-            });
+                Days = new (int, int)[2],
+            },
+            10);
             Assert.IsTrue(data.IsValid());
         }
 

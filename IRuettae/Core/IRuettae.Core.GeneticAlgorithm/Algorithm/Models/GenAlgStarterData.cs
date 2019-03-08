@@ -4,11 +4,11 @@ using IRuettae.Core.Models;
 
 namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
 {
-    public class GenAlgStarterData
+    public class GenAlgStarterData : IStarterData
     {
-        public int MaxNumberOfSantas { get; private set; }
-        public long MaxNumberOfGenerations { get; } = long.MaxValue;
-        public int PopulationSize { get; private set; }
+        public int MaxNumberOfSantas { get; set; }
+        public long MaxNumberOfGenerations { get; set; } = long.MaxValue;
+        public int PopulationSize { get; set; } = 0;
 
         public double ElitismPercentage { get; } = 0.357;
         public double DirectMutationPercentage { get; } = 0.378;
@@ -18,90 +18,23 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
         public double MutationProbability { get; } = 0.0;
         public double PositionMutationProbability { get; } = 0.886;
 
-        /// <summary>
-        /// Create default regarding the input.
-        /// The MaxNumberOfSantas will be set so that additional santas are permitted.
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public static GenAlgStarterData GetDefault(OptimizationInput input)
+        public GenAlgStarterData(OptimizationInput input)
         {
-            var starterData = new GenAlgStarterData
-            {
-                MaxNumberOfSantas = input.Santas.Length,
-            };
-
-            #region PopulationSize
-            {
-                const int sizeDefault = 262144;
-                const int sizeBigger = 16;
-
-                // number of visits
-                var x = input.Visits.Count(v => !v.IsBreak) + input.Visits.Count(v => v.IsBreak) * input.Days.Length;
-                // PopulationSize
-                double y;
-
-                // x -> y
-                // 10 -> 262144
-                // 20 -> 262144
-                // 31 -> 262144
-                // 34 -> 262144
-                // 50 -> 131072
-                // 100 -> 16384
-                // 200 -> 16
-                // 1000 -> 16
-
-                if (x <= 34) // [-inf,34]
-                {
-                    y = sizeDefault;
-                }
-                else if (x > 34 && x <= 50) // (34,50]
-                {
-                    // linear interpolation
-                    // generated with https://mycurvefit.com/
-                    // linear fit method: linear regression
-                    // y = -8192*x + 540672
-                    y = -8192 * x + 540672;
-                }
-                else if (x > 50 && x < 200) // (50,200)
-                {
-                    // non-linear approximation
-                    // generated with https://mycurvefit.com/
-                    // non-linear fit method: exponential basic
-                    // y = -250.92 + 1036717 * e ^ (-0.0413231 * x)
-                    y = Math.Round(-250.92 + 1036717 * Math.Pow(Math.E, (-0.0413231 * x)));
-                }
-                else // [200,inf]
-                {
-                    y = sizeBigger;
-                }
-
-                starterData.PopulationSize = (int)y;
-            }
-            #endregion PopulationSize
-
-            return starterData;
+            PopulationSize = CalculatePopulationSize(input);
+            MaxNumberOfSantas = input.Santas.Length;
         }
 
-        /// <summary>
-        /// Create default regarding the input.
-        /// The MaxNumberOfSantas will be set so that additional santas are allowed.
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public static GenAlgStarterData GetDefaultAdditionalSantas(OptimizationInput input)
+        public GenAlgStarterData(OptimizationInput input, int maxNumberOfSantas)
         {
-            // take default and change MaxNumberOfSantas
-            var ret = GetDefault(input);
-            ret.MaxNumberOfSantas = input.Visits.Length;
-            return ret;
+            PopulationSize = CalculatePopulationSize(input);
+            MaxNumberOfSantas = maxNumberOfSantas == 0 ? input.Santas.Length : maxNumberOfSantas;
         }
 
-        /// <summary>
-        /// use GetDefault
-        /// </summary>
-        private GenAlgStarterData()
+        public GenAlgStarterData(int maxNumberOfSantas, int maxNumberOfGenerations, int populationSize)
         {
+            MaxNumberOfSantas = maxNumberOfSantas;
+            MaxNumberOfGenerations = maxNumberOfGenerations;
+            PopulationSize = populationSize;
         }
 
         /// <summary>
@@ -127,6 +60,54 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
             OrderBasedCrossoverProbability = orderBasedCrossoverProbability;
             MutationProbability = mutationProbability;
             PositionMutationProbability = positionMutationProbability;
+        }
+
+        private static int CalculatePopulationSize(OptimizationInput input)
+        {
+            const int sizeDefault = 262144;
+            const int sizeBigger = 16;
+
+            // number of visits
+            var x = input.Visits.Count(v => !v.IsBreak) + input.Visits.Count(v => v.IsBreak) * input.Days.Length;
+            // PopulationSize
+            double y;
+
+            // x -> y
+            // 10 -> 262144
+            // 20 -> 262144
+            // 31 -> 262144
+            // 34 -> 262144
+            // 50 -> 131072
+            // 100 -> 16384
+            // 200 -> 16
+            // 1000 -> 16
+
+            if (x <= 34) // [-inf,34]
+            {
+                y = sizeDefault;
+            }
+            else if (x > 34 && x <= 50) // (34,50]
+            {
+                // linear interpolation
+                // generated with https://mycurvefit.com/
+                // linear fit method: linear regression
+                // y = -8192*x + 540672
+                y = -8192 * x + 540672;
+            }
+            else if (x > 50 && x < 200) // (50,200)
+            {
+                // non-linear approximation
+                // generated with https://mycurvefit.com/
+                // non-linear fit method: exponential basic
+                // y = -250.92 + 1036717 * e ^ (-0.0413231 * x)
+                y = Math.Round(-250.92 + 1036717 * Math.Pow(Math.E, (-0.0413231 * x)));
+            }
+            else // [200,inf]
+            {
+                y = sizeBigger;
+            }
+
+            return (int)y;
         }
 
         /// <summary>
