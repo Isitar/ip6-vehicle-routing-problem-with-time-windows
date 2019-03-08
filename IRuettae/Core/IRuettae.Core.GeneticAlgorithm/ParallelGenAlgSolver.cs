@@ -14,16 +14,16 @@ namespace IRuettae.Core.GeneticAlgorithm
     public class ParallelGenAlgSolver : ISolver
     {
         private readonly OptimizationInput input;
-        private readonly GenAlgStarterData starterData;
+        private readonly ParallelGenAlgStarterData starterData;
 
         /// <summary>
         ///
         /// </summary>
         /// <param name="input"></param>
         /// <param name="starterData"></param>
-        public ParallelGenAlgSolver(OptimizationInput input, GenAlgStarterData starterData)
+        public ParallelGenAlgSolver(OptimizationInput input, ParallelGenAlgStarterData starterData)
         {
-            if (!starterData.IsValid())
+            if (!starterData.GenAlgStarterData.IsValid())
             {
                 throw new ArgumentException("The given GenAlgStarterData is invalid.");
             }
@@ -37,12 +37,18 @@ namespace IRuettae.Core.GeneticAlgorithm
             consoleProgress?.Invoke(this, "Solving started");
             progress?.Invoke(this, new ProgressReport(0.01));
 
+            // adapt timelimit so that no overdraw is made
+            if (starterData.NumberOfRuns > Environment.ProcessorCount)
+            {
+                timeLimitMilliseconds /= (long)Math.Ceiling((double)starterData.NumberOfRuns / Environment.ProcessorCount);
+            }
+
             var orderedResults = Enumerable.Range(0, Environment.ProcessorCount)
                 .AsParallel()
                 .Select(v =>
                 {
                     var log = new StringBuilder();
-                    var result = new GenAlgSolver(input, starterData).Solve(timeLimitMilliseconds, null, (obj, msg) => log.AppendLine(msg));
+                    var result = new GenAlgSolver(input, starterData.GenAlgStarterData).Solve(timeLimitMilliseconds, null, (obj, msg) => log.AppendLine(msg));
                     return (result: result, log: log.ToString());
                 })
                 .OrderBy(run => run.result.Cost())
