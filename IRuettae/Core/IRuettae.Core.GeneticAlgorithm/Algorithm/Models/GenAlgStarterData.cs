@@ -18,13 +18,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
         public double MutationProbability { get; } = 0.0;
         public double PositionMutationProbability { get; } = 0.886;
 
-        public GenAlgStarterData(OptimizationInput input)
-        {
-            PopulationSize = CalculatePopulationSize(input);
-            MaxNumberOfSantas = input.Santas.Length;
-        }
-
-        public GenAlgStarterData(OptimizationInput input, int maxNumberOfAdditionalSantas)
+        public GenAlgStarterData(OptimizationInput input, int maxNumberOfAdditionalSantas = 0)
         {
             if (maxNumberOfAdditionalSantas < 0)
             {
