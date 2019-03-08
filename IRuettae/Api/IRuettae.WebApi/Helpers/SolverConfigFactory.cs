@@ -42,7 +42,7 @@ namespace IRuettae.WebApi.Helpers
                 case AlgorithmType.GoogleRouting:
                     return new GoogleRoutingConfig(routeCalculation.MaxNumberOfAdditionalSantas, SolvingMode.All);
             }
-            throw new ArgumentException("Unknown AlgorithmType. Cannot create a StartData.", "routeCalculation");
+            throw new ArgumentOutOfRangeException(nameof(routeCalculation), routeCalculation, "Unknown AlgorithmType. Cannot create a StartData.");
         }
     }
 }

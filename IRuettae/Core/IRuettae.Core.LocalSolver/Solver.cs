@@ -29,7 +29,7 @@ namespace IRuettae.Core.LocalSolver
         {
             if (config.MaxNumberOfAdditionalSantas < 0)
             {
-                throw new ArgumentException("MaxNumberOfAdditionalSantas must not be negative", "config");
+                throw new ArgumentOutOfRangeException(nameof(config), config.MaxNumberOfAdditionalSantas, $"{nameof(config.MaxNumberOfAdditionalSantas)} must not be negative");
             }
 
             this.input = input;

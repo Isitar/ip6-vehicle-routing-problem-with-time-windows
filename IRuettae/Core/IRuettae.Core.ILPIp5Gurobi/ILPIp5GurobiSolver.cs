@@ -29,7 +29,7 @@ namespace IRuettae.Core.ILPIp5Gurobi
         {
             if (timeLimitMilliseconds < ip5GurobiConfig.ClusteringTimeLimitMiliseconds + ip5GurobiConfig.SchedulingTimeLimitMiliseconds)
             {
-                throw new ArgumentException("must be at least the sum of ClusteringTimeLimit and SchedulingTimeLimit", "timeLimitMilliseconds");
+                throw new ArgumentOutOfRangeException(nameof(timeLimitMilliseconds), timeLimitMilliseconds, "must be at least the sum of ClusteringTimeLimit and SchedulingTimeLimit");
             }
 
             consoleProgress?.Invoke(this, "Solving started");

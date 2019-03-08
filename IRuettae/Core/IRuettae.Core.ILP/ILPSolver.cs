@@ -29,7 +29,7 @@ namespace IRuettae.Core.ILP
         {
             if (timeLimitMilliseconds < config.ClusteringTimeLimitMiliseconds + config.SchedulingTimeLimitMiliseconds)
             {
-                throw new ArgumentException("timeLimitMilliseconds must be at least the sum of ClusteringTimeLimit and SchedulingTimeLimit", "timeLimitMilliseconds");
+                throw new ArgumentOutOfRangeException(nameof(timeLimitMilliseconds), timeLimitMilliseconds, "must be at least the sum of ClusteringTimeLimit and SchedulingTimeLimit");
             }
 
             consoleProgress?.Invoke(this, "Solving started");

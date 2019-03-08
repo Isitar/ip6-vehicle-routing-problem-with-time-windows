@@ -16,7 +16,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// <param name="data"></param>
         public TimeEvaluator(RoutingData data)
         {
-            Data = data ?? throw new ArgumentException("must not be null", "data");
+            Data = data ?? throw new ArgumentNullException(nameof(data));
         }
 
         public override long Run(int firstIndex, int secondIndex)
