@@ -31,7 +31,6 @@ namespace IRuettae.WebApp.Controllers
                 model = JsonConvert.DeserializeObject<AlgorithmStarterVM>(System.IO.File.ReadAllText(ConfigPath));
             }
 
-            model.MaxNumberOfAdditionalSantas = Math.Max(model.MaxNumberOfAdditionalSantas, santas.Length);
             model.StarterIds = visits.Select(v => new SelectListItem
             {
                 Value = v.Id.ToString(),
