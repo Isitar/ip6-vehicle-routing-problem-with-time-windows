@@ -19,7 +19,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
             var numberOfDays = input.Days.Length;
 
             var numberOfSantas = 2;
-            var actual = Converter.Convert(input, numberOfSantas);
+            var actual = Converter.Convert(input, 0);
 
             Assert.AreEqual(numberOfDays * numberOfSantas, actual.SantaIds.Length);
             Assert.AreEqual(TestDataset1.SantaId1, actual.SantaIds[0]);
@@ -32,7 +32,7 @@ namespace IRuettae.Core.Google.Routing.Tests.Algorithm
         public void TestConvert_Additional()
         {
             var input = TestDataset1.Create();
-            var actual = Converter.Convert(input, NumberOfSantas);
+            var actual = Converter.Convert(input, 1);
 
             CheckSantas(actual);
             CheckVisits(actual);
