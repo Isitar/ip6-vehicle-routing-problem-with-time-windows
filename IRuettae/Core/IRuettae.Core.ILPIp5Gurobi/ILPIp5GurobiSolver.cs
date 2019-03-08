@@ -29,7 +29,7 @@ namespace IRuettae.Core.ILPIp5Gurobi
         {
             if (timeLimitMilliseconds < ip5GurobiConfig.ClusteringTimeLimitMiliseconds + ip5GurobiConfig.SchedulingTimeLimitMiliseconds)
             {
-                throw new ArgumentException("overall timeLimitMilliseconds must be at least the sum of ClusteringTimeLimit and SchedulingTimeLimit");
+                throw new ArgumentException("must be at least the sum of ClusteringTimeLimit and SchedulingTimeLimit", "timeLimitMilliseconds");
             }
 
             consoleProgress?.Invoke(this, "Solving started");
@@ -58,8 +58,8 @@ namespace IRuettae.Core.ILPIp5Gurobi
                 return new OptimizationResult()
                 {
                     OptimizationInput = input,
-                    Routes = new Route[]{},
-                    TimeElapsed = sw.ElapsedMilliseconds/1000,
+                    Routes = new Route[] { },
+                    TimeElapsed = sw.ElapsedMilliseconds / 1000,
                 };
 
             }

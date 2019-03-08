@@ -16,9 +16,9 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// </summary>
         /// <param name="data"></param>
         /// <param name="santa"></param>
-        public BreakEvaluator(RoutingData data, int  santa)
+        public BreakEvaluator(RoutingData data, int santa)
         {
-            this.data = data ?? throw new ArgumentException("data must not be null");
+            this.data = data ?? throw new ArgumentException("must not be null", "data");
             this.santa = santa;
         }
 

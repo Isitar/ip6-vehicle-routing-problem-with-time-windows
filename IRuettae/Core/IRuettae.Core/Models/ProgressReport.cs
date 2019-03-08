@@ -24,7 +24,7 @@ namespace IRuettae.Core.Models
                 }
                 else
                 {
-                    throw new ArgumentException("progress needs to be between 0 and 1");
+                    throw new ArgumentException("must be between 0 and 1", "progress");
                 }
             }
         }

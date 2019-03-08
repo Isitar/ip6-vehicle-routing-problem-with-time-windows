@@ -22,7 +22,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm.Models
         {
             if (maxNumberOfAdditionalSantas < 0)
             {
-                throw new ArgumentException("MaxNumberOfAdditionalSantas must not be negative.");
+                throw new ArgumentException("must not be negative.", "maxNumberOfAdditionalSantas");
             }
             PopulationSize = CalculatePopulationSize(input);
             MaxNumberOfSantas = input.Santas.Length + maxNumberOfAdditionalSantas;
