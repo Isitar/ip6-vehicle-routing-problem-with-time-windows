@@ -19,7 +19,8 @@ namespace IRuettae.WebApi.Controllers
     [RoutePrefix("api/algorithm")]
     public class AlgorithmController : ApiController
     {
-        [HttpPost]
+        // Todo is this still needed?
+        /*[HttpPost]
         public OptimizationResult CalculateRoute([FromBody] AlgorithmStarter algorithmStarter)
         {
 
@@ -33,7 +34,7 @@ namespace IRuettae.WebApi.Controllers
                 var optimizationInput = converter.Convert(algorithmStarter.Days, dbSession.Query<Visit>().First(v => v.Id == algorithmStarter.StarterId), visits,
                     dbSession.Query<Santa>().ToList());
 
-                var starterData = new ILPStarterData()
+                var config = new ILPConfig()
                 {
                     TimeSliceDuration = algorithmStarter.TimeSliceDuration,
                     ClusteringMIPGap = Properties.Settings.Default.MIPGapClustering,
@@ -42,12 +43,13 @@ namespace IRuettae.WebApi.Controllers
                     SchedulingTimeLimitMiliseconds = Properties.Settings.Default.TimelimitSchedulingMiliseconds,
                 };
 
-                var ilpSolver = new ILPSolver(optimizationInput, starterData);
+                var ilpSolver = new ILPSolver(optimizationInput, config);
                 var progress = new EventHandler<ProgressReport>((sender, i) => { Console.WriteLine($"Progress: {i}"); });
                 var consoleProgress = new EventHandler<String>((sender, msg) => { Console.WriteLine(msg); });
                 return ilpSolver.Solve(0, progress, consoleProgress);
             }
-        }
+        }*/
+
         /// <summary>
         /// Starts a new route calculation job
         /// </summary>
@@ -57,37 +59,36 @@ namespace IRuettae.WebApi.Controllers
         [Route("StartRouteCalculation")]
         public long StartRouteCalculation([FromBody]AlgorithmStarter algorithmStarter)
         {
-            RouteCalculation rc;
-
-            using (var dbSession = SessionFactory.Instance.OpenSession())
+            long ret = 0;
+            var calculations = RouteCalculationFactory.CreateRouteCalculation(algorithmStarter);
+            for (int i = 0; i < calculations.Length; i++)
             {
-                var ilpData = new ILPStarterData()
+                var rc = calculations[i];
+                using (var dbSession = SessionFactory.Instance.OpenSession())
                 {
-                    TimeSliceDuration = algorithmStarter.TimeSliceDuration,
-                    ClusteringMIPGap = Properties.Settings.Default.MIPGapClustering,
-                    ClusteringTimeLimitMiliseconds = Properties.Settings.Default.TimelimitClusteringMiliseconds,
-                    SchedulingMIPGap = Properties.Settings.Default.MIPGapScheduling,
-                    SchedulingTimeLimitMiliseconds = Properties.Settings.Default.TimelimitSchedulingMiliseconds,
-                };
-                rc = new RouteCalculation
-                {
-                    Days = algorithmStarter.Days,
-                    SantaJson = "",
-                    VisitsJson = "",
-                    TimeLimitMiliseconds = Properties.Settings.Default.TimeLimitMiliseconds,
-                    StarterVisitId = algorithmStarter.StarterId,
-                    State = RouteCalculationState.Creating,
-                    TimePerChild = algorithmStarter.TimePerChild,
-                    TimePerChildOffset = algorithmStarter.Beta0,
-                    Year = algorithmStarter.Year,
-                    Algorithm = AlgorithmType.ILP,
-                    AlgorithmData = JsonConvert.SerializeObject(ilpData),
-                };
-                rc = dbSession.Merge(rc);
+                    rc = dbSession.Merge(rc);
+                }
+                Task.Run(() => new RouteCalculator(rc).StartWorker());
+                ret = rc.Id;
             }
+            return ret;
+        }
 
-            Task.Run(() => new RouteCalculator(rc).StartWorker());
-            return rc.Id;
+        private AlgorithmType[] ExtendAlgorithmTypes(AlgorithmType type)
+        {
+            switch (type)
+            {
+                case AlgorithmType.Hybrid:
+                    return new[]
+                    {
+                        AlgorithmType.GoogleRouting,
+                        AlgorithmType.GeneticAlgorithm,
+                    };
+            }
+            return new[]
+            {
+                type,
+            };
         }
 
         [HttpGet]

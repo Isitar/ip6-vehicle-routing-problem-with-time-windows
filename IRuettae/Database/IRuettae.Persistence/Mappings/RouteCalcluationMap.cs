@@ -11,15 +11,16 @@ namespace IRuettae.Persistence.Mappings
             Id(x => x.Id);
             Map(x => x.Year);
             Map(x => x.Days);
-            Map(x => x.TimePerChild);
-            Map(x => x.TimePerChildOffset);
+            Map(x => x.MaxNumberOfAdditionalSantas);
+            Map(x => x.TimePerChildMinutes);
+            Map(x => x.TimePerChildOffsetMinutes);
             Map(x => x.StarterVisitId);
+            Map(x => x.TimeLimitMiliseconds);
 
             Map(x => x.NumberOfSantas);
             Map(x => x.NumberOfVisits);
             Map(x => x.SantaJson).CustomSqlType("LONGTEXT");
             Map(x => x.VisitsJson).CustomSqlType("LONGTEXT");
-            Map(x => x.TimeLimitMiliseconds);
 
             Map(x => x.Algorithm);
             Map(x => x.AlgorithmData).CustomSqlType("LONGTEXT");

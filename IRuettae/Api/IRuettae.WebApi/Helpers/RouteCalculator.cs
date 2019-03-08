@@ -20,7 +20,6 @@ namespace IRuettae.WebApi.Helpers
 
         private BackgroundWorker bgWorker;
 
-
         public RouteCalculator(RouteCalculation routeCalculation)
         {
             routeCalculationId = routeCalculation.Id;
@@ -68,8 +67,8 @@ namespace IRuettae.WebApi.Helpers
                     .ToList();
 
                 visits.ForEach(v =>
-                    v.Duration = 60 * (v.NumberOfChildren * routeCalculation.TimePerChild +
-                                       routeCalculation.TimePerChildOffset));
+                    v.Duration = 60 * (v.NumberOfChildren * routeCalculation.TimePerChildMinutes +
+                                       routeCalculation.TimePerChildOffsetMinutes));
 
                 var startVisit = dbSession.Query<Visit>().First(v => v.Id == routeCalculation.StarterVisitId);
 
@@ -79,7 +78,11 @@ namespace IRuettae.WebApi.Helpers
                 var converter = new PersistenceToCoreConverter();
                 var optimizationInput = converter.Convert(routeCalculation.Days, startVisit, visits, santas);
 
+                var solverConfig = SolverConfigFactory.CreateSolverConfig(routeCalculation, optimizationInput);
+                routeCalculation.AlgorithmData = JsonConvert.SerializeObject(solverConfig);
+
                 routeCalculation.State = RouteCalculationState.Ready;
+
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
 
@@ -89,8 +92,7 @@ namespace IRuettae.WebApi.Helpers
 
                 routeCalculation.StartTime = DateTime.Now;
 
-                var starterData = StarterDataDeserializer.Deserialize(routeCalculation.Algorithm, routeCalculation.AlgorithmData);
-                var solver = SolverFactory.GetSolver(optimizationInput, starterData);
+                var solver = SolverFactory.CreateSolver(optimizationInput, solverConfig);
 
                 // note: Progress<> is not suitable here as it may use multiple threads
                 var consoleProgress = new EventHandler<string>(OnConsoleProgressOnProgressChanged);

@@ -10,6 +10,7 @@ using IRuettae.WebApp.Models;
 using IRuettae.WebApp.Properties;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using static IRuettae.WebApp.Models.RouteCalculationVM;
 
 namespace IRuettae.WebApp.Controllers
 {
@@ -20,24 +21,37 @@ namespace IRuettae.WebApp.Controllers
         public ActionResult Index()
         {
             var model = new AlgorithmStarterVM();
-            var response = Client.GetAsync("api/visit").Result;
-            var visits = JArray.Parse(response.Content.ReadAsStringAsync().Result).ToObject<VisitVM[]>();
+            var visitResponse = Client.GetAsync("api/visit").Result;
+            var visits = JArray.Parse(visitResponse.Content.ReadAsStringAsync().Result).ToObject<VisitVM[]>();
+            var santaResponse = Client.GetAsync("api/santa").Result;
+            var santas = JArray.Parse(santaResponse.Content.ReadAsStringAsync().Result).ToObject<SantaVM[]>();
 
             if (System.IO.File.Exists(ConfigPath))
             {
                 model = JsonConvert.DeserializeObject<AlgorithmStarterVM>(System.IO.File.ReadAllText(ConfigPath));
             }
+
+            model.MaxNumberOfAdditionalSantas = Math.Max(model.MaxNumberOfAdditionalSantas, santas.Length);
             model.StarterIds = visits.Select(v => new SelectListItem
             {
                 Value = v.Id.ToString(),
                 Text = v.ToString()
+            });
+            model.AlgorithmTypes = new[] {
+                AlgorithmType.Hybrid,
+                AlgorithmType.LocalSolver,
+                AlgorithmType.ILP,
+            }.Select(t => new SelectListItem
+            {
+                Value = t.ToString(),
+                Text = t.ToString()
             });
 
             return View(model);
         }
 
         [HttpPost]
-        public async System.Threading.Tasks.Task<ActionResult> CalculateRouteAsync(AlgorithmStarterVM asvm)
+        public async Task<ActionResult> CalculateRouteAsync(AlgorithmStarterVM asvm)
         {
 
             asvm.DaysPeriod = asvm.DaysPeriod.Where(d => d.Start.HasValue).ToList();
@@ -47,7 +61,6 @@ namespace IRuettae.WebApp.Controllers
                 System.IO.File.Delete(ConfigPath);
             }
             System.IO.File.WriteAllText(ConfigPath, JsonConvert.SerializeObject(asvm));
-
 
             asvm.Days = asvm.DaysPeriod.Select(p => (p.Start.Value, p.End.Value)).ToList();
             asvm.Beta0 -= asvm.TimePerChild;
