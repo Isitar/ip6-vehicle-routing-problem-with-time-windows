@@ -9,12 +9,12 @@ using IRuettae.Core.Models;
 
 namespace IRuettae.Core.Google.Routing
 {
-    public class RoutingSolver : ISolver
+    public class GoogleRoutingSolver : ISolver
     {
         private readonly OptimizationInput input;
-        private readonly RoutingSolverStarterData starterData;
+        private readonly GoogleRoutingStarterData starterData;
 
-        public RoutingSolver(OptimizationInput input, RoutingSolverStarterData starterData)
+        public GoogleRoutingSolver(OptimizationInput input, GoogleRoutingStarterData starterData)
         {
             this.input = input;
             this.starterData = starterData;

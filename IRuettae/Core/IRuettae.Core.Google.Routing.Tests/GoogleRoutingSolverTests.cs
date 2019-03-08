@@ -12,13 +12,13 @@ using IRuettae.Core.Models;
 namespace IRuettae.Core.Google.Routing.Tests
 {
     [TestClass()]
-    public class RoutingSolverTests
+    public class GoogleRoutingSolverTests
     {
         [TestMethod()]
         public void TestSolve_Simple()
         {
             var input = TestDataset1.Create();
-            var solver = new RoutingSolver(input, new RoutingSolverStarterData(2, SolvingMode.Default));
+            var solver = new GoogleRoutingSolver(input, new GoogleRoutingStarterData(2, SolvingMode.Default));
 
             var actual = solver.Solve(10, null, null);
 
@@ -32,7 +32,7 @@ namespace IRuettae.Core.Google.Routing.Tests
         public void TestSolve_AdditionalSanta()
         {
             var input = TestDataset1.Create();
-            var solver = new RoutingSolver(input, new RoutingSolverStarterData(3, SolvingMode.Default));
+            var solver = new GoogleRoutingSolver(input, new GoogleRoutingStarterData(3, SolvingMode.Default));
 
             var actual = solver.Solve(10, null, null);
 
