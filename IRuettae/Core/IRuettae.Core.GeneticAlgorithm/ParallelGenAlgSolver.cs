@@ -43,7 +43,7 @@ namespace IRuettae.Core.GeneticAlgorithm
                 timeLimitMilliseconds /= (long)Math.Ceiling((double)starterData.NumberOfRuns / Environment.ProcessorCount);
             }
 
-            var orderedResults = Enumerable.Range(0, Environment.ProcessorCount)
+            var orderedResults = Enumerable.Range(0, starterData.NumberOfRuns)
                 .AsParallel()
                 .Select(v =>
                 {
@@ -55,14 +55,15 @@ namespace IRuettae.Core.GeneticAlgorithm
                 .ToArray();
             var bestResult = orderedResults.First();
 
-            consoleProgress?.Invoke(this, bestResult.log);
-
             consoleProgress?.Invoke(this, "Internal solving finished.");
-            for (int i = 1; i < orderedResults.Length; i++)
-            {
-                consoleProgress?.Invoke(this, $"Run {i + 1} costs {orderedResults[i].result.Cost()}.");
-            }
             progress?.Invoke(this, new ProgressReport(0.99));
+
+            for (int i = 0; i < orderedResults.Length; i++)
+            {
+                consoleProgress?.Invoke(this, $"Run {i + 1}:{Environment.NewLine}{orderedResults[i].log}");
+            }
+
+            progress?.Invoke(this, new ProgressReport(1));
 
             return bestResult.result;
         }
