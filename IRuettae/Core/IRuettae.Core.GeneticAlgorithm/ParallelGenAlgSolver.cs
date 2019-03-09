@@ -25,7 +25,7 @@ namespace IRuettae.Core.GeneticAlgorithm
         {
             if (!config.GenAlgConfig.IsValid())
             {
-                throw new ArgumentException("the given GenAlgConfig must not be invalid", "config");
+                throw new ArgumentException("the given GenAlgConfig must not be invalid", nameof(config));
             }
 
             this.input = input;
