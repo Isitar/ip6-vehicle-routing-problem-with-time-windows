@@ -97,8 +97,8 @@ namespace IRuettae.WebApi.Models
                     dto.TotalWayTime = or.TotalWayTime();
                     dto.TotalVisitTime = or.TotalVisitTime();
                     dto.AverageWayTimePerRoute = or.AverageWayTimePerRoute();
-                    dto.LatestVisit = or.Routes.SelectMany(r => r.Waypoints
-                        .Where(wp => wp.VisitId != Constants.VisitIdHome))
+                    dto.LatestVisit = or.Routes
+                        .SelectMany(r => r.Waypoints?.Where(wp => wp.VisitId != Constants.VisitIdHome) ?? new List<Waypoint>())
                         .Select(wp => routeCalculationResult.ConvertTime(wp.StartTime))
                         .Append(DateTime.MinValue)
                         .OrderBy(t => t - t.TimeOfDay).Last();

@@ -104,7 +104,7 @@ namespace IRuettae.WebApi.Controllers
                 var routeCalculation = dbSession.Get<RouteCalculation>(id);
                 var routeCalculationResult = JsonConvert.DeserializeObject<RouteCalculationResult>(routeCalculation.Result);
 
-                var ret = routeCalculationResult.OptimizationResult.Routes.Select(r => r.Waypoints.Select(wp =>
+                var ret = routeCalculationResult.OptimizationResult.Routes.Select(r => r.Waypoints?.Select(wp =>
                 {
                     var v = dbSession.Get<Visit>(wp.VisitId == Constants.VisitIdHome ? routeCalculation.StarterVisitId : routeCalculationResult.VisitMap[wp.VisitId]);
                     return new
