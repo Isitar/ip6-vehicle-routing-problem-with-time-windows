@@ -40,6 +40,8 @@ namespace IRuettae.WebApp.Controllers
             model.AlgorithmTypes = new[] {
                 AlgorithmType.Hybrid,
                 AlgorithmType.LocalSolver,
+                AlgorithmType.GeneticAlgorithm,
+                AlgorithmType.GoogleRouting,
                 AlgorithmType.ILP,
             }.Select(t => new SelectListItem
             {
