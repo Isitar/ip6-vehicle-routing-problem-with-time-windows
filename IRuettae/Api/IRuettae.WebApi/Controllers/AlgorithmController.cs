@@ -19,37 +19,6 @@ namespace IRuettae.WebApi.Controllers
     [RoutePrefix("api/algorithm")]
     public class AlgorithmController : ApiController
     {
-        // Todo is this still needed?
-        /*[HttpPost]
-        public OptimizationResult CalculateRoute([FromBody] AlgorithmStarter algorithmStarter)
-        {
-
-            using (var dbSession = SessionFactory.Instance.OpenSession())
-            using (var transaction = dbSession.BeginTransaction())
-            {
-                var visits = dbSession.Query<Visit>().Where(v => v.Year == algorithmStarter.Year && v.Id != algorithmStarter.StarterId).ToList();
-                visits.ForEach(v => v.Duration = 60 * (v.NumberOfChildren * algorithmStarter.TimePerChild + algorithmStarter.Beta0));
-                var converter = new Converter.PersistenceToCoreConverter();
-
-                var optimizationInput = converter.Convert(algorithmStarter.Days, dbSession.Query<Visit>().First(v => v.Id == algorithmStarter.StarterId), visits,
-                    dbSession.Query<Santa>().ToList());
-
-                var config = new ILPConfig()
-                {
-                    TimeSliceDuration = algorithmStarter.TimeSliceDuration,
-                    ClusteringMIPGap = Properties.Settings.Default.MIPGapClustering,
-                    ClusteringTimeLimitMiliseconds = Properties.Settings.Default.TimelimitClusteringMiliseconds,
-                    SchedulingMIPGap = Properties.Settings.Default.MIPGapScheduling,
-                    SchedulingTimeLimitMiliseconds = Properties.Settings.Default.TimelimitSchedulingMiliseconds,
-                };
-
-                var ilpSolver = new ILPSolver(optimizationInput, config);
-                var progress = new EventHandler<ProgressReport>((sender, i) => { Console.WriteLine($"Progress: {i}"); });
-                var consoleProgress = new EventHandler<String>((sender, msg) => { Console.WriteLine(msg); });
-                return ilpSolver.Solve(0, progress, consoleProgress);
-            }
-        }*/
-
         /// <summary>
         /// Starts a new route calculation job
         /// </summary>

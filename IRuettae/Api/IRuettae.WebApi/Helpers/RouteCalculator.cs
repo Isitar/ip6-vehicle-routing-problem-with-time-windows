@@ -100,14 +100,21 @@ namespace IRuettae.WebApi.Helpers
                 var optimizationResults = new OptimizationResult[solverConfigs.Length];
 
                 routeCalculation.StartTime = DateTime.Now;
-                for(var i = 0; i < solverConfigs.Length; i++)
+                for (var i = 0; i < solverConfigs.Length; i++)
                 {
                     var solverConfig = solverConfigs[0];
                     var solver = SolverFactory.CreateSolver(optimizationInput, solverConfig);
 
                     // note: Progress<> is not suitable here as it may use multiple threads
                     var consoleProgress = new EventHandler<string>(OnConsoleProgressOnProgressChanged);
-                    var progress = new EventHandler<ProgressReport>(OnProgressOnProgressChanged);
+                    var i1 = i; // for lambda
+                    var progress = new EventHandler<ProgressReport>((s, report) =>
+                    {
+                        var realProgress = report.Progress / solverConfigs.Length;
+                        realProgress += (double)i1/solverConfigs.Length * 1;
+                        report.Progress = realProgress;
+                        OnProgressOnProgressChanged(s, report);
+                    });
 
                     routeCalculation.State = RouteCalculationState.Running;
                     dbSession.Update(routeCalculation);
