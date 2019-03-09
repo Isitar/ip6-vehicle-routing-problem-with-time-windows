@@ -16,6 +16,8 @@ namespace IRuettae.WebApp.Models
         [Range(2017, int.MaxValue)]
         public int Year { get; set; }
 
+        public IEnumerable<int> PossibleYears { get; set; }
+
         public IEnumerable<SelectListItem> StarterIds { get; set; }
         [Required]
         [DisplayName("Startpunkt")]

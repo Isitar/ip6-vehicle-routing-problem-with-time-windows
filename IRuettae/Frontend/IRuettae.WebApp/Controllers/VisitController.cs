@@ -15,6 +15,12 @@ namespace IRuettae.WebApp.Controllers
         // GET: Visit
         public ActionResult Index()
         {
+            var retVal = JArray.Parse(Client.GetAsync("api/visit").Result.Content.ReadAsStringAsync().Result).ToObject<VisitVM[]>();
+            return View(retVal);
+        }
+
+        public ActionResult Create()
+        {
             return View();
         }
 
@@ -40,7 +46,7 @@ namespace IRuettae.WebApp.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View("Index", v);
+                return View("Create", v);
             }
 
 
@@ -48,7 +54,7 @@ namespace IRuettae.WebApp.Controllers
             if (!response.IsSuccessStatusCode)
             {
                 ModelState.AddModelError("Request", "mit dem Request ist etwas schief gelaufen " + response.StatusCode);
-                return View("Index", v);
+                return View("Create", v);
             }
 
             return View("Thanks", v);
@@ -67,6 +73,12 @@ namespace IRuettae.WebApp.Controllers
 
             return System.Web.Helpers.Json.Encode(retVal);
 
+        }
+
+        public ActionResult Delete(long id)
+        {
+            Client.DeleteAsync($"api/visit/{id}");
+            return RedirectToAction("Index");
         }
     }
 }

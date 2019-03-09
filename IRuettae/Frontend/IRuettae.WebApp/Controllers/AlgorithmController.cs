@@ -26,6 +26,7 @@ namespace IRuettae.WebApp.Controllers
             var santaResponse = Client.GetAsync("api/santa").Result;
             var santas = JArray.Parse(santaResponse.Content.ReadAsStringAsync().Result).ToObject<SantaVM[]>();
 
+            
             if (System.IO.File.Exists(ConfigPath))
             {
                 model = JsonConvert.DeserializeObject<AlgorithmStarterVM>(System.IO.File.ReadAllText(ConfigPath));
@@ -46,6 +47,9 @@ namespace IRuettae.WebApp.Controllers
                 Text = t.ToString()
             });
 
+
+            var possibleYears = visits.Select(v => v.Year).Distinct();
+            model.PossibleYears = possibleYears;
             return View(model);
         }
 
