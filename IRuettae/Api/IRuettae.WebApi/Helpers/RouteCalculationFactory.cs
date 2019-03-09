@@ -23,7 +23,7 @@ namespace IRuettae.WebApi.Helpers
                 case AlgorithmType.Hybrid:
                     return new[]
                     {
-                        CreateRouteCalculationInternal(starter, AlgorithmType.GoogleRouting, 0.4*starter.TimeLimitMinutes),
+                        CreateRouteCalculationInternal(starter, AlgorithmType.GoogleRouting, 0.4 * starter.TimeLimitMinutes),
                         CreateRouteCalculationInternal(starter, AlgorithmType.GeneticAlgorithm, 0.6 * starter.TimeLimitMinutes),
                     };
                 default:
