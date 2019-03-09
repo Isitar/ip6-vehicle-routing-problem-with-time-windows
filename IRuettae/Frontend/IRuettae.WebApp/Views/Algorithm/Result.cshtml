@@ -109,7 +109,7 @@
                     waypoints: latlngArray,
                     show: false,
                     waypointMode: 'snap',
-                    router: L.Routing.mapbox('@Environment.GetEnvironmentVariable("mapbox-key")'),
+                    router: L.Routing.mapbox('@Environment.GetEnvironmentVariable("mapbox-key")', {profile:'mapbox/walking'}),
                 }).addTo(map);
             }
         </script>
