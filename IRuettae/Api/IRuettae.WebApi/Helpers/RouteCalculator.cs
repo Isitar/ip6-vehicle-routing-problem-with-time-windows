@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using IRuettae.Converter;
+using IRuettae.Core;
 using IRuettae.Core.Models;
 using IRuettae.Persistence.Entities;
 using IRuettae.WebApi.Persistence;
@@ -86,32 +88,44 @@ namespace IRuettae.WebApi.Helpers
                     routeCalculation.MaxNumberOfAdditionalSantas = Math.Min(routeCalculation.MaxNumberOfAdditionalSantas, maxAdditional);
                 }
 
-                var solverConfig = SolverConfigFactory.CreateSolverConfig(routeCalculation, optimizationInput);
-                routeCalculation.AlgorithmData = JsonConvert.SerializeObject(solverConfig);
-
                 routeCalculation.State = RouteCalculationState.Ready;
 
+                var solverConfigs = SolverConfigFactory.CreateSolverConfig(routeCalculation, optimizationInput);
+                routeCalculation.AlgorithmData = JsonConvert.SerializeObject(solverConfigs);
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
-
                 #endregion Prepare
 
                 #region Run
+                var optimizationResults = new OptimizationResult[solverConfigs.Length];
 
                 routeCalculation.StartTime = DateTime.Now;
+                for(var i = 0; i < solverConfigs.Length; i++)
+                {
+                    var solverConfig = solverConfigs[0];
+                    var solver = SolverFactory.CreateSolver(optimizationInput, solverConfig);
 
-                var solver = SolverFactory.CreateSolver(optimizationInput, solverConfig);
+                    // note: Progress<> is not suitable here as it may use multiple threads
+                    var consoleProgress = new EventHandler<string>(OnConsoleProgressOnProgressChanged);
+                    var progress = new EventHandler<ProgressReport>(OnProgressOnProgressChanged);
 
-                // note: Progress<> is not suitable here as it may use multiple threads
-                var consoleProgress = new EventHandler<string>(OnConsoleProgressOnProgressChanged);
-                var progress = new EventHandler<ProgressReport>(OnProgressOnProgressChanged);
+                    routeCalculation.State = RouteCalculationState.Running;
+                    dbSession.Update(routeCalculation);
+                    dbSession.Flush();
 
-                routeCalculation.State = RouteCalculationState.Running;
-                dbSession.Update(routeCalculation);
-                dbSession.Flush();
+                    optimizationResults[i] = solver.Solve(routeCalculation.TimeLimitMiliseconds / solverConfigs.Length,
+                        progress, consoleProgress);
+                }
 
-                var optimizationResult = solver.Solve(routeCalculation.TimeLimitMiliseconds,
-                    progress, consoleProgress);
+                // compare optimization results and take best
+                OptimizationResult optimizationResult = null;
+                foreach (var result in optimizationResults)
+                {
+                    if (optimizationResult == null || result.Cost() < optimizationResult.Cost())
+                    {
+                        optimizationResult = result;
+                    }
+                }
 
                 // refresh session as changes where made in other sessions (progress)
                 dbSession.Clear();
@@ -123,7 +137,6 @@ namespace IRuettae.WebApi.Helpers
                     SantaMap = converter.SantaMap,
                     ZeroTime = converter.ZeroTime
                 };
-
                 routeCalculation.Result = JsonConvert.SerializeObject(routeCalculationResult);
                 routeCalculation.State = RouteCalculationState.Finished;
 

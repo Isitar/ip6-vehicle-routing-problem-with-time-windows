@@ -59,37 +59,16 @@ namespace IRuettae.WebApi.Controllers
         [Route("StartRouteCalculation")]
         public long StartRouteCalculation([FromBody]AlgorithmStarter algorithmStarter)
         {
-            long ret = 0;
-            var calculations = RouteCalculationFactory.CreateRouteCalculation(algorithmStarter);
-            for (int i = 0; i < calculations.Length; i++)
+            var routeCalculation = RouteCalculationFactory.CreateRouteCalculation(algorithmStarter);
+            using (var dbSession = SessionFactory.Instance.OpenSession())
             {
-                var rc = calculations[i];
-                using (var dbSession = SessionFactory.Instance.OpenSession())
-                {
-                    rc = dbSession.Merge(rc);
-                }
-                Task.Run(() => new RouteCalculator(rc).StartWorker());
-                ret = rc.Id;
+                routeCalculation = dbSession.Merge(routeCalculation);
             }
-            return ret;
+            Task.Run(() => new RouteCalculator(routeCalculation).StartWorker());
+            return routeCalculation.Id;
+            
         }
 
-        private AlgorithmType[] ExtendAlgorithmTypes(AlgorithmType type)
-        {
-            switch (type)
-            {
-                case AlgorithmType.Hybrid:
-                    return new[]
-                    {
-                        AlgorithmType.GoogleRouting,
-                        AlgorithmType.GeneticAlgorithm,
-                    };
-            }
-            return new[]
-            {
-                type,
-            };
-        }
 
         [HttpGet]
         [Route("RouteCalculations")]
