@@ -3,6 +3,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using IRuettae.Converter;
 using IRuettae.Core;
 using IRuettae.Core.Models;
@@ -16,43 +18,17 @@ namespace IRuettae.WebApi.Helpers
 {
     public class RouteCalculator
     {
-        public static ConcurrentBag<BackgroundWorker> BackgroundWorkers = new ConcurrentBag<BackgroundWorker>();
+        
+        private static BlockingCollection<long> work = new BlockingCollection<long>(new ConcurrentQueue<long>());
 
-        private readonly long routeCalculationId;
 
-        private BackgroundWorker bgWorker;
-
-        public RouteCalculator(RouteCalculation routeCalculation)
+        public static void EnqueueRouteCalculation(long routeCalculationId)
         {
-            routeCalculationId = routeCalculation.Id;
-            SetupBgWorker();
+            work.Add(routeCalculationId);
         }
+        
 
-        private void SetupBgWorker()
-        {
-            bgWorker = new BackgroundWorker();
-            BackgroundWorkers.Add(bgWorker);
-            bgWorker.Disposed += (sender, args) =>
-            {
-                var dbSession = SessionFactory.Instance.OpenSession();
-                var routeCalculation = dbSession.Get<RouteCalculation>(routeCalculationId);
-                if (string.IsNullOrEmpty(routeCalculation.Result))
-                {
-                    routeCalculation.State = RouteCalculationState.Cancelled;
-                    routeCalculation.StateText.Append(new RouteCalculationLog
-                    {
-                        Log = $"{Environment.NewLine} {DateTime.Now} Background worker stopped"
-                    });
-                }
-
-                dbSession.Update(routeCalculation);
-                dbSession.Flush();
-            };
-
-            bgWorker.DoWork += BackgroundWorkerDoWork;
-        }
-
-        private void BackgroundWorkerDoWork(object sender, DoWorkEventArgs args)
+        private static void CalculateRoute(long routeCalculationId)
         {
             try
             {
@@ -106,14 +82,17 @@ namespace IRuettae.WebApi.Helpers
                     var solver = SolverFactory.CreateSolver(optimizationInput, solverConfig);
 
                     // note: Progress<> is not suitable here as it may use multiple threads
-                    var consoleProgress = new EventHandler<string>(OnConsoleProgressOnProgressChanged);
+                    var consoleProgress = new EventHandler<string>((s,m) =>
+                    {
+                        OnConsoleProgressOnProgressChanged(s,m,routeCalculationId);
+                    });
                     var i1 = i; // for lambda
                     var progress = new EventHandler<ProgressReport>((s, report) =>
                     {
                         var realProgress = report.Progress / solverConfigs.Length;
                         realProgress += (double)i1/solverConfigs.Length * 1;
                         report.Progress = realProgress;
-                        OnProgressOnProgressChanged(s, report);
+                        OnProgressOnProgressChanged(s, report, routeCalculationId);
                     });
 
                     routeCalculation.State = RouteCalculationState.Running;
@@ -164,12 +143,19 @@ namespace IRuettae.WebApi.Helpers
             }
         }
 
-        public void StartWorker()
+        public static void StartWorker()
         {
-            bgWorker.RunWorkerAsync();
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    var id = work.Take();
+                    CalculateRoute(id);
+                }
+            });
         }
 
-        private void OnConsoleProgressOnProgressChanged(object s, string message)
+        private static void OnConsoleProgressOnProgressChanged(object s, string message, long routeCalculationId)
         {
             try
             {
@@ -185,7 +171,7 @@ namespace IRuettae.WebApi.Helpers
             }
         }
 
-        private void OnProgressOnProgressChanged(object s, ProgressReport report)
+        private static void OnProgressOnProgressChanged(object s, ProgressReport report, long routeCalculationId)
         {
             try
             {
@@ -195,7 +181,7 @@ namespace IRuettae.WebApi.Helpers
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
 
-                OnConsoleProgressOnProgressChanged(s, $"Progress: {report.Progress:P2}");
+                OnConsoleProgressOnProgressChanged(s, $"Progress: {report.Progress:P2}", routeCalculationId);
             }
             catch
             {

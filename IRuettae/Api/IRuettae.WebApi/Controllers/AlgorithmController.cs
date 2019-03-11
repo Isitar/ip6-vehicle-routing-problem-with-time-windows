@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Hosting;
 using System.Web.Http;
 using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm.Models;
@@ -33,9 +34,12 @@ namespace IRuettae.WebApi.Controllers
             {
                 routeCalculation = dbSession.Merge(routeCalculation);
             }
-            Task.Run(() => new RouteCalculator(routeCalculation).StartWorker());
+
+            RouteCalculator.EnqueueRouteCalculation(routeCalculation.Id);
+
+
             return routeCalculation.Id;
-            
+
         }
 
 
@@ -45,19 +49,6 @@ namespace IRuettae.WebApi.Controllers
         {
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
-                if (RouteCalculator.BackgroundWorkers.IsEmpty)
-                {
-                    dbSession.Query<RouteCalculation>()
-                        .Where(rc => new[] { RouteCalculationState.Ready, RouteCalculationState.Running }.Contains(rc.State))
-                        .ToList()
-                        .ForEach(rc =>
-                        {
-                            rc.State = RouteCalculationState.Cancelled;
-                            dbSession.Update(rc);
-                        });
-                    dbSession.Flush();
-                }
-
                 var routeCalculations = dbSession.Query<RouteCalculation>().ToList().Select(rc => (RouteCalculationDTO)rc);
                 return routeCalculations;
             }
