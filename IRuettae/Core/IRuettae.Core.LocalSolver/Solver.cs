@@ -122,6 +122,8 @@ namespace IRuettae.Core.LocalSolver
 
                 #endregion VRP
 
+                progress?.Invoke(this, new ProgressReport((double)sw.ElapsedMilliseconds / timeLimitMilliseconds));
+
                 // save solution for next phase
                 var vrpSolution = SavePhaseSolution(solverVariables);
 
@@ -179,7 +181,7 @@ namespace IRuettae.Core.LocalSolver
 #endif
 
                 #endregion VRPTW
-
+                progress?.Invoke(this, new ProgressReport((double)sw.ElapsedMilliseconds / timeLimitMilliseconds));
                 model.Open();
                 model.RemoveConstraint(noWaitBetweenVisitConstraint);
                 model.Close();
@@ -189,7 +191,7 @@ namespace IRuettae.Core.LocalSolver
                 var vrptwBreaksOnWayPhase = localSolver.CreatePhase();
                 vrptwBreaksOnWayPhase.SetTimeLimit((int)(vrptwBreaksOnWayTimeLimitFactor * timeLimitMilliseconds / 1000));
                 localSolver.Solve();
-
+                progress?.Invoke(this, new ProgressReport((double)sw.ElapsedMilliseconds / timeLimitMilliseconds));
                 result.Routes = BuildResultRoutes(numberOfRoutes, solverVariables.VisitSequences, solverVariables.Visits, solverVariables.SantaVisitStartingTimes, numberOfFakeSantas);
 
 #if DEBUG
@@ -213,7 +215,7 @@ namespace IRuettae.Core.LocalSolver
                 }
                 PrintStatistics(consoleProgress, vrptwBreaksOnWayPhase.GetStatistics());
 #endif
-
+                progress?.Invoke(this, new ProgressReport(1));
                 result.TimeElapsed = sw.ElapsedMilliseconds / 1000;
                 result.ResultState = ResultState.Finished;
                 return result;
