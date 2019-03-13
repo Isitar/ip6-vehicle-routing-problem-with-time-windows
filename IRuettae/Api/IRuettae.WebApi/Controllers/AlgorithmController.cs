@@ -29,17 +29,18 @@ namespace IRuettae.WebApi.Controllers
         [Route("StartRouteCalculation")]
         public long StartRouteCalculation([FromBody]AlgorithmStarter algorithmStarter)
         {
-            var routeCalculation = RouteCalculationFactory.CreateRouteCalculation(algorithmStarter);
+            var routeCalculations = RouteCalculationFactory.CreateRouteCalculation(algorithmStarter);
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
-                routeCalculation = dbSession.Merge(routeCalculation);
+                foreach (var routeCalculation in routeCalculations)
+                {
+                    var savedRouteCalculation = dbSession.Merge(routeCalculation);
+                    routeCalculation.Id = savedRouteCalculation.Id;
+                    RouteCalculator.EnqueueRouteCalculation(routeCalculation.Id);
+                }
             }
 
-            RouteCalculator.EnqueueRouteCalculation(routeCalculation.Id);
-
-
-            return routeCalculation.Id;
-
+            return routeCalculations[0].Id;
         }
 
 

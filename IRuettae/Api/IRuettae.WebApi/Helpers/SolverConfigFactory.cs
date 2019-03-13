@@ -17,58 +17,40 @@ namespace IRuettae.WebApi.Helpers
 {
     public static class SolverConfigFactory
     {
-        public static ISolverConfig[] CreateSolverConfig(RouteCalculation routeCalculation, OptimizationInput input)
+        public static ISolverConfig CreateSolverConfig(RouteCalculation routeCalculation, OptimizationInput input)
         {
             switch (routeCalculation.Algorithm)
             {
                 case AlgorithmType.ILP:
-                    return new ISolverConfig[]
-                    {
-                        new ILPConfig()
+                    return
+                        new ILPConfig
                         {
                             TimeSliceDuration = Properties.Settings.Default.TimeSliceDurationSeconds,
                             ClusteringMIPGap = Properties.Settings.Default.MIPGapClustering,
-                            ClusteringTimeLimitMiliseconds = (long) (0.7 * routeCalculation.TimeLimitMiliseconds),
+                            ClusteringTimeLimitMiliseconds = (long)(0.7 * routeCalculation.TimeLimitMiliseconds),
                             SchedulingMIPGap = Properties.Settings.Default.MIPGapScheduling,
-                            SchedulingTimeLimitMiliseconds = (long) (0.3 * routeCalculation.TimeLimitMiliseconds),
-                        }
-                    };
+                            SchedulingTimeLimitMiliseconds = (long)(0.3 * routeCalculation.TimeLimitMiliseconds),
+                        };
                 case AlgorithmType.LocalSolver:
-                    return new ISolverConfig[]
-                    {
+                    return
                         new LocalSolverConfig
                         {
                             VrpTimeLimitFactor = 0.1,
                             VrptwTimeLimitFactor = 0.8,
                             MaxNumberOfAdditionalSantas = routeCalculation.MaxNumberOfAdditionalSantas,
-                        }
-                    };
+                        };
                 case AlgorithmType.GeneticAlgorithm:
-                    return new ISolverConfig[]
-                    {
-                        new ParallelGenAlgConfig(new GenAlgConfig(input, routeCalculation.MaxNumberOfAdditionalSantas), Properties.Settings.Default.NumberOfGARuns)
-                    };
-
+                    return
+                        new ParallelGenAlgConfig(new GenAlgConfig(input, routeCalculation.MaxNumberOfAdditionalSantas), Properties.Settings.Default.NumberOfGARuns);
                 case AlgorithmType.GoogleRouting:
-                    return new ISolverConfig[]
-                    {
-                        new GoogleRoutingConfig(routeCalculation.MaxNumberOfAdditionalSantas, SolvingMode.All)
-                    };
+                    return new GoogleRoutingConfig(routeCalculation.MaxNumberOfAdditionalSantas, SolvingMode.All);
 
                 case AlgorithmType.Hybrid:
-                    return new ISolverConfig[]
-                    {
-                        new ParallelGenAlgConfig(new GenAlgConfig(input, routeCalculation.MaxNumberOfAdditionalSantas), Properties.Settings.Default.NumberOfGARuns),
-                        new ParallelGenAlgConfig(new GenAlgConfig(input, routeCalculation.MaxNumberOfAdditionalSantas), Properties.Settings.Default.NumberOfGARuns),
-                        new ParallelGenAlgConfig(new GenAlgConfig(input, routeCalculation.MaxNumberOfAdditionalSantas), Properties.Settings.Default.NumberOfGARuns),
-                        new GoogleRoutingConfig(routeCalculation.MaxNumberOfAdditionalSantas, SolvingMode.Default),
-                        new GoogleRoutingConfig(routeCalculation.MaxNumberOfAdditionalSantas, SolvingMode.Fast)
-                    };
+                    throw new ArgumentException("Algorithm type Hybrid not allowed", nameof(routeCalculation.Algorithm));
 
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(routeCalculation), routeCalculation, "Unknown AlgorithmType. Cannot create a StartData.");
             }
-            throw new ArgumentOutOfRangeException(nameof(routeCalculation), routeCalculation, "Unknown AlgorithmType. Cannot create a StartData.");
         }
     }
 }

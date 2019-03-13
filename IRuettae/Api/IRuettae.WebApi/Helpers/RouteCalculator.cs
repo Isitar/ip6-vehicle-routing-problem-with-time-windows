@@ -66,52 +66,34 @@ namespace IRuettae.WebApi.Helpers
 
                 routeCalculation.State = RouteCalculationState.Ready;
 
-                var solverConfigs = SolverConfigFactory.CreateSolverConfig(routeCalculation, optimizationInput);
-                routeCalculation.AlgorithmData = JsonConvert.SerializeObject(solverConfigs);
+                var solverConfig = SolverConfigFactory.CreateSolverConfig(routeCalculation, optimizationInput);
+                routeCalculation.AlgorithmData = JsonConvert.SerializeObject(solverConfig);
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
                 #endregion Prepare
 
                 #region Run
-                var optimizationResults = new OptimizationResult[solverConfigs.Length];
-
                 routeCalculation.StartTime = DateTime.Now;
-                for (var i = 0; i < solverConfigs.Length; i++)
+               
+                var solver = SolverFactory.CreateSolver(optimizationInput, solverConfig);
+
+                // note: Progress<> is not suitable here as it may use multiple threads
+                var consoleProgress = new EventHandler<string>((s,m) =>
                 {
-                    var solverConfig = solverConfigs[0];
-                    var solver = SolverFactory.CreateSolver(optimizationInput, solverConfig);
-
-                    // note: Progress<> is not suitable here as it may use multiple threads
-                    var consoleProgress = new EventHandler<string>((s,m) =>
-                    {
-                        OnConsoleProgressOnProgressChanged(s,m,routeCalculationId);
-                    });
-                    var i1 = i; // for lambda
-                    var progress = new EventHandler<ProgressReport>((s, report) =>
-                    {
-                        var realProgress = report.Progress / solverConfigs.Length;
-                        realProgress += (double)i1/solverConfigs.Length * 1;
-                        report.Progress = realProgress;
-                        OnProgressOnProgressChanged(s, report, routeCalculationId);
-                    });
-
-                    routeCalculation.State = RouteCalculationState.Running;
-                    dbSession.Update(routeCalculation);
-                    dbSession.Flush();
-
-                    optimizationResults[i] = solver.Solve(routeCalculation.TimeLimitMiliseconds / solverConfigs.Length,
-                        progress, consoleProgress);
-                }
-
-                // compare optimization results and take best
-                OptimizationResult optimizationResult = null;
-                foreach (var result in optimizationResults)
+                    OnConsoleProgressOnProgressChanged(s,m,routeCalculationId);
+                });
+                
+                var progress = new EventHandler<ProgressReport>((s, report) =>
                 {
-                    if (optimizationResult == null || result.Cost() < optimizationResult.Cost())
-                    {
-                        optimizationResult = result;
-                    }
-                }
+                    OnProgressOnProgressChanged(s, report, routeCalculationId);
+                });
+
+                routeCalculation.State = RouteCalculationState.Running;
+                dbSession.Update(routeCalculation);
+                dbSession.Flush();
+
+                var optimizationResult = solver.Solve(routeCalculation.TimeLimitMiliseconds,
+                    progress, consoleProgress);
 
                 // refresh session as changes where made in other sessions (progress)
                 dbSession.Clear();
