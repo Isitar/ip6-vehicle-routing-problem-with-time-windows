@@ -19,7 +19,7 @@ namespace IRuettae.WebApi
         }
 
         /// <summary>
-        /// Sets runnign route calculations 
+        /// cancels running route calculations
         /// </summary>
         private static void CleanupRouteCalculations()
         {
