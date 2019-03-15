@@ -23,7 +23,7 @@ namespace IRuettae.Core.ILPIp5Gurobi.Algorithm
                 case VisitState.Unavailable:
                     return false;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(s), s, null);
+                    throw new ArgumentOutOfRangeException(nameof(s), s, "unexpected");
             }
         }
     }

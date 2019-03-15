@@ -16,9 +16,9 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// </summary>
         /// <param name="data"></param>
         /// <param name="santa"></param>
-        public BreakEvaluator(RoutingData data, int  santa)
+        public BreakEvaluator(RoutingData data, int santa)
         {
-            this.data = data ?? throw new ArgumentException("data must not be null");
+            this.data = data ?? throw new ArgumentNullException(nameof(data));
             this.santa = santa;
         }
 
@@ -32,7 +32,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         {
             if (firstIndex >= data.Visits.Length)
             {
-                throw new ArgumentOutOfRangeException(nameof(firstIndex), "index must be smaller than numberOfVisits");
+                throw new ArgumentOutOfRangeException(nameof(firstIndex), firstIndex, "index must be smaller than numberOfVisits");
             }
 
             var visit = data.Visits[firstIndex];

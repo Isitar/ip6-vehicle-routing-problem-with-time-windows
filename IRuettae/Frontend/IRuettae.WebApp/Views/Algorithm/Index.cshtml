@@ -2,7 +2,7 @@
 
 
 <h1><i class="fa fa-terminal"></i> Algorithmus starter</h1>
-@Html.ActionLink("Resultate", "Results", null, new { @class = "btn btn-success" })
+@Html.ActionLink("Resultate", "Results", null, new { @class = "btn-link" })
 
 <hr />
 
@@ -18,7 +18,7 @@
         <div class="form-group row">
             @Html.LabelFor(model => model.Year, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Year, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.DropDownListFor(model => model.Year, Model.PossibleYears.OrderBy(y => y).Select(y => new SelectListItem { Text = y.ToString(), Value = y.ToString() }), new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Year, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -36,7 +36,7 @@
             <button type="button" id="AddDay" class="btn btn-sm btn-success">
                 <i class="fa fa-plus"></i>
             </button>
-            @if (Model.DaysPeriod?.Count == 0)
+            @if (Model.DaysPeriod == null || Model.DaysPeriod.Count == 0)
             {
                 <div class="days">
                     <div class="form-group row">
@@ -86,14 +86,14 @@
         </div>
 
         <div id="advanced-settings">
+
             <div class="form-group row">
-                @Html.LabelFor(model => model.TimeSliceDuration, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.MaxNumberOfAdditionalSantas, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.TimeSliceDuration, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.TimeSliceDuration, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.MaxNumberOfAdditionalSantas, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.MaxNumberOfAdditionalSantas, "", new { @class = "text-danger" })
                 </div>
             </div>
-
 
             <div class="form-group row">
                 @Html.LabelFor(model => model.Beta0, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -110,6 +110,21 @@
                     @Html.ValidationMessageFor(model => model.TimePerChild, "", new { @class = "text-danger" })
                 </div>
             </div>
+            <div class="form-group row">
+                @Html.LabelFor(model => model.Algorithm, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.Algorithm, Model.AlgorithmTypes, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Algorithm, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.TimeLimitMinutes, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.TimeLimitMinutes, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.TimeLimitMinutes, "", new { @class = "text-danger" })
+                </div>
+            </div>
         </div>
         <div class="form-group row">
             <div class="col-md-12 text-center">
@@ -124,16 +139,16 @@
     @Scripts.Render("~/bundles/jqueryui")
 
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#advanced-settings').hide();
 
-            $('#AddDay').click(function() {
+            $('#AddDay').click(function () {
                 var day = $('.days');
                 var count = day.length;
                 var clone = day.first().clone();
                 clone.html($(clone).html().replace(/\[0\]/g, '[' + count + ']'));
                 clone.html($(clone).html().replace(/"_0__"/g, '_' + count + '__'));
-                clone.find('input').each(function(ind) { $(this).val(''); });
+                clone.find('input').each(function (ind) { $(this).val(''); });
 
                 day.last().after(clone);
             });

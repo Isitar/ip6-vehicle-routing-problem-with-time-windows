@@ -18,7 +18,6 @@ namespace IRuettae.WebApi.Controllers
     {
         private readonly string visitControllerErrorFile = System.Web.Hosting.HostingEnvironment.MapPath(@"~/App_Data/logs/VisitController.error.log");
 
-
         public IEnumerable<VisitDTO> Get()
         {
             using (var dbSession = SessionFactory.Instance.OpenSession())

@@ -60,9 +60,9 @@
   <ItemGroup>
     <Compile Include="Algorithm\ConverterTests.cs" />
     <Compile Include="Algorithm\UtilityTests.cs" />
+    <Compile Include="GoogleRoutingSolverTests.cs" />
     <Compile Include="TestDataset1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RoutingSolverTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

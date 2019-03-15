@@ -11,13 +11,13 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
         private readonly BinaryTournamentSelection selectionOperation = new BinaryTournamentSelection(RandomFactory.Instance);
         private readonly MutationOperation mutationOperation;
         private readonly RecombinationOperation recombinationOperation;
-        private readonly GenAlgStarterData starterData;
+        private readonly GenAlgConfig config;
 
-        public EvolutionOperation(GenAlgStarterData starterData)
+        public EvolutionOperation(GenAlgConfig config)
         {
-            this.starterData = starterData;
-            this.recombinationOperation = new RecombinationOperation(RandomFactory.Instance, starterData.OrderBasedCrossoverProbability);
-            this.mutationOperation = new MutationOperation(RandomFactory.Instance, starterData.PositionMutationProbability);
+            this.config = config;
+            this.recombinationOperation = new RecombinationOperation(RandomFactory.Instance, config.OrderBasedCrossoverProbability);
+            this.mutationOperation = new MutationOperation(RandomFactory.Instance, config.PositionMutationProbability);
         }
 
         public void Evolve(List<Genotype> population)
@@ -32,13 +32,13 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
             {
                 // number of best individuals that should get taken directly to the next generation
                 // must be at least one to save best solution
-                var numberOfEliteIndividuals = (int)Math.Max(1, population.Count * starterData.ElitismPercentage);
+                var numberOfEliteIndividuals = (int)Math.Max(1, population.Count * config.ElitismPercentage);
                 newPopulation.AddRange(population.Take(numberOfEliteIndividuals));
             }
 
             // Direct mutation
             {
-                var numberOfDirectMutation = (int)(population.Count * starterData.DirectMutationPercentage);
+                var numberOfDirectMutation = (int)(population.Count * config.DirectMutationPercentage);
                 var selection = selectionOperation.SelectIndividuals(population, numberOfDirectMutation);
 
                 // mutate (always)
@@ -49,7 +49,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
 
             // New random individuals
             {
-                var numberOfRandom = (int)(population.Count * starterData.RandomPercentage);
+                var numberOfRandom = (int)(population.Count * config.RandomPercentage);
                 var random = RandomFactory.Instance;
                 for (int i = 0; i < numberOfRandom; i++)
                 {
@@ -65,7 +65,7 @@ namespace IRuettae.Core.GeneticAlgorithm.Algorithm
                 var recombinatedPopulation = parents.Select(p => recombinationOperation.Recombinate(p.Item1, p.Item2)).ToList();
 
                 // Mutate with probability
-                mutationOperation.Mutate(recombinatedPopulation, starterData.MutationProbability);
+                mutationOperation.Mutate(recombinatedPopulation, config.MutationProbability);
 
                 newPopulation.AddRange(recombinatedPopulation);
             }

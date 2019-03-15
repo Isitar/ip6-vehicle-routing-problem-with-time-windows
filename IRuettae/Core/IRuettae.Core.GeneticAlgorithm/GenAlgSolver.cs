@@ -12,7 +12,7 @@ namespace IRuettae.Core.GeneticAlgorithm
     public class GenAlgSolver : ISolver
     {
         private readonly OptimizationInput input;
-        private readonly GenAlgStarterData starterData;
+        private readonly GenAlgConfig config;
         private EventHandler<ProgressReport> progress;
         private EventHandler<string> consoleProgress;
 
@@ -20,16 +20,16 @@ namespace IRuettae.Core.GeneticAlgorithm
         ///
         /// </summary>
         /// <param name="input"></param>
-        /// <param name="starterData"></param>
-        public GenAlgSolver(OptimizationInput input, GenAlgStarterData starterData)
+        /// <param name="config"></param>
+        public GenAlgSolver(OptimizationInput input, GenAlgConfig config)
         {
-            if (!starterData.IsValid())
+            if (!config.IsValid())
             {
-                throw new ArgumentException("The given GenAlgStarterData is invalid.");
+                throw new ArgumentException("must not be invalid", "config");
             }
 
             this.input = input;
-            this.starterData = starterData;
+            this.config = config;
         }
 
         public OptimizationResult Solve(long timeLimitMilliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
@@ -48,7 +48,7 @@ namespace IRuettae.Core.GeneticAlgorithm
             }
 
             // init population
-            var (population, mapping) = new PopulationGenerator(RandomFactory.Instance).Generate(input, starterData.PopulationSize, starterData.MaxNumberOfSantas);
+            var (population, mapping) = new PopulationGenerator(RandomFactory.Instance).Generate(input, config.PopulationSize, config.MaxNumberOfSantas);
             var decoder = new Decoder(input, mapping);
 
             // calculate costs
@@ -60,15 +60,15 @@ namespace IRuettae.Core.GeneticAlgorithm
             costCalculator.RecalculateCost(population);
 
             // Log characteristics of initial population
-            Log($"Genetic Algorithm started with following paramters:{Environment.NewLine}{starterData}");
+            Log($"Genetic Algorithm started with following paramters:{Environment.NewLine}{config}");
             var bestCost = GetMinCost(population);
             Log($"Best solution cost in initial population is: {bestCost}");
 
             // evolution
-            var evolutionOperation = new EvolutionOperation(starterData);
+            var evolutionOperation = new EvolutionOperation(config);
             var repairOperation = new RepairOperation(input, mapping);
             long generation = 0;
-            for (; generation < starterData.MaxNumberOfGenerations && sw.ElapsedMilliseconds < timeLimitMilliseconds; generation++)
+            for (; generation < config.MaxNumberOfGenerations && sw.ElapsedMilliseconds < timeLimitMilliseconds; generation++)
             {
                 // evolve
                 evolutionOperation.Evolve(population);

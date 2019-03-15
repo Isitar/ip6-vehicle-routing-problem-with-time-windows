@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ISolver.cs" />
-    <Compile Include="IStarterData.cs" />
+    <Compile Include="ISolverConfig.cs" />
     <Compile Include="Models\Constants.cs" />
     <Compile Include="Models\OptimizationInput.cs" />
     <Compile Include="Models\OptimizationResult.cs" />

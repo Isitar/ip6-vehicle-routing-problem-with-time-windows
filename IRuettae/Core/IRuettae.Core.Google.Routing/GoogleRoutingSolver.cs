@@ -9,15 +9,20 @@ using IRuettae.Core.Models;
 
 namespace IRuettae.Core.Google.Routing
 {
-    public class RoutingSolver : ISolver
+    public class GoogleRoutingSolver : ISolver
     {
         private readonly OptimizationInput input;
-        private readonly RoutingSolverStarterData starterData;
+        private readonly GoogleRoutingConfig config;
 
-        public RoutingSolver(OptimizationInput input, RoutingSolverStarterData starterData)
+        public GoogleRoutingSolver(OptimizationInput input, GoogleRoutingConfig config)
         {
+            if (config.MaxNumberOfAdditionalSantas < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(config), config, $"{nameof(config.MaxNumberOfAdditionalSantas)} must not be negative");
+            }
+
             this.input = input;
-            this.starterData = starterData;
+            this.config = config;
         }
 
         public OptimizationResult Solve(long timeLimitMilliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
@@ -39,7 +44,13 @@ namespace IRuettae.Core.Google.Routing
 
             // Create input data for internal solver.
             // Use mostly one per core.
-            var runs = GetStrategies(Environment.ProcessorCount).Select(s => (data: Converter.Convert(input, starterData.MaxNumberOfSantas), strategy: s)).ToArray();
+            var runs = GetStrategies(Environment.ProcessorCount).Select(s => (data: Converter.Convert(input, config.MaxNumberOfAdditionalSantas), strategy: s)).ToArray();
+
+            // adapt timelimit so that no overdraw is made
+            if (runs.Length > Environment.ProcessorCount)
+            {
+                timeLimitMilliseconds /= (long)Math.Ceiling((double)runs.Length / Environment.ProcessorCount);
+            }
 
             LogMessage("Conversion of input finished.");
             LogPercentage(0.01);
@@ -73,7 +84,7 @@ namespace IRuettae.Core.Google.Routing
         private List<ITimeWindowStrategy> GetStrategies(int number)
         {
             List<ITimeWindowStrategy> strategies;
-            switch (starterData.Mode)
+            switch (config.Mode)
             {
                 case SolvingMode.Default:
                     strategies = GetStrategiesDefault();
@@ -81,10 +92,22 @@ namespace IRuettae.Core.Google.Routing
                 case SolvingMode.Fast:
                     strategies = GetStrategiesFast();
                     break;
+                case SolvingMode.All:
+                    strategies = GetStrategiesDefault();
+                    break;
                 default:
                     throw new NotImplementedException("unknown SolvingMode");
             }
+
+            // limit number of strategies
             number = Math.Max(1, Math.Min(strategies.Count, number));
+
+            if (config.Mode == SolvingMode.All)
+            {
+                // remove limit
+                number = strategies.Count;
+            }
+
             return strategies.Take(number).ToList();
         }
 

@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IRuettae.Core.ILP.Algorithm.Models
+namespace IRuettae.Core.ILPIp5Gurobi.Algorithm.Models
 {
     /// <summary>
     /// Class that holds the ilp specific data belonging to a route calculation
     /// </summary>
-    public class ILPStarterData : IStarterData
+    public class ILPIp5GurobiConfig : ISolverConfig
     {
         // General
         public int TimeSliceDuration { get; set; }

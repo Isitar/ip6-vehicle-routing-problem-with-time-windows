@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using IRuettae.Converter;
+using IRuettae.Core;
 using IRuettae.Core.Models;
 using IRuettae.Persistence.Entities;
 using IRuettae.WebApi.Persistence;
@@ -14,44 +18,17 @@ namespace IRuettae.WebApi.Helpers
 {
     public class RouteCalculator
     {
-        public static ConcurrentBag<BackgroundWorker> BackgroundWorkers = new ConcurrentBag<BackgroundWorker>();
-
-        private readonly long routeCalculationId;
-
-        private BackgroundWorker bgWorker;
+        
+        private static BlockingCollection<long> work = new BlockingCollection<long>(new ConcurrentQueue<long>());
 
 
-        public RouteCalculator(RouteCalculation routeCalculation)
+        public static void EnqueueRouteCalculation(long routeCalculationId)
         {
-            routeCalculationId = routeCalculation.Id;
-            SetupBgWorker();
+            work.Add(routeCalculationId);
         }
+        
 
-        private void SetupBgWorker()
-        {
-            bgWorker = new BackgroundWorker();
-            BackgroundWorkers.Add(bgWorker);
-            bgWorker.Disposed += (sender, args) =>
-            {
-                var dbSession = SessionFactory.Instance.OpenSession();
-                var routeCalculation = dbSession.Get<RouteCalculation>(routeCalculationId);
-                if (string.IsNullOrEmpty(routeCalculation.Result))
-                {
-                    routeCalculation.State = RouteCalculationState.Cancelled;
-                    routeCalculation.StateText.Append(new RouteCalculationLog
-                    {
-                        Log = $"{Environment.NewLine} {DateTime.Now} Background worker stopped"
-                    });
-                }
-
-                dbSession.Update(routeCalculation);
-                dbSession.Flush();
-            };
-
-            bgWorker.DoWork += BackgroundWorkerDoWork;
-        }
-
-        private void BackgroundWorkerDoWork(object sender, DoWorkEventArgs args)
+        private static void CalculateRoute(long routeCalculationId)
         {
             try
             {
@@ -68,8 +45,8 @@ namespace IRuettae.WebApi.Helpers
                     .ToList();
 
                 visits.ForEach(v =>
-                    v.Duration = 60 * (v.NumberOfChildren * routeCalculation.TimePerChild +
-                                       routeCalculation.TimePerChildOffset));
+                    v.Duration = 60 * (v.NumberOfChildren * routeCalculation.TimePerChildMinutes +
+                                       routeCalculation.TimePerChildOffsetMinutes));
 
                 var startVisit = dbSession.Query<Visit>().First(v => v.Id == routeCalculation.StarterVisitId);
 
@@ -79,22 +56,37 @@ namespace IRuettae.WebApi.Helpers
                 var converter = new PersistenceToCoreConverter();
                 var optimizationInput = converter.Convert(routeCalculation.Days, startVisit, visits, santas);
 
+                // remove unnecessary santas
+                {
+                    // maximum number of additional santas to reach the theoretical optimum
+                    var maxAdditional = optimizationInput.NumberOfVisits() - optimizationInput.NumberOfSantas();
+                    maxAdditional = Math.Max(0, maxAdditional);
+                    routeCalculation.MaxNumberOfAdditionalSantas = Math.Min(routeCalculation.MaxNumberOfAdditionalSantas, maxAdditional);
+                }
+
                 routeCalculation.State = RouteCalculationState.Ready;
+
+                var solverConfig = SolverConfigFactory.CreateSolverConfig(routeCalculation, optimizationInput);
+                routeCalculation.AlgorithmData = JsonConvert.SerializeObject(solverConfig);
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
-
                 #endregion Prepare
 
                 #region Run
-
                 routeCalculation.StartTime = DateTime.Now;
-
-                var starterData = StarterDataDeserializer.Deserialize(routeCalculation.Algorithm, routeCalculation.AlgorithmData);
-                var solver = SolverFactory.GetSolver(optimizationInput, starterData);
+               
+                var solver = SolverFactory.CreateSolver(optimizationInput, solverConfig);
 
                 // note: Progress<> is not suitable here as it may use multiple threads
-                var consoleProgress = new EventHandler<string>(OnConsoleProgressOnProgressChanged);
-                var progress = new EventHandler<ProgressReport>(OnProgressOnProgressChanged);
+                var consoleProgress = new EventHandler<string>((s,m) =>
+                {
+                    OnConsoleProgressOnProgressChanged(s,m,routeCalculationId);
+                });
+                
+                var progress = new EventHandler<ProgressReport>((s, report) =>
+                {
+                    OnProgressOnProgressChanged(s, report, routeCalculationId);
+                });
 
                 routeCalculation.State = RouteCalculationState.Running;
                 dbSession.Update(routeCalculation);
@@ -113,7 +105,6 @@ namespace IRuettae.WebApi.Helpers
                     SantaMap = converter.SantaMap,
                     ZeroTime = converter.ZeroTime
                 };
-
                 routeCalculation.Result = JsonConvert.SerializeObject(routeCalculationResult);
                 routeCalculation.State = RouteCalculationState.Finished;
 
@@ -134,12 +125,19 @@ namespace IRuettae.WebApi.Helpers
             }
         }
 
-        public void StartWorker()
+        public static void StartWorker()
         {
-            bgWorker.RunWorkerAsync();
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    var id = work.Take();
+                    CalculateRoute(id);
+                }
+            });
         }
 
-        private void OnConsoleProgressOnProgressChanged(object s, string message)
+        private static void OnConsoleProgressOnProgressChanged(object s, string message, long routeCalculationId)
         {
             try
             {
@@ -155,7 +153,7 @@ namespace IRuettae.WebApi.Helpers
             }
         }
 
-        private void OnProgressOnProgressChanged(object s, ProgressReport report)
+        private static void OnProgressOnProgressChanged(object s, ProgressReport report, long routeCalculationId)
         {
             try
             {
@@ -165,7 +163,7 @@ namespace IRuettae.WebApi.Helpers
                 dbSession.Update(routeCalculation);
                 dbSession.Flush();
 
-                OnConsoleProgressOnProgressChanged(s, $"Progress: {report.Progress:P2}");
+                OnConsoleProgressOnProgressChanged(s, $"Progress: {report.Progress:P2}", routeCalculationId);
             }
             catch
             {

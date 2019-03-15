@@ -18,13 +18,16 @@ namespace IRuettae.WebApp.Models
         public virtual int Year { get; set; }
         [DisplayName("Tage")]
         public virtual List<(DateTime, DateTime)> Days { get; set; }
+        [DisplayName("Maximale Anzahl zusätzlicher Chläuse")]
+        public virtual int MaxNumberOfAdditionalSantas { get; set; }
         [DisplayName("Zeit Pro Kind")]
-        public virtual int TimePerChild { get; set; }
+        public virtual int TimePerChildMinutes { get; set; }
         [DisplayName("+ Zeit für erstes Kind")]
-        public virtual int TimePerChildOffset { get; set; }
+        public virtual int TimePerChildOffsetMinutes { get; set; }
         [DisplayName("Startpunkt")]
         public virtual int StarterVisitId { get; set; }
-
+        [DisplayName("Zeitlimit [ms]")]
+        public long TimeLimitMiliseconds { get; set; }
 
         [DisplayName("Anzahl benötigte Chläuse")]
         public virtual int NumberOfSantas { get; set; }
@@ -97,7 +100,6 @@ namespace IRuettae.WebApp.Models
         [DisplayName("Durchschnittliche Zeit pro Route")]
         public virtual int AverageDurationPerRoute { get; set; }
 
-
         public enum RouteCalculationState
         {
             Creating,
@@ -109,7 +111,12 @@ namespace IRuettae.WebApp.Models
 
         public enum AlgorithmType
         {
+            Hybrid,
+            LocalSolver,
+            GeneticAlgorithm,
+            GoogleRouting,
             ILP,
+            Manual,
         }
 
         public bool IsFinished => State == RouteCalculationState.Finished;

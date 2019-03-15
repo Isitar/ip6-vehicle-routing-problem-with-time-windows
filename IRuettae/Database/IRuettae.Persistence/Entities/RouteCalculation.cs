@@ -13,9 +13,11 @@ namespace IRuettae.Persistence.Entities
         public virtual DateTime StartTime { get; set; }
         public virtual int Year { get; set; }
         public virtual List<(DateTime, DateTime)> Days { get; set; }
-        public virtual int TimePerChild { get; set; }
-        public virtual int TimePerChildOffset { get; set; }
+        public virtual int MaxNumberOfAdditionalSantas { get; set; }
+        public virtual int TimePerChildMinutes { get; set; }
+        public virtual int TimePerChildOffsetMinutes { get; set; }
         public virtual int StarterVisitId { get; set; }
+        public virtual long TimeLimitMiliseconds { get; set; }
 
 
         // info for history purpuse
@@ -23,7 +25,6 @@ namespace IRuettae.Persistence.Entities
         public virtual int NumberOfVisits { get; set; }
         public virtual string SantaJson { get; set; }
         public virtual string VisitsJson { get; set; }
-        public virtual long TimeLimitMiliseconds { get; set; }
 
         // Algorithm specific data
         public virtual AlgorithmType Algorithm { get; set; }
