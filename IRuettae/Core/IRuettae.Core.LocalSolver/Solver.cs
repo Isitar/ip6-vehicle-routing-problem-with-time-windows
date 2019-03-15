@@ -22,9 +22,7 @@ namespace IRuettae.Core.LocalSolver
         /// Instantiates a new LocalSolver.Solver class with the given optimization input
         /// </summary>
         /// <param name="input">the optimization input being used to solve the problem</param>
-        /// <param name="useFakeSantas"></param>
-        /// <param name="vrpTimeLimitFactor"></param>
-        /// <param name="vrptwTimeLimitFactor"></param>
+        /// <param name="config">config for this solver</param>
         public Solver(OptimizationInput input, LocalSolverConfig config)
         {
             if (config.MaxNumberOfAdditionalSantas < 0)

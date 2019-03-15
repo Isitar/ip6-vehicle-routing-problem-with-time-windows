@@ -59,7 +59,7 @@ namespace IRuettae.WebApi.Helpers
                 // remove unnecessary santas
                 {
                     // maximum number of additional santas to reach the theoretical optimum
-                    var maxAdditional = optimizationInput.Visits.Count(v => !v.IsBreak) - optimizationInput.NumberOfSantas();
+                    var maxAdditional = optimizationInput.NumberOfVisits() - optimizationInput.NumberOfSantas();
                     maxAdditional = Math.Max(0, maxAdditional);
                     routeCalculation.MaxNumberOfAdditionalSantas = Math.Min(routeCalculation.MaxNumberOfAdditionalSantas, maxAdditional);
                 }
