@@ -107,7 +107,9 @@ namespace IRuettae.ConsoleApp.Programs
                 rc = dbSession.Merge(rc);
             }
 
-            Task.Run(() => new RouteCalculator(rc).StartWorker());
+            // Not supported to work in this way.
+            // Should be partially rewritten.
+            //Task.Run(() => new RouteCalculator(rc).StartWorker());
         }
 
         /// <summary>
