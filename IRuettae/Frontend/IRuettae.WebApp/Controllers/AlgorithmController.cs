@@ -26,7 +26,6 @@ namespace IRuettae.WebApp.Controllers
             var santaResponse = Client.GetAsync("api/santa").Result;
             var santas = JArray.Parse(santaResponse.Content.ReadAsStringAsync().Result).ToObject<SantaVM[]>();
 
-
             if (System.IO.File.Exists(ConfigPath))
             {
                 model = JsonConvert.DeserializeObject<AlgorithmStarterVM>(System.IO.File.ReadAllText(ConfigPath));
@@ -69,7 +68,6 @@ namespace IRuettae.WebApp.Controllers
 
             asvm.Days = asvm.DaysPeriod.Select(p => (p.Start.Value, p.End.Value)).ToList();
             asvm.Beta0 -= asvm.TimePerChild;
-            //            Client.Timeout = TimeSpan.FromHours(10);
             var result = await Client.PostAsJsonAsync("api/algorithm/StartRouteCalculation", asvm);
             return RedirectToAction("Results");
         }
