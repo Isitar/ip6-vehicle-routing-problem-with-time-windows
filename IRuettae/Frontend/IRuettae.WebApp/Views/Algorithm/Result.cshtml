@@ -18,7 +18,7 @@
     <h1>Routen</h1>
     @*<div id="allMap" style="min-height: 300px;"></div>*@
 
-    foreach (var route in Model.Where(m => m != null))
+    foreach (var route in Model)
     {
         var letterMap = 'A';
 
@@ -77,7 +77,7 @@
             crossorigin=""></script>
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
     @{counter = 0;}
-    @foreach (var route in Model.Where(m => m != null))
+    @foreach (var route in Model)
     {
         <script>
             function renderMap@(counter)() {

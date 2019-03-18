@@ -26,7 +26,7 @@ namespace IRuettae.WebApp.Controllers
             var santaResponse = Client.GetAsync("api/santa").Result;
             var santas = JArray.Parse(santaResponse.Content.ReadAsStringAsync().Result).ToObject<SantaVM[]>();
 
-            
+
             if (System.IO.File.Exists(ConfigPath))
             {
                 model = JsonConvert.DeserializeObject<AlgorithmStarterVM>(System.IO.File.ReadAllText(ConfigPath));
@@ -86,7 +86,7 @@ namespace IRuettae.WebApp.Controllers
             var result = await Client.GetAsync("api/algorithm/RouteCalculationWaypoints?id=" + id);
             var routeCalculationWaypointVms = JsonConvert.DeserializeObject<List<RouteCalculationWaypointVM[]>>(result.Content.ReadAsStringAsync().Result);
             ViewBag.apiKey = Properties.Settings.Default.GoogleMapsApiKey;
-            return View(routeCalculationWaypointVms);
+            return View(routeCalculationWaypointVms.Where(m => m != null && m.Length > 0).ToList());
         }
 
         public async Task<ViewResult> Compare(long[] ids)
