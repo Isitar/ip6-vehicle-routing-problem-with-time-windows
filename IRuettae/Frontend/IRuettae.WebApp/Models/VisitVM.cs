@@ -20,7 +20,7 @@ namespace IRuettae.WebApp.Models
 
         [Required]
         [Range(1000, 9999)]
-        [DisplayName("Postleizahl")]
+        [DisplayName("Postleitzahl")]
         public virtual int Zip { get; set; }
 
         [Required]
