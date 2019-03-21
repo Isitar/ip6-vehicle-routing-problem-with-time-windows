@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Http;
 using System.Web.Mvc;
-using System.Web.Routing;
+using IRuettae.Persistence.Entities;
+using IRuettae.WebApi.Helpers;
 using IRuettae.WebApi.Infrastructure;
+using IRuettae.WebApi.Persistence;
 
 namespace IRuettae.WebApi
 {
@@ -14,11 +13,28 @@ namespace IRuettae.WebApi
         protected void Application_Start()
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
-            //AreaRegistration.RegisterAllAreas();
-
-            //RouteConfig.RegisterRoutes(RouteTable.Routes);
-
             DependencyResolver.SetResolver(new NinjectDependencyResolver());
+            CleanupRouteCalculations();
+            RouteCalculator.StartWorker();
+        }
+
+        /// <summary>
+        /// cancels running route calculations
+        /// </summary>
+        private static void CleanupRouteCalculations()
+        {
+            using (var dbSession = SessionFactory.Instance.OpenSession())
+            {
+                dbSession.Query<RouteCalculation>()
+                    .Where(rc => new[] { RouteCalculationState.Creating, RouteCalculationState.Ready, RouteCalculationState.Running }.Contains(rc.State))
+                    .ToList()
+                    .ForEach(rc =>
+                    {
+                        rc.State = RouteCalculationState.Cancelled;
+                        dbSession.Update(rc);
+                    });
+                dbSession.Flush();
+            }
         }
     }
 }

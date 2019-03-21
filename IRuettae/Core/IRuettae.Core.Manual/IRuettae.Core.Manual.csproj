@@ -41,7 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ManualSolver.cs" />
-    <Compile Include="ManualStarterData.cs" />
+    <Compile Include="ManualConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

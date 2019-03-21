@@ -16,9 +16,11 @@ namespace IRuettae.WebApi.Models
         public virtual DateTime StartTime { get; set; }
         public virtual int Year { get; set; }
         public virtual List<(DateTime, DateTime)> Days { get; set; }
-        public virtual int TimePerChild { get; set; }
-        public virtual int TimePerChildOffset { get; set; }
+        public virtual int MaxNumberOfAdditionalSantas { get; set; }
+        public virtual int TimePerChildMinutes { get; set; }
+        public virtual int TimePerChildOffsetMinutes { get; set; }
         public virtual int StarterVisitId { get; set; }
+        public virtual long TimeLimitMiliseconds { get; set; }
 
 
         // info for history purpuse
@@ -60,9 +62,11 @@ namespace IRuettae.WebApi.Models
                 StartTime = rc.StartTime,
                 Year = rc.Year,
                 Days = rc.Days,
-                TimePerChild = rc.TimePerChild,
-                TimePerChildOffset = rc.TimePerChildOffset,
+                MaxNumberOfAdditionalSantas = rc.MaxNumberOfAdditionalSantas,
+                TimePerChildMinutes = rc.TimePerChildMinutes,
+                TimePerChildOffsetMinutes = rc.TimePerChildOffsetMinutes,
                 StarterVisitId = rc.StarterVisitId,
+                TimeLimitMiliseconds = rc.TimeLimitMiliseconds,
                 NumberOfSantas = rc.NumberOfSantas,
                 NumberOfVisits = rc.NumberOfVisits,
                 Algorithm = rc.Algorithm,
@@ -93,8 +97,8 @@ namespace IRuettae.WebApi.Models
                     dto.TotalWayTime = or.TotalWayTime();
                     dto.TotalVisitTime = or.TotalVisitTime();
                     dto.AverageWayTimePerRoute = or.AverageWayTimePerRoute();
-                    dto.LatestVisit = or.Routes.SelectMany(r => r.Waypoints
-                        .Where(wp => wp.VisitId != Constants.VisitIdHome))
+                    dto.LatestVisit = or.Routes
+                        .SelectMany(r => r.Waypoints?.Where(wp => wp.VisitId != Constants.VisitIdHome) ?? new List<Waypoint>())
                         .Select(wp => routeCalculationResult.ConvertTime(wp.StartTime))
                         .Append(DateTime.MinValue)
                         .OrderBy(t => t - t.TimeOfDay).Last();

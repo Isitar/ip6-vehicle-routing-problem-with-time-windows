@@ -31,7 +31,7 @@ namespace IRuettae.Persistence
             return Fluently.Configure()
                 .Database(persistenceConfigurer)
                 .Mappings(m => m.FluentMappings.AddFromAssemblyOf<VisitMap>())
-                
+
                 //.Mappings(m => m.FluentMappings.AddFromAssemblyOf<WayMap>())
                 //.Mappings(m => m.FluentMappings.AddFromAssemblyOf<PeriodMap>())
 
@@ -52,7 +52,7 @@ namespace IRuettae.Persistence
                         case NHibernateConfigurationConfigurationOptions.None:
                             break;
                         default:
-                            throw new ArgumentOutOfRangeException(nameof(configurationOptions), configurationOptions, null);
+                            throw new ArgumentOutOfRangeException(nameof(configurationOptions), configurationOptions, "unexpected");
                     }
                 })
                 .BuildSessionFactory();

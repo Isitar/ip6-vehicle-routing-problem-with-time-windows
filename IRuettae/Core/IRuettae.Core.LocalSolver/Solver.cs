@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Xml.Serialization;
 using IRuettae.Core.LocalSolver.Algorithm;
+using IRuettae.Core.LocalSolver.Models;
 using IRuettae.Core.Models;
 using localsolver;
 
@@ -15,25 +16,23 @@ namespace IRuettae.Core.LocalSolver
     public class Solver : ISolver
     {
         private readonly OptimizationInput input;
-        private readonly double vrpTimeLimitFactor;
-        private readonly double vrptwTimeLimitFactor;
+        private readonly LocalSolverConfig config;
 
         /// <summary>
         /// Instantiates a new LocalSolver.Solver class with the given optimization input
         /// </summary>
         /// <param name="input">the optimization input being used to solve the problem</param>
-        /// <param name="useFakeSantas"></param>
-        /// <param name="vrpTimeLimitFactor"></param>
-        /// <param name="vrptwTimeLimitFactor"></param>
-        public Solver(OptimizationInput input, double vrpTimeLimitFactor, double vrptwTimeLimitFactor, bool useFakeSantas = false)
+        /// <param name="config">config for this solver</param>
+        public Solver(OptimizationInput input, LocalSolverConfig config)
         {
-            this.input = input;
-            this.vrpTimeLimitFactor = vrpTimeLimitFactor;
-            this.vrptwTimeLimitFactor = vrptwTimeLimitFactor;
-            UseFakeSantas = useFakeSantas;
-        }
+            if (config.MaxNumberOfAdditionalSantas < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(config), config.MaxNumberOfAdditionalSantas, $"{nameof(config.MaxNumberOfAdditionalSantas)} must not be negative");
+            }
 
-        public bool UseFakeSantas { get; }
+            this.input = input;
+            this.config = config;
+        }
 
         /// <inheritdoc />
         public OptimizationResult Solve(long timeLimitMilliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
@@ -44,7 +43,7 @@ namespace IRuettae.Core.LocalSolver
                 OptimizationInput = input
             };
 
-            var numberOfFakeSantas = UseFakeSantas ? input.Visits.Length - input.Santas.Length : 0;
+            var numberOfFakeSantas = config.MaxNumberOfAdditionalSantas;
             var numberOfRoutes = (input.Santas.Length + numberOfFakeSantas) * input.Days.Length;
             var numberOfDays = input.Days.Length;
             var visits = input.Visits.ToList();
@@ -59,8 +58,8 @@ namespace IRuettae.Core.LocalSolver
                 }
             }
 
-            var vrptwBreaksOnWayTimeLimitFactor = 1 - vrpTimeLimitFactor - vrptwTimeLimitFactor;
-            if (Math.Abs(vrpTimeLimitFactor + vrptwTimeLimitFactor + vrptwBreaksOnWayTimeLimitFactor - 1d) > 0.00001)
+            var vrptwBreaksOnWayTimeLimitFactor = 1 - config.VrpTimeLimitFactor - config.VrptwTimeLimitFactor;
+            if (Math.Abs(config.VrpTimeLimitFactor + config.VrptwTimeLimitFactor + vrptwBreaksOnWayTimeLimitFactor - 1d) > 0.00001)
             {
                 throw new Exception("programmer was stupid :). Time limit factors don't add up to 1.");
             }
@@ -73,7 +72,7 @@ namespace IRuettae.Core.LocalSolver
                 var modelBuilder = new ModelBuilder(solverVariables);
 
                 consoleProgress?.Invoke(this, "Starting to model");
-                
+
                 #region VRP
 
                 modelBuilder.AddPartitionConstraint();
@@ -107,7 +106,7 @@ namespace IRuettae.Core.LocalSolver
                 model.Close();
                 var vrpPhase = localSolver.CreatePhase();
 
-                vrpPhase.SetTimeLimit((int)(vrpTimeLimitFactor * timeLimitMilliseconds / 1000));
+                vrpPhase.SetTimeLimit((int)(config.VrpTimeLimitFactor * timeLimitMilliseconds / 1000));
 
                 InitializeSolution(numberOfRoutes, numberOfFakeSantas, solverVariables.VisitSequences, breakDictionary);
                 localSolver.Solve();
@@ -120,6 +119,8 @@ namespace IRuettae.Core.LocalSolver
 #endif
 
                 #endregion VRP
+
+                progress?.Invoke(this, new ProgressReport((double)sw.ElapsedMilliseconds / timeLimitMilliseconds));
 
                 // save solution for next phase
                 var vrpSolution = SavePhaseSolution(solverVariables);
@@ -145,7 +146,7 @@ namespace IRuettae.Core.LocalSolver
                 modelBuilder.ReAddObjective(true);
                 model.Close();
                 var vrptwPhase = localSolver.CreatePhase();
-                vrptwPhase.SetTimeLimit((int)(vrptwTimeLimitFactor * timeLimitMilliseconds / 1000));
+                vrptwPhase.SetTimeLimit((int)(config.VrptwTimeLimitFactor * timeLimitMilliseconds / 1000));
 
                 // initialize with vrp solution solution
                 InitializeSolutionWithPrecalculatedSolution(vrpSolution, solverVariables);
@@ -178,7 +179,7 @@ namespace IRuettae.Core.LocalSolver
 #endif
 
                 #endregion VRPTW
-
+                progress?.Invoke(this, new ProgressReport((double)sw.ElapsedMilliseconds / timeLimitMilliseconds));
                 model.Open();
                 model.RemoveConstraint(noWaitBetweenVisitConstraint);
                 model.Close();
@@ -188,7 +189,7 @@ namespace IRuettae.Core.LocalSolver
                 var vrptwBreaksOnWayPhase = localSolver.CreatePhase();
                 vrptwBreaksOnWayPhase.SetTimeLimit((int)(vrptwBreaksOnWayTimeLimitFactor * timeLimitMilliseconds / 1000));
                 localSolver.Solve();
-
+                progress?.Invoke(this, new ProgressReport((double)sw.ElapsedMilliseconds / timeLimitMilliseconds));
                 result.Routes = BuildResultRoutes(numberOfRoutes, solverVariables.VisitSequences, solverVariables.Visits, solverVariables.SantaVisitStartingTimes, numberOfFakeSantas);
 
 #if DEBUG
@@ -212,7 +213,7 @@ namespace IRuettae.Core.LocalSolver
                 }
                 PrintStatistics(consoleProgress, vrptwBreaksOnWayPhase.GetStatistics());
 #endif
-
+                progress?.Invoke(this, new ProgressReport(1));
                 result.TimeElapsed = sw.ElapsedMilliseconds / 1000;
                 result.ResultState = ResultState.Finished;
                 return result;
@@ -274,8 +275,8 @@ namespace IRuettae.Core.LocalSolver
                 output.SantaVisitSequence[s] = solverVariables.VisitSequences[s].GetCollectionValue().Select(st => (int)st).ToArray();
             }
 
-            if ((solverVariables.SantaVisitStartingTimes != null )
-                && (solverVariables.SantaVisitStartingTimes.Length > 0 )
+            if ((solverVariables.SantaVisitStartingTimes != null)
+                && (solverVariables.SantaVisitStartingTimes.Length > 0)
                 && !(solverVariables.SantaVisitStartingTimes[0] is null))
             {
                 for (int s = 0; s < numberOfRoutes; s++)
@@ -284,10 +285,10 @@ namespace IRuettae.Core.LocalSolver
                     output.SantaVisitStartTime[s] = new int[startingTimeArr.Count()];
                     for (int i = 0; i < startingTimeArr.Count(); i++)
                     {
-                        output.SantaVisitStartTime[s][i] = (int) startingTimeArr.GetIntValue(i);
+                        output.SantaVisitStartTime[s][i] = (int)startingTimeArr.GetIntValue(i);
                     }
 
-                    output.SantaWaitBeforeStart[s] = (int) solverVariables.SantaWaitBeforeStart[s].GetIntValue();
+                    output.SantaWaitBeforeStart[s] = (int)solverVariables.SantaWaitBeforeStart[s].GetIntValue();
                 }
             }
 

@@ -1,0 +1,28 @@
+.hover-text {
+    font-size: 100px;
+    font-family: serif;
+}
+
+.selected {
+    
+}
+
+svg {
+    width:100%;
+}
+
+svg > *{
+    transition: 
+        filter 500ms linear,
+        opacity 500ms linear;
+    
+}
+
+line {
+    stroke-width: 10px;
+}
+
+.un-selected {
+  filter: grayscale(100%);
+  opacity: 0.5;
+}

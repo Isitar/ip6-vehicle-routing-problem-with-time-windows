@@ -177,8 +177,9 @@
     <Compile Include="Helpers\EventTextWriter.cs" />
     <Compile Include="Helpers\RouteCalculator.cs" />
     <Compile Include="Helpers\RouteCalculationResult.cs" />
+    <Compile Include="Helpers\RouteCalculationFactory.cs" />
+    <Compile Include="Helpers\SolverConfigFactory.cs" />
     <Compile Include="Helpers\SolverFactory.cs" />
-    <Compile Include="Helpers\StarterDataDeserializer.cs" />
     <Compile Include="Helpers\VisitWayCreator.cs" />
     <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
     <Compile Include="Models\AlgorithmStarter.cs" />
@@ -220,9 +221,21 @@
       <Project>{3653ea67-0ca2-40fc-b027-1df812f7bc7c}</Project>
       <Name>IRuettae.Converter</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\IRuettae.Core.GeneticAlgorithm\IRuettae.Core.GeneticAlgorithm.csproj">
+      <Project>{48054F06-CCF2-4F00-BF6A-70F44C86BEF5}</Project>
+      <Name>IRuettae.Core.GeneticAlgorithm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\IRuettae.Core.Google.Routing\IRuettae.Core.Google.Routing.csproj">
+      <Project>{74331164-A8FD-498D-B4F8-F10A12AD4FFA}</Project>
+      <Name>IRuettae.Core.Google.Routing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\IRuettae.Core.ILP\IRuettae.Core.ILP.csproj">
       <Project>{d56e9df6-b3a9-4b97-82e4-f3cd401bbe7c}</Project>
       <Name>IRuettae.Core.ILP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\IRuettae.Core.LocalSolver\IRuettae.Core.LocalSolver.csproj">
+      <Project>{383487D6-E248-4D1B-A1D6-BE3BFBC54ABF}</Project>
+      <Name>IRuettae.Core.LocalSolver</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\IRuettae.Core.Manual\IRuettae.Core.Manual.csproj">
       <Project>{AD56F730-28E1-4FED-9587-79079A4DE9C6}</Project>

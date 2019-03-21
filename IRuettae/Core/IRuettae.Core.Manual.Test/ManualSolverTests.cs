@@ -116,7 +116,7 @@ namespace IRuettae.Core.Manual.Tests
         [TestMethod()]
         public void TestSolve()
         {
-            var starterData = new ManualStarterData()
+            var config = new ManualConfig()
             {
                 Routes = new[]{
                     (100, 0, new[] {0, 1}),
@@ -127,7 +127,7 @@ namespace IRuettae.Core.Manual.Tests
                     (201, 1, new[] {3}),
                 }
             };
-            var actual = new ManualSolver(GetInput(), starterData).Solve(0, null, null).Routes;
+            var actual = new ManualSolver(GetInput(), config).Solve(0, null, null).Routes;
 
             Assert.AreEqual(6, actual.Length);
 

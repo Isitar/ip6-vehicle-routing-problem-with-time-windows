@@ -13,13 +13,13 @@ namespace IRuettae.Core.Manual
     /// </summary>
     public class ManualSolver : ISolver
     {
-        private OptimizationInput input;
-        private ManualStarterData starterData;
+        private readonly OptimizationInput input;
+        private readonly ManualConfig config;
 
-        public ManualSolver(OptimizationInput input, ManualStarterData starterData)
+        public ManualSolver(OptimizationInput input, ManualConfig config)
         {
             this.input = input;
-            this.starterData = starterData;
+            this.config = config;
         }
 
         /// <summary>
@@ -48,9 +48,9 @@ namespace IRuettae.Core.Manual
 
         private List<Route> CreateRoutes()
         {
-            var routes = new List<Route>(starterData.Routes.Length);
+            var routes = new List<Route>(config.Routes.Length);
 
-            foreach (var (santaId, day, visits) in starterData.Routes)
+            foreach (var (santaId, day, visits) in config.Routes)
             {
                 var route = new Route()
                 {

@@ -1,0 +1,399 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+
+<head>
+	<title>Fachhochschule Nordwestschweiz FHNW - Practically solving the VRPTW</title>
+	<meta name="copyright" content="FHNW" />
+	<meta name="author" content="webmaster&#0064;fhnw.ch;pascal.luescher;janik.meyer" />
+	<meta name="Description" content="FHNW - Fachhochschule Nordwestschweiz" />
+	<meta name="Keywords" content="fhnw,fachhochschule,nordwestschweiz,hochschulen,hochschule f&uuml;r technik,studiengang,informatik,bachelor thesis,luescher,meyer,vrptw" />
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<link rel="SHORTCUT ICON" href="favicon.ico" />
+	<meta name="robots" content="INDEX,FOLLOW" />
+	<meta name="Expires" content="0" />
+	<meta name="Revisit" content="7 days" />
+	<meta name="Language" content="Deutsch" />
+	<meta name="distribution" content="global" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../_css/nw_screen.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="custom.css" </head> <body>
+	<div id="Header_FHNW">
+		<div id="Logo_FHNW">
+			<a href="http://www.fhnw.ch/">
+				<img src="../_img/nw_logo.png" alt="nw" />
+			</a>
+			<a name="top">&nbsp;</a>
+		</div>
+		<div id="Titel_ohne_menu">
+			<div id="Otitel_FHNW">
+				<a href="http://www.fhnw.ch/technik/" style="text-decoration: none;">
+					<h1>Hochschule f&uuml;r Technik</h1>
+				</a>
+			</div>
+
+			<div id="Utitel_FHNW">
+				<a href="http://www.fhnw.ch/technik/i/" style="text-decoration: none;">
+					<h1>Bachelor Thesis im Studiengang Informatik</h1>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div id="Content_FHNW">
+		<div id="lmenu_wrap">
+			<div id="lmenu">
+				<a href="../index.php" class="navactive">Startseite</a><br />
+				<a href="./example_1000.html" class="nav">L&ouml;sung mit 1000 Besuchen</a><br />
+				<a href="./luescher-meyer.pdf" class="nav" target="_blank">Bericht</a>
+			</div>
+		</div>
+		<!-- Inhalt -->
+		<div id="content_mit_menu">
+			<!-- _______________________________________________________________________ -->
+
+			<!-- Und hier kommt der Content rein. er beginnt IMMER mit einem <h4> Tag. -->
+			<h4>Practically solving the VRPTW</h4>
+			<svg viewBox="0 0 4000 4000">
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="1" fill="#E6194B" class="entry" />
+				<circle cx="2734" cy="1502" r="30" data-hover="Visit 33" data-group="1" fill="#E6194B" class="entry" />
+				<line x1="2734" x2="1878" y1="1502" y2="2631" style="stroke:#E6194B;" data-group="1" path="2631" />
+				<circle cx="2732" cy="1330" r="30" data-hover="Visit 80" data-group="1" fill="#E6194B" class="entry" />
+				<line x1="2732" x2="2734" y1="1330" y2="1502" style="stroke:#E6194B;" data-group="1" path="1502" />
+				<circle cx="2815" cy="1485" r="30" data-hover="Visit 9" data-group="1" fill="#E6194B" class="entry" />
+				<line x1="2815" x2="2732" y1="1485" y2="1330" style="stroke:#E6194B;" data-group="1" path="1330" />
+				<circle cx="2929" cy="1542" r="30" data-hover="Visit 78" data-group="1" fill="#E6194B" class="entry" />
+				<line x1="2929" x2="2815" y1="1542" y2="1485" style="stroke:#E6194B;" data-group="1" path="1485" />
+				<circle cx="2782" cy="1692" r="30" data-hover="Visit 28" data-group="1" fill="#E6194B" class="entry" />
+				<line x1="2782" x2="2929" y1="1692" y2="1542" style="stroke:#E6194B;" data-group="1" path="1542" />
+				<circle cx="2638" cy="1658" r="30" data-hover="Visit 79" data-group="1" fill="#E6194B" class="entry" />
+				<line x1="2638" x2="2782" y1="1658" y2="1692" style="stroke:#E6194B;" data-group="1" path="1692" />
+				<circle cx="2547" cy="1825" r="30" data-hover="Visit 7" data-group="1" fill="#E6194B" class="entry" />
+				<line x1="2547" x2="2638" y1="1825" y2="1658" style="stroke:#E6194B;" data-group="1" path="1658" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="1" fill="#E6194B" class="entry" />
+				<line x1="1878" x2="2547" y1="2631" y2="1825" style="stroke:#E6194B;" data-group="1" path="1825" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="2" fill="#3CB44B" class="entry" />
+				<circle cx="1880" cy="2942" r="30" data-hover="Visit 71" data-group="2" fill="#3CB44B" class="entry" />
+				<line x1="1880" x2="1878" y1="2942" y2="2631" style="stroke:#3CB44B;" data-group="2" path="2631" />
+				<circle cx="1839" cy="2945" r="30" data-hover="Visit 27" data-group="2" fill="#3CB44B" class="entry" />
+				<line x1="1839" x2="1880" y1="2945" y2="2942" style="stroke:#3CB44B;" data-group="2" path="2942" />
+				<circle cx="1721" cy="3013" r="30" data-hover="Visit 65" data-group="2" fill="#3CB44B" class="entry" />
+				<line x1="1721" x2="1839" y1="3013" y2="2945" style="stroke:#3CB44B;" data-group="2" path="2945" />
+				<circle cx="1752" cy="3112" r="30" data-hover="Visit 74" data-group="2" fill="#3CB44B" class="entry" />
+				<line x1="1752" x2="1721" y1="3112" y2="3013" style="stroke:#3CB44B;" data-group="2" path="3013" />
+				<circle cx="1852" cy="3392" r="30" data-hover="Visit 73" data-group="2" fill="#3CB44B" class="entry" />
+				<line x1="1852" x2="1752" y1="3392" y2="3112" style="stroke:#3CB44B;" data-group="2" path="3112" />
+				<circle cx="1578" cy="3321" r="30" data-hover="Visit 11" data-group="2" fill="#3CB44B" class="entry" />
+				<line x1="1578" x2="1852" y1="3321" y2="3392" style="stroke:#3CB44B;" data-group="2" path="3392" />
+				<circle cx="1508" cy="3343" r="30" data-hover="Visit 24" data-group="2" fill="#3CB44B" class="entry" />
+				<line x1="1508" x2="1578" y1="3343" y2="3321" style="stroke:#3CB44B;" data-group="2" path="3321" />
+				<circle cx="1416" cy="2964" r="30" data-hover="Visit 26" data-group="2" fill="#3CB44B" class="entry" />
+				<line x1="1416" x2="1508" y1="2964" y2="3343" style="stroke:#3CB44B;" data-group="2" path="3343" />
+				<circle cx="1751" cy="2761" r="30" data-hover="Visit 82" data-group="2" fill="#3CB44B" class="entry" />
+				<line x1="1751" x2="1416" y1="2761" y2="2964" style="stroke:#3CB44B;" data-group="2" path="2964" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="2" fill="#3CB44B" class="entry" />
+				<line x1="1878" x2="1751" y1="2631" y2="2761" style="stroke:#3CB44B;" data-group="2" path="2761" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="3" fill="#FFE119" class="entry" />
+				<circle cx="1717" cy="2161" r="30" data-hover="Visit 10" data-group="3" fill="#FFE119" class="entry" />
+				<line x1="1717" x2="1878" y1="2161" y2="2631" style="stroke:#FFE119;" data-group="3" path="2631" />
+				<circle cx="2315" cy="1486" r="30" data-hover="Visit 23" data-group="3" fill="#FFE119" class="entry" />
+				<line x1="2315" x2="1717" y1="1486" y2="2161" style="stroke:#FFE119;" data-group="3" path="2161" />
+				<circle cx="2302" cy="1394" r="30" data-hover="Visit 83" data-group="3" fill="#FFE119" class="entry" />
+				<line x1="2302" x2="2315" y1="1394" y2="1486" style="stroke:#FFE119;" data-group="3" path="1486" />
+				<circle cx="1776" cy="1694" r="30" data-hover="Visit 12" data-group="3" fill="#FFE119" class="entry" />
+				<line x1="1776" x2="2302" y1="1694" y2="1394" style="stroke:#FFE119;" data-group="3" path="1394" />
+				<circle cx="1074" cy="2333" r="30" data-hover="Visit 16" data-group="3" fill="#FFE119" class="entry" />
+				<line x1="1074" x2="1776" y1="2333" y2="1694" style="stroke:#FFE119;" data-group="3" path="1694" />
+				<circle cx="1247" cy="2601" r="30" data-hover="Visit 76" data-group="3" fill="#FFE119" class="entry" />
+				<line x1="1247" x2="1074" y1="2601" y2="2333" style="stroke:#FFE119;" data-group="3" path="2333" />
+				<circle cx="1288" cy="2616" r="30" data-hover="Visit 31" data-group="3" fill="#FFE119" class="entry" />
+				<line x1="1288" x2="1247" y1="2616" y2="2601" style="stroke:#FFE119;" data-group="3" path="2601" />
+				<circle cx="1810" cy="2642" r="30" data-hover="Visit 5" data-group="3" fill="#FFE119" class="entry" />
+				<line x1="1810" x2="1288" y1="2642" y2="2616" style="stroke:#FFE119;" data-group="3" path="2616" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="3" fill="#FFE119" class="entry" />
+				<line x1="1878" x2="1810" y1="2631" y2="2642" style="stroke:#FFE119;" data-group="3" path="2642" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="4" fill="#0082C8" class="entry" />
+				<circle cx="720" cy="400" r="30" data-hover="Visit 14" data-group="4" fill="#0082C8" class="entry" />
+				<line x1="720" x2="1878" y1="400" y2="2631" style="stroke:#0082C8;" data-group="4" path="2631" />
+				<circle cx="1912" cy="1021" r="30" data-hover="Visit 85" data-group="4" fill="#0082C8" class="entry" />
+				<line x1="1912" x2="720" y1="1021" y2="400" style="stroke:#0082C8;" data-group="4" path="400" />
+				<circle cx="2319" cy="599" r="30" data-hover="Visit 72" data-group="4" fill="#0082C8" class="entry" />
+				<line x1="2319" x2="1912" y1="599" y2="1021" style="stroke:#0082C8;" data-group="4" path="1021" />
+				<circle cx="2165" cy="854" r="30" data-hover="Visit 18" data-group="4" fill="#0082C8" class="entry" />
+				<line x1="2165" x2="2319" y1="854" y2="599" style="stroke:#0082C8;" data-group="4" path="599" />
+				<circle cx="2455" cy="1020" r="30" data-hover="Visit 75" data-group="4" fill="#0082C8" class="entry" />
+				<line x1="2455" x2="2165" y1="1020" y2="854" style="stroke:#0082C8;" data-group="4" path="854" />
+				<circle cx="2477" cy="1263" r="30" data-hover="Visit 3" data-group="4" fill="#0082C8" class="entry" />
+				<line x1="2477" x2="2455" y1="1263" y2="1020" style="stroke:#0082C8;" data-group="4" path="1020" />
+				<circle cx="2261" cy="1596" r="30" data-hover="Visit 17" data-group="4" fill="#0082C8" class="entry" />
+				<line x1="2261" x2="2477" y1="1596" y2="1263" style="stroke:#0082C8;" data-group="4" path="1263" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="4" fill="#0082C8" class="entry" />
+				<line x1="1878" x2="2261" y1="2631" y2="1596" style="stroke:#0082C8;" data-group="4" path="1596" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="5" fill="#F58230" class="entry" />
+				<circle cx="1199" cy="2666" r="30" data-hover="Visit 86" data-group="5" fill="#F58230" class="entry" />
+				<line x1="1199" x2="1878" y1="2666" y2="2631" style="stroke:#F58230;" data-group="5" path="2631" />
+				<circle cx="1006" cy="2764" r="30" data-hover="Visit 0" data-group="5" fill="#F58230" class="entry" />
+				<line x1="1006" x2="1199" y1="2764" y2="2666" style="stroke:#F58230;" data-group="5" path="2666" />
+				<circle cx="385" cy="2774" r="30" data-hover="Visit 2" data-group="5" fill="#F58230" class="entry" />
+				<line x1="385" x2="1006" y1="2774" y2="2764" style="stroke:#F58230;" data-group="5" path="2764" />
+				<circle cx="785" cy="2563" r="30" data-hover="Visit 70" data-group="5" fill="#F58230" class="entry" />
+				<line x1="785" x2="385" y1="2563" y2="2774" style="stroke:#F58230;" data-group="5" path="2774" />
+				<circle cx="815" cy="2633" r="30" data-hover="Visit 6" data-group="5" fill="#F58230" class="entry" />
+				<line x1="815" x2="785" y1="2633" y2="2563" style="stroke:#F58230;" data-group="5" path="2563" />
+				<circle cx="901" cy="2725" r="30" data-hover="Visit 20" data-group="5" fill="#F58230" class="entry" />
+				<line x1="901" x2="815" y1="2725" y2="2633" style="stroke:#F58230;" data-group="5" path="2633" />
+				<circle cx="929" cy="3026" r="30" data-hover="Visit 1" data-group="5" fill="#F58230" class="entry" />
+				<line x1="929" x2="901" y1="3026" y2="2725" style="stroke:#F58230;" data-group="5" path="2725" />
+				<circle cx="1243" cy="2812" r="30" data-hover="Visit 4" data-group="5" fill="#F58230" class="entry" />
+				<line x1="1243" x2="929" y1="2812" y2="3026" style="stroke:#F58230;" data-group="5" path="3026" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="5" fill="#F58230" class="entry" />
+				<line x1="1878" x2="1243" y1="2631" y2="2812" style="stroke:#F58230;" data-group="5" path="2812" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="6" fill="#911EB4" class="entry" />
+				<circle cx="2962" cy="1648" r="30" data-hover="Visit 21" data-group="6" fill="#911EB4" class="entry" />
+				<line x1="2962" x2="1878" y1="1648" y2="2631" style="stroke:#911EB4;" data-group="6" path="2631" />
+				<circle cx="3188" cy="1266" r="30" data-hover="Visit 15" data-group="6" fill="#911EB4" class="entry" />
+				<line x1="3188" x2="2962" y1="1266" y2="1648" style="stroke:#911EB4;" data-group="6" path="1648" />
+				<circle cx="3174" cy="1110" r="30" data-hover="Visit 87" data-group="6" fill="#911EB4" class="entry" />
+				<line x1="3174" x2="3188" y1="1110" y2="1266" style="stroke:#911EB4;" data-group="6" path="1266" />
+				<circle cx="3145" cy="520" r="30" data-hover="Visit 8" data-group="6" fill="#911EB4" class="entry" />
+				<line x1="3145" x2="3174" y1="520" y2="1110" style="stroke:#911EB4;" data-group="6" path="1110" />
+				<circle cx="3063" cy="667" r="30" data-hover="Visit 22" data-group="6" fill="#911EB4" class="entry" />
+				<line x1="3063" x2="3145" y1="667" y2="520" style="stroke:#911EB4;" data-group="6" path="520" />
+				<circle cx="2930" cy="1058" r="30" data-hover="Visit 19" data-group="6" fill="#911EB4" class="entry" />
+				<line x1="2930" x2="3063" y1="1058" y2="667" style="stroke:#911EB4;" data-group="6" path="667" />
+				<circle cx="2088" cy="2373" r="30" data-hover="Visit 32" data-group="6" fill="#911EB4" class="entry" />
+				<line x1="2088" x2="2930" y1="2373" y2="1058" style="stroke:#911EB4;" data-group="6" path="1058" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="6" fill="#911EB4" class="entry" />
+				<line x1="1878" x2="2088" y1="2631" y2="2373" style="stroke:#911EB4;" data-group="6" path="2373" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="7" fill="#46F0F0" class="entry" />
+				<circle cx="2403" cy="1461" r="30" data-hover="Visit 29" data-group="7" fill="#46F0F0" class="entry" />
+				<line x1="2403" x2="1878" y1="1461" y2="2631" style="stroke:#46F0F0;" data-group="7" path="2631" />
+				<circle cx="2765" cy="1069" r="30" data-hover="Visit 89" data-group="7" fill="#46F0F0" class="entry" />
+				<line x1="2765" x2="2403" y1="1069" y2="1461" style="stroke:#46F0F0;" data-group="7" path="1461" />
+				<circle cx="3248" cy="1747" r="30" data-hover="Visit 25" data-group="7" fill="#46F0F0" class="entry" />
+				<line x1="3248" x2="2765" y1="1747" y2="1069" style="stroke:#46F0F0;" data-group="7" path="1069" />
+				<circle cx="3068" cy="2713" r="30" data-hover="Visit 13" data-group="7" fill="#46F0F0" class="entry" />
+				<line x1="3068" x2="3248" y1="2713" y2="1747" style="stroke:#46F0F0;" data-group="7" path="1747" />
+				<circle cx="2089" cy="2952" r="30" data-hover="Visit 34" data-group="7" fill="#46F0F0" class="entry" />
+				<line x1="2089" x2="3068" y1="2952" y2="2713" style="stroke:#46F0F0;" data-group="7" path="2713" />
+				<circle cx="2006" cy="2630" r="30" data-hover="Visit 30" data-group="7" fill="#46F0F0" class="entry" />
+				<line x1="2006" x2="2089" y1="2630" y2="2952" style="stroke:#46F0F0;" data-group="7" path="2952" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="7" fill="#46F0F0" class="entry" />
+				<line x1="1878" x2="2006" y1="2631" y2="2630" style="stroke:#46F0F0;" data-group="7" path="2630" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="8" fill="#F032E6" class="entry" />
+				<circle cx="2732" cy="1330" r="30" data-hover="Visit 80" data-group="8" fill="#F032E6" class="entry" />
+				<line x1="2732" x2="1878" y1="1330" y2="2631" style="stroke:#F032E6;" data-group="8" path="2631" />
+				<circle cx="2782" cy="1508" r="30" data-hover="Visit 40" data-group="8" fill="#F032E6" class="entry" />
+				<line x1="2782" x2="2732" y1="1508" y2="1330" style="stroke:#F032E6;" data-group="8" path="1330" />
+				<circle cx="2758" cy="1841" r="30" data-hover="Visit 53" data-group="8" fill="#F032E6" class="entry" />
+				<line x1="2758" x2="2782" y1="1841" y2="1508" style="stroke:#F032E6;" data-group="8" path="1508" />
+				<circle cx="1729" cy="2428" r="30" data-hover="Visit 55" data-group="8" fill="#F032E6" class="entry" />
+				<line x1="1729" x2="2758" y1="2428" y2="1841" style="stroke:#F032E6;" data-group="8" path="1841" />
+				<circle cx="1570" cy="2292" r="30" data-hover="Visit 37" data-group="8" fill="#F032E6" class="entry" />
+				<line x1="1570" x2="1729" y1="2292" y2="2428" style="stroke:#F032E6;" data-group="8" path="2428" />
+				<circle cx="1491" cy="2430" r="30" data-hover="Visit 51" data-group="8" fill="#F032E6" class="entry" />
+				<line x1="1491" x2="1570" y1="2430" y2="2292" style="stroke:#F032E6;" data-group="8" path="2292" />
+				<circle cx="1572" cy="2596" r="30" data-hover="Visit 56" data-group="8" fill="#F032E6" class="entry" />
+				<line x1="1572" x2="1491" y1="2596" y2="2430" style="stroke:#F032E6;" data-group="8" path="2430" />
+				<circle cx="1712" cy="2506" r="30" data-hover="Visit 39" data-group="8" fill="#F032E6" class="entry" />
+				<line x1="1712" x2="1572" y1="2506" y2="2596" style="stroke:#F032E6;" data-group="8" path="2596" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="8" fill="#F032E6" class="entry" />
+				<line x1="1878" x2="1712" y1="2631" y2="2506" style="stroke:#F032E6;" data-group="8" path="2506" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="9" fill="#D2F53C" class="entry" />
+				<circle cx="1282" cy="2474" r="30" data-hover="Visit 36" data-group="9" fill="#D2F53C" class="entry" />
+				<line x1="1282" x2="1878" y1="2474" y2="2631" style="stroke:#D2F53C;" data-group="9" path="2631" />
+				<circle cx="1128" cy="2739" r="30" data-hover="Visit 52" data-group="9" fill="#D2F53C" class="entry" />
+				<line x1="1128" x2="1282" y1="2739" y2="2474" style="stroke:#D2F53C;" data-group="9" path="2474" />
+				<circle cx="900" cy="3158" r="30" data-hover="Visit 42" data-group="9" fill="#D2F53C" class="entry" />
+				<line x1="900" x2="1128" y1="3158" y2="2739" style="stroke:#D2F53C;" data-group="9" path="2739" />
+				<circle cx="1097" cy="3146" r="30" data-hover="Visit 67" data-group="9" fill="#D2F53C" class="entry" />
+				<line x1="1097" x2="900" y1="3146" y2="3158" style="stroke:#D2F53C;" data-group="9" path="3158" />
+				<circle cx="1426" cy="2886" r="30" data-hover="Visit 63" data-group="9" fill="#D2F53C" class="entry" />
+				<line x1="1426" x2="1097" y1="2886" y2="3146" style="stroke:#D2F53C;" data-group="9" path="3146" />
+				<circle cx="1462" cy="2704" r="30" data-hover="Visit 35" data-group="9" fill="#D2F53C" class="entry" />
+				<line x1="1462" x2="1426" y1="2704" y2="2886" style="stroke:#D2F53C;" data-group="9" path="2886" />
+				<circle cx="1751" cy="2761" r="30" data-hover="Visit 82" data-group="9" fill="#D2F53C" class="entry" />
+				<line x1="1751" x2="1462" y1="2761" y2="2704" style="stroke:#D2F53C;" data-group="9" path="2704" />
+				<circle cx="1846" cy="2652" r="30" data-hover="Visit 43" data-group="9" fill="#D2F53C" class="entry" />
+				<line x1="1846" x2="1751" y1="2652" y2="2761" style="stroke:#D2F53C;" data-group="9" path="2761" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="9" fill="#D2F53C" class="entry" />
+				<line x1="1878" x2="1846" y1="2631" y2="2652" style="stroke:#D2F53C;" data-group="9" path="2652" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="10" fill="#008080" class="entry" />
+				<circle cx="1199" cy="2666" r="30" data-hover="Visit 86" data-group="10" fill="#008080" class="entry" />
+				<line x1="1199" x2="1878" y1="2666" y2="2631" style="stroke:#008080;" data-group="10" path="2631" />
+				<circle cx="889" cy="2223" r="30" data-hover="Visit 58" data-group="10" fill="#008080" class="entry" />
+				<line x1="889" x2="1199" y1="2223" y2="2666" style="stroke:#008080;" data-group="10" path="2666" />
+				<circle cx="507" cy="2191" r="30" data-hover="Visit 69" data-group="10" fill="#008080" class="entry" />
+				<line x1="507" x2="889" y1="2191" y2="2223" style="stroke:#008080;" data-group="10" path="2223" />
+				<circle cx="523" cy="2508" r="30" data-hover="Visit 57" data-group="10" fill="#008080" class="entry" />
+				<line x1="523" x2="507" y1="2508" y2="2191" style="stroke:#008080;" data-group="10" path="2191" />
+				<circle cx="170" cy="2571" r="30" data-hover="Visit 41" data-group="10" fill="#008080" class="entry" />
+				<line x1="170" x2="523" y1="2571" y2="2508" style="stroke:#008080;" data-group="10" path="2508" />
+				<circle cx="713" cy="2637" r="30" data-hover="Visit 62" data-group="10" fill="#008080" class="entry" />
+				<line x1="713" x2="170" y1="2637" y2="2571" style="stroke:#008080;" data-group="10" path="2571" />
+				<circle cx="786" cy="2239" r="30" data-hover="Visit 48" data-group="10" fill="#008080" class="entry" />
+				<line x1="786" x2="713" y1="2239" y2="2637" style="stroke:#008080;" data-group="10" path="2637" />
+				<circle cx="1166" cy="2164" r="30" data-hover="Visit 47" data-group="10" fill="#008080" class="entry" />
+				<line x1="1166" x2="786" y1="2164" y2="2239" style="stroke:#008080;" data-group="10" path="2239" />
+				<circle cx="1465" cy="2045" r="30" data-hover="Visit 50" data-group="10" fill="#008080" class="entry" />
+				<line x1="1465" x2="1166" y1="2045" y2="2164" style="stroke:#008080;" data-group="10" path="2164" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="10" fill="#008080" class="entry" />
+				<line x1="1878" x2="1465" y1="2631" y2="2045" style="stroke:#008080;" data-group="10" path="2045" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="11" fill="#AA6E28" class="entry" />
+				<circle cx="2265" cy="2899" r="30" data-hover="Visit 68" data-group="11" fill="#AA6E28" class="entry" />
+				<line x1="2265" x2="1878" y1="2899" y2="2631" style="stroke:#AA6E28;" data-group="11" path="2631" />
+				<circle cx="2339" cy="3006" r="30" data-hover="Visit 59" data-group="11" fill="#AA6E28" class="entry" />
+				<line x1="2339" x2="2265" y1="3006" y2="2899" style="stroke:#AA6E28;" data-group="11" path="2899" />
+				<circle cx="3800" cy="3059" r="30" data-hover="Visit 77" data-group="11" fill="#AA6E28" class="entry" />
+				<line x1="3800" x2="2339" y1="3059" y2="3006" style="stroke:#AA6E28;" data-group="11" path="3006" />
+				<circle cx="3200" cy="1512" r="30" data-hover="Visit 64" data-group="11" fill="#AA6E28" class="entry" />
+				<line x1="3200" x2="3800" y1="1512" y2="3059" style="stroke:#AA6E28;" data-group="11" path="3059" />
+				<circle cx="3174" cy="1110" r="30" data-hover="Visit 87" data-group="11" fill="#AA6E28" class="entry" />
+				<line x1="3174" x2="3200" y1="1110" y2="1512" style="stroke:#AA6E28;" data-group="11" path="1512" />
+				<circle cx="3309" cy="1098" r="30" data-hover="Visit 46" data-group="11" fill="#AA6E28" class="entry" />
+				<line x1="3309" x2="3174" y1="1098" y2="1110" style="stroke:#AA6E28;" data-group="11" path="1110" />
+				<circle cx="2408" cy="1811" r="30" data-hover="Visit 44" data-group="11" fill="#AA6E28" class="entry" />
+				<line x1="2408" x2="3309" y1="1811" y2="1098" style="stroke:#AA6E28;" data-group="11" path="1098" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="11" fill="#AA6E28" class="entry" />
+				<line x1="1878" x2="2408" y1="2631" y2="1811" style="stroke:#AA6E28;" data-group="11" path="1811" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="12" fill="#800000" class="entry" />
+				<circle cx="3125" cy="1141" r="30" data-hover="Visit 54" data-group="12" fill="#800000" class="entry" />
+				<line x1="3125" x2="1878" y1="1141" y2="2631" style="stroke:#800000;" data-group="12" path="2631" />
+				<circle cx="2815" cy="1249" r="30" data-hover="Visit 38" data-group="12" fill="#800000" class="entry" />
+				<line x1="2815" x2="3125" y1="1249" y2="1141" style="stroke:#800000;" data-group="12" path="1141" />
+				<circle cx="2637" cy="731" r="30" data-hover="Visit 49" data-group="12" fill="#800000" class="entry" />
+				<line x1="2637" x2="2815" y1="731" y2="1249" style="stroke:#800000;" data-group="12" path="1249" />
+				<circle cx="2633" cy="699" r="30" data-hover="Visit 60" data-group="12" fill="#800000" class="entry" />
+				<line x1="2633" x2="2637" y1="699" y2="731" style="stroke:#800000;" data-group="12" path="731" />
+				<circle cx="2765" cy="1069" r="30" data-hover="Visit 89" data-group="12" fill="#800000" class="entry" />
+				<line x1="2765" x2="2633" y1="1069" y2="699" style="stroke:#800000;" data-group="12" path="699" />
+				<circle cx="2467" cy="917" r="30" data-hover="Visit 61" data-group="12" fill="#800000" class="entry" />
+				<line x1="2467" x2="2765" y1="917" y2="1069" style="stroke:#800000;" data-group="12" path="1069" />
+				<circle cx="2211" cy="864" r="30" data-hover="Visit 45" data-group="12" fill="#800000" class="entry" />
+				<line x1="2211" x2="2467" y1="864" y2="917" style="stroke:#800000;" data-group="12" path="917" />
+				<circle cx="2015" cy="685" r="30" data-hover="Visit 66" data-group="12" fill="#800000" class="entry" />
+				<line x1="2015" x2="2211" y1="685" y2="864" style="stroke:#800000;" data-group="12" path="864" />
+				<circle cx="1878" cy="2631" r="30" data-hover="Depot" data-group="12" fill="#800000" class="entry" />
+				<line x1="1878" x2="2015" y1="2631" y2="685" style="stroke:#800000;" data-group="12" path="685" />
+			</svg>
+
+
+			<h5>Zusammenfassung</h5>
+			<p>Diese Projektarbeit befasst sich mit Chl&auml;usen, die Familien besuchen. Familien haben gewisse Zeiten, an
+				denen sie
+				nicht besucht werden k&ouml;nnen und gewisse Wunschzeiten, an denen sie vorzugsweise besucht werden wollen. Es
+				kommen
+				mehrere Chl&auml;use zum Einsatz, die an mehreren Tagen unterwegs sind. Jeder Chlaus hat pro Tag nur eine
+				beschr&auml;nkte
+				Kapazit&auml;t. Die Frage ist, wann und in welcher Reihenfolge die Familien von den Chl&auml;usen besucht werden
+				sollen,
+				sodass die Kosten minimal werden. Das Problem wird in der Fachliteratur <i>Vehicle Routing Problem with Time
+					Windows</i>
+				genannt.
+			</p>
+			<p>
+				Im Rahmen dieser Projektarbeit wurden 4 neue Algorithmen implementiert und miteinander verglichen.
+			</p>
+
+
+
+			<h5>Schl&uuml;sselbegriffe</h5>
+			<p>VRPTW, MILP, ILP, LocalSolver, Genetic Algorithm, Google OR Routing, C#</p>
+
+			<h5>Zielsetzung</h5>
+			<p>Das Optimierungsproblem f&uuml;r den Kunden zu l&ouml;sen, sowie die Evaluation &uuml;ber die verschiedenen
+				L&ouml;sungsans&auml;tze.</p>
+
+			<h5>Ausgangslage</h5>
+			<p>In einem Vorg&auml;ngerprojekt wurde bereits eine Applikation entwickelt, die solche Routen f&uuml;r die
+				Chl&auml;use erstellen
+				kann. Bei diesem Vorg&auml;ngerprojekt kam ein Algorithmus zum Einsatz, der auf ganzzahliger linearer
+				Programmierung
+				basiert.
+			</p>
+
+			<h5>Ergebnisse</h5>
+			<p>
+				Aus der Evaluation geht hervor, dass, gemessen an der Zielfunktion, die neu entwickelten Ans&auml;tze bessere
+				Routenpl&auml;ne
+				erzeugen als die von Hand erstellten. Die Erkenntnisse aus dieser Arbeit erm&ouml;glichen es der Chlausgesellschaft
+				Kosten zu sparen. Es k&ouml;nnen der Arbeitsaufwand f&uuml;r die Planung und die Kosten f&uuml;r die Besuche
+				reduziert werden. Es
+				wird gezeigt, dass mittels optimierter Routen in den Jahren 2017 und 2018 insgesamt Einsparungen von 230 CHF
+				h&auml;tten
+				erzielt werden k&ouml;nnen, was 15.6% der Gesamtkosten der Besuche entspricht.
+			</p>
+
+			<h5>Projektdaten</h5>
+			<ul>
+				<li>Projektdauer: September 2018 bis M&auml;rz 2019</li>
+				<li>Aufwand in Personenstunden: 720</li>
+				<li>Teamgr&ouml;sse: 2 Personen</li>
+				<li>Bachelor Thesis</li>
+			</ul>
+
+
+			<h5>Auftraggeber</h5>
+			<img alt="Jungwacht Niederwil" src="jwlogo_gerade.png" style="margin-bottom 5px;max-width: 250px;" />
+			<p>Jungwacht Niederwil, <a href="https://www.jw-niederwil.ch/">jw-niederwil.ch</a></p>
+
+			<h5>Projektteam</h5>
+			<p>Pascal L&uuml;scher, Janik Meyer</p>
+
+			<h5>Kontakt</h5>
+			<ul>
+				<li><a href="https://www.fhnw.ch/de/personen/simon-felix">Simon Felix</a>, <a href="mailto:simon.felix@fhnw.ch">simon.felix@fhnw.ch</a></li>
+				<li>Fabian Affolter, <a href="mailto:fabian.affolter@fhnw.ch">fabian.affolter@fhnw.ch</a></li>
+			</ul>
+			<h5><a href="../index.php">
+					<< zur&uuml;ck</a> </h5> <p>&nbsp;</p>
+
+						<!-- _______________________________________________________________________ -->
+		</div>
+
+		<!-- Ende Content_FHNW -->
+	</div>
+
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			let entries = document.getElementsByClassName('entry');
+
+			document.querySelectorAll('[data-group]').forEach(el => {
+				el.addEventListener("mouseover", event => {
+					const group = el.getAttribute("data-group");
+					document.querySelectorAll(`[data-group]`).forEach(el => {
+						el.classList.remove("selected");
+						el.classList.add("un-selected");
+					})
+					document.querySelectorAll(`[data-group="${group}"]`).forEach(el => {
+						el.classList.remove("un-selected");
+						el.classList.add("selected");
+					});
+				});
+
+				el.addEventListener("mouseout", event => {
+					document.querySelectorAll(`[data-group]`).forEach(el => {
+						el.classList.remove("selected");
+						el.classList.remove("un-selected");
+					})
+				});
+			});
+
+			for (let i = 0; i < entries.length; i++) {
+				entries[i].addEventListener("mouseover", (event) => {
+					const target = event.target;
+					const hoverText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+					hoverText.setAttribute("x", parseInt(target.getAttribute("cx")) + parseInt(target.getAttribute("r")))
+					hoverText.setAttribute("y", target.getAttribute("cy"));
+					hoverText.setAttribute("class", "hover-text");
+					hoverText.textContent = target.getAttribute("data-hover");
+
+					target.parentNode.insertBefore(hoverText, target);
+				})
+				entries[i].addEventListener("mouseout", (event) => {
+					const target = event.target;
+					target.parentNode.removeChild(target.previousSibling);
+				});
+			}
+		})
+	</script>
+	</body>
+
+</html>

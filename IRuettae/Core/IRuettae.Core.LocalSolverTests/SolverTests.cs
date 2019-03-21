@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using IRuettae.Core.LocalSolverTests;
 using IRuettae.Core.Models;
+using IRuettae.Core.LocalSolver.Models;
 
 namespace IRuettae.Core.LocalSolver.Tests
 {
@@ -65,7 +66,11 @@ namespace IRuettae.Core.LocalSolver.Tests
                 },
             };
 
-            var solver = new Solver(input,0,1);
+            var solver = new Solver(input, new LocalSolverConfig
+            {
+                VrpTimeLimitFactor = 0,
+                VrptwTimeLimitFactor = 1,
+            });
             var output = solver.Solve(3000L, null, null);
             Assert.IsNotNull(output);
             Assert.IsNotNull(output.Routes);
@@ -115,7 +120,11 @@ namespace IRuettae.Core.LocalSolver.Tests
                 },
             };
 
-            var solver = new Solver(input,0,1);
+            var solver = new Solver(input, new LocalSolverConfig
+            {
+                VrpTimeLimitFactor = 0,
+                VrptwTimeLimitFactor = 1,
+            });
             var output = solver.Solve(3000L, null, null);
             Assert.IsNotNull(output);
             Assert.IsNotNull(output.Routes);
@@ -167,7 +176,11 @@ namespace IRuettae.Core.LocalSolver.Tests
                 },
             };
 
-            var solver = new Solver(input,0, 1);
+            var solver = new Solver(input, new LocalSolverConfig
+            {
+                VrpTimeLimitFactor = 0,
+                VrptwTimeLimitFactor = 1,
+            });
             var output = solver.Solve(3000L, null, null);
             Assert.IsNotNull(output);
             Assert.IsNotNull(output.Routes);
@@ -182,7 +195,11 @@ namespace IRuettae.Core.LocalSolver.Tests
         public void TestBreaksCorrect()
         {
             var (input, _) = DatasetFactory.LocalSolverBreakDataSet();
-            var solver = new Solver(input, 0, 1);
+            var solver = new Solver(input, new LocalSolverConfig
+            {
+                VrpTimeLimitFactor = 0,
+                VrptwTimeLimitFactor = 1,
+            });
             var output = solver.Solve(10000L, null, null);
             Assert.IsNotNull(output);
             Assert.IsNotNull(output.Routes);

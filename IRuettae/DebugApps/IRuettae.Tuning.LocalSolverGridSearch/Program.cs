@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
+using IRuettae.Core.LocalSolver.Models;
 using IRuettae.Core.Models;
 
 namespace IRuettae.Tuning.LocalSolverGridSearch
@@ -45,7 +46,11 @@ namespace IRuettae.Tuning.LocalSolverGridSearch
                         foreach (var dataSet in dataSets)
                         {
                             // ReSharper disable PossibleLossOfFraction
-                            var solver = new IRuettae.Core.LocalSolver.Solver(dataSet, vrpTimeLimitFactor / gridFactorX, vrptwTimeLimitFactor / gridFactorY);
+                            var solver = new Core.LocalSolver.Solver(dataSet, new LocalSolverConfig
+                            {
+                                VrpTimeLimitFactor = vrpTimeLimitFactor / gridFactorX,
+                                VrptwTimeLimitFactor = vrptwTimeLimitFactor / gridFactorY,
+                            });
                             allCosts[run][vrpTimeLimitFactor, vrptwTimeLimitFactor][i] = solver.Solve(timeLimit, null, null).Cost();
 
                             cumCost += allCosts[run][vrpTimeLimitFactor, vrptwTimeLimitFactor][i];

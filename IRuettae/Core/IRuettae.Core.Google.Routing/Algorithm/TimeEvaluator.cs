@@ -16,19 +16,19 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// <param name="data"></param>
         public TimeEvaluator(RoutingData data)
         {
-            Data = data ?? throw new ArgumentException("data must not be null");
+            Data = data ?? throw new ArgumentNullException(nameof(data));
         }
 
         public override long Run(int firstIndex, int secondIndex)
         {
             if (firstIndex >= Data.Visits.Length)
             {
-                throw new ArgumentOutOfRangeException(nameof(firstIndex),"index must be smaller than numberOfVisits");
+                throw new ArgumentOutOfRangeException(nameof(firstIndex), firstIndex, "index must be smaller than numberOfVisits");
             }
 
             if (secondIndex >= Data.Visits.Length)
             {
-                throw new ArgumentOutOfRangeException(nameof(secondIndex), "index must be smaller than numberOfVisits");
+                throw new ArgumentOutOfRangeException(nameof(secondIndex), secondIndex, "index must be smaller than numberOfVisits");
             }
 
             bool firstIsHome = Data.Visits[firstIndex].Id == Constants.VisitIdHome;

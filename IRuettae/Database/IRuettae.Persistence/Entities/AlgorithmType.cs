@@ -8,6 +8,10 @@ namespace IRuettae.Persistence.Entities
 {
     public enum AlgorithmType
     {
+        Hybrid,
+        LocalSolver,
+        GeneticAlgorithm,
+        GoogleRouting,
         ILP,
         Manual,
     }

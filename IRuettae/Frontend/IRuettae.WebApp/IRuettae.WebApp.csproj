@@ -308,7 +308,7 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Visit\Index.cshtml" />
+    <Content Include="Views\Visit\Create.cshtml" />
     <Content Include="Scripts\umd\popper.min.js.map" />
     <Content Include="Scripts\umd\popper.js.map" />
     <Content Include="Scripts\umd\popper-utils.min.js.map" />
@@ -335,6 +335,7 @@
     <Content Include="Views\Algorithm\Result.cshtml" />
     <Content Include="Views\Algorithm\Compare.cshtml" />
     <Content Include="Views\Algorithm\_Metrics.cshtml" />
+    <Content Include="Views\Visit\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\logs\" />

@@ -17,26 +17,26 @@ namespace IRuettae.Core.ILPIp5Gurobi
     public class ILPIp5GurobiSolver : ISolver
     {
         private readonly OptimizationInput input;
-        private readonly ILPIp5GurobiStarterData ip5GurobiStarterData;
+        private readonly ILPIp5GurobiConfig ip5GurobiConfig;
 
-        public ILPIp5GurobiSolver(OptimizationInput input, ILPIp5GurobiStarterData ip5GurobiStarterData)
+        public ILPIp5GurobiSolver(OptimizationInput input, ILPIp5GurobiConfig ip5GurobiConfig)
         {
             this.input = input;
-            this.ip5GurobiStarterData = ip5GurobiStarterData;
+            this.ip5GurobiConfig = ip5GurobiConfig;
         }
 
         public OptimizationResult Solve(long timeLimitMilliseconds, EventHandler<ProgressReport> progress, EventHandler<string> consoleProgress)
         {
-            if (timeLimitMilliseconds < ip5GurobiStarterData.ClusteringTimeLimitMiliseconds + ip5GurobiStarterData.SchedulingTimeLimitMiliseconds)
+            if (timeLimitMilliseconds < ip5GurobiConfig.ClusteringTimeLimitMiliseconds + ip5GurobiConfig.SchedulingTimeLimitMiliseconds)
             {
-                throw new ArgumentException("overall timeLimitMilliseconds must be at least the sum of ClusteringTimeLimit and SchedulingTimeLimit");
+                throw new ArgumentOutOfRangeException(nameof(timeLimitMilliseconds), timeLimitMilliseconds, "must be at least the sum of ClusteringTimeLimit and SchedulingTimeLimit");
             }
 
             consoleProgress?.Invoke(this, "Solving started");
 
             var sw = Stopwatch.StartNew();
 
-            var clusteringSolverVariableBuilder = new ClusteringSolverVariableBuilder(input, ip5GurobiStarterData.TimeSliceDuration);
+            var clusteringSolverVariableBuilder = new ClusteringSolverVariableBuilder(input, ip5GurobiConfig.TimeSliceDuration);
             var clusteringSolverInputData = clusteringSolverVariableBuilder.Build();
             var clusteringSolver =
                 new Algorithm.Clustering.ClusteringILPSolver(clusteringSolverInputData);
@@ -45,21 +45,21 @@ namespace IRuettae.Core.ILPIp5Gurobi
 #if WriteMPS && DEBUG
             System.IO.File.WriteAllText($@"C:\Temp\iRuettae\ILP\Clustering\{new Guid()}.mps", clusterinSolver.ExportMPS());
 #endif
-            var clusteringTimeLimitMiliseconds = ip5GurobiStarterData.ClusteringTimeLimitMiliseconds;
+            var clusteringTimeLimitMiliseconds = ip5GurobiConfig.ClusteringTimeLimitMiliseconds;
             if (clusteringTimeLimitMiliseconds == 0)
             {
                 // avoid surpassing timelimit
                 clusteringTimeLimitMiliseconds = timeLimitMilliseconds;
             }
 
-            var phase1ResultState = clusteringSolver.Solve(ip5GurobiStarterData.ClusteringMIPGap, clusteringTimeLimitMiliseconds);
+            var phase1ResultState = clusteringSolver.Solve(ip5GurobiConfig.ClusteringMIPGap, clusteringTimeLimitMiliseconds);
             if (!(new[] { ResultState.Feasible, ResultState.Optimal }).Contains(phase1ResultState))
             {
                 return new OptimizationResult()
                 {
                     OptimizationInput = input,
-                    Routes = new Route[]{},
-                    TimeElapsed = sw.ElapsedMilliseconds/1000,
+                    Routes = new Route[] { },
+                    TimeElapsed = sw.ElapsedMilliseconds / 1000,
                 };
 
             }
@@ -84,7 +84,7 @@ namespace IRuettae.Core.ILPIp5Gurobi
                         RouteCosts = input.RouteCosts,
                     };
 
-                    schedulingSovlerVariableBuilders.Add(new SchedulingSolverVariableBuilder(ip5GurobiStarterData.TimeSliceDuration, schedulingOptimizationInput, cluster.OrderBy(wp => wp.StartTime).Select(wp => wp.Visit).ToArray()));
+                    schedulingSovlerVariableBuilders.Add(new SchedulingSolverVariableBuilder(ip5GurobiConfig.TimeSliceDuration, schedulingOptimizationInput, cluster.OrderBy(wp => wp.StartTime).Select(wp => wp.Visit).ToArray()));
                 }
             }
 
@@ -106,14 +106,14 @@ namespace IRuettae.Core.ILPIp5Gurobi
 
 
                     var clusteringExtraTime = Math.Max(0, clusteringTimeLimitMiliseconds - sw.ElapsedMilliseconds);
-                    var schedulingTimelimitMiliseconds = ip5GurobiStarterData.SchedulingTimeLimitMiliseconds + clusteringExtraTime;
+                    var schedulingTimelimitMiliseconds = ip5GurobiConfig.SchedulingTimeLimitMiliseconds + clusteringExtraTime;
                     if (schedulingTimelimitMiliseconds == 0 && timeLimitMilliseconds != 0)
                     {
                         // avoid surpassing timelimit
                         schedulingTimelimitMiliseconds = Math.Max(1, timeLimitMilliseconds - sw.ElapsedMilliseconds);
                     }
 
-                    var schedulingResultState = schedulingSolver.Solve(ip5GurobiStarterData.SchedulingMIPGap, schedulingTimelimitMiliseconds);
+                    var schedulingResultState = schedulingSolver.Solve(ip5GurobiConfig.SchedulingMIPGap, schedulingTimelimitMiliseconds);
                     if (!(new[] { ResultState.Feasible, ResultState.Optimal }).Contains(schedulingResultState))
                     {
 
@@ -169,7 +169,7 @@ namespace IRuettae.Core.ILPIp5Gurobi
                                     ? Constants.VisitIdHome
                                     : schedulingInputVariable.VisitIds[wp.Visit - 1];
                                 wp.StartTime = Math.Max(wp.StartTime, 0);
-                                wp.StartTime *= ip5GurobiStarterData.TimeSliceDuration;
+                                wp.StartTime *= ip5GurobiConfig.TimeSliceDuration;
                                 wp.StartTime += schedulingInputVariable.DayStarts[jCopy];
                                 realWaypointList.Add(wp);
                             });

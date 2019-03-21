@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace IRuettae.Core
 {
     /// <summary>
-    /// Marker interface for all StarterDatas which are used by solvers
+    /// Marker interface for all SolverConfigs which are used by solvers
     /// </summary>
-    public interface IStarterData
+    public interface ISolverConfig
     {
     }
 }

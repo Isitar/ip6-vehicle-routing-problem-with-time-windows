@@ -4,5 +4,6 @@
     {
         Default,
         Fast, // for big problems which take too long to solve normally
+        All, // enforces the usage of all strategies
     }
 }

@@ -65,7 +65,7 @@
     <Compile Include="Algorithm\Clustering\Detail\SolverVariables.cs" />
     <Compile Include="Algorithm\Clustering\Detail\VariableBuilder.cs" />
     <Compile Include="Algorithm\Clustering\ClusteringILPSolver.cs" />
-    <Compile Include="Algorithm\Models\ILPStarterData.cs" />
+    <Compile Include="Algorithm\Models\ILPConfig.cs" />
     <Compile Include="Algorithm\Models\SchedulingOptimizationGoals.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\SolverData.cs" />
     <Compile Include="Algorithm\Scheduling\Detail\SolverVariables.cs" />

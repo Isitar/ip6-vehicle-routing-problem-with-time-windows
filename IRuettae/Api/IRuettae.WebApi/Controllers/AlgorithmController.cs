@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Hosting;
 using System.Web.Http;
 using IRuettae.Core.ILP;
 using IRuettae.Core.ILP.Algorithm.Models;
@@ -19,35 +20,6 @@ namespace IRuettae.WebApi.Controllers
     [RoutePrefix("api/algorithm")]
     public class AlgorithmController : ApiController
     {
-        [HttpPost]
-        public OptimizationResult CalculateRoute([FromBody] AlgorithmStarter algorithmStarter)
-        {
-
-            using (var dbSession = SessionFactory.Instance.OpenSession())
-            using (var transaction = dbSession.BeginTransaction())
-            {
-                var visits = dbSession.Query<Visit>().Where(v => v.Year == algorithmStarter.Year && v.Id != algorithmStarter.StarterId).ToList();
-                visits.ForEach(v => v.Duration = 60 * (v.NumberOfChildren * algorithmStarter.TimePerChild + algorithmStarter.Beta0));
-                var converter = new Converter.PersistenceToCoreConverter();
-
-                var optimizationInput = converter.Convert(algorithmStarter.Days, dbSession.Query<Visit>().First(v => v.Id == algorithmStarter.StarterId), visits,
-                    dbSession.Query<Santa>().ToList());
-
-                var starterData = new ILPStarterData()
-                {
-                    TimeSliceDuration = algorithmStarter.TimeSliceDuration,
-                    ClusteringMIPGap = Properties.Settings.Default.MIPGapClustering,
-                    ClusteringTimeLimitMiliseconds = Properties.Settings.Default.TimelimitClusteringMiliseconds,
-                    SchedulingMIPGap = Properties.Settings.Default.MIPGapScheduling,
-                    SchedulingTimeLimitMiliseconds = Properties.Settings.Default.TimelimitSchedulingMiliseconds,
-                };
-
-                var ilpSolver = new ILPSolver(optimizationInput, starterData);
-                var progress = new EventHandler<ProgressReport>((sender, i) => { Console.WriteLine($"Progress: {i}"); });
-                var consoleProgress = new EventHandler<String>((sender, msg) => { Console.WriteLine(msg); });
-                return ilpSolver.Solve(0, progress, consoleProgress);
-            }
-        }
         /// <summary>
         /// Starts a new route calculation job
         /// </summary>
@@ -57,38 +29,20 @@ namespace IRuettae.WebApi.Controllers
         [Route("StartRouteCalculation")]
         public long StartRouteCalculation([FromBody]AlgorithmStarter algorithmStarter)
         {
-            RouteCalculation rc;
-
+            var routeCalculations = RouteCalculationFactory.CreateRouteCalculation(algorithmStarter);
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
-                var ilpData = new ILPStarterData()
+                foreach (var routeCalculation in routeCalculations)
                 {
-                    TimeSliceDuration = algorithmStarter.TimeSliceDuration,
-                    ClusteringMIPGap = Properties.Settings.Default.MIPGapClustering,
-                    ClusteringTimeLimitMiliseconds = Properties.Settings.Default.TimelimitClusteringMiliseconds,
-                    SchedulingMIPGap = Properties.Settings.Default.MIPGapScheduling,
-                    SchedulingTimeLimitMiliseconds = Properties.Settings.Default.TimelimitSchedulingMiliseconds,
-                };
-                rc = new RouteCalculation
-                {
-                    Days = algorithmStarter.Days,
-                    SantaJson = "",
-                    VisitsJson = "",
-                    TimeLimitMiliseconds = Properties.Settings.Default.TimeLimitMiliseconds,
-                    StarterVisitId = algorithmStarter.StarterId,
-                    State = RouteCalculationState.Creating,
-                    TimePerChild = algorithmStarter.TimePerChild,
-                    TimePerChildOffset = algorithmStarter.Beta0,
-                    Year = algorithmStarter.Year,
-                    Algorithm = AlgorithmType.ILP,
-                    AlgorithmData = JsonConvert.SerializeObject(ilpData),
-                };
-                rc = dbSession.Merge(rc);
+                    var savedRouteCalculation = dbSession.Merge(routeCalculation);
+                    routeCalculation.Id = savedRouteCalculation.Id;
+                    RouteCalculator.EnqueueRouteCalculation(routeCalculation.Id);
+                }
             }
 
-            Task.Run(() => new RouteCalculator(rc).StartWorker());
-            return rc.Id;
+            return routeCalculations[0].Id;
         }
+
 
         [HttpGet]
         [Route("RouteCalculations")]
@@ -96,19 +50,6 @@ namespace IRuettae.WebApi.Controllers
         {
             using (var dbSession = SessionFactory.Instance.OpenSession())
             {
-                if (RouteCalculator.BackgroundWorkers.IsEmpty)
-                {
-                    dbSession.Query<RouteCalculation>()
-                        .Where(rc => new[] { RouteCalculationState.Ready, RouteCalculationState.Running }.Contains(rc.State))
-                        .ToList()
-                        .ForEach(rc =>
-                        {
-                            rc.State = RouteCalculationState.Cancelled;
-                            dbSession.Update(rc);
-                        });
-                    dbSession.Flush();
-                }
-
                 var routeCalculations = dbSession.Query<RouteCalculation>().ToList().Select(rc => (RouteCalculationDTO)rc);
                 return routeCalculations;
             }
@@ -124,7 +65,7 @@ namespace IRuettae.WebApi.Controllers
                 var routeCalculation = dbSession.Get<RouteCalculation>(id);
                 var routeCalculationResult = JsonConvert.DeserializeObject<RouteCalculationResult>(routeCalculation.Result);
 
-                var ret = routeCalculationResult.OptimizationResult.Routes.Select(r => r.Waypoints.Select(wp =>
+                var ret = routeCalculationResult.OptimizationResult.Routes.Select(r => r.Waypoints?.Select(wp =>
                 {
                     var v = dbSession.Get<Visit>(wp.VisitId == Constants.VisitIdHome ? routeCalculation.StarterVisitId : routeCalculationResult.VisitMap[wp.VisitId]);
                     return new

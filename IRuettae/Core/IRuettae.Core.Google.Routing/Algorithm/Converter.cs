@@ -8,11 +8,11 @@ namespace IRuettae.Core.Google.Routing.Algorithm
 {
     public static class Converter
     {
-        public static RoutingData Convert(OptimizationInput input, int maxNumberOfSantas)
+        public static RoutingData Convert(OptimizationInput input, int maxNumberOfAdditionalSantas)
         {
             var data = new RoutingData(input);
 
-            CreateSantas(data, maxNumberOfSantas);
+            CreateSantas(data, maxNumberOfAdditionalSantas);
             CreateVisits(data);
             CreateUnavailable(data);
             CreateDesired(data);
@@ -25,22 +25,19 @@ namespace IRuettae.Core.Google.Routing.Algorithm
         /// creates data.SantaIds
         /// </summary>
         /// <param name="data">routing input data</param>
-        /// <param name="maxNumberOfSantas"></param>
-        private static void CreateSantas(RoutingData data, int maxNumberOfSantas)
+        /// <param name="maxNumberOfAdditionalSantas"></param>
+        private static void CreateSantas(RoutingData data, int maxNumberOfAdditionalSantas)
         {
             var santaIds = new List<int>();
-            for (int i = 0; i < maxNumberOfSantas; i++)
+            for (int i = 0; i < data.Input.Santas.Length; i++)
             {
-                if (i < data.Input.Santas.Length)
-                {
-                    // real santa
-                    santaIds.Add(data.Input.Santas[i].Id);
-                }
-                else
-                {
-                    // new, artificial santa
-                    santaIds.Add(santaIds.Max() + 1);
-                }
+                // real santa
+                santaIds.Add(data.Input.Santas[i].Id);
+            }
+            for (int i = 0; i < maxNumberOfAdditionalSantas; i++)
+            {
+                // new, artificial santa
+                santaIds.Add(santaIds.Max() + 1);
             }
 
             // duplicate for each day
@@ -78,11 +75,11 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                         var breakVisit = (Visit)visit.Clone();
 
                         // remove desired on other days
-                        breakVisit.Desired = breakVisit.Desired?.Where(d => Core.Utility.IntersectionLength(d.from, d.to, from, to) > 0).ToArray() ?? new(int, int)[0];
+                        breakVisit.Desired = breakVisit.Desired?.Where(d => Core.Utility.IntersectionLength(d.from, d.to, from, to) > 0).ToArray() ?? new (int, int)[0];
 
                         // not needed because of the new santaId
                         // which assigns this break to a specific day
-                        breakVisit.Unavailable = new(int, int)[0];
+                        breakVisit.Unavailable = new (int, int)[0];
 
                         // set santa index
                         santaIndex++;
@@ -96,8 +93,8 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                 {
                     // normal visit
                     var clone = (Visit)visit.Clone();
-                    clone.Desired = clone.Desired ?? new(int, int)[0];
-                    clone.Unavailable = clone.Unavailable ?? new(int, int)[0];
+                    clone.Desired = clone.Desired ?? new (int, int)[0];
+                    clone.Unavailable = clone.Unavailable ?? new (int, int)[0];
                     visits.Add(clone);
                 }
             }
@@ -110,8 +107,8 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                     IsBreak = false,
                     SantaId = Constants.InvalidSantaId,
                     Duration = 0,
-                    Desired = new(int, int)[0],
-                    Unavailable = new(int, int)[0],
+                    Desired = new (int, int)[0],
+                    Unavailable = new (int, int)[0],
                 };
 
                 var numberOfDays = data.Input.Days.Length;
@@ -138,7 +135,7 @@ namespace IRuettae.Core.Google.Routing.Algorithm
                 throw new ArgumentNullException();
             }
 
-            
+
             var unavailables = new List<(int, int)[]>();
             foreach (var visit in data.Visits)
             {
