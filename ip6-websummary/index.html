@@ -6,7 +6,7 @@
 	<meta name="copyright" content="FHNW" />
 	<meta name="author" content="webmaster&#0064;fhnw.ch;pascal.luescher;janik.meyer" />
 	<meta name="Description" content="FHNW - Fachhochschule Nordwestschweiz" />
-	<meta name="Keywords" content="fhnw,fachhochschule,nordwestschweiz,hochschulen,hochschule f&uuml;r technik,studiengang,informatik,bachelor thesis" />
+	<meta name="Keywords" content="fhnw,fachhochschule,nordwestschweiz,hochschulen,hochschule f&uuml;r technik,studiengang,informatik,bachelor thesis,luescher,meyer,vrptw" />
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 	<link rel="SHORTCUT ICON" href="favicon.ico" />
 	<meta name="robots" content="INDEX,FOLLOW" />
@@ -40,11 +40,9 @@
 	<div id="Content_FHNW">
 		<div id="lmenu_wrap">
 			<div id="lmenu">
-				<!-- Der Link zur aktiven Seite hat jeweils die Klasse "navactive", alle anderen haben die Klase "nav" -->
-				<!-- <br /> als Abschluss nicht vergessen! -->
 				<a href="../index.php" class="navactive">Startseite</a><br />
-				<a href="./example_1000.html" class="navactive">L&ouml;sung mit 1000 Besuchen</a><br />
-				<a href="./index.html" class="nav">Link 3</a>
+				<a href="./example_1000.html" class="nav">L&ouml;sung mit 1000 Besuchen</a><br />
+				<a href="./luescher-meyer.pdf" class="nav" target="_blank">Bericht</a>
 			</div>
 		</div>
 		<!-- Inhalt -->
@@ -277,10 +275,6 @@
 			</svg>
 
 
-
-
-
-
 			<h5>Zusammenfassung</h5>
 			<p>Diese Projektarbeit befasst sich mit Chl&auml;usen, die Familien besuchen. Familien haben gewisse Zeiten, an
 				denen sie
@@ -358,9 +352,7 @@
 	</div>
 
 	<script>
-
 		document.addEventListener("DOMContentLoaded", function () {
-			console.log('inhere');
 			let entries = document.getElementsByClassName('entry');
 
 			document.querySelectorAll('[data-group]').forEach(el => {
@@ -385,9 +377,7 @@
 			});
 
 			for (let i = 0; i < entries.length; i++) {
-				console.log('inhere');
 				entries[i].addEventListener("mouseover", (event) => {
-					console.log('hover');
 					const target = event.target;
 					const hoverText = document.createElementNS("http://www.w3.org/2000/svg", "text");
 					hoverText.setAttribute("x", parseInt(target.getAttribute("cx")) + parseInt(target.getAttribute("r")))
@@ -396,8 +386,6 @@
 					hoverText.textContent = target.getAttribute("data-hover");
 
 					target.parentNode.insertBefore(hoverText, target);
-
-
 				})
 				entries[i].addEventListener("mouseout", (event) => {
 					const target = event.target;
