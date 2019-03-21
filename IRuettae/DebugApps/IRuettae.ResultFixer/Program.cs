@@ -53,11 +53,12 @@ namespace IRuettae.ResultFixer
             datasets[55] = DatasetFactory.DataSet55Unavailable().coordinates;
             datasets[56] = DatasetFactory.DataSet55Desired().coordinates;
 
-            foreach (var file in Directory.GetFiles(@"C:\git\ip6-vehicle-routing-problem-with-time-windows\Results\Unavailable_Desired_impact", "*_56_*.json", SearchOption.AllDirectories))
+            foreach (var file in Directory.GetFiles(@"W:\Git\ip6-vehicle-routing-problem-with-time-windows\Results\evaluation\LocalSolver", "*12*.json", SearchOption.AllDirectories))
             {
                 var dataset = int.Parse(Path.GetFileName(file).Split('_')[2]);
                 var result = JsonConvert.DeserializeObject<OptimizationResult>(File.ReadAllText(file));
-                ResultDrawer.DrawResult(Path.GetFileNameWithoutExtension(file) + ".gif", result, datasets[dataset - 1]);
+               // ResultDrawer.DrawResult(Path.GetFileNameWithoutExtension(file) + ".gif", result, datasets[dataset - 1]);
+                ResultDrawer.SvgResult(Path.GetFileNameWithoutExtension(file) + ".svg", result, datasets[dataset - 1]);
             }
         }
 
