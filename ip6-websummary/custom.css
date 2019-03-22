@@ -1,10 +1,46 @@
+svg {
+    width:100%;
+}
+
+svg > g {
+    transition: 
+        filter 500ms linear,
+        opacity 500ms linear,
+		fill 500ms linear,
+		stroke 500ms linear;
+}
+
+line {
+    stroke-width: 10px;
+}
+
+.grp-0 { fill: rgb(230, 25, 75);  stroke:rgb(230, 25, 75); }
+.grp-1 { fill: rgb(60, 180, 75); stroke: rgb(60, 180, 75);}
+.grp-2 { fill: rgb(255, 225, 25); stroke: rgb(255, 225, 25);}
+.grp-3 { fill: rgb(0, 130, 200); stroke:rgb(0, 130, 200); }
+.grp-4 { fill: rgb(245, 130, 48); stroke: rgb(245, 130, 48);}
+.grp-5 { fill: rgb(145, 30, 180); stroke: rgb(145, 30, 180);}
+.grp-6 { fill: rgb(70, 240, 240); stroke: rgb(70, 240, 240);}
+.grp-7 { fill: rgb(240, 50, 230); stroke: rgb(240, 50, 230);}
+.grp-8 { fill: rgb(210, 245, 60); stroke: rgb(210, 245, 60);}
+.grp-9 { fill: rgb(0, 128, 128); stroke:rgb(0, 128, 128);  }
+.grp-10 { fill: rgb(170, 110, 40); stroke:rgb(170, 110, 40); }
+.grp-11 { fill: rgb(128, 0, 0); stroke:rgb(128, 0, 0);  }
+.grp-12 { fill: rgb(170, 255, 195); stroke:rgb(170, 255, 195); }
+.grp-13 { fill: rgb(128, 128, 0); stroke:rgb(128, 128, 0); }
+.grp-14 { fill: rgb(0, 0, 128); stroke:rgb(0, 0, 128);  }
+.grp-15 { fill: rgb(0, 0, 0); stroke:rgb(0, 0, 0);  }
+
+.un-selected {
+    fill: #a0a0a0;
+    stroke: #a0a0a0;
+    filter: grayscale(100%);
+    opacity: 0.5;
+}
+
 .hover-text {
     font-size: 100px;
     font-family: serif;
-}
-
-svg {
-    width:100%;
 }
 
 .text-muted {
@@ -12,22 +48,6 @@ svg {
     font-size: smaller;
 }
 
-svg > *{
-    transition: 
-        filter 500ms linear,
-        opacity 500ms linear,
-		fill 500ms linear,
-		stroke 500ms linear;
-    
-}
 
-line {
-    stroke-width: 10px;
-}
 
-.un-selected {
-  fill: #a0a0a0;
-  stroke: #a0a0a0 !important;
-  filter: grayscale(100%);
-  opacity: 0.5;
-}
+
