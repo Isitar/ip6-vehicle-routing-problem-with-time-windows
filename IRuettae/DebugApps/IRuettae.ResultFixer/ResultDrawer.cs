@@ -41,52 +41,51 @@ namespace IRuettae.ResultFixer
             foreach (var route in result.NonEmptyRoutes)
             {
                 routeGroup++;
-                var color = ColorTranslator.ToHtml(Colors[colorIndex]);
+                //var color = ColorTranslator.ToHtml(Colors[colorIndex]);
+                var g = new XElement("g", new XAttribute("class", $"grp-{colorIndex}"), new XAttribute("data-group", routeGroup));
                 colorIndex = (colorIndex + 1) % Colors.Length;
                 int? lastX = null;
                 int? lastY = null;
+                
                 foreach (var waypoint in route.Waypoints.OrderBy(wp => wp.StartTime))
                 {
                     var (x, y) = coordinates[waypoint.VisitId == -1 ? 0 : waypoint.VisitId + 1];
                     y = 4000 - y;
-                    svg.Add(SvgCircle(x, y, color, waypoint.VisitId == -1 ? "Depot" : $"Visit {waypoint.VisitId}", routeGroup));
+                    g.Add(SvgCircle(x, y, waypoint.VisitId == -1 ? "Depot" : $""));
 
                     if (lastX.HasValue)
                     {
-                        svg.Add(SvgLine(x, y, lastX.Value, lastY.Value, color, routeGroup));
+                        g.Add(SvgLine(x, y, lastX.Value, lastY.Value));
                     }
 
                     lastX = x;
                     lastY = y;
                 }
+                svg.Add(g);
             }
             File.WriteAllText(path, svg.ToString());
 
         }
 
-        private static XElement SvgCircle(int x, int y, string color, string hoverText, int @group)
+        private static XElement SvgCircle(int x, int y, string hoverText)
         {
             var circle = new XElement("circle");
             circle.Add(new XAttribute("cx", x));
             circle.Add(new XAttribute("cy", y));
             circle.Add(new XAttribute("r", 30));
             circle.Add(new XAttribute("data-hover", hoverText));
-            circle.Add(new XAttribute("data-group", @group));
-            circle.Add(new XAttribute("fill", color));
             circle.Add(new XAttribute("class", "entry"));
             
             return circle;
         }
 
-        private static XElement SvgLine(int x, int y, int x2, int y2, string color, int @group)
+        private static XElement SvgLine(int x, int y, int x2, int y2)
         {
             var line = new XElement("line");
             line.Add(new XAttribute("x1", x));
             line.Add(new XAttribute("x2", x2));
             line.Add(new XAttribute("y1", y));
             line.Add(new XAttribute("y2", y2));
-            line.Add(new XAttribute("style", $"stroke:{color};"));
-            line.Add(new XAttribute("data-group", @group));
             line.Add(new XAttribute("path", y2));
             return line;
         }
