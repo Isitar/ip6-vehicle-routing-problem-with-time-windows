@@ -3,18 +3,21 @@
     font-family: serif;
 }
 
-.selected {
-    
-}
-
 svg {
     width:100%;
+}
+
+.text-muted {
+    color:#a0a0a0;
+    font-size: smaller;
 }
 
 svg > *{
     transition: 
         filter 500ms linear,
-        opacity 500ms linear;
+        opacity 500ms linear,
+		fill 500ms linear,
+		stroke 500ms linear;
     
 }
 
@@ -23,6 +26,8 @@ line {
 }
 
 .un-selected {
+  fill: #a0a0a0;
+  stroke: #a0a0a0 !important;
   filter: grayscale(100%);
   opacity: 0.5;
 }
