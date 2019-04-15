@@ -75,7 +75,7 @@ namespace IRuettae.WebApp.Controllers
         public async Task<ViewResult> Results()
         {
             var result = await Client.GetAsync("api/algorithm/RouteCalculations");
-            var routeCalculations = JArray.Parse(result.Content.ReadAsStringAsync().Result).ToObject<RouteCalculationVM[]>().OrderByDescending(rc => rc.StartTime);
+            var routeCalculations = JArray.Parse(result.Content.ReadAsStringAsync().Result).ToObject<RouteCalculationVM[]>().OrderByDescending(rc => rc.Id);
             return View(routeCalculations);
         }
 
@@ -90,7 +90,7 @@ namespace IRuettae.WebApp.Controllers
         public async Task<ViewResult> Compare(long[] ids)
         {
             var result = await Client.GetAsync("api/algorithm/RouteCalculations");
-            var routeCalculations = JArray.Parse(result.Content.ReadAsStringAsync().Result).ToObject<RouteCalculationVM[]>().Where(rcvm => ids.Contains(rcvm.Id)).OrderByDescending(rc => rc.StartTime);
+            var routeCalculations = JArray.Parse(result.Content.ReadAsStringAsync().Result).ToObject<RouteCalculationVM[]>().Where(rcvm => ids.Contains(rcvm.Id)).OrderByDescending(rc => rc.Id);
             return View(routeCalculations);
         }
     }

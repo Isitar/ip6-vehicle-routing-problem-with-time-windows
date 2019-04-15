@@ -15,7 +15,7 @@ namespace IRuettae.WebApp.Models
         [DisplayName("Startzeit")]
         public DateTime VisitStartTime { get; set; }
 
-        [DisplayName("Besuchs Endzeit")]
+        [DisplayName("Endzeit")]
         public DateTime VisitEndTime { get; set; }
 
         [DisplayName("Chlausname")]
